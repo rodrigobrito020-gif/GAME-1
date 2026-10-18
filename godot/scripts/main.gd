@@ -24,6 +24,8 @@ const HEROES := [
 ]
 const SLOT_POSITIONS := [Vector2(456, 390), Vector2(456, 600), Vector2(303, 390), Vector2(303, 600), Vector2(150, 390), Vector2(150, 600)]
 const FOE_POSITIONS := [Vector2(825, 390), Vector2(825, 600), Vector2(985, 390), Vector2(985, 600), Vector2(1135, 390), Vector2(1135, 600)]
+const BATTLE_SLOTS := [Vector2(475, 475), Vector2(475, 735), Vector2(305, 450), Vector2(305, 710), Vector2(135, 425), Vector2(135, 685)]
+const BATTLE_FOES := [Vector2(790, 475), Vector2(790, 735), Vector2(970, 450), Vector2(970, 710), Vector2(1135, 425), Vector2(1135, 685)]
 const WAVE_NAMES := ["Primeira onda", "Segunda onda", "Terceira onda", "Chefe da região"]
 
 var effect_layer: Node2D
@@ -38,6 +40,9 @@ var levels: Array[int] = [1, 1, 1, 1, 1]
 var stage := 1
 var coins := 150
 var wave := 0
+var battle_view := false
+var preparation_controls: Array[Control] = []
+var subtitle_label: Label
 var mode := "formation"
 var selected := 0
 var dragging := -1
@@ -161,25 +166,28 @@ func _build_ui() -> void:
 		theme.set_stylebox(style_name, "Button", style)
 	interface.theme = theme
 	_label("RELOAD ADVENTURE", Vector2(36, 18), Vector2(600, 38), 28, Color("dfd3a6"))
-	_label("PREPARE SUA EQUIPE  ·  AVANCE PELAS REGIÕES", Vector2(38, 59), Vector2(700, 25), 13, Color("92aaa9"))
+	subtitle_label = _label("PREPARE SUA EQUIPE  ·  AVANCE PELAS REGIÕES", Vector2(38, 59), Vector2(700, 25), 13, Color("92aaa9"))
 	wallet_label = _label("", Vector2(850, 26), Vector2(390, 32), 21, Color("dfd3a6"))
 	wallet_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	title_label = _label("", Vector2(38, 109), Vector2(810, 36), 23)
 	status_label = _label("", Vector2(38, 150), Vector2(1190, 28), 16, Color("9fb8b8"))
-	start_button = _button("Iniciar batalha", Vector2(1020, 109), Vector2(220, 44), _start_battle)
-	_label("COLEÇÃO  ·  Selecione um herói para treinar", Vector2(38, 627), Vector2(780, 28), 15, Color("9fb8b8"))
+	start_button = _button("Iniciar batalha", Vector2(1020, 109), Vector2(220, 44), _primary_action)
+	preparation_controls.append(_label("COLEÇÃO  ·  Selecione um herói para treinar", Vector2(38, 627), Vector2(780, 28), 15, Color("9fb8b8")))
 	for i in range(HEROES.size()):
 		var id := i
 		cards.append(_button("", Vector2(38 + i * 177, 661), Vector2(167, 54), func() -> void: _select_hero(id)))
+		preparation_controls.append(cards[-1])
 		var circle := SkillCircle.new()
 		circle.kind = HEROES[i].kind
 		circle.accent = HEROES[i].color
 		circle.activated.connect(func() -> void: _manual_skill(id))
 		interface.add_child(circle)
 		skill_circles.append(circle)
-	_label("Habilidades: clique no círculo acima do herói. Vermelho = recarga em segundos.", Vector2(38, 718), Vector2(880, 28), 14, Color("9fb8b8"))
+	preparation_controls.append(_label("Habilidades: clique no círculo acima do herói. Vermelho = recarga em segundos.", Vector2(38, 718), Vector2(880, 28), 14, Color("9fb8b8")))
 	detail_label = _label("", Vector2(38, 746), Vector2(890, 48), 14, Color("b7cac8"))
 	train_button = _button("Treinar", Vector2(942, 661), Vector2(298, 38), _train_selected)
+	preparation_controls.append(detail_label)
+	preparation_controls.append(train_button)
 	pause_button = _button("Pausar", Vector2(942, 708), Vector2(140, 34), _toggle_pause)
 	auto_button = _button("Auto: sim", Vector2(1094, 708), Vector2(146, 34), _toggle_auto)
 	speed_button = _button("Velocidade: 1×", Vector2(942, 752), Vector2(298, 34), _toggle_speed)
@@ -207,9 +215,34 @@ func _preview_foes() -> void:
 		foes.append(_make_foe(i))
 	_rebuild_enemy_visuals()
 
+func _primary_action() -> void:
+	if battle_view and mode in ["victory", "defeat"]:
+		_return_to_preparation()
+	else:
+		_start_battle()
+
+func _return_to_preparation() -> void:
+	if mode == "battle":
+		return
+	battle_view = false
+	mode = "formation"
+	paused = false
+	wave = 0
+	elapsed = 0.0
+	transition = 0.0
+	dragging = -1
+	effects.clear()
+	_prepare_heroes()
+	_preview_foes()
+	_sync_hero_visuals(0)
+	_message("Prepare a equipe e inicie a próxima batalha quando estiver pronto.")
+	_refresh_ui()
+	queue_redraw()
+
 func _start_battle() -> void:
 	if mode == "battle":
 		return
+	battle_view = true
 	dragging = -1
 	_prepare_heroes()
 	wave = 0
@@ -247,8 +280,11 @@ func _front_hero() -> Dictionary:
 
 func _unit_position(unit: Dictionary, enemy: bool) -> Vector2:
 	if enemy:
-		return Vector2(965, 520) if unit.kind == "boss" else FOE_POSITIONS[unit.id]
-	return SLOT_POSITIONS[slots.find(int(unit.id))]
+		if unit.kind == "boss":
+			return Vector2(965, 650) if battle_view else Vector2(965, 520)
+		return BATTLE_FOES[unit.id] if battle_view else FOE_POSITIONS[unit.id]
+	var index := slots.find(int(unit.id))
+	return BATTLE_SLOTS[index] if battle_view else SLOT_POSITIONS[index]
 
 func _unit_height(unit: Dictionary, enemy: bool) -> float:
 	return (188.0 if unit.kind == "boss" else 116.0) if enemy else HERO_HEIGHTS[unit.id]
@@ -479,7 +515,7 @@ func _train_cost() -> int:
 	return 25 + (levels[selected] - 1) * 15
 
 func _train_selected() -> void:
-	if mode == "battle" or levels[selected] >= 50 or coins < _train_cost():
+	if battle_view or mode == "battle" or levels[selected] >= 50 or coins < _train_cost():
 		return
 	coins -= _train_cost()
 	levels[selected] += 1
@@ -508,13 +544,32 @@ func _message(text: String) -> void:
 	if is_instance_valid(log_label):
 		log_label.text = messages[-1]
 
+func _layout_ui() -> void:
+	for control in preparation_controls:
+		control.visible = not battle_view
+	subtitle_label.visible = not battle_view
+	title_label.position = Vector2(38, 65) if battle_view else Vector2(38, 109)
+	status_label.position = Vector2(38, 105) if battle_view else Vector2(38, 150)
+	start_button.position = Vector2(1020, 66) if battle_view else Vector2(1020, 109)
+	start_button.visible = mode != "battle"
+	pause_button.visible = not battle_view or mode == "battle"
+	auto_button.visible = pause_button.visible
+	speed_button.visible = pause_button.visible
+	pause_button.position = Vector2(730, 72) if battle_view else Vector2(942, 708)
+	auto_button.position = Vector2(882, 72) if battle_view else Vector2(1094, 708)
+	speed_button.position = Vector2(1034, 72) if battle_view else Vector2(942, 752)
+	speed_button.size = Vector2(206, 34) if battle_view else Vector2(298, 34)
+	log_label.position = Vector2(38, 764) if battle_view else Vector2(700, 624)
+	log_label.size = Vector2(1202, 30) if battle_view else Vector2(540, 30)
+
 func _refresh_ui() -> void:
+	_layout_ui()
 	wallet_label.text = str(coins) + " ADENA   ·   FASE " + str(stage)
 	var headings := {"formation": "Floresta da Fenda · Preparação", "battle": "Floresta da Fenda · " + WAVE_NAMES[wave], "victory": "Vitória · Fase " + str(stage - 1) + " concluída", "defeat": "Derrota · Reorganize sua equipe"}
 	title_label.text = headings[mode]
-	status_label.text = "PAUSADO · use Continuar para retomar" if paused else ("%02d:%02d  ·  Onda %d/4  ·  Habilidades %s" % [int(elapsed) / 60, int(elapsed) % 60, wave + 1, "automáticas" if automatic else "manuais"] if mode == "battle" else "5 heróis · 6 posições · Arraste para mover ou trocar · 3 ondas e um chefe por fase")
+	status_label.text = "PAUSADO · use Continuar para retomar" if paused else ("%02d:%02d  ·  Onda %d/4  ·  Habilidades %s" % [int(elapsed) / 60, int(elapsed) % 60, wave + 1, "automáticas" if automatic else "manuais"] if mode == "battle" else ("Volte à preparação para treinar e organizar a equipe." if battle_view else "5 heróis · 6 posições · Arraste para mover ou trocar · 3 ondas e um chefe por fase"))
 	start_button.disabled = mode == "battle"
-	start_button.text = "Em batalha" if mode == "battle" else ("Próxima fase" if mode == "victory" else "Tentar novamente" if mode == "defeat" else "Iniciar batalha")
+	start_button.text = "Preparar próxima fase" if mode == "victory" else ("Reorganizar equipe" if mode == "defeat" else "Iniciar batalha")
 	pause_button.disabled = mode != "battle"
 	pause_button.text = "Continuar" if paused else "Pausar"
 	auto_button.text = "Auto: " + ("sim" if automatic else "não")
@@ -539,7 +594,7 @@ func _refresh_ui() -> void:
 	detail_label.text = HEROES[selected].name + " · " + HEROES[selected].race + " · Comum · " + HEROES[selected].description + "\nTreino: +12% dos atributos base por nível. Raridades e demais sistemas virão depois."
 
 func _move_hero(id: int, target: int) -> void:
-	if mode == "battle" or target < 0 or target >= slots.size():
+	if battle_view or mode == "battle" or target < 0 or target >= slots.size():
 		return
 	var origin := slots.find(id)
 	if origin < 0:
@@ -552,7 +607,7 @@ func _move_hero(id: int, target: int) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
 		_toggle_pause()
-	if mode == "battle":
+	if battle_view:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
@@ -575,13 +630,21 @@ func _unhandled_input(event: InputEvent) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	# O cenário ocupa o campo inteiro; cabeçalho e coleção têm fundos próprios.
-	draw_texture_rect(BATTLE_BACKGROUND, Rect2(0, 180, 1280, 440), false)
-	draw_rect(Rect2(0, 97, 1280, 83), Color("101d24"))
-	draw_rect(Rect2(0, 180, 1280, 43), Color(0.025, 0.045, 0.05, 0.38))
-	draw_rect(Rect2(0, 620, 1280, 180), Color("0b141b"))
-	draw_line(Vector2(0, 620), Vector2(1280, 620), Color("7c7451"), 2)
-	if mode != "battle":
+	if battle_view:
+		# Câmera mais aberta na vertical; preservar a proporção evita deformar os prédios.
+		var source_size := BATTLE_BACKGROUND.get_size()
+		var source_width := source_size.y * 1280.0 / 660.0
+		var crop := Rect2((source_size.x - source_width) * 0.55, 0, source_width, source_size.y)
+		draw_texture_rect_region(BATTLE_BACKGROUND, Rect2(0, 140, 1280, 660), crop)
+		draw_rect(Rect2(0, 0, 1280, 140), Color("0b171e"))
+		draw_rect(Rect2(0, 758, 1280, 42), Color(0.025, 0.04, 0.045, 0.72))
+	else:
+		draw_texture_rect(BATTLE_BACKGROUND, Rect2(0, 180, 1280, 440), false)
+		draw_rect(Rect2(0, 97, 1280, 83), Color("101d24"))
+		draw_rect(Rect2(0, 180, 1280, 43), Color(0.025, 0.045, 0.05, 0.38))
+		draw_rect(Rect2(0, 620, 1280, 180), Color("0b141b"))
+		draw_line(Vector2(0, 620), Vector2(1280, 620), Color("7c7451"), 2)
+	if not battle_view:
 		for i in range(SLOT_POSITIONS.size()):
 			var pos: Vector2 = SLOT_POSITIONS[i]
 			draw_set_transform(pos + Vector2(0, 7), 0, Vector2(1, 0.3))
@@ -744,6 +807,7 @@ func _run_smoke_test() -> void:
 	_check(levels[0] == 2 and coins == before - 25, "treino cobra Adena e aumenta nível")
 	_test_combat_timing()
 	_start_battle()
+	_check(battle_view and not train_button.visible and not cards[0].visible, "batalha esconde coleção e treino para ampliar o cenário")
 	var hp: float = heroes[0].hp
 	_apply_damage(foes[0], heroes[0], 20, false)
 	_check(heroes[0].hp < hp, "dano altera vida")
@@ -784,6 +848,15 @@ func _run_smoke_test() -> void:
 	for i in range(20):
 		_advance(0.1)
 	_check(effects.is_empty(), "efeitos desaparecem após vitória sem congelar")
+	_refresh_ui()
+	_check(start_button.visible and battle_view, "resultado mantém o campo ampliado e oferece retorno")
+	var earned_coins := coins
+	var completed_stage := stage
+	var trained_levels := levels.duplicate()
+	var saved_formation := slots.duplicate()
+	_primary_action()
+	_check(not battle_view and mode == "formation" and train_button.visible and cards[0].visible, "botão de resultado retorna à preparação com treino")
+	_check(coins == earned_coins and stage == completed_stage and levels == trained_levels and slots == saved_formation, "retorno preserva recompensas, níveis e formação")
 	_start_battle()
 	for hero in heroes:
 		hero.hp = 0.0

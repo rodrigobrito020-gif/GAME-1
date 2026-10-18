@@ -18,7 +18,8 @@ Protótipo de RPG em equipe no **Godot 4.6.3**, com personagens provisórios.
 - Flechas, magia, cura e proteção com efeitos próprios e impactos sincronizados; animações quadro a quadro ainda pendentes.
 - Combate automático e habilidades manuais com recarga.
 - Três ondas de Grelims adaptados da referência visual e um chefe maior por fase.
-- Cenário de vila medieval junto à floresta, com chão em perspectiva.
+- Cenário de vila medieval junto à floresta, com chão em perspectiva e vista ampliada durante a batalha.
+- Coleção, treino e posicionamento na preparação; controles compactos durante o combate.
 - Treino com Adena e progresso salvo localmente.
 
 A arte é provisória. História, raridades, equipamentos e demais sistemas do conceito ainda serão implementados.

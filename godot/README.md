@@ -8,14 +8,16 @@ Primeira base jogável do conceito: RPG em equipe para cinco heróis, com seis p
 2. No gerenciador de projetos, escolha **Importar** e selecione `project.godot` desta pasta.
 3. Abra o projeto e pressione **F6** para executar a cena aberta ou **F5** para executar o projeto.
 4. Arraste os personagens no campo para ajustar a formação; soltar sobre outro troca as posições.
-5. Clique em **Iniciar batalha**. São três ondas e um chefe, com vida e recargas preservadas entre ondas.
+5. Clique em **Iniciar batalha**. O cenário passa à vista ampliada: coleção e treino ficam ocultos e os controles vão para o cabeçalho. São três ondas e um chefe, com vida e recargas preservadas entre ondas.
+6. No resultado, use **Preparar próxima fase** ou **Reorganizar equipe** para voltar à preparação, treinar e ajustar as posições antes de iniciar novamente.
 
 Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar o nível. Os personagens da frente recebem os ataques primeiro. O healer prioriza aliados feridos. Cada herói tem um **círculo pequeno de habilidade acima dele**: quando pronto, mostra um símbolo; durante a recarga, fica vermelho e mostra os segundos restantes, com um anel de progresso. Passe o mouse para ler a descrição e clique no círculo para ativar. Desligue **Auto** para controlar somente de forma manual; também pode clicar com Auto ligado. **Pausar** ou **Esc** interrompe a batalha; a velocidade pode ser 1× ou 2×.
 
 ## O que já funciona
 
 - Classes do conceito: Bounty Hunter (anã/tank), Bishop (humano/healer), Silver Ranger (elfa branca/arqueira), Spellhowler (elfa negra/maga) e Destroyer (orc/guerreiro), com uma habilidade ativa provisória cada. As cinco classes têm imagens próprias inspiradas nas referências visuais fornecidas pelo usuário.
-- Heróis cerca de 50% maiores e campo mais alto, com duas fileiras separadas.
+- Heróis cerca de 50% maiores, com tamanho mantido na vista de batalha.
+- Cenário da batalha com 50% mais altura que a preparação, duas fileiras mais afastadas e enquadramento sem deformar a imagem. Coleção e treino ficam na preparação.
 - Flechas e projéteis mágicos em voo: o dano acontece no impacto.
 - Aproximação, golpe e retorno dos personagens de combate físico; Grelims usam garras.
 - Tiro preciso reforçado, tempestade em área, impacto de machado, proteção e cura em grupo, com efeitos próprios.
@@ -45,7 +47,7 @@ godot --headless --path . --editor --import --quit
 godot --headless --path . -- --smoke-test
 ```
 
-O teste executa a simulação real no Godot: formação, troca, treino, impactos de projéteis e golpes físicos, cura sincronizada, tempestade em área, redução de dano, cancelamento ao cair, pausa de projéteis, recargas, batalha completa, recompensas, limpeza de efeitos após vitória, derrota e reinício. Retorna código diferente de zero em caso de falha.
+O teste executa a simulação real no Godot: formação, troca, treino, impactos de projéteis e golpes físicos, cura sincronizada, tempestade em área, redução de dano, cancelamento ao cair, pausa de projéteis, recargas, batalha completa, recompensas, limpeza de efeitos após vitória, derrota, reinício e retorno à preparação sem perder progresso. Retorna código diferente de zero em caso de falha.
 
 Se o ambiente de execução bloquear as pastas padrão de configuração, use diretórios graváveis:
 

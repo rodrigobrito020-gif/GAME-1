@@ -24,6 +24,42 @@ const BISHOP_CAST_FRAMES: Array[Texture2D] = [
 	preload("res://art/heroes/magic_test/frame-11.png"),
 	preload("res://art/heroes/magic_test/frame-12.png"),
 ]
+const BISHOP_DEATH_FRAMES: Array[Texture2D] = [
+	preload("res://art/heroes/magic_test/death-00.png"),
+	preload("res://art/heroes/magic_test/death-01.png"),
+	preload("res://art/heroes/magic_test/death-02.png"),
+	preload("res://art/heroes/magic_test/death-03.png"),
+	preload("res://art/heroes/magic_test/death-04.png"),
+	preload("res://art/heroes/magic_test/death-05.png"),
+	preload("res://art/heroes/magic_test/death-06.png"),
+	preload("res://art/heroes/magic_test/death-07.png"),
+	preload("res://art/heroes/magic_test/death-08.png"),
+	preload("res://art/heroes/magic_test/death-09.png"),
+	preload("res://art/heroes/magic_test/death-10.png"),
+	preload("res://art/heroes/magic_test/death-11.png"),
+	preload("res://art/heroes/magic_test/death-12.png"),
+	preload("res://art/heroes/magic_test/death-13.png"),
+	preload("res://art/heroes/magic_test/death-14.png"),
+	preload("res://art/heroes/magic_test/death-15.png"),
+	preload("res://art/heroes/magic_test/death-16.png"),
+	preload("res://art/heroes/magic_test/death-17.png"),
+	preload("res://art/heroes/magic_test/death-18.png"),
+	preload("res://art/heroes/magic_test/death-19.png"),
+	preload("res://art/heroes/magic_test/death-20.png"),
+	preload("res://art/heroes/magic_test/death-21.png"),
+	preload("res://art/heroes/magic_test/death-22.png"),
+	preload("res://art/heroes/magic_test/death-23.png"),
+	preload("res://art/heroes/magic_test/death-24.png"),
+	preload("res://art/heroes/magic_test/death-25.png"),
+	preload("res://art/heroes/magic_test/death-26.png"),
+	preload("res://art/heroes/magic_test/death-27.png"),
+	preload("res://art/heroes/magic_test/death-28.png"),
+	preload("res://art/heroes/magic_test/death-29.png"),
+	preload("res://art/heroes/magic_test/death-30.png"),
+	preload("res://art/heroes/magic_test/death-31.png"),
+	preload("res://art/heroes/magic_test/death-32.png"),
+	preload("res://art/heroes/magic_test/death-33.png"),
+]
 const HERO_TEXTURES := [
 	preload("res://art/heroes/bounty_hunter.tres"),
 	preload("res://art/heroes/bishop.tres"),
@@ -116,6 +152,7 @@ func _create_hero_visuals() -> void:
 		visual.artwork = HERO_TEXTURES[i]
 		if i == 1:
 			visual.cast_frames = BISHOP_CAST_FRAMES
+			visual.death_frames = BISHOP_DEATH_FRAMES
 		visual.character_height = HERO_HEIGHTS[i]
 		visual.phase = i * 0.8
 		hero_visual_root.add_child(visual)
@@ -814,6 +851,21 @@ func _run_smoke_test() -> void:
 	hero_visuals[0].sync_visual(visual_sample, 0, false)
 	_check(hero_visuals[0].body.scale.y < hero_visuals[0].body.scale.x, "derrota altera a pose visual")
 	_sync_hero_visuals(0)
+	var death_sample: Dictionary = heroes[1].duplicate()
+	death_sample.hp = 0.0
+	hero_visuals[1].sync_visual(death_sample, 0.0, false)
+	_check(hero_visuals[1].body.texture == BISHOP_DEATH_FRAMES[0], "Bishop inicia a animação de morte")
+	hero_visuals[1].sync_visual(death_sample, 1.0, false)
+	_check(hero_visuals[1].death_frame == 12, "queda avança pelos quadros de morte")
+	hero_visuals[1].sync_visual(death_sample, 1.0, true)
+	_check(hero_visuals[1].death_frame == 12, "pausa interrompe a queda")
+	hero_visuals[1].sync_visual(death_sample, 2.0, false)
+	_check(hero_visuals[1].body.texture == BISHOP_DEATH_FRAMES[33], "Bishop mantém a pose final de morte")
+	_check(is_equal_approx(hero_visuals[1].body.scale.x, hero_visuals[1].body.scale.y), "pose de morte preserva as proporções")
+	hero_visuals[1].sync_visual(death_sample, 5.0, false)
+	_check(hero_visuals[1].death_frame == 33, "pose de morte não repete a animação")
+	hero_visuals[1].sync_visual(heroes[1], 0.0, false)
+	_check(hero_visuals[1].death_frame == 0 and hero_visuals[1].body.texture == BISHOP_CAST_FRAMES[0], "nova tentativa restaura a pose viva do Bishop")
 	var sorted_slots := slots.duplicate()
 	sorted_slots.sort()
 	_check(sorted_slots == [-1, 0, 1, 2, 3, 4], "cada herói aparece uma vez e há uma posição vazia")

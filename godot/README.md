@@ -15,7 +15,7 @@ Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar
 
 ## Teste de animação do humano mago
 
-O Bishop usa temporariamente o modelo cinza do humano mago, renderizado em 13 quadros transparentes a partir de `CastShort_MMagic`, do pacote `Magic.ukx` enviado pelo usuário. Clique em **Iniciar batalha**: ele conjura ao atacar ou curar. Para testar a cura manual, desligue **Auto**, espere um aliado sofrer dano e clique no círculo de cruz acima do Bishop. O movimento acompanha pausa e velocidade; a cura acontece no fim da conjuração.
+O Bishop usa temporariamente o modelo cinza do humano mago, renderizado em 13 quadros transparentes a partir de `CastShort_MMagic`, do pacote `Magic.ukx` enviado pelo usuário. Clique em **Iniciar batalha**: ele conjura ao atacar ou curar. Para testar a cura manual, desligue **Auto**, espere um aliado sofrer dano e clique no círculo de cruz acima do Bishop. O movimento acompanha pausa e velocidade; a cura acontece no fim da conjuração. Ao morrer, o Bishop reproduz a queda `Death_MMagic` (34 quadros a 12 fps) e permanece deitado no último quadro até reiniciar. A morte também respeita a pausa.
 
 Este é um teste de movimento dentro do jogo: faltam texturas, arma, efeitos originais e a adaptação para a pixel art escolhida. Os demais personagens continuam com suas poses provisórias.
 

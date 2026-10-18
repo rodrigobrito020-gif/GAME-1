@@ -29,3 +29,5 @@ Estes visuais ainda precisam da avaliação do usuário, especialmente silhueta,
 `heroes/magic_test/frame-00.png` até `frame-12.png` são renders transparentes da sequência `CastShort_MMagic`, extraída de `Magic.ukx` enviado pelo usuário (CRC32 validado: `45453f56`). Amostras dos quadros 0, 2, …, 24; origem a 30 fps, reprodução em cerca de 0,83 segundo. UEViewer `a0bfb468`, importador PSK/PSA 7.1.3 e Blender 4.3.2.
 
 O personagem usa material neutro cinza porque as texturas não vieram com o pacote. É somente um teste do movimento do humano mago; não representa a pixel art final, nem inclui partículas e sons do cliente. O jogo reproduz os quadros pelo relógio da ação, mantendo os pés ancorados e respeitando pausa, velocidade e derrota. Os arquivos UKX, PSK, PSA e o cliente original não fazem parte do projeto.
+
+`heroes/magic_test/death-00.png` até `death-33.png`: sequência `Death_MMagic`, 34 quadros a 12 fps, renderizada com o mesmo modelo e câmera da conjuração. Tela de 320×384 para acomodar a queda sem cortes, com a escala e o pivô de chão preservados. O último quadro fica visível até reiniciar a batalha.

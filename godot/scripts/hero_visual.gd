@@ -7,6 +7,10 @@ var character_height := 100.0
 var phase := 0.0
 var cast_frames: Array[Texture2D] = []
 var cast_frame := 0
+var death_frames: Array[Texture2D] = []
+var death_frame := 0
+var death_clock := 0.0
+var was_alive := true
 @onready var body: Sprite2D = $Body
 
 func _ready() -> void:
@@ -25,6 +29,21 @@ func sync_visual(unit: Dictionary, delta: float, frozen: bool) -> void:
 	if not frozen:
 		phase += delta
 	var alive: bool = unit.hp > 0
+	if alive:
+		death_clock = 0.0
+		death_frame = 0
+	elif not was_alive and not frozen:
+		death_clock += delta
+	was_alive = alive
+	if not alive and not death_frames.is_empty():
+		death_frame = mini(death_frames.size() - 1, int(death_clock * 12.0))
+		body.texture = death_frames[death_frame]
+		var death_ratio := character_height / 229.0
+		body.scale = Vector2(death_ratio, death_ratio)
+		body.position = Vector2(0, -142.0 * death_ratio)
+		body.rotation = 0.0
+		body.modulate = Color(0.72, 0.75, 0.78, 0.9)
+		return
 	var length := maxf(0.01, float(unit.get("action_length", 0.3)))
 	var clock := float(unit.get("action_clock", unit.pulse))
 	var action := sin(clampf(clock / length, 0, 1) * PI)

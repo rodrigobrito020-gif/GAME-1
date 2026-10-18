@@ -67,7 +67,7 @@ func _ready() -> void:
 	close_button = _button("Voltar à vila [Esc]")
 	close_button.pressed.connect(func() -> void: closed.emit())
 	header.add_child(close_button)
-	column.add_child(_label("Escolha como enfrentar os mundos. Cada classe tem quatro habilidades próprias.", 16))
+	column.add_child(_label("A classe muda suas habilidades. Armas e roupas são obtidas de monstros e baús; itens incompatíveis voltam à mochila.", 15))
 	current_label = _label("", 15, Color("b9d2ca"))
 	column.add_child(current_label)
 	var scroll := ScrollContainer.new()

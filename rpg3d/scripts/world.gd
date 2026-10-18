@@ -25,6 +25,10 @@ const ClassCombat := preload("res://scripts/class_combat.gd")
 const ArenaBossVisual := preload("res://scripts/arena_boss_visual.gd")
 const ClassWeapon := preload("res://scripts/class_weapon.gd")
 const Wardrobe := preload("res://scripts/wardrobe.gd")
+const MerchantMenu := preload("res://scripts/merchant_menu.gd")
+const MerchantStock := preload("res://scripts/merchant_stock.gd")
+var merchant_menu: PanelContainer
+var merchant_backdrop: ColorRect
 var player_class := "tanque"
 var class_menu: PanelContainer
 var class_backdrop: ColorRect
@@ -243,7 +247,7 @@ func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 
 func _apply_equipment() -> void:
 	sword_attachment.visible = player_class == "tanque" and LootItems.is_equipped(inventory, "sword")
-	shield_attachment.visible = player_class == "tanque" and LootItems.is_equipped(inventory, "shield")
+	shield_attachment.visible = player_class in ["tanque", "mago", "healer"] and LootItems.is_equipped(inventory, "shield")
 	shield_carry_pose.shield_equipped = shield_attachment.visible
 	if is_instance_valid(ranged_attachment):
 		ranged_attachment.visible = player_class != "tanque" and LootItems.is_equipped(inventory, "sword")
@@ -291,6 +295,16 @@ func _ui() -> void:
 	class_menu.class_requested.connect(_choose_class)
 	class_menu.closed.connect(_close_classes)
 	class_menu.visibility_changed.connect(func() -> void: class_backdrop.visible = class_menu.visible)
+	merchant_backdrop = ColorRect.new()
+	merchant_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	merchant_backdrop.color = Color(0.01, 0.02, 0.03, 0.78)
+	merchant_backdrop.hide()
+	hud.root.add_child(merchant_backdrop)
+	merchant_menu = MerchantMenu.new()
+	hud.root.add_child(merchant_menu)
+	merchant_menu.closed.connect(_close_merchant)
+	merchant_menu.trade_requested.connect(_trade)
+	merchant_menu.visibility_changed.connect(func() -> void: merchant_backdrop.visible = merchant_menu.visible)
 	_sync_class()
 	_refresh_hud()
 
@@ -301,7 +315,8 @@ func _maximum_hp() -> float:
 	return float(PlayerClasses.get_definition(player_class).max_hp) + (level - 1) * 20.0 + float(LootItems.set_bonuses(inventory, player_class).hp)
 
 func _sync_class() -> void:
-	LootItems.store_incompatible_clothing(inventory, player_class)
+	LootItems.ensure_identity(inventory, player_class)
+	LootItems.store_incompatible_equipment(inventory, player_class)
 	_set_character_model()
 	var definition := PlayerClasses.get_definition(player_class)
 	hud.set_player_class(definition)
@@ -314,6 +329,7 @@ func _near_trainer() -> bool:
 func _choose_class(id: String) -> bool:
 	if current_world != 0 or dead or not class_menu.visible or not _near_trainer() or id not in PlayerClasses.IDS:
 		return false
+	LootItems.ensure_identity(inventory, player_class)
 	player_class = PlayerClasses.normalize(id)
 	var worn_clothing_before: int = inventory.get("equipped_loot", {}).size()
 	automatic_skills.fill(false)
@@ -328,7 +344,8 @@ func _choose_class(id: String) -> bool:
 	_close_classes()
 	notice.text = "Classe escolhida: %s. As quatro habilidades foram atualizadas." % PlayerClasses.get_definition(player_class).name
 	if inventory.get("equipped_loot", {}).size() < worn_clothing_before:
-		notice.text += " Roupas da classe anterior voltaram à mochila."
+		notice.text += " Equipamentos incompatíveis voltaram à mochila."
+	notice.text += " Nenhum item novo foi concedido."
 	_save_profile()
 	return true
 
@@ -351,6 +368,8 @@ func _refresh_hud() -> void:
 			prompt = "[E] Abrir baú de recompensa"
 		elif _near_trainer():
 			prompt = "[E] Instrutor · Escolher classe humana"
+		elif _near_merchant():
+			prompt = "[E] Bento · Comprar e vender"
 		elif _near_portal():
 			prompt = "[E] Acessar a fenda dimensional"
 	hud.set_interaction_prompt(prompt)
@@ -366,7 +385,7 @@ func _open_chest() -> bool:
 		return false
 	if not reward_chest.open():
 		return false
-	var reward := LootItems.create_reward(loot_rng, current_world, player_class)
+	var reward := LootItems.create_world_drop(loot_rng, current_world)
 	if not inventory.has("loot_items"):
 		inventory.loot_items = []
 	inventory.loot_items.append(reward)
@@ -378,7 +397,28 @@ func _open_chest() -> bool:
 	return true
 
 func _modal_open() -> bool:
-	return hud.inventory_panel.visible or hud.rift_panel.visible or (is_instance_valid(class_menu) and class_menu.visible) or hud.run_result_panel.visible or hud.chest_rewards_panel.visible
+	return hud.inventory_panel.visible or hud.rift_panel.visible or (is_instance_valid(class_menu) and class_menu.visible) or (is_instance_valid(merchant_menu) and merchant_menu.visible) or hud.run_result_panel.visible or hud.chest_rewards_panel.visible
+
+func _near_merchant() -> bool:
+	return current_world == 0 and player.position.distance_to(Village.MERCHANT_POSITION) <= 3.2
+
+func _close_merchant() -> void:
+	merchant_menu.hide()
+	animation.speed_scale = 1.0
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_refresh_hud()
+
+func _trade(mode: String, id: String, quantity: int) -> bool:
+	if dead or not merchant_menu.visible or not _near_merchant():
+		return false
+	var result := MerchantStock.trade(inventory, mode, id, quantity)
+	merchant_menu.sync_inventory(inventory, player_class)
+	merchant_menu.status_label.text = result.message
+	if not result.ok:
+		return false
+	_refresh_hud()
+	_save_profile()
+	return true
 
 func _near_portal() -> bool:
 	return current_world == 0 and Vector2(player.position.x - portal_position.x, player.position.z - portal_position.z).length() <= 4.0
@@ -388,6 +428,13 @@ func _interact() -> bool:
 		return false
 	if _near_chest():
 		return _open_chest()
+	if _near_merchant():
+		merchant_menu.sync_inventory(inventory, player_class)
+		merchant_menu.show()
+		hud.potion_popup.hide()
+		animation.speed_scale = 0.0
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		return true
 	if _near_trainer():
 		class_menu.show_classes(player_class)
 		hud.potion_popup.hide()
@@ -448,6 +495,7 @@ func _change_zone(number: int) -> void:
 	hud.hide_run_result()
 	hud.hide_chest_rewards()
 	class_menu.hide()
+	merchant_menu.hide()
 	class_combat.cancel(self)
 	animation.speed_scale = 1.0
 	hud.focus_enemy = null
@@ -587,7 +635,7 @@ func _toggle_inventory() -> void:
 	_refresh_hud()
 
 func _use_item(item: String) -> bool:
-	if dead or hud.rift_panel.visible or class_menu.visible or hud.run_result_panel.visible or hud.chest_rewards_panel.visible:
+	if dead or hud.rift_panel.visible or class_menu.visible or merchant_menu.visible or hud.run_result_panel.visible or hud.chest_rewards_panel.visible:
 		return false
 	if attack_clock > 0 and item != "potion":
 		return false
@@ -600,6 +648,17 @@ func _use_item(item: String) -> bool:
 			return false
 		_apply_equipment()
 	elif item in LootItems.SLOTS:
+		if int(inventory.get("identity_version", 0)) >= 1:
+			if LootItems.is_equipped(inventory, item):
+				LootItems.unequip_slot(inventory, item)
+			else:
+				var owned: Array = inventory.loot_items.filter(func(value: Dictionary) -> bool: return value.slot == item and LootItems.Catalog.compatible(value, player_class))
+				if owned.is_empty() or not LootItems.equip_item(inventory, owned[0].id, player_class): return false
+			_apply_equipment()
+			hp = minf(hp, _maximum_hp())
+			_refresh_hud()
+			_save_profile()
+			return true
 		var key: String = LootItems.BASE_KEYS[item]
 		if not LootItems.equipped_item(inventory, item).is_empty():
 			LootItems.unequip_slot(inventory, item)
@@ -838,7 +897,9 @@ func _receive_damage(amount: float) -> void:
 func _input(event: InputEvent) -> void:
 	# TAB também funciona quando um controle da interface está com foco.
 	if event is InputEventKey and event.keycode == KEY_TAB and event.pressed and not event.echo:
-		if class_menu.visible:
+		if merchant_menu.visible:
+			_close_merchant()
+		elif class_menu.visible:
 			_close_classes()
 		elif hud.rift_panel.visible:
 			_close_rift()
@@ -855,7 +916,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_toggle_inventory()
 			return
 		if event.keycode == KEY_ESCAPE:
-			if class_menu.visible:
+			if merchant_menu.visible:
+				_close_merchant()
+			elif class_menu.visible:
 				_close_classes()
 			elif hud.rift_panel.visible:
 				_close_rift()
@@ -1026,6 +1089,10 @@ func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 		var is_boss := bool(foe.get_meta("is_boss", false))
 		inventory.fangs += 3 if is_boss else 1
 		inventory.gold += 50 if is_boss else 5
+		if not smoke and not is_boss and loot_rng.randf() < 0.18:
+			var dropped := LootItems.create_world_drop(loot_rng, current_world)
+			inventory.loot_items.append(dropped)
+			hud.show_reward(dropped)
 		xp += 1
 		kills += 1
 		if not is_boss:
@@ -1541,8 +1608,11 @@ func _test_instance_flow() -> void:
 	hud.next_world_button.pressed.emit()
 	_check(current_world == 2 and arena_run.phase == InstanceRun.Phase.PREPARATION and enemies.is_empty() and hp == _maximum_hp(), "botão avança direto ao mundo seguinte com preparação nova e vida recuperada")
 	_check(not hud.run_result_panel.visible and not hud.chest_rewards_panel.visible and not _next_world(), "transição fecha menus antigos e não pula outra fase")
-	_check(_use_item("loot_equip:" + reward.id) and LootItems.is_equipped(inventory, reward.slot), "recompensa revelada funciona como equipamento real")
-	_check(_use_item("loot_remove:" + reward.slot) and _use_item(reward.slot), "saque pode voltar à mochila e equipamento básico pode ser restaurado")
+	if LootItems.Catalog.compatible(reward, player_class):
+		_check(_use_item("loot_equip:" + reward.id) and LootItems.is_equipped(inventory, reward.slot), "recompensa compatível revelada funciona como equipamento real")
+		_check(_use_item("loot_remove:" + reward.slot) and _use_item(reward.slot), "saque compatível pode voltar à mochila sem perder o equipamento anterior")
+	else:
+		_check(not _use_item("loot_equip:" + reward.id) and inventory.loot_items.any(func(item: Dictionary) -> bool: return item.id == reward.id and item == reward), "saque de outra classe permanece intacto na mochila e não pode ser convertido ou equipado")
 	var earned_items := inventory.duplicate(true)
 	_return_to_village()
 	_check(inventory == earned_items and hp == _maximum_hp(), "retorno preserva inventário e recupera vida")

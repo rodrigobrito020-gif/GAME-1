@@ -840,7 +840,7 @@
     "script": "res://scripts/item_icons.gd",
     "masks": "res://scripts/icon_background_masks.gd",
     "mask_sha256": "b4c0fd39534fe86ad21a6e02166d911179ee32cdf21e9d78da92e49bf18dc9fd",
-    "method": "Shared-background color samples and border-connected masks; original PNG files are unchanged. Display textures replace only masked background pixels at runtime and are cached by icon and rarity.",
+    "method": "Shared-background color samples and border-connected masks; original PNG files are unchanged. Display textures replace only masked background pixels with a uniform rarity color matching the slot, and are cached by icon and rarity.",
     "palette": {
       "Comum": "b1b4b9",
       "Incomum": "71bb72",

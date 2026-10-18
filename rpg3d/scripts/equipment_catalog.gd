@@ -24,10 +24,18 @@ static func normalize_legacy_key(key: String, item_name: String) -> String:
 	return key
 
 static func compatible(item: Dictionary, class_id: String) -> bool:
+	if item.get("slot", "") == "sword" and item.has("weapon_type"):
+		return item.weapon_type == ("bow" if class_id == "arqueiro" else "rod" if class_id in ["mago", "healer"] else "sword")
+	if item.get("slot", "") == "shield":
+		return class_id != "arqueiro"
 	var entry := get_entry(str(item.get("lineage_key", "")))
 	return entry.is_empty() or entry.profile == profile_for_class(class_id)
 
 static func class_text(item: Dictionary) -> String:
+	if item.get("slot", "") == "shield":
+		return "Tanque / Mago / Healer · Escudo"
+	if item.get("slot", "") == "sword" and item.has("weapon_type"):
+		return {"sword":"Tanque · Espada", "bow":"Arqueiro · Arco", "rod":"Mago / Healer · Cajado"}.get(item.weapon_type, "")
 	var entry := get_entry(str(item.get("lineage_key", "")))
 	if entry.is_empty():
 		return ""

@@ -44,6 +44,18 @@ var action_button: Button
 var viewport: SubViewport
 var preview: Node3D
 var source: Node3D
+var count_labels: Dictionary = {}
+
+func style_item_button(button: Button, rarity: String, selected_item := false) -> void:
+	var background := ItemIcons.background_color(rarity)
+	var border := rarity_color(rarity)
+	for state: String in ["normal", "hover", "pressed"]:
+		var box := style(background, GOLD if selected_item or state != "normal" else border, 2)
+		box.set_content_margin_all(4)
+		button.add_theme_stylebox_override(state, box)
+	button.expand_icon = true
+	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	button.vertical_icon_alignment = VERTICAL_ALIGNMENT_CENTER
 
 func style(background: Color, border := Color("6a5d47"), width := 1) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
@@ -226,11 +238,12 @@ func _equipment_slot(parent: Node, title: String, index: int) -> void:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	parent.add_child(label)
 	var button := button_for("◇" if index < 0 else "")
-	button.custom_minimum_size = Vector2(58, 44)
+	button.custom_minimum_size = Vector2(58, 52)
 	button.disabled = index < 0
 	if index >= 0:
 		button.icon = icon_for(index)
-		button.add_theme_constant_override("icon_max_width", 36)
+		button.add_theme_constant_override("icon_max_width", 48)
+		style_item_button(button, "Comum")
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.pressed.connect(_select_equipment.bind(index))
 		equipped_buttons[index] = button
@@ -266,16 +279,28 @@ func _bag_panel(column: VBoxContainer) -> void:
 	# must not leave holes, so a separate pool fills the 20 visible bag cells.
 	for index in range(IDS.size() + 20):
 		var button := button_for("")
-		button.custom_minimum_size = Vector2(62, 76)
+		button.custom_minimum_size = Vector2(72, 72)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		if index < IDS.size():
 			button.icon = icon_for(index)
 			button.expand_icon = true
-			button.add_theme_constant_override("icon_max_width", 46)
+			button.add_theme_constant_override("icon_max_width", 64)
 			button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 			button.pressed.connect(func() -> void: select_item(index))
 			button.tooltip_text = base_name(index)
+			if index in [1, 2]:
+				var counter := label_for("", 13)
+				counter.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+				counter.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+				counter.grow_vertical = Control.GROW_DIRECTION_BEGIN
+				counter.offset_right = -4
+				counter.offset_bottom = -3
+				counter.add_theme_color_override("font_shadow_color", Color.BLACK)
+				counter.add_theme_constant_override("shadow_offset_x", 1)
+				counter.add_theme_constant_override("shadow_offset_y", 1)
+				button.add_child(counter)
+				count_labels[index] = counter
 		else:
 			button.disabled = true
 			empty_buttons.append(button)
@@ -367,6 +392,8 @@ func refresh_preview() -> void:
 func select_item(index: int) -> void:
 	selected = index
 	selected_loot_id = ""
+	if int(data.get("identity_version", 0)) >= 1 and index not in [1, 2]:
+		selected_loot_id = str(LootItems.equipped_item(data, IDS[index]).get("id", ""))
 	_refresh_items()
 
 func select_loot(item_id: String) -> void:
@@ -423,6 +450,8 @@ func _matches(index: int) -> bool:
 func _bag_count(index: int) -> int:
 	if index in [1, 2]:
 		return int(data[KEYS[index]])
+	if int(data.get("identity_version", 0)) >= 1:
+		return 0
 	# Each gear entry represents one owned piece: worn or stored in the bag.
 	return 0 if bool(data[KEYS[index]]) else 1
 
@@ -459,10 +488,10 @@ func _sync_loot_buttons() -> int:
 		present.append(item_id)
 		if not loot_buttons.has(item_id):
 			var added_button := button_for("")
-			added_button.custom_minimum_size = Vector2(62, 76)
+			added_button.custom_minimum_size = Vector2(72, 72)
 			added_button.expand_icon = true
 			added_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			added_button.add_theme_constant_override("icon_max_width", 46)
+			added_button.add_theme_constant_override("icon_max_width", 64)
 			added_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			added_button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 			added_button.pressed.connect(select_loot.bind(item_id))
@@ -475,7 +504,7 @@ func _sync_loot_buttons() -> int:
 		button.visible = _matches(IDS.find(item.slot))
 		if button.visible:
 			shown += 1
-		button.add_theme_stylebox_override("normal", style(Color("2b2b23") if selected_loot_id == item_id else Color("172027"), GOLD if selected_loot_id == item_id else rarity_color(item.rarity), 2))
+		style_item_button(button, item.rarity, selected_loot_id == item_id)
 	for item_id in loot_buttons.keys():
 		if item_id not in present:
 			var button: Button = loot_buttons[item_id]
@@ -510,6 +539,8 @@ func _refresh_loot_details(item: Dictionary) -> void:
 	selected_name.text = item.name
 	selected_name.add_theme_color_override("font_color", rarity_color(item.rarity))
 	selected_type.text = "%s · %s · %s" % [TYPES[index], item.rarity, LootItems.grade_text(item)]
+	if item.has("weapon_type"):
+		selected_type.text = "%s · %s · %s" % [LootItems.Catalog.class_text(item), item.rarity, LootItems.grade_text(item)]
 	selected_icon.texture = icon_for(index, item)
 	selected_description.text = _bonus_text(item)
 	if LootItems.covers_pants(item):
@@ -549,9 +580,10 @@ func _refresh_items() -> void:
 			shown += 1
 		button.icon = icon_for(index) if count > 0 else null
 		button.disabled = count == 0
-		button.text = "×%d" % count if count > 0 and index in [1, 2] else ""
+		button.text = ""
+		if count_labels.has(index): count_labels[index].text = "×%d" % count
 		var active := selected_loot_id.is_empty() and selected == index
-		button.add_theme_stylebox_override("normal", style(Color("2b2b23") if active else Color("172027"), GOLD if active else Color("576168"), 2))
+		style_item_button(button, "Comum", active)
 	shown += _sync_loot_buttons()
 	occupied += loot_buttons.size()
 	var empty_count := maxi(20, ceili(shown / 5.0) * 5) - shown
@@ -566,7 +598,10 @@ func _refresh_items() -> void:
 		equipped_buttons[index].icon = icon_for(index, loot) if equipped else null
 		equipped_buttons[index].text = "" if equipped else "◇"
 		equipped_buttons[index].tooltip_text = "%s · %s" % [loot.name, loot.rarity] if not loot.is_empty() else base_name(index) if equipped else "Slot vazio"
-		equipped_buttons[index].add_theme_stylebox_override("normal", style(Color("172027"), rarity_color(loot.rarity) if not loot.is_empty() else Color("6a5d47"), 2 if not loot.is_empty() else 1))
+		if equipped:
+			style_item_button(equipped_buttons[index], str(loot.get("rarity", "Comum")))
+		else:
+			equipped_buttons[index].add_theme_stylebox_override("normal", style(Color("172027")))
 	var selected_loot := _find_loot(selected_loot_id)
 	if not selected_loot.is_empty():
 		_refresh_loot_details(selected_loot)
@@ -594,6 +629,11 @@ func _refresh_items() -> void:
 		selected_description.text += _set_details({"slot": IDS[selected], "rarity": "Comum"})
 	action_button.text = "Usar poção" if selected == 1 else "Material de saque" if selected == 2 else "Retirar" if equipped else "Equipar"
 	action_button.disabled = is_dead or selected == 2 or (selected == 1 and (data.potions <= 0 or current_hp >= max_hp))
+	if int(data.get("identity_version", 0)) >= 1 and selected not in [1, 2] and not equipped:
+		selected_name.text = "Slot vazio"
+		selected_icon.texture = null
+		selected_description.text = "Equipe um item compatível da sua mochila.\n\nEquipamentos são obtidos de monstros e baús."
+		action_button.disabled = true
 
 func _set_details(item: Dictionary) -> String:
 	if str(item.get("slot", "")) not in LootItems.Catalog.CLOTHING_SLOTS:

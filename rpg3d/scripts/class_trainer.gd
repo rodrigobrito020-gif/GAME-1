@@ -5,9 +5,12 @@ const DISPLAY_TITLE := "Instrutor de classes"
 const INTERACTION_TEXT := "E · Escolher classe"
 var character_model: Node3D
 var animation: AnimationPlayer
+@export var display_title := DISPLAY_TITLE
+@export var interaction_text := INTERACTION_TEXT
+@export var npc_group := "class_trainer"
 
 func _ready() -> void:
-	add_to_group("class_trainer")
+	add_to_group(npc_group)
 	var collision := CollisionShape3D.new()
 	collision.name = "TrainerCollision"
 	var capsule := CapsuleShape3D.new()
@@ -46,8 +49,8 @@ func _ready() -> void:
 				animation.play(animation_name)
 				animation.advance(0.35)
 				break
-	_label(DISPLAY_TITLE, Vector3(0, 2.22, 0), 30, Color("e1d3a4"))
-	_label(INTERACTION_TEXT, Vector3(0, 1.99, 0), 24, Color("b9d8cc"))
+	_label(display_title, Vector3(0, 2.22, 0), 30, Color("e1d3a4"))
+	_label(interaction_text, Vector3(0, 1.99, 0), 24, Color("b9d8cc"))
 
 func _label(text: String, at: Vector3, size: int, color: Color) -> void:
 	var label := Label3D.new()

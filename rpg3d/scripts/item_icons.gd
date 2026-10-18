@@ -23,7 +23,7 @@ static func for_item(item: Dictionary, class_id: String = "tanque") -> Texture2D
 			entry = Catalog.get_entry(Catalog.key_for(class_id, "No Grade", slot))
 		return Client.ICONS[entry.icon_ref]
 	if slot == "sword":
-		slot = "bow" if class_id == "arqueiro" else "rod" if class_id in ["mago", "healer"] else "sword"
+		slot = str(item.get("weapon_type", "bow" if class_id == "arqueiro" else "rod" if class_id in ["mago", "healer"] else "sword"))
 	if Client.WEAPONS.has(slot):
 		return Client.ICONS[Client.WEAPONS[slot]]
 	return FALLBACK.get(slot, FALLBACK.potion)
@@ -44,12 +44,10 @@ static func for_display(item: Dictionary, class_id: String = "tanque") -> Textur
 	var image := original.get_image().duplicate() as Image
 	image.convert(Image.FORMAT_RGBA8)
 	var rows: Array = BackgroundMasks.ROWS[ref]
-	var tint: Color = RARITY_COLORS[rarity]
 	for y in image.get_height():
 		for x in image.get_width():
 			if rows[y] & (1 << x):
-				var highlight := (float(x) / 31.0 + 1.0 - float(y) / 31.0) * 0.5
-				var background := tint * lerpf(0.13, 0.52, highlight)
+				var background := background_color(rarity)
 				background.a = 1.0
 				image.set_pixel(x, y, background)
 	var texture := ImageTexture.create_from_image(image)
@@ -57,3 +55,9 @@ static func for_display(item: Dictionary, class_id: String = "tanque") -> Textur
 	texture.set_meta("rarity", rarity)
 	_display_cache[cache_key] = texture
 	return texture
+
+static func background_color(rarity: String) -> Color:
+	var tint: Color = RARITY_COLORS.get(rarity, RARITY_COLORS.Comum)
+	var result := tint * 0.28
+	result.a = 1.0
+	return result

@@ -3,6 +3,7 @@ extends Node3D
 const SPAWN := Vector3(0, 0.05, 10)
 const PORTAL_POSITION := Vector3(0, 0, -15)
 const CLASS_TRAINER_POSITION := Vector3(-3.0, 0.035, 7.7)
+const MERCHANT_POSITION := Vector3(5.2, 0.035, 3.0)
 const BOUNDARY := 27.0
 const TravelGate := preload("res://scripts/travel_gate.gd")
 const ClassTrainer := preload("res://scripts/class_trainer.gd")
@@ -31,6 +32,14 @@ func _ready() -> void:
 	# The native human model faces +Z; turn him toward the arrival point.
 	trainer.rotation.y = atan2(SPAWN.x - CLASS_TRAINER_POSITION.x, SPAWN.z - CLASS_TRAINER_POSITION.z)
 	add_child(trainer)
+	var merchant := ClassTrainer.new()
+	merchant.name = "VillageMerchant"
+	merchant.display_title = "Bento · Mercador"
+	merchant.interaction_text = "E · Comprar / Vender"
+	merchant.npc_group = "village_merchant"
+	merchant.position = MERCHANT_POSITION
+	merchant.rotation.y = -0.65
+	add_child(merchant)
 
 func _materials_setup() -> void:
 	_materials["stone"] = _textured_material("888d7d", "535c54", 0)
@@ -61,6 +70,7 @@ func _materials_setup() -> void:
 	_materials["water"] = _plain(Color("31575e"))
 	_materials["water"].roughness = 0.2
 	_materials["flower"] = _plain(Color("b4a36d"))
+	_materials["potion"] = _plain(Color("a32e3a"))
 
 func _plain(color: Color) -> StandardMaterial3D:
 	var material := StandardMaterial3D.new()
@@ -262,14 +272,16 @@ func _rural_props() -> void:
 	_crate(Vector3(6.0, 0.33, 5.8), 0.65)
 	_crate(Vector3(6.1, 0.30, 6.5), 0.58)
 	_barrel(Vector3(-6.5, 0, 9.5))
-	# A single work table, without an urban market avenue or shop interface.
+	# Bento's small supply table, within the same rural village.
 	var at := Vector3(6.1, 0, 4.2)
 	_box(at + Vector3.UP * 0.82, Vector3(1.5, 0.12, 0.75), "door")
 	for x in [-0.58, 0.58]:
 		for z in [-0.24, 0.24]:
 			_box(at + Vector3(x, 0.4, z), Vector3(0.10, 0.8, 0.10), "wood")
-	for i in range(6):
-		_sphere(at + Vector3(_rng.randf_range(-0.5, 0.5), 0.98, _rng.randf_range(-0.2, 0.2)), Vector3.ONE * 0.12, "flower")
+	for i in range(4):
+		var bottle := at + Vector3(-0.45 + i * 0.28, 0.98, 0.02)
+		_cylinder(bottle, 0.065, 0.20, "potion", 10)
+		_cylinder(bottle + Vector3.UP * 0.13, 0.027, 0.08, "door", 8)
 	for at_rock in [Vector3(3.0, 0, 13.5), Vector3(-3.2, 0, -10.7), Vector3(4.8, 0, -13.0), Vector3(15, 0, 1.5)]:
 		for i in range(4):
 			_sphere(at_rock + Vector3(_rng.randf_range(-0.8, 0.8), 0.14, _rng.randf_range(-0.6, 0.6)), Vector3(_rng.randf_range(0.15, 0.4), _rng.randf_range(0.15, 0.35), _rng.randf_range(0.15, 0.35)), "stone")

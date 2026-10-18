@@ -21,6 +21,7 @@ func _run() -> void:
 	game.set_physics_process(false)
 	game.player_class = "arqueiro"
 	game._sync_class()
+	preload("res://tests/owned_gear_fixture.gd").equip_weapon(game, "arqueiro")
 	for slot in range(4):
 		game._change_zone(1)
 		var origin: Vector3 = game.player.position

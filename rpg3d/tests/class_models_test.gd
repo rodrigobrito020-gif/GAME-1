@@ -36,6 +36,9 @@ func _run() -> void:
 		game.player.position = Village.CLASS_TRAINER_POSITION + Vector3(0, 0.05, 2)
 		game._interact()
 		check(game._choose_class(id), "trainer changes the class and model: " + id)
+		preload("res://tests/owned_gear_fixture.gd").equip_weapon(game, id)
+		if id != "arqueiro" and not game.LootItems.is_equipped(game.inventory, "shield"):
+			check(game._use_item("shield"), "equip an already owned shield for model validation: " + id)
 		var expected := "mage" if id in ["mago", "healer"] else ("archer" if id == "arqueiro" else "fighter")
 		check(game.character_model_kind == expected, "class uses its intended native model: " + id)
 		var meshes: Array[Node] = game.character_model.find_children("*", "MeshInstance3D", true, false)

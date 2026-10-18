@@ -101,6 +101,9 @@ godot --headless --path . --script res://tests/class_models_test.gd
 godot --headless --path . --script res://tests/wardrobe_test.gd
 godot --headless --path . --script res://tests/equipment_slots_sets_test.gd
 godot --headless --path . --script res://tests/instance_classes_flow_test.gd
+godot --headless --path . --script res://tests/ownership_merchant_test.gd
+godot --headless --path . --script res://tests/client_item_icons_test.gd
+godot --headless --path . --script res://tests/rarity_icon_background_test.gd
 ```
 
 A validação cobre controles e câmera, animações importadas e pose de morte, combate e recargas, quatro classes, projéteis e obstáculos, cura, equipamentos e bônus, poções, pausa, instâncias, seis ondas, chefe, prazo compartilhado, ausência de portal de retorno, baú único, resultado e passagem até o Mundo 10. Também verifica geração e restauração de itens, raridades, salvamento de classe e progressão, sem alterar o perfil normal do jogador.
@@ -137,7 +140,9 @@ As roupas foram vinculadas aos registros de `Armorgrp_Classic.dat`, `L2GameDataN
 
 Peitoral e calça podem ter graus diferentes e são trocados individualmente. Luvas e botas acompanham as variantes originais pesada, leve e túnica; as peças No Grade usam acessórios iniciais existentes no cliente. Cada slot troca somente suas próprias malhas. As roupas compartilham o esqueleto animado do corpo, inclusive na prévia, sem um segundo controlador de animação. A conversão mantém as texturas difusas, sem reproduzir os antigos reflexos de ambiente dos shaders do Unreal.
 
-Novos saques de roupas recebem a família da classe que abriu o baú. Tanque usa pesada, Arqueiro usa leve, e Mago/Curandeiro compartilham túnicas. O inventário mostra a restrição; mudar de família devolve as roupas incompatíveis à mochila e veste o conjunto inicial. Os itens e seus bônus permanecem salvos. Itens antigos sem identificação de conjunto mantêm nome e atributos e usam a aparência do grau na classe atual. Espadas e escudos de saque ainda usam os modelos de arma disponíveis; esta atualização aplica os conjuntos por grau às roupas.
+Monstros têm 18% de chance de soltar um equipamento; o baú da instância garante um. Ambos sorteiam armas e roupas das três famílias: Tanque (espada/pesada), Arqueiro (arco/leve), Mago e Curandeiro (cajado/túnica). A raridade mantém as probabilidades anteriores. Cada arma registra seu tipo e cada roupa sua referência de modelo; nome, ícone, aparência, ID e atributos não se convertem ao trocar de classe. Equipamentos incompatíveis voltam à mochila, sem entregar substitutos ou vestir um novo conjunto inicial. Arqueiro usa o arco com duas mãos; Tanque, Mago e Curandeiro podem equipar escudo. Os modelos disponíveis de armas continuam os mesmos em todos os graus.
+
+O kit inicial pertence somente ao personagem Tanque criado no início. Nos saves anteriores, os seis equipamentos iniciais virtuais viram itens únicos uma única vez, usando a classe gravada no save para preservar a aparência existente. `identity_version` impede repetir a migração. Itens já identificados conservam suas referências; a troca de classe nunca cria equipamento. Outros conjuntos e armas precisam ser obtidos nos monstros e baús.
 
 [Dark Crystal no Tanque](../docs/roupa-dark-crystal-tanque.png) · [Dark Crystal no Arqueiro](../docs/roupa-dark-crystal-arqueiro.png) · [Túnica no inventário](../docs/roupa-dark-crystal-mago-inventario.png)
 
@@ -148,7 +153,7 @@ Teste da recuperação do Arqueiro: `godot --headless --path . --script res://te
 
 ## Ícones, peças separadas e bônus de conjunto
 
-Mochila, slots equipados, detalhes e baú usam os ícones originais extraídos do `Icon.utx` enviado: 67 texturas de 32 × 32 pixels atendem às 66 entradas de roupas e às quatro armas/escudo. Cada roupa segue sua referência `icon_ref` nos DATs; espada, escudo, arco e cajado correspondem aos respectivos modelos. Referências iguais compartilham o mesmo ícone, como no cliente. Origem, IDs e hashes estão em `assets/client_icons/source.json`. O fundo gravado nos ícones é substituído na apresentação por um degradê da raridade: cinza (Comum), verde (Incomum), azul (Raro), roxo (Épico) e dourado (Lendário). Máscaras isolam o fundo; os pixels do equipamento e os PNGs originais são preservados. As variantes são calculadas uma vez e reutilizadas na mochila, slots, detalhes, aviso de saque e baú. Selecionar ou equipar o item mantém sua cor de raridade. As miniaturas anteriores em `assets/item_thumbnails/` ficam apenas como material de geração; não são usadas pela interface. A arte da poção e da presa de Grelim, assim como a barra de habilidades, permanece própria do protótipo.
+Mochila, slots equipados, detalhes e baú usam os ícones originais extraídos do `Icon.utx` enviado: 67 texturas de 32 × 32 pixels atendem às 66 entradas de roupas e às quatro armas/escudo. Cada roupa segue sua referência `icon_ref` nos DATs; espada, escudo, arco e cajado correspondem aos respectivos modelos. Referências iguais compartilham o mesmo ícone, como no cliente. Origem, IDs e hashes estão em `assets/client_icons/source.json`. O fundo gravado nos ícones é substituído na apresentação por um fundo uniforme da raridade: cinza (Comum), verde (Incomum), azul (Raro), roxo (Épico) e dourado (Lendário). Máscaras isolam o fundo; os pixels do equipamento e os PNGs originais são preservados. As variantes são calculadas uma vez e reutilizadas na mochila, slots, detalhes, aviso de saque e baú. Selecionar ou equipar o item mantém sua cor de raridade. Os ícones ocupam o interior dos slots com margem de quatro pixels e o fundo da célula tem exatamente a mesma cor, sem áreas escuras separadas. As miniaturas anteriores em `assets/item_thumbnails/` ficam apenas como material de geração; não são usadas pela interface. A arte da poção e da presa de Grelim, assim como a barra de habilidades, permanece própria do protótipo.
 
 Saves anteriores são convertidos uma única vez: a armadura que juntava duas peças vira peitoral e calça, na mesma localização (vestido ou mochila), com IDs distintos e preservando a soma dos atributos anteriores. A versão do inventário impede repetir a conversão ao reabrir o jogo. Os trajes originalmente inteiriços continuam sendo um item que ocupa dois slots, sem criar uma calça fictícia.
 
@@ -171,3 +176,11 @@ Validação adicional: `godot --headless --path . --script res://tests/equipment
 [Slots independentes e bônus ativo](../docs/inventario-peito-calca-bonus.png) · [Tallum separado no Mago](../docs/inventario-tallum-separado.png) · [Calça revelada no baú](../docs/bau-calca-miniatura.png)
 
 Teste dos fundos: `godot --headless --path . --script res://tests/rarity_icon_background_test.gd`. Verifica as cinco raridades nos 67 ícones, preservação dos pixels do equipamento, originais intactos e reutilização das texturas de apresentação.
+
+## Mercador da vila
+
+Bento fica junto à mesa de poções, à direita do caminho central. Aproxime-se e pressione E. A tela permite comprar poções de vida (12 ouro), um kit de cinco (50 ouro) e presas de Grelim (8 ouro), além de vender materiais, poções e equipamentos guardados na mochila. Itens equipados precisam ser retirados antes da venda. É possível escolher de 1 a 99 unidades de consumíveis; equipamentos são vendidos individualmente. Preço, estoque e ouro são validados antes da alteração; transações concluídas são salvas imediatamente. Esc/TAB fecha a loja.
+
+`tests/ownership_merchant_test.gd` verifica a migração, a preservação dos itens em cinco trocas de classe, restrições de armas, escudos nas classes mágicas, saques de todas as famílias, uma morte real de monstro com equipamento salvo, compra/venda pelos botões reais, falta de ouro, quantidades inválidas, venda duplicada, proteção dos itens equipados e persistência. Os testes de animação e combate fornecem seus próprios equipamentos de teste por `tests/owned_gear_fixture.gd`; selecionar a classe no jogo não fornece esses itens.
+
+[Mercador na vila](../docs/mercador-na-vila.png) · [Compra de poções](../docs/mercador-compra.png) · [Venda de equipamento](../docs/mercador-venda.png)

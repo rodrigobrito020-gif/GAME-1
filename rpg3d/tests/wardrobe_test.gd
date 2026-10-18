@@ -97,7 +97,7 @@ func _run() -> void:
 		check(game._use_item("loot_equip:" + class_id + "4armor"), "native clothing can be re-equipped without duplication")
 	# The healer and mage share robe compatibility. Switching to tank stores it.
 	change_class("tanque")
-	check(game.inventory.equipped_loot.is_empty() and game.inventory.armor and game.inventory.gloves and game.inventory.boots, "switching clothing profile stores incompatible pieces and restores starter clothes")
+	check(not game.inventory.equipped_loot.has("armor") and not game.inventory.armor and not game.inventory.gloves and not game.inventory.boots, "switching clothing profile stores incompatible pieces without granting replacement clothes")
 	check(not game._use_item("loot_equip:healer4armor"), "server-side equipment request cannot equip a robe as heavy armor")
 	game._toggle_inventory()
 	game.hud.inventory_panel.select_loot("healer4armor")

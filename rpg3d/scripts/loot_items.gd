@@ -55,7 +55,53 @@ static func create_reward(rng: RandomNumberGenerator, world_number: int, class_i
 		var key := Catalog.key_for(class_id, reward.grade, slot)
 		reward["lineage_key"] = key
 		reward["name"] = Catalog.get_entry(key).name
+	elif slot == "sword":
+		reward["weapon_type"] = weapon_type_for_class(class_id)
+		reward["name"] = weapon_name(reward.weapon_type)
 	return reward
+
+static func weapon_type_for_class(class_id: String) -> String:
+	return "bow" if class_id == "arqueiro" else "rod" if class_id in ["mago", "healer"] else "sword"
+
+static func weapon_name(kind: String) -> String:
+	return {"sword":"Long Sword", "bow":"Short Bow", "rod":"Apprentice's Rod"}.get(kind, "Arma")
+
+static func create_world_drop(rng: RandomNumberGenerator, world_number: int) -> Dictionary:
+	return create_reward(rng, world_number, ["tanque", "arqueiro", "mago"][rng.randi_range(0, 2)])
+
+static func ensure_identity(inv: Dictionary, class_id: String) -> void:
+	if int(inv.get("identity_version", 0)) >= 1:
+		return
+	if not inv.has("loot_items"): inv["loot_items"] = []
+	if not inv.has("equipped_loot"): inv["equipped_loot"] = {}
+	# Convert the old virtual starter slots once, in the class that owned them.
+	# A class change never repeats this migration or generates another starter kit.
+	for item: Dictionary in inv.loot_items + inv.equipped_loot.values():
+		_identify_legacy_item(item, class_id)
+	for slot: String in SLOTS:
+		var item := {"id":"starter-" + class_id + "-" + slot, "slot":slot, "name":ITEM_NAMES[slot], "rarity":"Comum", "attack_bonus":0, "defense_bonus":0}
+		_identify_legacy_item(item, class_id)
+		if slot == "sword": item.name = weapon_name(item.weapon_type)
+		if slot == "shield": item.name = "Small Shield"
+		if bool(inv.get(BASE_KEYS[slot], false)) and not inv.equipped_loot.has(slot):
+			inv.equipped_loot[slot] = item
+		else:
+			inv.loot_items.append(item)
+		inv[BASE_KEYS[slot]] = false
+	inv["identity_version"] = 1
+
+static func _identify_legacy_item(item: Dictionary, class_id: String) -> void:
+	if item.slot == "sword" and not item.has("weapon_type"):
+		item["weapon_type"] = weapon_type_for_class(class_id)
+	elif item.slot in Catalog.CLOTHING_SLOTS and not item.has("lineage_key"):
+		item["lineage_key"] = Catalog.key_for(class_id, grade_for_rarity(str(item.get("rarity", "Comum"))), item.slot)
+		item.name = Catalog.get_entry(item.lineage_key).name
+
+static func store_incompatible_equipment(inv: Dictionary, class_id: String) -> void:
+	for slot: String in SLOTS:
+		var item := equipped_item(inv, slot)
+		if not item.is_empty() and not Catalog.compatible(item, class_id):
+			unequip_slot(inv, slot)
 
 static func is_equipped(inv: Dictionary, slot: String) -> bool:
 	if slot not in SLOTS:
@@ -169,6 +215,10 @@ static func restore_items(inv: Dictionary, saved: Dictionary, class_id: String =
 	inv["loot_items"] = bag
 	inv["equipped_loot"] = equipped
 	inv["equipment_version"] = 2
+	if saved.has("identity_version"):
+		inv["identity_version"] = int(saved.identity_version)
+	else:
+		inv.erase("identity_version")
 	if covers_pants(equipped.get("armor", {})):
 		if equipped.has("pants"):
 			bag.append(equipped.pants)
@@ -213,6 +263,10 @@ static func _validated_item(value: Variant) -> Dictionary:
 		if not value.get(stat) is int or value[stat] < 0 or value[stat] > MAX_STAT_BONUS:
 			return {}
 	var result := {"id": value.id, "slot": value.slot, "name": value.name, "rarity": value.rarity, "attack_bonus": value.attack_bonus, "defense_bonus": value.defense_bonus}
+	if value.has("weapon_type"):
+		if value.slot != "sword" or value.weapon_type not in ["sword", "bow", "rod"]:
+			return {}
+		result["weapon_type"] = value.weapon_type
 	if value.has("grade"):
 		result["grade"] = grade_for_rarity(value.rarity)
 	if value.has("lineage_key"):
@@ -227,14 +281,7 @@ static func _validated_item(value: Variant) -> Dictionary:
 	return result
 
 static func store_incompatible_clothing(inv: Dictionary, class_id: String) -> void:
-	for slot: String in Catalog.CLOTHING_SLOTS:
-		var item: Dictionary = inv.get("equipped_loot", {}).get(slot, {})
-		if not Catalog.compatible(item, class_id):
-			var full_body := covers_pants(item)
-			unequip_slot(inv, slot)
-			inv[BASE_KEYS[slot]] = true
-			if full_body:
-				inv["pants"] = true
+	store_incompatible_equipment(inv, class_id)
 
 static func _upgrade_inventory(saved: Dictionary, class_id: String) -> Dictionary:
 	if int(saved.get("equipment_version", 0)) >= 2:

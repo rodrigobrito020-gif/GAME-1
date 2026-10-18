@@ -87,6 +87,7 @@ func _enter_combat(id: String, number := 1) -> void:
 	if game.current_world != 0:
 		game._return_to_village()
 	_select_class(id)
+	preload("res://tests/owned_gear_fixture.gd").equip_weapon(game, id)
 	game.player.position = game.portal_position + Vector3(0, 0.05, 2.5)
 	game._interact()
 	check(game._enter_world(number), "rift admits an unlocked world for class: " + id)

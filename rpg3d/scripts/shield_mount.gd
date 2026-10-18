@@ -4,8 +4,9 @@ const SHELL := preload("res://assets/small_shield.glb")
 const GRIP_CENTER := Vector3(-0.010, -0.105, 0.117)
 const GRIP_LENGTH := 0.065
 const FOREARM_ROLL := PI / 12
+const PANEL_TURN := -PI / 2
 const PANEL_CENTER_BELOW_WRIST := 0.025
-const PANEL_OUTSIDE_ARM := 0.067
+const PANEL_OUTSIDE_ARM := 0.098
 const PANEL_GEOMETRY_CENTER := 0.10310
 var _skeleton: Skeleton3D
 var _shell: Node3D
@@ -120,14 +121,15 @@ func _update_strap() -> void:
 	var forearm_basis := forearm.basis.orthonormalized()
 	var desired_front := forearm_basis.z * cos(FOREARM_ROLL) + forearm_basis.y * sin(FOREARM_ROLL)
 	var front := (desired_front - down * desired_front.dot(down)).normalized()
-	var panel_basis := Basis(down, down.cross(front).normalized(), -front)
-	# The long mesh axis follows the forearm, with its upper rim near the elbow.
-	_shell.global_transform = Transform3D(panel_basis, wrist + down * (PANEL_CENTER_BELOW_WRIST - PANEL_GEOMETRY_CENTER) + front * PANEL_OUTSIDE_ARM)
+	var side := down.cross(front).normalized()
+	var long_axis := down * cos(PANEL_TURN) + side * sin(PANEL_TURN)
+	var panel_basis := Basis(long_axis, long_axis.cross(front).normalized(), -front)
+	# Lay the panel across the forearm, keeping its center behind the grip.
+	_shell.global_transform = Transform3D(panel_basis, wrist + down * PANEL_CENTER_BELOW_WRIST - long_axis * PANEL_GEOMETRY_CENTER + front * PANEL_OUTSIDE_ARM)
 	var half_grip := Vector3.RIGHT * GRIP_LENGTH / 2
 	var left := to_global(GRIP_CENTER - half_grip)
 	var right := to_global(GRIP_CENTER + half_grip)
 	_band(_grip_band, PackedVector3Array([_back_anchor(left), left, right, _back_anchor(right)]), down, 0.014, _grip.global_position)
-	var side := down.cross(front).normalized()
 	var center := wrist - down * 0.07
 	var path := PackedVector3Array()
 	path.append(_back_anchor(center + side * 0.052))

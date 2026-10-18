@@ -1,5 +1,7 @@
 extends PanelContainer
 const LootItems := preload("res://scripts/loot_items.gd")
+const ItemIcons := preload("res://scripts/item_icons.gd")
+var player_class_id := "tanque"
 ## Apresentação das recompensas já concedidas. O HUD controla o modal e a pausa.
 signal closed
 
@@ -13,7 +15,7 @@ const ICONS := {
 }
 const SLOT_NAMES := {
 	"sword": "ARMA", "shield": "ESCUDO", "armor": "ARMADURA",
-	"gloves": "LUVAS", "boots": "BOTAS", "potion": "POÇÃO",
+	"gloves": "LUVAS", "boots": "BOTAS", "potion": "POÇÃO", "pants": "CALÇA",
 }
 const RARITY_COLORS := {
 	"Comum": Color("b7bdc3"), "Incomum": Color("7bce87"),
@@ -151,7 +153,7 @@ func _make_card(item: Dictionary) -> PanelContainer:
 	glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_glows.append(glow)
 	var icon := TextureRect.new()
-	icon.texture = ICONS.get(slot, ICONS["armor"])
+	icon.texture = ItemIcons.for_item(item, player_class_id)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE

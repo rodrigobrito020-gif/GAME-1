@@ -1,49 +1,242 @@
 extends RefCounted
-## Resolved client catalog; provenance and texture references: assets/wardrobe_source.json.
+## Resolved client catalog; provenance: assets/wardrobe_source.json.
 const ITEMS := {
-	"heavy_0_armor": {"profile": "heavy", "grade": "No Grade", "slot": "armor", "name": "Wooden Breastplate", "client_item_ids": [23, 2386], "parts": [{"mesh": "Fighter.MFighter_m001_u", "material": "mfighter.mfighter_m001_t06_u", "client_item_id": 23, "node": "gear_heavy_0_armor_0", "diffuse": "MFighter_m001_t06_u.png"}, {"mesh": "Fighter.MFighter_m001_l", "material": "mfighter.mfighter_m001_t06_l", "client_item_id": 2386, "node": "gear_heavy_0_armor_1", "diffuse": "MFighter_m001_t06_l_sp.png"}]},
-	"heavy_0_gloves": {"profile": "heavy", "grade": "No Grade", "slot": "gloves", "name": "Short Leather Gloves", "client_item_ids": [1119], "parts": [{"mesh": "Fighter.MFighter_m001_g", "material": "MFighter.MFighter_m001_t04_g", "client_item_id": 1119, "node": "gear_heavy_0_gloves_0", "diffuse": "MFighter_m001_t04_g.png"}], "shield_clearance": 0},
-	"heavy_0_boots": {"profile": "heavy", "grade": "No Grade", "slot": "boots", "name": "Hard Leather Boots", "client_item_ids": [722], "parts": [{"mesh": "Fighter.MFighter_m001_b", "material": "MFighter.MFighter_m001_t04_b", "client_item_id": 722, "node": "gear_heavy_0_boots_0", "diffuse": "MFighter_m001_t04_b_sp.png"}]},
-	"heavy_1_armor": {"profile": "heavy", "grade": "D", "slot": "armor", "name": "Brigandine Tunic", "client_item_ids": [352, 2378], "parts": [{"mesh": "Fighter.MFighter_m006_u", "material": "mfighter.mfighter_m006_t43_u", "client_item_id": 352, "node": "gear_heavy_1_armor_0", "diffuse": "MFighter_m006_t43_u_ori.png"}, {"mesh": "Fighter.MFighter_m006_l", "material": "mfighter.mfighter_m006_t43_l", "client_item_id": 2378, "node": "gear_heavy_1_armor_1", "diffuse": "MFighter_m006_t43_l_sp.png"}]},
-	"heavy_1_gloves": {"profile": "heavy", "grade": "D", "slot": "gloves", "name": "Brigandine Gauntlets", "client_item_ids": [2449], "parts": [{"mesh": "Fighter.MFighter_m006_g", "material": "mfighter.mfighter_m006_t43_g", "client_item_id": 2449, "node": "gear_heavy_1_gloves_0", "diffuse": "MFighter_m006_t43_g_sp.png"}], "shield_clearance": 0.032},
-	"heavy_1_boots": {"profile": "heavy", "grade": "D", "slot": "boots", "name": "Brigandine Boots", "client_item_ids": [2425], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.mfighter_m006_t43_b", "client_item_id": 2425, "node": "gear_heavy_1_boots_0", "diffuse": "MFighter_m006_t43_b_sp.png"}]},
-	"heavy_2_armor": {"profile": "heavy", "grade": "C", "slot": "armor", "name": "Dwarven Chain Mail Shirt", "client_item_ids": [355, 382], "parts": [{"mesh": "Fighter.MFighter_m007_u", "material": "mfighter.mfighter_m007_t60_u", "client_item_id": 355, "node": "gear_heavy_2_armor_0", "diffuse": "MFighter_m007_t60_u_sp.png"}, {"mesh": "Fighter.MFighter_m007_l", "material": "mfighter.mfighter_m007_t60_l", "client_item_id": 382, "node": "gear_heavy_2_armor_1", "diffuse": "MFighter_m007_t60_l_sp.png"}]},
-	"heavy_2_gloves": {"profile": "heavy", "grade": "C", "slot": "gloves", "name": "Dwarven Chain Gloves", "client_item_ids": [2456], "parts": [{"mesh": "Fighter.MFighter_m007_g", "material": "mfighter.mfighter_m007_t60_g", "client_item_id": 2456, "node": "gear_heavy_2_gloves_0", "diffuse": "MFighter_m007_t60_g.png"}], "shield_clearance": 0.041},
-	"heavy_2_boots": {"profile": "heavy", "grade": "C", "slot": "boots", "name": "Dwarven Chain Boots", "client_item_ids": [2432], "parts": [{"mesh": "Fighter.MFighter_m007_b", "material": "mfighter.mfighter_m007_t60_b", "client_item_id": 2432, "node": "gear_heavy_2_boots_0", "diffuse": "MFighter_m007_t60_b.png"}]},
-	"heavy_3_armor": {"profile": "heavy", "grade": "B", "slot": "armor", "name": "Blue Wolf Breastplate", "client_item_ids": [358, 2380], "parts": [{"mesh": "Fighter.MFighter_m010_u", "material": "mfighter.mfighter_m010_t68_u", "client_item_id": 358, "node": "gear_heavy_3_armor_0", "diffuse": "MFighter_m010_t68_u_sp.png"}, {"mesh": "Fighter.MFighter_m010_l", "material": "mfighter.mfighter_m010_t68_l", "client_item_id": 2380, "node": "gear_heavy_3_armor_1", "diffuse": "MFighter_m010_t68_l_sp.png"}]},
-	"heavy_3_gloves": {"profile": "heavy", "grade": "B", "slot": "gloves", "name": "Blue Wolf Gloves", "client_item_ids": [5718], "parts": [{"mesh": "Fighter.MFighter_m010_g", "material": "mfighter.mfighter_m010_t68_g", "client_item_id": 5718, "node": "gear_heavy_3_gloves_0", "diffuse": "MFighter_m010_t68_g.png"}], "shield_clearance": 0.032},
-	"heavy_3_boots": {"profile": "heavy", "grade": "B", "slot": "boots", "name": "Blue Wolf Boots", "client_item_ids": [5734], "parts": [{"mesh": "Fighter.MFighter_m010_b", "material": "mfighter.mfighter_m010_t68_b", "client_item_id": 5734, "node": "gear_heavy_3_boots_0", "diffuse": "MFighter_m010_t68_b.png"}]},
-	"heavy_4_armor": {"profile": "heavy", "grade": "A", "slot": "armor", "name": "Dark Crystal Breastplate", "client_item_ids": [365, 388], "parts": [{"mesh": "Fighter.MFighter_m009_u", "material": "mfighter.MFighter_m009_t74_u", "client_item_id": 365, "node": "gear_heavy_4_armor_0", "diffuse": "MFighter_m009_t74_u_ori.png"}, {"mesh": "Fighter.MFighter_m009_l", "material": "mfighter.MFighter_m009_t74_l", "client_item_id": 388, "node": "gear_heavy_4_armor_1", "diffuse": "MFighter_m009_t74_l_ori.png"}]},
-	"heavy_4_gloves": {"profile": "heavy", "grade": "A", "slot": "gloves", "name": "Dark Crystal Gloves", "client_item_ids": [5765], "parts": [{"mesh": "Fighter.MFighter_m009_g", "material": "mfighter.MFighter_m009_t74_g", "client_item_id": 5765, "node": "gear_heavy_4_gloves_0", "diffuse": "MFighter_m009_t74_g.png"}], "shield_clearance": 0.064},
-	"heavy_4_boots": {"profile": "heavy", "grade": "A", "slot": "boots", "name": "Dark Crystal Boots", "client_item_ids": [5777], "parts": [{"mesh": "Fighter.MFighter_m009_b", "material": "mfighter.MFighter_m009_t74_b", "client_item_id": 5777, "node": "gear_heavy_4_boots_0", "diffuse": "MFighter_m009_t74_b.png"}]},
-	"light_0_armor": {"profile": "light", "grade": "No Grade", "slot": "armor", "name": "Leather Shirt", "client_item_ids": [22, 29], "parts": [{"mesh": "Fighter.MFighter_m001_u", "material": "mfighter.mfighter_m001_t04_u", "client_item_id": 22, "node": "gear_light_0_armor_0", "diffuse": "MFighter_m001_t04_u.png"}, {"mesh": "Fighter.MFighter_m001_l", "material": "mfighter.mfighter_m001_t04_l", "client_item_id": 29, "node": "gear_light_0_armor_1", "diffuse": "MFighter_m001_t04_l.png"}]},
-	"light_0_gloves": {"profile": "light", "grade": "No Grade", "slot": "gloves", "name": "Short Leather Gloves", "client_item_ids": [1119], "parts": [{"mesh": "Fighter.MFighter_m001_g", "material": "MFighter.MFighter_m001_t04_g", "client_item_id": 1119, "node": "gear_light_0_gloves_0", "diffuse": "MFighter_m001_t04_g.png"}]},
-	"light_0_boots": {"profile": "light", "grade": "No Grade", "slot": "boots", "name": "Hard Leather Boots", "client_item_ids": [722], "parts": [{"mesh": "Fighter.MFighter_m001_b", "material": "MFighter.MFighter_m001_t04_b", "client_item_id": 722, "node": "gear_light_0_boots_0", "diffuse": "MFighter_m001_t04_b_sp.png"}]},
-	"light_1_armor": {"profile": "light", "grade": "D", "slot": "armor", "name": "Reinforced Leather Shirt", "client_item_ids": [394, 416], "parts": [{"mesh": "Fighter.MFighter_m002_u", "material": "mfighter.mfighter_m002_t13_u", "client_item_id": 394, "node": "gear_light_1_armor_0", "diffuse": "MFighter_m002_t13_u_sp.png"}, {"mesh": "Fighter.MFighter_m001_l", "material": "mfighter.mfighter_m001_t13_l", "client_item_id": 416, "node": "gear_light_1_armor_1", "diffuse": "MFighter_m001_t13_l_sp.png"}]},
-	"light_1_gloves": {"profile": "light", "grade": "D", "slot": "gloves", "name": "Reinforced Leather Gloves", "client_item_ids": [2446], "parts": [{"mesh": "Fighter.MFighter_m002_g", "material": "mfighter.mfighter_m002_t13_g", "client_item_id": 2446, "node": "gear_light_1_gloves_0", "diffuse": "MFighter_m002_t13_g.png"}]},
-	"light_1_boots": {"profile": "light", "grade": "D", "slot": "boots", "name": "Reinforced Leather Boots", "client_item_ids": [2422], "parts": [{"mesh": "Fighter.MFighter_m001_b", "material": "mfighter.mfighter_m001_t13_b", "client_item_id": 2422, "node": "gear_light_1_boots_0", "diffuse": "MFighter_m001_t13_b_sp.png"}]},
-	"light_2_armor": {"profile": "light", "grade": "C", "slot": "armor", "name": "Theca Leather Armor", "client_item_ids": [400, 420], "parts": [{"mesh": "Fighter.MFighter_m007_u", "material": "mfighter.mfighter_m007_t63_u", "client_item_id": 400, "node": "gear_light_2_armor_0", "diffuse": "MFighter_m007_t63_u_sp.png"}, {"mesh": "Fighter.MFighter_m006_l", "material": "mfighter.mfighter_m006_t63_l", "client_item_id": 420, "node": "gear_light_2_armor_1", "diffuse": "MFighter_m006_t63_l.png"}]},
-	"light_2_gloves": {"profile": "light", "grade": "C", "slot": "gloves", "name": "Theca Leather Gloves", "client_item_ids": [2460], "parts": [{"mesh": "Fighter.MFighter_m007_g", "material": "mfighter.mfighter_m007_t63_g", "client_item_id": 2460, "node": "gear_light_2_gloves_0", "diffuse": "MFighter_m007_t63_g.png"}]},
-	"light_2_boots": {"profile": "light", "grade": "C", "slot": "boots", "name": "Theca Leather Boots", "client_item_ids": [2436], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.mfighter_m006_t63_b", "client_item_id": 2436, "node": "gear_light_2_boots_0", "diffuse": "MFighter_m006_t63_b.png"}]},
-	"light_3_armor": {"profile": "light", "grade": "B", "slot": "armor", "name": "Blue Wolf Leather Armor", "client_item_ids": [2391], "parts": [{"mesh": "Fighter.MFighter_m007_u", "material": "mfighter.mfighter_m007_t69_u", "client_item_id": 2391, "node": "gear_light_3_armor_0", "diffuse": "MFighter_m007_t69_u_sp.png"}, {"mesh": "Fighter.MFighter_m006_l", "material": "MFighter.MFighter_m006_t69_l", "client_item_id": 2391, "node": "gear_light_3_armor_1", "diffuse": "MFighter_m006_t69_l_sp.png"}]},
-	"light_3_gloves": {"profile": "light", "grade": "B", "slot": "gloves", "name": "Blue Wolf Gloves", "client_item_ids": [5719], "parts": [{"mesh": "Fighter.MFighter_m007_g", "material": "mfighter.mfighter_m007_t69_g", "client_item_id": 5719, "node": "gear_light_3_gloves_0", "diffuse": "MFighter_m007_t69_g.png"}]},
-	"light_3_boots": {"profile": "light", "grade": "B", "slot": "boots", "name": "Blue Wolf Boots", "client_item_ids": [5735], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.mfighter_m006_t69_b", "client_item_id": 5735, "node": "gear_light_3_boots_0", "diffuse": "MFighter_m006_t69_b.png"}]},
-	"light_4_armor": {"profile": "light", "grade": "A", "slot": "armor", "name": "Dark Crystal Leather Armor", "client_item_ids": [2385, 2389], "parts": [{"mesh": "Fighter.MFighter_m011_u", "material": "mfighter.MFighter_m011_t75_u", "client_item_id": 2385, "node": "gear_light_4_armor_0", "diffuse": "MFighter_m011_t75_u_ori.png"}, {"mesh": "Fighter.MFighter_m006_l", "material": "mfighter.MFighter_m006_t75_l", "client_item_id": 2389, "node": "gear_light_4_armor_1", "diffuse": "MFighter_m006_t75_l_ori.png"}]},
-	"light_4_gloves": {"profile": "light", "grade": "A", "slot": "gloves", "name": "Dark Crystal Gloves", "client_item_ids": [5766], "parts": [{"mesh": "Fighter.MFighter_m011_g", "material": "mfighter.MFighter_m011_t75_g", "client_item_id": 5766, "node": "gear_light_4_gloves_0", "diffuse": "MFighter_m011_t75_g.png"}]},
-	"light_4_boots": {"profile": "light", "grade": "A", "slot": "boots", "name": "Dark Crystal Boots", "client_item_ids": [5778], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.MFighter_m006_t75_b", "client_item_id": 5778, "node": "gear_light_4_boots_0", "diffuse": "MFighter_m006_t75_b.png"}]},
-	"robe_0_armor": {"profile": "robe", "grade": "No Grade", "slot": "armor", "name": "Tunic of Devotion", "client_item_ids": [1101, 1104], "parts": [{"mesh": "Magic.MMagic_m001_u", "material": "MMagic.MMagic_m001_t55_u", "client_item_id": 1101, "node": "gear_robe_0_armor_0", "diffuse": "MMagic_m001_t55_u_sp.png"}, {"mesh": "Magic.MMagic_m002_l", "material": "MMagic.MMagic_m002_t55_l", "client_item_id": 1104, "node": "gear_robe_0_armor_1", "diffuse": "MMagic_m002_t55_l_sp.png"}]},
-	"robe_0_gloves": {"profile": "robe", "grade": "No Grade", "slot": "gloves", "name": "Short Leather Gloves", "client_item_ids": [1119], "parts": [{"mesh": "Magic.MMagic_m005_g", "material": "MMagic.MMagic_m005_t04_g", "client_item_id": 1119, "node": "gear_robe_0_gloves_0", "diffuse": "MMagic_m005_t04_g_sp.png"}]},
-	"robe_0_boots": {"profile": "robe", "grade": "No Grade", "slot": "boots", "name": "Cloth Shoes", "client_item_ids": [35], "parts": [{"mesh": "Magic.MMagic_m003_b", "material": "MMagic.MMagic_m003_t02_b", "client_item_id": 35, "node": "gear_robe_0_boots_0", "diffuse": "MMagic_m003_t02_b.png"}]},
-	"robe_1_armor": {"profile": "robe", "grade": "D", "slot": "armor", "name": "Tunic of Knowledge", "client_item_ids": [436, 469], "parts": [{"mesh": "Magic.MMagic_m001_u", "material": "MMagic.MMagic_m001_t41_u", "client_item_id": 436, "node": "gear_robe_1_armor_0", "diffuse": "MMagic_m001_t41_u.png"}, {"mesh": "Magic.MMagic_m001_l", "material": "MMagic.MMagic_m001_t41_l", "client_item_id": 469, "node": "gear_robe_1_armor_1", "diffuse": "MMagic_m001_t41_l.png"}]},
-	"robe_1_gloves": {"profile": "robe", "grade": "D", "slot": "gloves", "name": "Gloves of Knowledge", "client_item_ids": [2447], "parts": [{"mesh": "Magic.MMagic_m001_g", "material": "MMagic.MMagic_m001_t41_g", "client_item_id": 2447, "node": "gear_robe_1_gloves_0", "diffuse": "MMagic_m001_t41_g.png"}]},
-	"robe_1_boots": {"profile": "robe", "grade": "D", "slot": "boots", "name": "Boots of Knowledge", "client_item_ids": [2423], "parts": [{"mesh": "Magic.MMagic_m001_b", "material": "MMagic.MMagic_m001_t41_b", "client_item_id": 2423, "node": "gear_robe_1_boots_0", "diffuse": "MMagic_m001_t41_b.png"}]},
-	"robe_2_armor": {"profile": "robe", "grade": "C", "slot": "armor", "name": "Karmian Tunic", "client_item_ids": [439, 471], "parts": [{"mesh": "Magic.MMagic_m001_u", "material": "mmagic.mmagic_m001_t53_u", "client_item_id": 439, "node": "gear_robe_2_armor_0", "diffuse": "MMagic_m001_t53_u.png"}, {"mesh": "Magic.MMagic_m008_l", "material": "mmagic.mmagic_m008_t53_l", "client_item_id": 471, "node": "gear_robe_2_armor_1", "diffuse": "MMagic_m008_t53_l.png"}]},
-	"robe_2_gloves": {"profile": "robe", "grade": "C", "slot": "gloves", "name": "Karmian Gloves", "client_item_ids": [2454], "parts": [{"mesh": "Magic.MMagic_m001_g", "material": "mmagic.mmagic_m001_t53_g", "client_item_id": 2454, "node": "gear_robe_2_gloves_0", "diffuse": "MMagic_m001_t53_g.png"}]},
-	"robe_2_boots": {"profile": "robe", "grade": "C", "slot": "boots", "name": "Karmian Boots", "client_item_ids": [2430], "parts": [{"mesh": "Magic.MMagic_m008_b", "material": "mmagic.mmagic_m008_t53_b", "client_item_id": 2430, "node": "gear_robe_2_boots_0", "diffuse": "MMagic_m008_t53_b.png"}]},
-	"robe_3_armor": {"profile": "robe", "grade": "B", "slot": "armor", "name": "Blue Wolf Tunic", "client_item_ids": [2398, 2403], "parts": [{"mesh": "Magic.MMagic_m009_u", "material": "mmagic.mmagic_m009_t70_u", "client_item_id": 2398, "node": "gear_robe_3_armor_0", "diffuse": "MMagic_m009_t70_u.png"}, {"mesh": "Magic.MMagic_m009_l", "material": "mmagic.mmagic_m009_t70_l", "client_item_id": 2403, "node": "gear_robe_3_armor_1", "diffuse": "MMagic_m009_t70_l.png"}]},
-	"robe_3_gloves": {"profile": "robe", "grade": "B", "slot": "gloves", "name": "Blue Wolf Gloves", "client_item_ids": [5720], "parts": [{"mesh": "Magic.MMagic_m009_g", "material": "MMagic.MMagic_m009_t70_g", "client_item_id": 5720, "node": "gear_robe_3_gloves_0", "diffuse": "MMagic_m009_t70_g.png"}]},
-	"robe_3_boots": {"profile": "robe", "grade": "B", "slot": "boots", "name": "Blue Wolf Boots", "client_item_ids": [5736], "parts": [{"mesh": "Magic.MMagic_m009_b", "material": "MMagic.MMagic_m009_t70_b", "client_item_id": 5736, "node": "gear_robe_3_boots_0", "diffuse": "MMagic_m009_t70_b.png"}]},
-	"robe_4_armor": {"profile": "robe", "grade": "A", "slot": "armor", "name": "Dark Crystal Robe", "client_item_ids": [2407], "parts": [{"mesh": "Magic.MMagic_m006_u", "material": "mmagic.MMagic_m006_t76_u", "client_item_id": 2407, "node": "gear_robe_4_armor_0", "diffuse": "MMagic_m006_t76_u_ori.png"}]},
-	"robe_4_gloves": {"profile": "robe", "grade": "A", "slot": "gloves", "name": "Dark Crystal Gloves", "client_item_ids": [5767], "parts": [{"mesh": "Magic.MMagic_m006_g", "material": "MMagic.MMagic_m006_t76_g", "client_item_id": 5767, "node": "gear_robe_4_gloves_0", "diffuse": "MMagic_m006_t76_g.png"}]},
-	"robe_4_boots": {"profile": "robe", "grade": "A", "slot": "boots", "name": "Dark Crystal Boots", "client_item_ids": [5779], "parts": [{"mesh": "Magic.MMagic_m006_b", "material": "mmagic.MMagic_m006_t76_b", "client_item_id": 5779, "node": "gear_robe_4_boots_0", "diffuse": "MMagic_m006_t76_b.png"}]},
+	"heavy_0_armor": {"profile": "heavy", "grade": "No Grade", "slot": "armor", "name": "Wooden Breastplate", "client_item_ids": [23], "parts": [{"mesh": "Fighter.MFighter_m001_u", "material": "mfighter.mfighter_m001_t06_u", "client_item_id": 23, "node": "gear_heavy_0_armor_0", "diffuse": "MFighter_m001_t06_u.png"}], "set_id": "heavy_0", "icon_ref": "icon.armor_t06_u_i00"},
+	"heavy_0_pants": {"profile": "heavy", "grade": "No Grade", "slot": "pants", "name": "Wooden Gaiters", "client_item_ids": [2386], "parts": [{"mesh": "Fighter.MFighter_m001_l", "material": "mfighter.mfighter_m001_t06_l", "client_item_id": 2386, "node": "gear_heavy_0_pants_0", "diffuse": "MFighter_m001_t06_l_sp.png"}], "set_id": "heavy_0", "icon_ref": "icon.armor_t06_l_i00"},
+	"heavy_0_gloves": {"profile": "heavy", "grade": "No Grade", "slot": "gloves", "name": "Short Leather Gloves", "client_item_ids": [1119], "parts": [{"mesh": "Fighter.MFighter_m001_g", "material": "MFighter.MFighter_m001_t04_g", "client_item_id": 1119, "node": "gear_heavy_0_gloves_0", "diffuse": "MFighter_m001_t04_g.png"}], "set_id": "heavy_0", "icon_ref": "icon.armor_t04_g_i00", "shield_clearance": 0},
+	"heavy_0_boots": {"profile": "heavy", "grade": "No Grade", "slot": "boots", "name": "Hard Leather Boots", "client_item_ids": [722], "parts": [{"mesh": "Fighter.MFighter_m001_b", "material": "MFighter.MFighter_m001_t04_b", "client_item_id": 722, "node": "gear_heavy_0_boots_0", "diffuse": "MFighter_m001_t04_b_sp.png"}], "set_id": "heavy_0", "icon_ref": "icon.armor_iron_boots_i00"},
+	"heavy_1_armor": {"profile": "heavy", "grade": "D", "slot": "armor", "name": "Brigandine Tunic", "client_item_ids": [352], "parts": [{"mesh": "Fighter.MFighter_m006_u", "material": "mfighter.mfighter_m006_t43_u", "client_item_id": 352, "node": "gear_heavy_1_armor_0", "diffuse": "MFighter_m006_t43_u_ori.png"}], "set_id": "heavy_1", "icon_ref": "icon.armor_t43_u_i00"},
+	"heavy_1_pants": {"profile": "heavy", "grade": "D", "slot": "pants", "name": "Brigandine Gaiters", "client_item_ids": [2378], "parts": [{"mesh": "Fighter.MFighter_m006_l", "material": "mfighter.mfighter_m006_t43_l", "client_item_id": 2378, "node": "gear_heavy_1_pants_0", "diffuse": "MFighter_m006_t43_l_sp.png"}], "set_id": "heavy_1", "icon_ref": "icon.armor_t43_l_i00"},
+	"heavy_1_gloves": {"profile": "heavy", "grade": "D", "slot": "gloves", "name": "Brigandine Gauntlets", "client_item_ids": [2449], "parts": [{"mesh": "Fighter.MFighter_m006_g", "material": "mfighter.mfighter_m006_t43_g", "client_item_id": 2449, "node": "gear_heavy_1_gloves_0", "diffuse": "MFighter_m006_t43_g_sp.png"}], "set_id": "heavy_1", "icon_ref": "icon.armor_t43_g_i00", "shield_clearance": 0.032},
+	"heavy_1_boots": {"profile": "heavy", "grade": "D", "slot": "boots", "name": "Brigandine Boots", "client_item_ids": [2425], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.mfighter_m006_t43_b", "client_item_id": 2425, "node": "gear_heavy_1_boots_0", "diffuse": "MFighter_m006_t43_b_sp.png"}], "set_id": "heavy_1", "icon_ref": "icon.armor_t43_b_i00"},
+	"heavy_2_armor": {"profile": "heavy", "grade": "C", "slot": "armor", "name": "Dwarven Chain Mail Shirt", "client_item_ids": [355], "parts": [{"mesh": "Fighter.MFighter_m007_u", "material": "mfighter.mfighter_m007_t60_u", "client_item_id": 355, "node": "gear_heavy_2_armor_0", "diffuse": "MFighter_m007_t60_u_sp.png"}], "set_id": "heavy_2", "icon_ref": "icon.armor_t60_u_i00"},
+	"heavy_2_pants": {"profile": "heavy", "grade": "C", "slot": "pants", "name": "Dwarven Chain Gaiters", "client_item_ids": [382], "parts": [{"mesh": "Fighter.MFighter_m007_l", "material": "mfighter.mfighter_m007_t60_l", "client_item_id": 382, "node": "gear_heavy_2_pants_0", "diffuse": "MFighter_m007_t60_l_sp.png"}], "set_id": "heavy_2", "icon_ref": "icon.armor_t60_l_i00"},
+	"heavy_2_gloves": {"profile": "heavy", "grade": "C", "slot": "gloves", "name": "Dwarven Chain Gloves", "client_item_ids": [2456], "parts": [{"mesh": "Fighter.MFighter_m007_g", "material": "mfighter.mfighter_m007_t60_g", "client_item_id": 2456, "node": "gear_heavy_2_gloves_0", "diffuse": "MFighter_m007_t60_g.png"}], "set_id": "heavy_2", "icon_ref": "icon.armor_t60_g_i00", "shield_clearance": 0.041},
+	"heavy_2_boots": {"profile": "heavy", "grade": "C", "slot": "boots", "name": "Dwarven Chain Boots", "client_item_ids": [2432], "parts": [{"mesh": "Fighter.MFighter_m007_b", "material": "mfighter.mfighter_m007_t60_b", "client_item_id": 2432, "node": "gear_heavy_2_boots_0", "diffuse": "MFighter_m007_t60_b.png"}], "set_id": "heavy_2", "icon_ref": "icon.armor_t60_b_i00"},
+	"heavy_3_armor": {"profile": "heavy", "grade": "B", "slot": "armor", "name": "Blue Wolf Breastplate", "client_item_ids": [358], "parts": [{"mesh": "Fighter.MFighter_m010_u", "material": "mfighter.mfighter_m010_t68_u", "client_item_id": 358, "node": "gear_heavy_3_armor_0", "diffuse": "MFighter_m010_t68_u_sp.png"}], "set_id": "heavy_3", "icon_ref": "icon.armor_t68_u_i00"},
+	"heavy_3_pants": {"profile": "heavy", "grade": "B", "slot": "pants", "name": "Blue Wolf Gaiters", "client_item_ids": [2380], "parts": [{"mesh": "Fighter.MFighter_m010_l", "material": "mfighter.mfighter_m010_t68_l", "client_item_id": 2380, "node": "gear_heavy_3_pants_0", "diffuse": "MFighter_m010_t68_l_sp.png"}], "set_id": "heavy_3", "icon_ref": "icon.armor_t68_l_i00"},
+	"heavy_3_gloves": {"profile": "heavy", "grade": "B", "slot": "gloves", "name": "Blue Wolf Gloves", "client_item_ids": [5718], "parts": [{"mesh": "Fighter.MFighter_m010_g", "material": "mfighter.mfighter_m010_t68_g", "client_item_id": 5718, "node": "gear_heavy_3_gloves_0", "diffuse": "MFighter_m010_t68_g.png"}], "set_id": "heavy_3", "icon_ref": "icon.armor_t68_g_i00", "shield_clearance": 0.032},
+	"heavy_3_boots": {"profile": "heavy", "grade": "B", "slot": "boots", "name": "Blue Wolf Boots", "client_item_ids": [5734], "parts": [{"mesh": "Fighter.MFighter_m010_b", "material": "mfighter.mfighter_m010_t68_b", "client_item_id": 5734, "node": "gear_heavy_3_boots_0", "diffuse": "MFighter_m010_t68_b.png"}], "set_id": "heavy_3", "icon_ref": "icon.armor_t68_b_i00"},
+	"heavy_4_armor": {"profile": "heavy", "grade": "A", "slot": "armor", "name": "Dark Crystal Breastplate", "client_item_ids": [365], "parts": [{"mesh": "Fighter.MFighter_m009_u", "material": "mfighter.MFighter_m009_t74_u", "client_item_id": 365, "node": "gear_heavy_4_armor_0", "diffuse": "MFighter_m009_t74_u_ori.png"}], "set_id": "heavy_4", "icon_ref": "icon.armor_t74_u_i00"},
+	"heavy_4_pants": {"profile": "heavy", "grade": "A", "slot": "pants", "name": "Dark Crystal Gaiters", "client_item_ids": [388], "parts": [{"mesh": "Fighter.MFighter_m009_l", "material": "mfighter.MFighter_m009_t74_l", "client_item_id": 388, "node": "gear_heavy_4_pants_0", "diffuse": "MFighter_m009_t74_l_ori.png"}], "set_id": "heavy_4", "icon_ref": "icon.armor_t74_l_i00"},
+	"heavy_4_gloves": {"profile": "heavy", "grade": "A", "slot": "gloves", "name": "Dark Crystal Gloves", "client_item_ids": [5765], "parts": [{"mesh": "Fighter.MFighter_m009_g", "material": "mfighter.MFighter_m009_t74_g", "client_item_id": 5765, "node": "gear_heavy_4_gloves_0", "diffuse": "MFighter_m009_t74_g.png"}], "set_id": "heavy_4", "icon_ref": "icon.armor_t74_g_i00", "shield_clearance": 0.064},
+	"heavy_4_boots": {"profile": "heavy", "grade": "A", "slot": "boots", "name": "Dark Crystal Boots", "client_item_ids": [5777], "parts": [{"mesh": "Fighter.MFighter_m009_b", "material": "mfighter.MFighter_m009_t74_b", "client_item_id": 5777, "node": "gear_heavy_4_boots_0", "diffuse": "MFighter_m009_t74_b.png"}], "set_id": "heavy_4", "icon_ref": "icon.armor_t74_b_i00"},
+	"light_0_armor": {"profile": "light", "grade": "No Grade", "slot": "armor", "name": "Leather Shirt", "client_item_ids": [22], "parts": [{"mesh": "Fighter.MFighter_m001_u", "material": "mfighter.mfighter_m001_t04_u", "client_item_id": 22, "node": "gear_light_0_armor_0", "diffuse": "MFighter_m001_t04_u.png"}], "set_id": "light_0", "icon_ref": "icon.armor_t04_u_i00"},
+	"light_0_pants": {"profile": "light", "grade": "No Grade", "slot": "pants", "name": "Leather Pants", "client_item_ids": [29], "parts": [{"mesh": "Fighter.MFighter_m001_l", "material": "mfighter.mfighter_m001_t04_l", "client_item_id": 29, "node": "gear_light_0_pants_0", "diffuse": "MFighter_m001_t04_l.png"}], "set_id": "light_0", "icon_ref": "icon.armor_t04_l_i00"},
+	"light_0_gloves": {"profile": "light", "grade": "No Grade", "slot": "gloves", "name": "Short Leather Gloves", "client_item_ids": [1119], "parts": [{"mesh": "Fighter.MFighter_m001_g", "material": "MFighter.MFighter_m001_t04_g", "client_item_id": 1119, "node": "gear_light_0_gloves_0", "diffuse": "MFighter_m001_t04_g.png"}], "set_id": "light_0", "icon_ref": "icon.armor_t04_g_i00"},
+	"light_0_boots": {"profile": "light", "grade": "No Grade", "slot": "boots", "name": "Hard Leather Boots", "client_item_ids": [722], "parts": [{"mesh": "Fighter.MFighter_m001_b", "material": "MFighter.MFighter_m001_t04_b", "client_item_id": 722, "node": "gear_light_0_boots_0", "diffuse": "MFighter_m001_t04_b_sp.png"}], "set_id": "light_0", "icon_ref": "icon.armor_iron_boots_i00"},
+	"light_1_armor": {"profile": "light", "grade": "D", "slot": "armor", "name": "Reinforced Leather Shirt", "client_item_ids": [394], "parts": [{"mesh": "Fighter.MFighter_m002_u", "material": "mfighter.mfighter_m002_t13_u", "client_item_id": 394, "node": "gear_light_1_armor_0", "diffuse": "MFighter_m002_t13_u_sp.png"}], "set_id": "light_1", "icon_ref": "icon.armor_t13_u_i00"},
+	"light_1_pants": {"profile": "light", "grade": "D", "slot": "pants", "name": "Reinforced Leather Gaiters", "client_item_ids": [416], "parts": [{"mesh": "Fighter.MFighter_m001_l", "material": "mfighter.mfighter_m001_t13_l", "client_item_id": 416, "node": "gear_light_1_pants_0", "diffuse": "MFighter_m001_t13_l_sp.png"}], "set_id": "light_1", "icon_ref": "icon.armor_t13_l_i00"},
+	"light_1_gloves": {"profile": "light", "grade": "D", "slot": "gloves", "name": "Reinforced Leather Gloves", "client_item_ids": [2446], "parts": [{"mesh": "Fighter.MFighter_m002_g", "material": "mfighter.mfighter_m002_t13_g", "client_item_id": 2446, "node": "gear_light_1_gloves_0", "diffuse": "MFighter_m002_t13_g.png"}], "set_id": "light_1", "icon_ref": "icon.armor_t13_g_i00"},
+	"light_1_boots": {"profile": "light", "grade": "D", "slot": "boots", "name": "Reinforced Leather Boots", "client_item_ids": [2422], "parts": [{"mesh": "Fighter.MFighter_m001_b", "material": "mfighter.mfighter_m001_t13_b", "client_item_id": 2422, "node": "gear_light_1_boots_0", "diffuse": "MFighter_m001_t13_b_sp.png"}], "set_id": "light_1", "icon_ref": "icon.armor_t13_b_i00"},
+	"light_2_armor": {"profile": "light", "grade": "C", "slot": "armor", "name": "Theca Leather Armor", "client_item_ids": [400], "parts": [{"mesh": "Fighter.MFighter_m007_u", "material": "mfighter.mfighter_m007_t63_u", "client_item_id": 400, "node": "gear_light_2_armor_0", "diffuse": "MFighter_m007_t63_u_sp.png"}], "set_id": "light_2", "icon_ref": "icon.armor_t63_u_i00"},
+	"light_2_pants": {"profile": "light", "grade": "C", "slot": "pants", "name": "Theca Leather Gaiters", "client_item_ids": [420], "parts": [{"mesh": "Fighter.MFighter_m006_l", "material": "mfighter.mfighter_m006_t63_l", "client_item_id": 420, "node": "gear_light_2_pants_0", "diffuse": "MFighter_m006_t63_l.png"}], "set_id": "light_2", "icon_ref": "icon.armor_t63_l_i00"},
+	"light_2_gloves": {"profile": "light", "grade": "C", "slot": "gloves", "name": "Theca Leather Gloves", "client_item_ids": [2460], "parts": [{"mesh": "Fighter.MFighter_m007_g", "material": "mfighter.mfighter_m007_t63_g", "client_item_id": 2460, "node": "gear_light_2_gloves_0", "diffuse": "MFighter_m007_t63_g.png"}], "set_id": "light_2", "icon_ref": "icon.armor_t63_g_i00"},
+	"light_2_boots": {"profile": "light", "grade": "C", "slot": "boots", "name": "Theca Leather Boots", "client_item_ids": [2436], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.mfighter_m006_t63_b", "client_item_id": 2436, "node": "gear_light_2_boots_0", "diffuse": "MFighter_m006_t63_b.png"}], "set_id": "light_2", "icon_ref": "icon.armor_t63_b_i00"},
+	"light_3_fullbody": {"profile": "light", "grade": "B", "slot": "armor", "name": "Blue Wolf Leather Armor", "client_item_ids": [2391], "parts": [{"mesh": "Fighter.MFighter_m007_u", "material": "mfighter.mfighter_m007_t69_u", "client_item_id": 2391, "node": "gear_light_3_fullbody_0", "diffuse": "MFighter_m007_t69_u_sp.png"}, {"mesh": "Fighter.MFighter_m006_l", "material": "MFighter.MFighter_m006_t69_l", "client_item_id": 2391, "node": "gear_light_3_fullbody_1", "diffuse": "MFighter_m006_t69_l_sp.png"}], "set_id": "light_3_full", "icon_ref": "icon.armor_t69_ul_i00", "covers_pants": true},
+	"light_3_fullgloves": {"profile": "light", "grade": "B", "slot": "gloves", "name": "Blue Wolf Gloves", "client_item_ids": [5719], "parts": [{"mesh": "Fighter.MFighter_m007_g", "material": "mfighter.mfighter_m007_t69_g", "client_item_id": 5719, "node": "gear_light_3_fullgloves_0", "diffuse": "MFighter_m007_t69_g.png"}], "set_id": "light_3_full", "icon_ref": "icon.armor_t69_g_i00", "covers_pants": false},
+	"light_3_fullboots": {"profile": "light", "grade": "B", "slot": "boots", "name": "Blue Wolf Boots", "client_item_ids": [5735], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.mfighter_m006_t69_b", "client_item_id": 5735, "node": "gear_light_3_fullboots_0", "diffuse": "MFighter_m006_t69_b.png"}], "set_id": "light_3_full", "icon_ref": "icon.armor_t69_b_i00", "covers_pants": false},
+	"light_4_armor": {"profile": "light", "grade": "A", "slot": "armor", "name": "Dark Crystal Leather Armor", "client_item_ids": [2385], "parts": [{"mesh": "Fighter.MFighter_m011_u", "material": "mfighter.MFighter_m011_t75_u", "client_item_id": 2385, "node": "gear_light_4_armor_0", "diffuse": "MFighter_m011_t75_u_ori.png"}], "set_id": "light_4", "icon_ref": "icon.armor_t75_u_i00"},
+	"light_4_pants": {"profile": "light", "grade": "A", "slot": "pants", "name": "Dark Crystal Leggings", "client_item_ids": [2389], "parts": [{"mesh": "Fighter.MFighter_m006_l", "material": "mfighter.MFighter_m006_t75_l", "client_item_id": 2389, "node": "gear_light_4_pants_0", "diffuse": "MFighter_m006_t75_l_ori.png"}], "set_id": "light_4", "icon_ref": "icon.armor_t75_l_i00"},
+	"light_4_gloves": {"profile": "light", "grade": "A", "slot": "gloves", "name": "Dark Crystal Gloves", "client_item_ids": [5766], "parts": [{"mesh": "Fighter.MFighter_m011_g", "material": "mfighter.MFighter_m011_t75_g", "client_item_id": 5766, "node": "gear_light_4_gloves_0", "diffuse": "MFighter_m011_t75_g.png"}], "set_id": "light_4", "icon_ref": "icon.armor_t75_g_i00"},
+	"light_4_boots": {"profile": "light", "grade": "A", "slot": "boots", "name": "Dark Crystal Boots", "client_item_ids": [5778], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.MFighter_m006_t75_b", "client_item_id": 5778, "node": "gear_light_4_boots_0", "diffuse": "MFighter_m006_t75_b.png"}], "set_id": "light_4", "icon_ref": "icon.armor_t75_b_i00"},
+	"robe_0_armor": {"profile": "robe", "grade": "No Grade", "slot": "armor", "name": "Tunic of Devotion", "client_item_ids": [1101], "parts": [{"mesh": "Magic.MMagic_m001_u", "material": "MMagic.MMagic_m001_t55_u", "client_item_id": 1101, "node": "gear_robe_0_armor_0", "diffuse": "MMagic_m001_t55_u_sp.png"}], "set_id": "robe_0", "icon_ref": "icon.armor_t55_u_i00"},
+	"robe_0_pants": {"profile": "robe", "grade": "No Grade", "slot": "pants", "name": "Stockings of Devotion", "client_item_ids": [1104], "parts": [{"mesh": "Magic.MMagic_m002_l", "material": "MMagic.MMagic_m002_t55_l", "client_item_id": 1104, "node": "gear_robe_0_pants_0", "diffuse": "MMagic_m002_t55_l_sp.png"}], "set_id": "robe_0", "icon_ref": "icon.armor_t55_l_i00"},
+	"robe_0_gloves": {"profile": "robe", "grade": "No Grade", "slot": "gloves", "name": "Short Leather Gloves", "client_item_ids": [1119], "parts": [{"mesh": "Magic.MMagic_m005_g", "material": "MMagic.MMagic_m005_t04_g", "client_item_id": 1119, "node": "gear_robe_0_gloves_0", "diffuse": "MMagic_m005_t04_g_sp.png"}], "set_id": "robe_0", "icon_ref": "icon.armor_t04_g_i00"},
+	"robe_0_boots": {"profile": "robe", "grade": "No Grade", "slot": "boots", "name": "Cloth Shoes", "client_item_ids": [35], "parts": [{"mesh": "Magic.MMagic_m003_b", "material": "MMagic.MMagic_m003_t02_b", "client_item_id": 35, "node": "gear_robe_0_boots_0", "diffuse": "MMagic_m003_t02_b.png"}], "set_id": "robe_0", "icon_ref": "icon.armor_t02_b_i00"},
+	"robe_1_armor": {"profile": "robe", "grade": "D", "slot": "armor", "name": "Tunic of Knowledge", "client_item_ids": [436], "parts": [{"mesh": "Magic.MMagic_m001_u", "material": "MMagic.MMagic_m001_t41_u", "client_item_id": 436, "node": "gear_robe_1_armor_0", "diffuse": "MMagic_m001_t41_u.png"}], "set_id": "robe_1", "icon_ref": "icon.armor_t41_u_i00"},
+	"robe_1_pants": {"profile": "robe", "grade": "D", "slot": "pants", "name": "Stockings of Knowledge", "client_item_ids": [469], "parts": [{"mesh": "Magic.MMagic_m001_l", "material": "MMagic.MMagic_m001_t41_l", "client_item_id": 469, "node": "gear_robe_1_pants_0", "diffuse": "MMagic_m001_t41_l.png"}], "set_id": "robe_1", "icon_ref": "icon.armor_t41_l_i00"},
+	"robe_1_gloves": {"profile": "robe", "grade": "D", "slot": "gloves", "name": "Gloves of Knowledge", "client_item_ids": [2447], "parts": [{"mesh": "Magic.MMagic_m001_g", "material": "MMagic.MMagic_m001_t41_g", "client_item_id": 2447, "node": "gear_robe_1_gloves_0", "diffuse": "MMagic_m001_t41_g.png"}], "set_id": "robe_1", "icon_ref": "icon.armor_t41_g_i00"},
+	"robe_1_boots": {"profile": "robe", "grade": "D", "slot": "boots", "name": "Boots of Knowledge", "client_item_ids": [2423], "parts": [{"mesh": "Magic.MMagic_m001_b", "material": "MMagic.MMagic_m001_t41_b", "client_item_id": 2423, "node": "gear_robe_1_boots_0", "diffuse": "MMagic_m001_t41_b.png"}], "set_id": "robe_1", "icon_ref": "icon.armor_t41_b_i00"},
+	"robe_2_armor": {"profile": "robe", "grade": "C", "slot": "armor", "name": "Karmian Tunic", "client_item_ids": [439], "parts": [{"mesh": "Magic.MMagic_m001_u", "material": "mmagic.mmagic_m001_t53_u", "client_item_id": 439, "node": "gear_robe_2_armor_0", "diffuse": "MMagic_m001_t53_u.png"}], "set_id": "robe_2", "icon_ref": "icon.armor_t53_u_i00"},
+	"robe_2_pants": {"profile": "robe", "grade": "C", "slot": "pants", "name": "Karmian Stockings", "client_item_ids": [471], "parts": [{"mesh": "Magic.MMagic_m008_l", "material": "mmagic.mmagic_m008_t53_l", "client_item_id": 471, "node": "gear_robe_2_pants_0", "diffuse": "MMagic_m008_t53_l.png"}], "set_id": "robe_2", "icon_ref": "icon.armor_t53_l_i00"},
+	"robe_2_gloves": {"profile": "robe", "grade": "C", "slot": "gloves", "name": "Karmian Gloves", "client_item_ids": [2454], "parts": [{"mesh": "Magic.MMagic_m001_g", "material": "mmagic.mmagic_m001_t53_g", "client_item_id": 2454, "node": "gear_robe_2_gloves_0", "diffuse": "MMagic_m001_t53_g.png"}], "set_id": "robe_2", "icon_ref": "icon.armor_t53_g_i00"},
+	"robe_2_boots": {"profile": "robe", "grade": "C", "slot": "boots", "name": "Karmian Boots", "client_item_ids": [2430], "parts": [{"mesh": "Magic.MMagic_m008_b", "material": "mmagic.mmagic_m008_t53_b", "client_item_id": 2430, "node": "gear_robe_2_boots_0", "diffuse": "MMagic_m008_t53_b.png"}], "set_id": "robe_2", "icon_ref": "icon.armor_t53_b_i00"},
+	"robe_3_armor": {"profile": "robe", "grade": "B", "slot": "armor", "name": "Blue Wolf Tunic", "client_item_ids": [2398], "parts": [{"mesh": "Magic.MMagic_m009_u", "material": "mmagic.mmagic_m009_t70_u", "client_item_id": 2398, "node": "gear_robe_3_armor_0", "diffuse": "MMagic_m009_t70_u.png"}], "set_id": "robe_3", "icon_ref": "icon.armor_t70_u_i00"},
+	"robe_3_pants": {"profile": "robe", "grade": "B", "slot": "pants", "name": "Blue Wolf Stockings", "client_item_ids": [2403], "parts": [{"mesh": "Magic.MMagic_m009_l", "material": "mmagic.mmagic_m009_t70_l", "client_item_id": 2403, "node": "gear_robe_3_pants_0", "diffuse": "MMagic_m009_t70_l.png"}], "set_id": "robe_3", "icon_ref": "icon.armor_t70_l_i00"},
+	"robe_3_gloves": {"profile": "robe", "grade": "B", "slot": "gloves", "name": "Blue Wolf Gloves", "client_item_ids": [5720], "parts": [{"mesh": "Magic.MMagic_m009_g", "material": "MMagic.MMagic_m009_t70_g", "client_item_id": 5720, "node": "gear_robe_3_gloves_0", "diffuse": "MMagic_m009_t70_g.png"}], "set_id": "robe_3", "icon_ref": "icon.armor_t70_g_i00"},
+	"robe_3_boots": {"profile": "robe", "grade": "B", "slot": "boots", "name": "Blue Wolf Boots", "client_item_ids": [5736], "parts": [{"mesh": "Magic.MMagic_m009_b", "material": "MMagic.MMagic_m009_t70_b", "client_item_id": 5736, "node": "gear_robe_3_boots_0", "diffuse": "MMagic_m009_t70_b.png"}], "set_id": "robe_3", "icon_ref": "icon.armor_t70_b_i00"},
+	"robe_4_fullbody": {"profile": "robe", "grade": "A", "slot": "armor", "name": "Dark Crystal Robe", "client_item_ids": [2407], "parts": [{"mesh": "Magic.MMagic_m006_u", "material": "mmagic.MMagic_m006_t76_u", "client_item_id": 2407, "node": "gear_robe_4_fullbody_0", "diffuse": "MMagic_m006_t76_u_ori.png"}], "set_id": "robe_4_full", "icon_ref": "icon.armor_t76_ul_i00", "covers_pants": true},
+	"robe_4_fullgloves": {"profile": "robe", "grade": "A", "slot": "gloves", "name": "Dark Crystal Gloves", "client_item_ids": [5767], "parts": [{"mesh": "Magic.MMagic_m006_g", "material": "MMagic.MMagic_m006_t76_g", "client_item_id": 5767, "node": "gear_robe_4_fullgloves_0", "diffuse": "MMagic_m006_t76_g.png"}], "set_id": "robe_4_full", "icon_ref": "icon.armor_t76_g_i00", "covers_pants": false},
+	"robe_4_fullboots": {"profile": "robe", "grade": "A", "slot": "boots", "name": "Dark Crystal Boots", "client_item_ids": [5779], "parts": [{"mesh": "Magic.MMagic_m006_b", "material": "mmagic.MMagic_m006_t76_b", "client_item_id": 5779, "node": "gear_robe_4_fullboots_0", "diffuse": "MMagic_m006_t76_b.png"}], "set_id": "robe_4_full", "icon_ref": "icon.armor_t76_b_i00", "covers_pants": false},
+	"light_3_armor": {"profile": "light", "grade": "B", "slot": "armor", "name": "Zubei's Leather Shirt", "client_item_ids": [2384], "parts": [{"mesh": "Fighter.MFighter_m007_u", "material": "mfighter.mfighter_m007_t65_u", "client_item_id": 2384, "node": "gear_light_3_armor_0", "diffuse": "MFighter_m007_t65_u.png"}], "set_id": "light_3", "icon_ref": "icon.armor_t65_u_i00"},
+	"light_3_pants": {"profile": "light", "grade": "B", "slot": "pants", "name": "Zubei's Leather Gaiters", "client_item_ids": [2388], "parts": [{"mesh": "Fighter.MFighter_m006_l", "material": "mfighter.mfighter_m006_t65_l", "client_item_id": 2388, "node": "gear_light_3_pants_0", "diffuse": "MFighter_m006_t65_l.png"}], "set_id": "light_3", "icon_ref": "icon.armor_t65_l_i00"},
+	"light_3_gloves": {"profile": "light", "grade": "B", "slot": "gloves", "name": "Zubei's Gauntlets", "client_item_ids": [5711], "parts": [{"mesh": "Fighter.MFighter_m007_g", "material": "mfighter.mfighter_m007_t65_g", "client_item_id": 5711, "node": "gear_light_3_gloves_0", "diffuse": "MFighter_m007_t65_g.png"}], "set_id": "light_3", "icon_ref": "icon.armor_t65_g_i00"},
+	"light_3_boots": {"profile": "light", "grade": "B", "slot": "boots", "name": "Zubei's Boots", "client_item_ids": [5727], "parts": [{"mesh": "Fighter.MFighter_m006_b", "material": "mfighter.mfighter_m006_t65_b", "client_item_id": 5727, "node": "gear_light_3_boots_0", "diffuse": "MFighter_m006_t65_b.png"}], "set_id": "light_3", "icon_ref": "icon.armor_t65_b_i00"},
+	"robe_4_armor": {"profile": "robe", "grade": "A", "slot": "armor", "name": "Tallum Tunic", "client_item_ids": [2400], "parts": [{"mesh": "Magic.MMagic_m009_u", "material": "mmagic.mmagic_m009_t79_u", "client_item_id": 2400, "node": "gear_robe_4_armor_0", "diffuse": "MMagic_m009_t79_u_ori.png"}], "set_id": "robe_4", "icon_ref": "icon.armor_t79_u_i00"},
+	"robe_4_pants": {"profile": "robe", "grade": "A", "slot": "pants", "name": "Tallum Stockings", "client_item_ids": [2405], "parts": [{"mesh": "Magic.MMagic_m003_l", "material": "mmagic.mmagic_m003_t79_l", "client_item_id": 2405, "node": "gear_robe_4_pants_0", "diffuse": "MMagic_m003_t79_l_ori.png"}], "set_id": "robe_4", "icon_ref": "icon.armor_t79_l_i00"},
+	"robe_4_gloves": {"profile": "robe", "grade": "A", "slot": "gloves", "name": "Tallum Gloves", "client_item_ids": [5770], "parts": [{"mesh": "Magic.MMagic_m009_g", "material": "MMagic.MMagic_m009_t79_g", "client_item_id": 5770, "node": "gear_robe_4_gloves_0", "diffuse": "MMagic_m009_t79_g.png"}], "set_id": "robe_4", "icon_ref": "icon.armor_t79_g_i00"},
+	"robe_4_boots": {"profile": "robe", "grade": "A", "slot": "boots", "name": "Tallum Boots", "client_item_ids": [5782], "parts": [{"mesh": "Magic.MMagic_m003_b", "material": "mmagic.mmagic_m003_t79_b", "client_item_id": 5782, "node": "gear_robe_4_boots_0", "diffuse": "MMagic_m003_t79_b.png"}], "set_id": "robe_4", "icon_ref": "icon.armor_t79_b_i00"},
+}
+const COLLECTIONS := {
+  "heavy_0": {
+    "name": "Wooden",
+    "profile": "heavy",
+    "bonus": {
+      "hp": 0,
+      "attack": 0,
+      "defense": 0,
+      "speed_percent": 1.0
+    }
+  },
+  "heavy_1": {
+    "name": "Brigandine",
+    "profile": "heavy",
+    "bonus": {
+      "hp": 30,
+      "attack": 0,
+      "defense": 2,
+      "speed_percent": 0.0
+    }
+  },
+  "heavy_2": {
+    "name": "Dwarven Chain",
+    "profile": "heavy",
+    "bonus": {
+      "hp": 60,
+      "attack": 0,
+      "defense": 4,
+      "speed_percent": 0.0
+    }
+  },
+  "heavy_3": {
+    "name": "Blue Wolf pesado",
+    "profile": "heavy",
+    "bonus": {
+      "hp": 100,
+      "attack": 0,
+      "defense": 7,
+      "speed_percent": 0.0
+    }
+  },
+  "heavy_4": {
+    "name": "Dark Crystal pesado",
+    "profile": "heavy",
+    "bonus": {
+      "hp": 160,
+      "attack": 0,
+      "defense": 12,
+      "speed_percent": 0.0
+    }
+  },
+  "light_0": {
+    "name": "Leather",
+    "profile": "light",
+    "bonus": {
+      "hp": 0,
+      "attack": 0,
+      "defense": 0,
+      "speed_percent": 2.0
+    }
+  },
+  "light_1": {
+    "name": "Reinforced Leather",
+    "profile": "light",
+    "bonus": {
+      "hp": 0,
+      "attack": 3,
+      "defense": 0,
+      "speed_percent": 3
+    }
+  },
+  "light_2": {
+    "name": "Theca",
+    "profile": "light",
+    "bonus": {
+      "hp": 0,
+      "attack": 6,
+      "defense": 0,
+      "speed_percent": 4
+    }
+  },
+  "light_3": {
+    "name": "Zubei leve",
+    "profile": "light",
+    "bonus": {
+      "hp": 0,
+      "attack": 10,
+      "defense": 0,
+      "speed_percent": 5
+    }
+  },
+  "light_4": {
+    "name": "Dark Crystal leve",
+    "profile": "light",
+    "bonus": {
+      "hp": 0,
+      "attack": 16,
+      "defense": 0,
+      "speed_percent": 7
+    }
+  },
+  "robe_0": {
+    "name": "Devotion",
+    "profile": "robe",
+    "bonus": {
+      "hp": 0,
+      "attack": 0,
+      "defense": 0,
+      "speed_percent": 1.5
+    }
+  },
+  "robe_1": {
+    "name": "Knowledge",
+    "profile": "robe",
+    "bonus": {
+      "hp": 10,
+      "attack": 4,
+      "defense": 0,
+      "speed_percent": 0.0
+    }
+  },
+  "robe_2": {
+    "name": "Karmian",
+    "profile": "robe",
+    "bonus": {
+      "hp": 20,
+      "attack": 8,
+      "defense": 0,
+      "speed_percent": 0.0
+    }
+  },
+  "robe_3": {
+    "name": "Blue Wolf túnica",
+    "profile": "robe",
+    "bonus": {
+      "hp": 35,
+      "attack": 13,
+      "defense": 0,
+      "speed_percent": 0.0
+    }
+  },
+  "robe_4": {
+    "name": "Tallum túnica",
+    "profile": "robe",
+    "bonus": {
+      "hp": 80,
+      "attack": 18,
+      "defense": 0,
+      "speed_percent": 0.0
+    }
+  },
+  "light_3_full": {
+    "name": "Blue Wolf leve",
+    "profile": "light",
+    "bonus": {
+      "hp": 0,
+      "attack": 12,
+      "defense": 0,
+      "speed_percent": 4.0
+    }
+  },
+  "robe_4_full": {
+    "name": "Dark Crystal túnica",
+    "profile": "robe",
+    "bonus": {
+      "hp": 40,
+      "attack": 22,
+      "defense": 0,
+      "speed_percent": 0.0
+    }
+  }
 }

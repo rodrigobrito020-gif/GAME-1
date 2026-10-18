@@ -32,7 +32,7 @@ static func install(model: Node3D, class_id: String) -> void:
 		mesh.skeleton = mesh.get_path_to(rig)
 		mesh.visible = false
 		for key: String in Catalog.entries:
-			if str(mesh.name).begins_with("gear_" + key + "_"):
+			if Catalog.entries[key].parts.any(func(part: Dictionary) -> bool: return str(mesh.name) == part.node or str(mesh.name).begins_with(str(part.node) + "_")):
 				mesh.set_meta("wardrobe_key", key)
 				mesh.set_meta("wardrobe_slot", Catalog.entries[key].slot)
 				break
@@ -48,6 +48,9 @@ static func apply(model: Node3D, inventory: Dictionary, class_id: String) -> voi
 		if not Catalog.compatible(item, class_id):
 			continue
 		selected[slot] = item.get("lineage_key", Catalog.key_for(class_id, LootItems.grade_for_rarity(str(item.get("rarity", "Comum"))), slot))
+	var chest := LootItems.equipped_item(inventory, "armor")
+	if LootItems.covers_pants(chest):
+		selected["pants"] = selected.get("armor", "")
 	var prefix := "mmagic" if class_id in ["mago", "healer"] else "mfighter"
 	for mesh: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
 		if mesh.has_meta("wardrobe_key"):
@@ -55,7 +58,7 @@ static func apply(model: Node3D, inventory: Dictionary, class_id: String) -> voi
 			continue
 		var name := str(mesh.name).to_lower()
 		for slot: String in Catalog.CLOTHING_SLOTS:
-			for suffix: String in {"armor": ["u", "l"], "gloves": ["g"], "boots": ["b"]}[slot]:
+			for suffix: String in {"armor": ["u"], "pants": ["l"], "gloves": ["g"], "boots": ["b"]}[slot]:
 				if name.begins_with(prefix + "_m000_" + suffix):
 					mesh.visible = not selected.has(slot)
 				elif name.begins_with(prefix + "_m001_" + suffix):

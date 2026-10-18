@@ -49,7 +49,7 @@ func run() -> void:
 	var inventory := EquipmentInventory.new()
 	root.add_child(inventory)
 	inventory.set_player_class(PlayerClasses.get_definition("healer"))
-	inventory.sync_items({"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}, false, 7, 90, 90)
+	inventory.sync_items({"equipped": true, "armor": true, "pants": true, "equipment_version": 2, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}, false, 7, 90, 90)
 	check(inventory.class_title.text == "CURANDEIRO HUMANO" and inventory.level_label.text == "Curandeiro · Nv. 7", "inventory title and level keep the selected class after sync")
 	menu.queue_free()
 	inventory.queue_free()

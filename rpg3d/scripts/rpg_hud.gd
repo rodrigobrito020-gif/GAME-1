@@ -204,6 +204,7 @@ func set_player_class(definition: Dictionary) -> void:
 	_class_name = str(definition.get("name", "Guerreiro")).to_upper()
 	var class_id := str(definition.get("id", "tank"))
 	_class_id = class_id
+	chest_rewards_panel.player_class_id = class_id
 	var names: Array = definition.get("skill_names", SKILL_NAMES)
 	var hints: Array = definition.get("skill_hints", SKILL_HINTS)
 	var cooldowns: Array = definition.get("cooldowns", [6.0, 8.0, 12.0, 7.0])
@@ -441,10 +442,7 @@ func show_reward(item: Dictionary) -> void:
 	reward_name.add_theme_color_override("font_color", color)
 	reward_detail.text = "%s · %s · Adicionado à mochila" % [rarity, LootItems.grade_text(item)]
 	reward_detail.add_theme_color_override("font_color", color.lightened(0.2))
-	var icon_id := str(item.get("slot", "armor"))
-	if icon_id not in ["sword", "shield", "armor", "gloves", "boots", "potion", "fang"]:
-		icon_id = "armor"
-	reward_icon.texture = load("res://assets/icons/%s.svg" % icon_id)
+	reward_icon.texture = preload("res://scripts/item_icons.gd").for_item(item, _class_id)
 	reward_panel.add_theme_stylebox_override("panel", _style(Color(0.04, 0.07, 0.08, 0.97), color))
 	if is_instance_valid(_reward_tween):
 		_reward_tween.kill()

@@ -54,11 +54,11 @@ func _run() -> void:
 	root.add_child(game)
 	game.smoke = true
 	game.set_physics_process(false)
-	check(Catalog.entries.size() == 45, "five authentic clothing tiers for heavy, light and robe profiles")
+	check(Catalog.entries.size() == 66, "five authentic clothing tiers for heavy, light and robe profiles")
 	var brigandine_ids: Array = Catalog.get_entry("heavy_1_armor").client_item_ids
-	check(brigandine_ids.size() == 2 and int(brigandine_ids[0]) == 352 and int(brigandine_ids[1]) == 2378, "Brigandine chest includes the actual client gaiters")
-	var robe_ids: Array = Catalog.get_entry("robe_4_armor").client_item_ids
-	check(robe_ids.size() == 1 and int(robe_ids[0]) == 2407 and Catalog.get_entry("robe_4_armor").parts.size() == 1, "full Dark Crystal robe is one native mesh, without a duplicated lower body")
+	check(brigandine_ids.size() == 1 and int(brigandine_ids[0]) == 352 and int(Catalog.get_entry("heavy_1_pants").client_item_ids[0]) == 2378, "Brigandine chest and gaiters have separate client IDs and slots")
+	var robe_ids: Array = Catalog.get_entry("robe_4_fullbody").client_item_ids
+	check(robe_ids.size() == 1 and int(robe_ids[0]) == 2407 and Catalog.get_entry("robe_4_fullbody").parts.size() == 1, "full Dark Crystal robe is one native mesh, without a duplicated lower body")
 	for class_id: String in ["tanque", "arqueiro", "mago", "healer"]:
 		change_class(class_id)
 		for tier in 5:

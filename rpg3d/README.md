@@ -60,7 +60,7 @@ Ao derrotar o chefe, o mundo é concluído e surge um baú no centro. O aviso de
 
 ## Equipamentos e inventário
 
-Cada baú concede **um equipamento**, uma única vez por tentativa. O item pode ser espada, escudo, armadura, luvas ou botas e tem ID próprio, raridade e bônus de ataque ou defesa.
+Cada baú concede **um equipamento**, uma única vez por tentativa. O item pode ser espada, escudo, peitoral, calça, luvas ou botas e tem ID próprio, raridade e bônus de ataque ou defesa.
 
 | Raridade | Chance por baú |
 | --- | ---: |
@@ -72,7 +72,7 @@ Cada baú concede **um equipamento**, uma única vez por tentativa. O item pode 
 
 Na mochila, selecione um item e use **Equipar** no painel direito. Ele sai da grade e ocupa somente seu slot no personagem; a peça anterior volta à bolsa. Clique no slot e em **Retirar** para devolvê-lo à mochila. Equipamentos vestidos não ocupam espaços da grade. A mochila começa com vinte espaços, tem filtros e ganha rolagem quando necessário. A prévia 3D acompanha classe e equipamento; as molduras e os detalhes mostram a raridade e a comparação de atributos. A organização livre da grade ainda não foi implementada.
 
-Peças de saque equipadas aumentam o dano ou reduzem o dano recebido. As roupas usam as malhas e texturas originais correspondentes ao grau e ao tipo de armadura da classe. O conjunto inicial é No Grade e mantém os atributos base. O Tanque usa a Long Sword e o Small Shield originais; o escudo mantém a inclinação aprovada de **45°**, mão atrás da madeira e encaixe igual no campo e na prévia. As manoplas maiores dos graus D–A recebem folga adicional atrás do painel, mantendo a alça no punho e a inclinação aprovada. O Arqueiro usa o Short Bow original em `Weapon_L_Bone`, em vez do osso de escudo. Mago e Curandeiro usam a varinha Apprentice's Rod em `Weapon_R_Bone`. Os encaixes seguem as animações nativas das respectivas classes; o inventário identifica as armas iniciais por nome e ícone.
+Peças de saque equipadas aumentam o dano ou reduzem o dano recebido. As roupas usam as malhas e texturas originais correspondentes ao grau e ao tipo de armadura da classe. O conjunto inicial é No Grade e preserva os atributos base de vida, ataque e defesa; seu bônus completo aumenta somente o movimento. O Tanque usa a Long Sword e o Small Shield originais; o escudo mantém a inclinação aprovada de **45°**, mão atrás da madeira e encaixe igual no campo e na prévia. As manoplas maiores dos graus D–A recebem folga adicional atrás do painel, mantendo a alça no punho e a inclinação aprovada. O Arqueiro usa o Short Bow original em `Weapon_L_Bone`, em vez do osso de escudo. Mago e Curandeiro usam a varinha Apprentice's Rod em `Weapon_R_Bone`. Os encaixes seguem as animações nativas das respectivas classes; o inventário identifica as armas iniciais por nome e ícone.
 
 Retirar a arma oculta a espada, o arco ou o cajado da classe e bloqueia ataques comuns e habilidades ofensivas. Cura, defesa e habilidades de movimento continuam disponíveis sem arma, respeitando suas demais condições.
 
@@ -99,6 +99,7 @@ godot --headless --path . --script res://tests/loot_items_test.gd
 godot --headless --path . --script res://tests/player_classes_test.gd
 godot --headless --path . --script res://tests/class_models_test.gd
 godot --headless --path . --script res://tests/wardrobe_test.gd
+godot --headless --path . --script res://tests/equipment_slots_sets_test.gd
 godot --headless --path . --script res://tests/instance_classes_flow_test.gd
 ```
 
@@ -124,17 +125,17 @@ Espada e escudo originais foram convertidos para `assets/long_sword.glb` e `asse
 
 O baú e o inventário mostram o grau. Itens antigos sem esse campo continuam válidos e recebem a indicação pelo valor da raridade. Itens novos gravam o grau, e o carregamento valida a correspondência. As probabilidades não mudaram.
 
-As roupas foram vinculadas aos registros de `Armorgrp_Classic.dat`, `L2GameDataName.dat` e `ItemName_Classic-eu.dat` do cliente enviado. São 45 peças de equipamento (15 conjuntos × traje/luvas/botas), com nomes, IDs, malhas por raça e texturas difusas originais registrados em `assets/wardrobe_source.json`. Peitoral e calças continuam juntos no slot Traje; a Dark Crystal Robe original usa uma única malha completa.
+As roupas foram vinculadas aos registros de `Armorgrp_Classic.dat`, `L2GameDataName.dat` e `ItemName_Classic-eu.dat` do cliente enviado. São 60 peças de equipamento para 15 conjuntos com quatro slots independentes: Peito, Calça, Luvas e Botas. Outros seis registros preservam os antigos conjuntos inteiriços Blue Wolf leve e Dark Crystal túnica. Os nomes, IDs, malhas, texturas e referências dos ícones estão em `assets/wardrobe_source.json`. Roupas inteiriças originais ocupam Peito e Calça e são identificadas como Traje completo; equipar calça separada devolve o traje à mochila, sem sobrepor peças.
 
 | Grau | Tanque | Arqueiro | Mago / Curandeiro |
 | --- | --- | --- | --- |
 | No Grade | Wooden Breastplate + Wooden Gaiters | Leather Shirt + Leather Pants | Tunic / Stockings of Devotion |
 | D | Brigandine | Reinforced Leather | Knowledge |
 | C | Dwarven Chain | Theca Leather | Karmian |
-| B | Blue Wolf pesado | Blue Wolf leve | Blue Wolf túnica |
-| A | Dark Crystal pesado | Dark Crystal leve | Dark Crystal Robe |
+| B | Blue Wolf pesado | Zubei leve | Blue Wolf túnica |
+| A | Dark Crystal pesado | Dark Crystal leve | Tallum túnica |
 
-Luvas e botas acompanham as variantes originais pesada, leve e túnica; as peças No Grade usam acessórios iniciais existentes no cliente. Cada slot troca somente suas próprias malhas. As roupas compartilham o esqueleto animado do corpo, inclusive na prévia, sem um segundo controlador de animação. A conversão mantém as texturas difusas, sem reproduzir os antigos reflexos de ambiente dos shaders do Unreal.
+Peitoral e calça podem ter graus diferentes e são trocados individualmente. Luvas e botas acompanham as variantes originais pesada, leve e túnica; as peças No Grade usam acessórios iniciais existentes no cliente. Cada slot troca somente suas próprias malhas. As roupas compartilham o esqueleto animado do corpo, inclusive na prévia, sem um segundo controlador de animação. A conversão mantém as texturas difusas, sem reproduzir os antigos reflexos de ambiente dos shaders do Unreal.
 
 Novos saques de roupas recebem a família da classe que abriu o baú. Tanque usa pesada, Arqueiro usa leve, e Mago/Curandeiro compartilham túnicas. O inventário mostra a restrição; mudar de família devolve as roupas incompatíveis à mochila e veste o conjunto inicial. Os itens e seus bônus permanecem salvos. Itens antigos sem identificação de conjunto mantêm nome e atributos e usam a aparência do grau na classe atual. Espadas e escudos de saque ainda usam os modelos de arma disponíveis; esta atualização aplica os conjuntos por grau às roupas.
 
@@ -143,3 +144,28 @@ Novos saques de roupas recebem a família da classe que abriu o baú. Tanque usa
 Teste da integração de roupas: `godot --headless --path . --script res://tests/wardrobe_test.gd`. Ele verifica os conjuntos nas quatro classes, vínculos de pele em repouso/movimento/ataque/conjuração/morte, troca por slot, remoção sem duplicação, compatibilidade de classe, prévia, restauração de dados e recompensas.
 
 Teste da recuperação do Arqueiro: `godot --headless --path . --script res://tests/archer_recovery_test.gd`.
+
+
+## Ícones, peças separadas e bônus de conjunto
+
+Mochila, slots equipados, detalhes e baú usam miniaturas diferentes dos próprios modelos e texturas dos equipamentos, renderizadas no Godot com fundo transparente. As imagens originais do cliente ainda dependem de `SysTextures/Icon.utx`; os DATs trazem suas referências, mas não as imagens. A origem das miniaturas está em `assets/item_thumbnails/source.json`.
+
+Saves anteriores são convertidos uma única vez: a armadura que juntava duas peças vira peitoral e calça, na mesma localização (vestido ou mochila), com IDs distintos e preservando a soma dos atributos anteriores. A versão do inventário impede repetir a conversão ao reabrir o jogo. Os trajes originalmente inteiriços continuam sendo um item que ocupa dois slots, sem criar uma calça fictícia.
+
+Um conjunto ativa o bônus ao cobrir os quatro slots Peito, Calça, Luvas e Botas com peças da mesma família e grau. Um traje inteiriço conta pelos dois slots que ocupa. Elmos e acessórios ainda não participam dessa regra do protótipo. O inventário mostra o progresso, as peças ausentes e o bônus ativo; misturar conjuntos ou retirar uma peça desativa o bônus imediatamente.
+
+Os valores abaixo são balanceamento inicial deste RPG, não estatísticas importadas do Lineage 2:
+
+| Grau | Tanque | Arqueiro | Mago / Curandeiro |
+| --- | --- | --- | --- |
+| No Grade | Movimento +1% | Movimento +2% | Movimento +1,5% |
+| D | Vida +30, Defesa +2 | Ataque +3, Movimento +3% | Vida +10, Ataque +4 |
+| C | Vida +60, Defesa +4 | Ataque +6, Movimento +4% | Vida +20, Ataque +8 |
+| B | Vida +100, Defesa +7 | Ataque +10, Movimento +5% | Vida +35, Ataque +13 |
+| A | Vida +160, Defesa +12 | Ataque +16, Movimento +7% | Vida +80, Ataque +18 |
+
+Os conjuntos inteiriços preservados têm bônus próprios: Blue Wolf leve, Ataque +12 e Movimento +4%; Dark Crystal túnica, Vida +40 e Ataque +22. Ataque e Defesa entram no cálculo real do combate, Vida altera o limite e Movimento altera WASD/corrida. Vestir um conjunto não cura; perder Vida máxima limita o HP atual ao novo máximo.
+
+Validação adicional: `godot --headless --path . --script res://tests/equipment_slots_sets_test.gd`. Cobre migração idempotente, soma dos atributos, salvamento real, peito/calça independentes, trajes de dois slots, miniaturas não vazias e bônus ativos/inativos nas quatro classes.
+
+[Slots independentes e bônus ativo](../docs/inventario-peito-calca-bonus.png) · [Tallum separado no Mago](../docs/inventario-tallum-separado.png) · [Calça revelada no baú](../docs/bau-calca-miniatura.png)

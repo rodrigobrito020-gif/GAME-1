@@ -29,7 +29,7 @@ func item(id: String, slot: String, attack: int = 3, defense: int = 5) -> Dictio
 	return {"id": id, "slot": slot, "name": "Equipamento de teste", "rarity": "Raro", "attack_bonus": attack, "defense_bonus": defense}
 
 func inventory() -> Dictionary:
-	return {"equipped": true, "shield": true, "armor": true, "gloves": true, "boots": true, "loot_items": [], "equipped_loot": {}}
+	return {"equipped": true, "shield": true, "armor": true, "pants": true, "equipment_version": 2, "gloves": true, "boots": true, "loot_items": [], "equipped_loot": {}}
 
 func _test_rarity_rates() -> void:
 	for rarity in LootItems.RARITIES:
@@ -67,7 +67,7 @@ func _test_generated_rewards() -> void:
 		generated.erase("id")
 		repeated.erase("id")
 		deterministic = deterministic and generated == repeated
-	check(valid and ids.size() == 400 and slots.size() == 5, "generated rewards have unique persistent IDs, valid bonuses and all five equipment slots")
+	check(valid and ids.size() == 400 and slots.size() == 6, "generated rewards have unique persistent IDs, valid bonuses and all six equipment slots")
 	check(deterministic, "seeded RNG reproduces reward attributes while IDs remain unique")
 
 func _test_transfers() -> void:
@@ -109,7 +109,7 @@ func _test_restore() -> void:
 	var bad_slot := item("bad-slot", "head")
 	var bad_id := item("", "boots")
 	var enormous := item("enormous", "shield", LootItems.MAX_STAT_BONUS + 1)
-	var saved := {"equipped": true, "armor": false, "loot_items": [valid, valid.duplicate(true), equipped.duplicate(true), bad_stat, negative, fractional, bad_rarity, bad_slot, bad_id, enormous, 4, null], "equipped_loot": {"sword": equipped, "shield": item("mismatch", "boots"), "invalid": valid}}
+	var saved := {"equipment_version": 2, "pants": true, "equipped": true, "armor": false, "loot_items": [valid, valid.duplicate(true), equipped.duplicate(true), bad_stat, negative, fractional, bad_rarity, bad_slot, bad_id, enormous, 4, null], "equipped_loot": {"sword": equipped, "shield": item("mismatch", "boots"), "invalid": valid}}
 	LootItems.restore_items(inv, saved)
 	check(inv.loot_items.size() == 1 and inv.loot_items[0].id == valid.id and inv.equipped_loot.size() == 1 and inv.equipped_loot.sword.id == equipped.id, "restore removes malformed items, mismatched slots and duplicate IDs across bag and equipment")
 	check(not inv.equipped and not inv.armor and inv.gloves, "restored loot suppresses base equipment while valid legacy flags remain intact")
@@ -119,7 +119,7 @@ func _test_restore() -> void:
 	LootItems.restore_items(inv, {"loot_items": "invalid", "equipped_loot": [equipped]})
 	check(inv.loot_items.is_empty() and inv.equipped_loot.is_empty(), "invalid container types restore an empty loot collection safely")
 	check(not inv.armor and inv.gloves, "legacy flags survive saves without loot data")
-	LootItems.restore_items(inv, {"loot_items": [item("roundtrip", "armor")], "equipped_loot": {}})
+	LootItems.restore_items(inv, {"equipment_version": 2, "loot_items": [item("roundtrip", "armor")], "equipped_loot": {}})
 	LootItems.restore_items(inv, inv)
 	check(inv.loot_items.size() == 1 and inv.loot_items[0].id == "roundtrip", "restore accepts its destination dictionary without discarding data")
 
@@ -158,10 +158,10 @@ func _test_inventory_ui() -> void:
 	)
 	for index in LootItems.SLOTS.size():
 		var reward := item("ui-" + LootItems.SLOTS[index], LootItems.SLOTS[index])
-		reward.rarity = LootItems.RARITIES[index]
+		reward.rarity = LootItems.RARITIES[index % LootItems.RARITIES.size()]
 		inv.loot_items.append(reward)
 	panel.sync_items(inv, false, 1, 100, 100)
-	check(panel.capacity_label.text == "MOCHILA  6 / 20", "UI counts five stored rewards and one potion stack")
+	check(panel.capacity_label.text == "MOCHILA  7 / 20", "UI counts six stored rewards and one potion stack")
 	for slot in LootItems.SLOTS:
 		var id := "ui-" + slot
 		var index := EquipmentInventory.IDS.find(slot)
@@ -188,7 +188,7 @@ func _test_inventory_ui() -> void:
 		panel.set_category(category)
 		var matches := true
 		for reward in inv.loot_items:
-			var expected: bool = category == "Todos" or (category == "Armas" and reward.slot in ["sword", "shield"]) or (category == "Trajes" and reward.slot in ["armor", "gloves", "boots"])
+			var expected: bool = category == "Todos" or (category == "Armas" and reward.slot in ["sword", "shield"]) or (category == "Trajes" and reward.slot in ["armor", "pants", "gloves", "boots"])
 			matches = matches and panel.loot_buttons[reward.id].visible == expected
 		check(matches, "UI filter applies to reward equipment: " + category)
 	panel.queue_free()

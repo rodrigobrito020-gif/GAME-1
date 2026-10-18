@@ -2,15 +2,15 @@ extends RefCounted
 ## Equipment rewards and the transfer of unique items between bag and equipment.
 const Catalog := preload("res://scripts/equipment_catalog.gd")
 
-const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots"]
-const BASE_KEYS := {"sword": "equipped", "shield": "shield", "armor": "armor", "gloves": "gloves", "boots": "boots"}
+const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots", "pants"]
+const BASE_KEYS := {"sword": "equipped", "shield": "shield", "armor": "armor", "gloves": "gloves", "boots": "boots", "pants": "pants"}
 const RARITIES: Array[String] = ["Comum", "Incomum", "Raro", "Épico", "Lendário"]
 const GRADES := {"Comum": "No Grade", "Incomum": "D", "Raro": "C", "Épico": "B", "Lendário": "A"}
 ## Percentages, totaling 100. The RNG uses one roll for rarity, regardless of slot.
 const WEIGHTS: Array[float] = [65.0, 27.0, 7.5, 0.45, 0.05]
 const RARITY_CUTOFFS: Array[float] = [65.0, 92.0, 99.5, 99.95, 100.0]
 const MAX_STAT_BONUS := 100000
-const ITEM_NAMES := {"sword": "Espada", "shield": "Escudo", "armor": "Armadura", "gloves": "Luvas", "boots": "Botas"}
+const ITEM_NAMES := {"sword": "Espada", "shield": "Escudo", "armor": "Peitoral", "gloves": "Luvas", "boots": "Botas", "pants": "Calça"}
 const WORLD_NAMES: Array[String] = ["da Campina", "da Floresta", "do Pântano", "das Ruínas", "da Montanha", "do Deserto", "da Geada", "das Cinzas", "do Abismo", "da Aurora"]
 const RARITY_POWER: Array[int] = [1, 2, 4, 8, 16]
 
@@ -40,7 +40,7 @@ static func create_reward(rng: RandomNumberGenerator, world_number: int, class_i
 	match slot:
 		"sword":
 			attack = power * 2 + rng.randi_range(0, world)
-		"shield", "armor":
+		"shield", "armor", "pants":
 			defense = power * 2 + rng.randi_range(0, world)
 		"gloves":
 			attack = power
@@ -61,7 +61,19 @@ static func is_equipped(inv: Dictionary, slot: String) -> bool:
 	if slot not in SLOTS:
 		return false
 	var equipped: Variant = inv.get("equipped_loot", {})
-	return bool(inv.get(BASE_KEYS[slot], false)) or (equipped is Dictionary and equipped.has(slot))
+	return bool(inv.get(BASE_KEYS[slot], false)) or (equipped is Dictionary and equipped.has(slot)) or (slot == "pants" and covers_pants(equipped_item(inv, "armor")))
+
+static func covers_pants(item: Dictionary) -> bool:
+	return bool(Catalog.get_entry(str(item.get("lineage_key", ""))).get("covers_pants", false))
+
+static func equipped_item(inv: Dictionary, slot: String) -> Dictionary:
+	var value: Variant = inv.get("equipped_loot", {})
+	if not value is Dictionary:
+		return {}
+	var equipped: Dictionary = value
+	if slot == "pants" and covers_pants(equipped.get("armor", {})):
+		return equipped.armor
+	return equipped.get(slot, {})
 
 static func equip_item(inv: Dictionary, id: String, class_id: String = "") -> bool:
 	var bag_value: Variant = inv.get("loot_items", [])
@@ -85,6 +97,10 @@ static func equip_item(inv: Dictionary, id: String, class_id: String = "") -> bo
 	if not class_id.is_empty() and not Catalog.compatible(selected, class_id):
 		return false
 	var slot: String = selected.slot
+	if covers_pants(selected):
+		unequip_slot(inv, "pants")
+	elif slot == "pants" and covers_pants(equipped.get("armor", {})):
+		unequip_slot(inv, "armor")
 	var previous := _validated_item(equipped.get(slot, {}))
 	# Remove every matching bag entry, including malformed duplicate save entries.
 	for index in range(bag.size() - 1, -1, -1):
@@ -94,6 +110,8 @@ static func equip_item(inv: Dictionary, id: String, class_id: String = "") -> bo
 		bag.append(previous.duplicate(true))
 	equipped[slot] = selected.duplicate(true)
 	inv[BASE_KEYS[slot]] = false
+	if covers_pants(selected):
+		inv["pants"] = false
 	inv["loot_items"] = bag
 	inv["equipped_loot"] = equipped
 	return true
@@ -101,6 +119,8 @@ static func equip_item(inv: Dictionary, id: String, class_id: String = "") -> bo
 static func unequip_slot(inv: Dictionary, slot: String) -> bool:
 	if slot not in SLOTS:
 		return false
+	if slot == "pants" and covers_pants(equipped_item(inv, "armor")):
+		slot = "armor"
 	var bag_value: Variant = inv.get("loot_items", [])
 	var equipped_value: Variant = inv.get("equipped_loot", {})
 	if not bag_value is Array or not equipped_value is Dictionary:
@@ -117,7 +137,8 @@ static func unequip_slot(inv: Dictionary, slot: String) -> bool:
 	inv["equipped_loot"] = equipped
 	return had_equipment
 
-static func restore_items(inv: Dictionary, saved: Dictionary) -> void:
+static func restore_items(inv: Dictionary, saved: Dictionary, class_id: String = "tanque") -> void:
+	saved = _upgrade_inventory(saved, class_id)
 	var bag: Array[Dictionary] = []
 	var equipped: Dictionary = {}
 	var seen: Dictionary = {}
@@ -147,8 +168,14 @@ static func restore_items(inv: Dictionary, saved: Dictionary) -> void:
 			seen[item.id] = true
 	inv["loot_items"] = bag
 	inv["equipped_loot"] = equipped
+	inv["equipment_version"] = 2
+	if covers_pants(equipped.get("armor", {})):
+		if equipped.has("pants"):
+			bag.append(equipped.pants)
+			equipped.erase("pants")
+		inv["pants"] = false
 
-static func bonuses(inv: Dictionary) -> Dictionary:
+static func bonuses(inv: Dictionary, class_id: String = "tanque") -> Dictionary:
 	var result := {"attack": 0, "defense": 0}
 	var equipped: Variant = inv.get("equipped_loot", {})
 	if not equipped is Dictionary:
@@ -161,6 +188,9 @@ static func bonuses(inv: Dictionary) -> Dictionary:
 		seen[item.id] = true
 		result.attack += item.attack_bonus
 		result.defense += item.defense_bonus
+	var bonus := set_bonuses(inv, class_id)
+	result.attack += bonus.attack
+	result.defense += bonus.defense
 	return result
 
 static func _contains_id(bag: Array, id: String) -> bool:
@@ -188,10 +218,11 @@ static func _validated_item(value: Variant) -> Dictionary:
 	if value.has("lineage_key"):
 		if not value.lineage_key is String:
 			return {}
-		var entry := Catalog.get_entry(value.lineage_key)
+		var key := Catalog.normalize_legacy_key(value.lineage_key, value.name)
+		var entry := Catalog.get_entry(key)
 		if entry.is_empty() or entry.slot != value.slot or entry.grade != grade_for_rarity(value.rarity):
 			return {}
-		result["lineage_key"] = value.lineage_key
+		result["lineage_key"] = key
 		result["name"] = entry.name
 	return result
 
@@ -199,5 +230,88 @@ static func store_incompatible_clothing(inv: Dictionary, class_id: String) -> vo
 	for slot: String in Catalog.CLOTHING_SLOTS:
 		var item: Dictionary = inv.get("equipped_loot", {}).get(slot, {})
 		if not Catalog.compatible(item, class_id):
+			var full_body := covers_pants(item)
 			unequip_slot(inv, slot)
 			inv[BASE_KEYS[slot]] = true
+			if full_body:
+				inv["pants"] = true
+
+static func _upgrade_inventory(saved: Dictionary, class_id: String) -> Dictionary:
+	if int(saved.get("equipment_version", 0)) >= 2:
+		return saved
+	var upgraded := saved.duplicate(true)
+	upgraded["pants"] = bool(saved.get("armor", true))
+	var added: Array[Dictionary] = []
+	var bag: Variant = upgraded.get("loot_items", [])
+	if bag is Array:
+		for index in bag.size():
+			var pair := _split_legacy_chest(bag[index], class_id)
+			if not pair.is_empty():
+				bag[index] = pair[0]
+				added.append(pair[1])
+		bag.append_array(added)
+	var worn: Variant = upgraded.get("equipped_loot", {})
+	if worn is Dictionary:
+		var pair := _split_legacy_chest(worn.get("armor", {}), class_id)
+		if not pair.is_empty():
+			worn.armor = pair[0]
+			worn.pants = pair[1]
+			upgraded["pants"] = false
+	upgraded["equipment_version"] = 2
+	return upgraded
+
+static func _split_legacy_chest(value: Variant, class_id: String) -> Array[Dictionary]:
+	var chest := _validated_item(value)
+	if chest.is_empty() or chest.slot != "armor" or covers_pants(chest):
+		return []
+	var pants := chest.duplicate(true)
+	pants.id = str(chest.id).sha256_text().substr(0, 24) + "-pants"
+	pants.slot = "pants"
+	var key := Catalog.key_for(class_id, grade_for_rarity(chest.rarity), "pants")
+	if chest.has("lineage_key"):
+		key = str(chest.lineage_key).trim_suffix("armor") + "pants"
+	pants["lineage_key"] = key
+	pants.name = Catalog.get_entry(key).name
+	for stat: String in ["attack_bonus", "defense_bonus"]:
+		pants[stat] = int(chest[stat]) / 2
+		chest[stat] -= pants[stat]
+	return [chest, pants]
+
+static func collection_key(item: Dictionary, class_id: String) -> String:
+	var key: String = item.get("lineage_key", Catalog.key_for(class_id, grade_for_rarity(str(item.get("rarity", "Comum"))), str(item.get("slot", "armor"))))
+	return str(Catalog.get_entry(key).get("set_id", ""))
+
+static func set_progress(inv: Dictionary, class_id: String) -> Dictionary:
+	var result := {}
+	for slot: String in Catalog.CLOTHING_SLOTS:
+		if not is_equipped(inv, slot):
+			continue
+		var item := equipped_item(inv, slot)
+		if not Catalog.compatible(item, class_id):
+			continue
+		if item.is_empty():
+			item = {"slot": slot, "rarity": "Comum"}
+		var key := collection_key(item, class_id)
+		if not key.is_empty():
+			if not result.has(key):
+				result[key] = []
+			result[key].append(slot)
+	return result
+
+static func set_bonuses(inv: Dictionary, class_id: String) -> Dictionary:
+	var result := {"hp": 0, "attack": 0, "defense": 0, "speed_percent": 0.0}
+	var worn := set_progress(inv, class_id)
+	for key: String in worn:
+		if worn[key].size() == Catalog.CLOTHING_SLOTS.size():
+			for stat: String in result:
+				result[stat] += Catalog.collections[key].bonus[stat]
+	return result
+
+static func bonus_text(bonus: Dictionary) -> String:
+	var parts: Array[String] = []
+	for entry: Array in [["hp", "Vida"], ["attack", "Ataque"], ["defense", "Defesa"], ["speed_percent", "Movimento"]]:
+		var amount: float = bonus.get(entry[0], 0)
+		if amount > 0:
+			var number := str(int(amount)) if is_equal_approx(amount, roundf(amount)) else "%.1f" % amount
+			parts.append("%s +%s%s" % [entry[1], number, "%" if entry[0] == "speed_percent" else ""])
+	return " · ".join(parts)

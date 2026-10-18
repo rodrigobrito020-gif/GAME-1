@@ -71,7 +71,7 @@ var auto_potion := false
 var potion_threshold := 40.0
 var potion_clock := 0.0
 var zoom_distance := 5.0
-var inventory := {"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
+var inventory := {"equipped": true, "armor": true, "pants": true, "equipment_version": 2, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
 var powered_attack := false
 var shield_carry_pose: SkeletonModifier3D
 var shield_attachment: BoneAttachment3D
@@ -227,13 +227,13 @@ func _equip_sword(model: Node3D) -> void:
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	var results: Array[MeshInstance3D] = []
 	if alternate:
-		var item: Dictionary = inventory.get("equipped_loot", {}).get(slot, {})
+		var item: Dictionary = LootItems.equipped_item(inventory, slot)
 		var key: String = item.get("lineage_key", Wardrobe.Catalog.key_for(player_class, LootItems.grade_for_rarity(str(item.get("rarity", "Comum"))), slot))
 		for mesh: MeshInstance3D in character_model.find_children("*", "MeshInstance3D", true, false):
 			if mesh.get_meta("wardrobe_key", "") == key:
 				results.append(mesh)
 		return results
-	var suffixes: Array = {"armor": ["_u", "_l"], "gloves": ["_g"], "boots": ["_b"]}[slot]
+	var suffixes: Array = {"armor": ["_u"], "pants": ["_l"], "gloves": ["_g"], "boots": ["_b"]}[slot]
 	var prefix := "mmagic_m000" if character_model_kind == "mage" else "mfighter_m000"
 	for node in character_model.find_children("*", "MeshInstance3D", true, false):
 		for suffix in suffixes:
@@ -294,8 +294,11 @@ func _ui() -> void:
 	_sync_class()
 	_refresh_hud()
 
+func _movement_speed(sprinting: bool) -> float:
+	return (6.5 if sprinting else 4.0) * (1.0 + float(LootItems.set_bonuses(inventory, player_class).speed_percent) / 100.0)
+
 func _maximum_hp() -> float:
-	return float(PlayerClasses.get_definition(player_class).max_hp) + (level - 1) * 20.0
+	return float(PlayerClasses.get_definition(player_class).max_hp) + (level - 1) * 20.0 + float(LootItems.set_bonuses(inventory, player_class).hp)
 
 func _sync_class() -> void:
 	LootItems.store_incompatible_clothing(inventory, player_class)
@@ -548,11 +551,11 @@ func _load_profile() -> void:
 	kills = maxi(0, int(state.get("kills", 0)))
 	var saved_inventory: Variant = state.get("inventory", {})
 	if saved_inventory is Dictionary:
-		for key in ["equipped", "armor", "gloves", "boots", "shield"]:
+		for key in LootItems.BASE_KEYS.values():
 			inventory[key] = bool(saved_inventory.get(key, true))
 		for key in ["potions", "fangs", "gold"]:
 			inventory[key] = clampi(int(saved_inventory.get(key, inventory[key])), 0, 999999)
-		LootItems.restore_items(inventory, saved_inventory)
+		LootItems.restore_items(inventory, saved_inventory, player_class)
 	auto_potion = bool(state.get("auto_potion", false))
 	potion_threshold = clampf(float(state.get("potion_threshold", 40)), 10, 90)
 	var saved_skills: Variant = state.get("automatic_skills", [])
@@ -598,7 +601,7 @@ func _use_item(item: String) -> bool:
 		_apply_equipment()
 	elif item in LootItems.SLOTS:
 		var key: String = LootItems.BASE_KEYS[item]
-		if inventory.get("equipped_loot", {}).has(item):
+		if not LootItems.equipped_item(inventory, item).is_empty():
 			LootItems.unequip_slot(inventory, item)
 			inventory[key] = true
 		else:
@@ -612,6 +615,7 @@ func _use_item(item: String) -> bool:
 		hp = minf(_maximum_hp(), hp + 40.0)
 	else:
 		return false
+	hp = minf(hp, _maximum_hp())
 	_refresh_hud()
 	_save_profile()
 	return true
@@ -822,7 +826,7 @@ func _danger_marker(at: Vector3) -> Node3D:
 	return marker
 
 func _receive_damage(amount: float) -> void:
-	var damage := maxf(1.0, amount - float(LootItems.bonuses(inventory).defense))
+	var damage := maxf(1.0, amount - float(LootItems.bonuses(inventory, player_class).defense))
 	hp = maxf(0.0, hp - damage * (0.35 if guard_clock > 0 else 1.0))
 	if hp <= 0 and not dead:
 		dead = true
@@ -911,7 +915,7 @@ func _physics_process(delta: float) -> void:
 	if not dead:
 		var input := Input.get_vector("left", "right", "forward", "back")
 		var direction := Vector3(input.x, 0, input.y).rotated(Vector3.UP, yaw)
-		var speed := 6.5 if Input.is_action_pressed("sprint") else 4.0
+		var speed := _movement_speed(Input.is_action_pressed("sprint"))
 		if dash_clock > 0:
 			direction = dash_direction
 			speed = 14.0
@@ -977,7 +981,7 @@ func _melee_hit() -> void:
 		query.exclude = [player.get_rid()]
 		var hit := get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty() and hit.collider == foe:
-			_damage_enemy(foe, (40.0 if attack_kind == 2 else (60.0 if powered_attack else 25.0)) + (level - 1) * 5 + LootItems.bonuses(inventory).attack)
+			_damage_enemy(foe, (40.0 if attack_kind == 2 else (60.0 if powered_attack else 25.0)) + (level - 1) * 5 + LootItems.bonuses(inventory, player_class).attack)
 
 func _skill_arc() -> void:
 	var visual := MeshInstance3D.new()
@@ -1070,7 +1074,7 @@ func _reset_test_combat() -> void:
 	_sync_class()
 	xp = 0
 	kills = 0
-	inventory = {"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
+	inventory = {"equipped": true, "armor": true, "pants": true, "equipment_version": 2, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
 	sword_attachment.visible = true
 	shield_attachment.visible = true
 	shield_carry_pose.shield_equipped = true
@@ -1306,7 +1310,7 @@ func _test_potion_settings() -> void:
 
 func _test_equipment() -> void:
 	_reset_test_combat()
-	for slot in ["armor", "gloves", "boots"]:
+	for slot in ["armor", "pants", "gloves", "boots"]:
 		var base := _gear_nodes(slot, false)
 		var equipped := _gear_nodes(slot, true)
 		_check(not base.is_empty() and not equipped.is_empty(), "malhas originais carregadas: " + slot)

@@ -5,8 +5,7 @@
     192,
     192
   ],
-  "original_client_icons_available": false,
-  "original_client_icons_package_needed": "SysTextures/Icon.utx",
+  "original_client_icons_available": true,
   "source_meshes": {
     "wardrobe_heavy.glb": "28e972ae1c47210e75c29380f973b239335aee71bbf743529c028d0434df21b4",
     "wardrobe_light.glb": "1efde15b99969a7309db2d30e2ed5bc109a35aaf8db1b7fdf03f5eacd7d60d68",
@@ -81,5 +80,7 @@
     "robe_4_boots": "icon.armor_t79_b_i00"
   },
   "note": "Transparent PNGs rendered from the original textured equipment meshes. Gloves and boots show one side for readability. These are not extracted client icon textures.",
-  "generator": "res://tools/render_item_thumbnails.gd"
+  "generator": "res://tools/render_item_thumbnails.gd",
+  "used_by_runtime": false,
+  "superseded_by": "res://assets/client_icons/source.json"
 }

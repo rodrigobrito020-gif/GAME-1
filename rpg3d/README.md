@@ -148,7 +148,7 @@ Teste da recuperação do Arqueiro: `godot --headless --path . --script res://te
 
 ## Ícones, peças separadas e bônus de conjunto
 
-Mochila, slots equipados, detalhes e baú usam miniaturas diferentes dos próprios modelos e texturas dos equipamentos, renderizadas no Godot com fundo transparente. As imagens originais do cliente ainda dependem de `SysTextures/Icon.utx`; os DATs trazem suas referências, mas não as imagens. A origem das miniaturas está em `assets/item_thumbnails/source.json`.
+Mochila, slots equipados, detalhes e baú usam os ícones originais extraídos do `Icon.utx` enviado: 67 texturas de 32 × 32 pixels atendem às 66 entradas de roupas e às quatro armas/escudo. Cada roupa segue sua referência `icon_ref` nos DATs; espada, escudo, arco e cajado correspondem aos respectivos modelos. Referências iguais compartilham o mesmo ícone, como no cliente. Origem, IDs e hashes estão em `assets/client_icons/source.json`. As miniaturas anteriores em `assets/item_thumbnails/` ficam apenas como material de geração; não são usadas pela interface. A arte da poção e da presa de Grelim, assim como a barra de habilidades, permanece própria do protótipo.
 
 Saves anteriores são convertidos uma única vez: a armadura que juntava duas peças vira peitoral e calça, na mesma localização (vestido ou mochila), com IDs distintos e preservando a soma dos atributos anteriores. A versão do inventário impede repetir a conversão ao reabrir o jogo. Os trajes originalmente inteiriços continuam sendo um item que ocupa dois slots, sem criar uma calça fictícia.
 
@@ -166,6 +166,6 @@ Os valores abaixo são balanceamento inicial deste RPG, não estatísticas impor
 
 Os conjuntos inteiriços preservados têm bônus próprios: Blue Wolf leve, Ataque +12 e Movimento +4%; Dark Crystal túnica, Vida +40 e Ataque +22. Ataque e Defesa entram no cálculo real do combate, Vida altera o limite e Movimento altera WASD/corrida. Vestir um conjunto não cura; perder Vida máxima limita o HP atual ao novo máximo.
 
-Validação adicional: `godot --headless --path . --script res://tests/equipment_slots_sets_test.gd`. Cobre migração idempotente, soma dos atributos, salvamento real, peito/calça independentes, trajes de dois slots, miniaturas não vazias e bônus ativos/inativos nas quatro classes.
+Validação adicional: `godot --headless --path . --script res://tests/equipment_slots_sets_test.gd`. Cobre migração idempotente, soma dos atributos, salvamento real, peito/calça independentes, trajes de dois slots, referências dos ícones originais e bônus ativos/inativos nas quatro classes. `tests/client_item_icons_test.gd` confere também armas por classe, peças com referência compartilhada, itens antigos e os ícones efetivamente mostrados na mochila, nos slots e no baú.
 
 [Slots independentes e bônus ativo](../docs/inventario-peito-calca-bonus.png) · [Tallum separado no Mago](../docs/inventario-tallum-separado.png) · [Calça revelada no baú](../docs/bau-calca-miniatura.png)

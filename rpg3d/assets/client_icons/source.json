@@ -1,0 +1,839 @@
+{
+  "package": "Icon.utx",
+  "package_sha256": "36faca071513bf10454cab4d0da0561f0ef772980288362414f0587946eab151",
+  "extraction": "UEViewer PNG export of the referenced Texture objects; original resolution, no repainting or resampling.",
+  "mapping_sources": [
+    "Armorgrp_Classic.dat",
+    "Weapongrp_Classic.dat",
+    "L2GameDataName.dat",
+    "ItemName_Classic-eu.dat"
+  ],
+  "equipment": {
+    "heavy_0_armor": {
+      "client_item_ids": [
+        23
+      ],
+      "name": "Wooden Breastplate",
+      "icon_ref": "icon.armor_t06_u_i00"
+    },
+    "heavy_0_pants": {
+      "client_item_ids": [
+        2386
+      ],
+      "name": "Wooden Gaiters",
+      "icon_ref": "icon.armor_t06_l_i00"
+    },
+    "heavy_0_gloves": {
+      "client_item_ids": [
+        1119
+      ],
+      "name": "Short Leather Gloves",
+      "icon_ref": "icon.armor_t04_g_i00"
+    },
+    "heavy_0_boots": {
+      "client_item_ids": [
+        722
+      ],
+      "name": "Hard Leather Boots",
+      "icon_ref": "icon.armor_iron_boots_i00"
+    },
+    "heavy_1_armor": {
+      "client_item_ids": [
+        352
+      ],
+      "name": "Brigandine Tunic",
+      "icon_ref": "icon.armor_t43_u_i00"
+    },
+    "heavy_1_pants": {
+      "client_item_ids": [
+        2378
+      ],
+      "name": "Brigandine Gaiters",
+      "icon_ref": "icon.armor_t43_l_i00"
+    },
+    "heavy_1_gloves": {
+      "client_item_ids": [
+        2449
+      ],
+      "name": "Brigandine Gauntlets",
+      "icon_ref": "icon.armor_t43_g_i00"
+    },
+    "heavy_1_boots": {
+      "client_item_ids": [
+        2425
+      ],
+      "name": "Brigandine Boots",
+      "icon_ref": "icon.armor_t43_b_i00"
+    },
+    "heavy_2_armor": {
+      "client_item_ids": [
+        355
+      ],
+      "name": "Dwarven Chain Mail Shirt",
+      "icon_ref": "icon.armor_t60_u_i00"
+    },
+    "heavy_2_pants": {
+      "client_item_ids": [
+        382
+      ],
+      "name": "Dwarven Chain Gaiters",
+      "icon_ref": "icon.armor_t60_l_i00"
+    },
+    "heavy_2_gloves": {
+      "client_item_ids": [
+        2456
+      ],
+      "name": "Dwarven Chain Gloves",
+      "icon_ref": "icon.armor_t60_g_i00"
+    },
+    "heavy_2_boots": {
+      "client_item_ids": [
+        2432
+      ],
+      "name": "Dwarven Chain Boots",
+      "icon_ref": "icon.armor_t60_b_i00"
+    },
+    "heavy_3_armor": {
+      "client_item_ids": [
+        358
+      ],
+      "name": "Blue Wolf Breastplate",
+      "icon_ref": "icon.armor_t68_u_i00"
+    },
+    "heavy_3_pants": {
+      "client_item_ids": [
+        2380
+      ],
+      "name": "Blue Wolf Gaiters",
+      "icon_ref": "icon.armor_t68_l_i00"
+    },
+    "heavy_3_gloves": {
+      "client_item_ids": [
+        5718
+      ],
+      "name": "Blue Wolf Gloves",
+      "icon_ref": "icon.armor_t68_g_i00"
+    },
+    "heavy_3_boots": {
+      "client_item_ids": [
+        5734
+      ],
+      "name": "Blue Wolf Boots",
+      "icon_ref": "icon.armor_t68_b_i00"
+    },
+    "heavy_4_armor": {
+      "client_item_ids": [
+        365
+      ],
+      "name": "Dark Crystal Breastplate",
+      "icon_ref": "icon.armor_t74_u_i00"
+    },
+    "heavy_4_pants": {
+      "client_item_ids": [
+        388
+      ],
+      "name": "Dark Crystal Gaiters",
+      "icon_ref": "icon.armor_t74_l_i00"
+    },
+    "heavy_4_gloves": {
+      "client_item_ids": [
+        5765
+      ],
+      "name": "Dark Crystal Gloves",
+      "icon_ref": "icon.armor_t74_g_i00"
+    },
+    "heavy_4_boots": {
+      "client_item_ids": [
+        5777
+      ],
+      "name": "Dark Crystal Boots",
+      "icon_ref": "icon.armor_t74_b_i00"
+    },
+    "light_0_armor": {
+      "client_item_ids": [
+        22
+      ],
+      "name": "Leather Shirt",
+      "icon_ref": "icon.armor_t04_u_i00"
+    },
+    "light_0_pants": {
+      "client_item_ids": [
+        29
+      ],
+      "name": "Leather Pants",
+      "icon_ref": "icon.armor_t04_l_i00"
+    },
+    "light_0_gloves": {
+      "client_item_ids": [
+        1119
+      ],
+      "name": "Short Leather Gloves",
+      "icon_ref": "icon.armor_t04_g_i00"
+    },
+    "light_0_boots": {
+      "client_item_ids": [
+        722
+      ],
+      "name": "Hard Leather Boots",
+      "icon_ref": "icon.armor_iron_boots_i00"
+    },
+    "light_1_armor": {
+      "client_item_ids": [
+        394
+      ],
+      "name": "Reinforced Leather Shirt",
+      "icon_ref": "icon.armor_t13_u_i00"
+    },
+    "light_1_pants": {
+      "client_item_ids": [
+        416
+      ],
+      "name": "Reinforced Leather Gaiters",
+      "icon_ref": "icon.armor_t13_l_i00"
+    },
+    "light_1_gloves": {
+      "client_item_ids": [
+        2446
+      ],
+      "name": "Reinforced Leather Gloves",
+      "icon_ref": "icon.armor_t13_g_i00"
+    },
+    "light_1_boots": {
+      "client_item_ids": [
+        2422
+      ],
+      "name": "Reinforced Leather Boots",
+      "icon_ref": "icon.armor_t13_b_i00"
+    },
+    "light_2_armor": {
+      "client_item_ids": [
+        400
+      ],
+      "name": "Theca Leather Armor",
+      "icon_ref": "icon.armor_t63_u_i00"
+    },
+    "light_2_pants": {
+      "client_item_ids": [
+        420
+      ],
+      "name": "Theca Leather Gaiters",
+      "icon_ref": "icon.armor_t63_l_i00"
+    },
+    "light_2_gloves": {
+      "client_item_ids": [
+        2460
+      ],
+      "name": "Theca Leather Gloves",
+      "icon_ref": "icon.armor_t63_g_i00"
+    },
+    "light_2_boots": {
+      "client_item_ids": [
+        2436
+      ],
+      "name": "Theca Leather Boots",
+      "icon_ref": "icon.armor_t63_b_i00"
+    },
+    "light_3_fullbody": {
+      "client_item_ids": [
+        2391
+      ],
+      "name": "Blue Wolf Leather Armor",
+      "icon_ref": "icon.armor_t69_ul_i00"
+    },
+    "light_3_fullgloves": {
+      "client_item_ids": [
+        5719
+      ],
+      "name": "Blue Wolf Gloves",
+      "icon_ref": "icon.armor_t69_g_i00"
+    },
+    "light_3_fullboots": {
+      "client_item_ids": [
+        5735
+      ],
+      "name": "Blue Wolf Boots",
+      "icon_ref": "icon.armor_t69_b_i00"
+    },
+    "light_4_armor": {
+      "client_item_ids": [
+        2385
+      ],
+      "name": "Dark Crystal Leather Armor",
+      "icon_ref": "icon.armor_t75_u_i00"
+    },
+    "light_4_pants": {
+      "client_item_ids": [
+        2389
+      ],
+      "name": "Dark Crystal Leggings",
+      "icon_ref": "icon.armor_t75_l_i00"
+    },
+    "light_4_gloves": {
+      "client_item_ids": [
+        5766
+      ],
+      "name": "Dark Crystal Gloves",
+      "icon_ref": "icon.armor_t75_g_i00"
+    },
+    "light_4_boots": {
+      "client_item_ids": [
+        5778
+      ],
+      "name": "Dark Crystal Boots",
+      "icon_ref": "icon.armor_t75_b_i00"
+    },
+    "robe_0_armor": {
+      "client_item_ids": [
+        1101
+      ],
+      "name": "Tunic of Devotion",
+      "icon_ref": "icon.armor_t55_u_i00"
+    },
+    "robe_0_pants": {
+      "client_item_ids": [
+        1104
+      ],
+      "name": "Stockings of Devotion",
+      "icon_ref": "icon.armor_t55_l_i00"
+    },
+    "robe_0_gloves": {
+      "client_item_ids": [
+        1119
+      ],
+      "name": "Short Leather Gloves",
+      "icon_ref": "icon.armor_t04_g_i00"
+    },
+    "robe_0_boots": {
+      "client_item_ids": [
+        35
+      ],
+      "name": "Cloth Shoes",
+      "icon_ref": "icon.armor_t02_b_i00"
+    },
+    "robe_1_armor": {
+      "client_item_ids": [
+        436
+      ],
+      "name": "Tunic of Knowledge",
+      "icon_ref": "icon.armor_t41_u_i00"
+    },
+    "robe_1_pants": {
+      "client_item_ids": [
+        469
+      ],
+      "name": "Stockings of Knowledge",
+      "icon_ref": "icon.armor_t41_l_i00"
+    },
+    "robe_1_gloves": {
+      "client_item_ids": [
+        2447
+      ],
+      "name": "Gloves of Knowledge",
+      "icon_ref": "icon.armor_t41_g_i00"
+    },
+    "robe_1_boots": {
+      "client_item_ids": [
+        2423
+      ],
+      "name": "Boots of Knowledge",
+      "icon_ref": "icon.armor_t41_b_i00"
+    },
+    "robe_2_armor": {
+      "client_item_ids": [
+        439
+      ],
+      "name": "Karmian Tunic",
+      "icon_ref": "icon.armor_t53_u_i00"
+    },
+    "robe_2_pants": {
+      "client_item_ids": [
+        471
+      ],
+      "name": "Karmian Stockings",
+      "icon_ref": "icon.armor_t53_l_i00"
+    },
+    "robe_2_gloves": {
+      "client_item_ids": [
+        2454
+      ],
+      "name": "Karmian Gloves",
+      "icon_ref": "icon.armor_t53_g_i00"
+    },
+    "robe_2_boots": {
+      "client_item_ids": [
+        2430
+      ],
+      "name": "Karmian Boots",
+      "icon_ref": "icon.armor_t53_b_i00"
+    },
+    "robe_3_armor": {
+      "client_item_ids": [
+        2398
+      ],
+      "name": "Blue Wolf Tunic",
+      "icon_ref": "icon.armor_t70_u_i00"
+    },
+    "robe_3_pants": {
+      "client_item_ids": [
+        2403
+      ],
+      "name": "Blue Wolf Stockings",
+      "icon_ref": "icon.armor_t70_l_i00"
+    },
+    "robe_3_gloves": {
+      "client_item_ids": [
+        5720
+      ],
+      "name": "Blue Wolf Gloves",
+      "icon_ref": "icon.armor_t70_g_i00"
+    },
+    "robe_3_boots": {
+      "client_item_ids": [
+        5736
+      ],
+      "name": "Blue Wolf Boots",
+      "icon_ref": "icon.armor_t70_b_i00"
+    },
+    "robe_4_fullbody": {
+      "client_item_ids": [
+        2407
+      ],
+      "name": "Dark Crystal Robe",
+      "icon_ref": "icon.armor_t76_ul_i00"
+    },
+    "robe_4_fullgloves": {
+      "client_item_ids": [
+        5767
+      ],
+      "name": "Dark Crystal Gloves",
+      "icon_ref": "icon.armor_t76_g_i00"
+    },
+    "robe_4_fullboots": {
+      "client_item_ids": [
+        5779
+      ],
+      "name": "Dark Crystal Boots",
+      "icon_ref": "icon.armor_t76_b_i00"
+    },
+    "light_3_armor": {
+      "client_item_ids": [
+        2384
+      ],
+      "name": "Zubei's Leather Shirt",
+      "icon_ref": "icon.armor_t65_u_i00"
+    },
+    "light_3_pants": {
+      "client_item_ids": [
+        2388
+      ],
+      "name": "Zubei's Leather Gaiters",
+      "icon_ref": "icon.armor_t65_l_i00"
+    },
+    "light_3_gloves": {
+      "client_item_ids": [
+        5711
+      ],
+      "name": "Zubei's Gauntlets",
+      "icon_ref": "icon.armor_t65_g_i00"
+    },
+    "light_3_boots": {
+      "client_item_ids": [
+        5727
+      ],
+      "name": "Zubei's Boots",
+      "icon_ref": "icon.armor_t65_b_i00"
+    },
+    "robe_4_armor": {
+      "client_item_ids": [
+        2400
+      ],
+      "name": "Tallum Tunic",
+      "icon_ref": "icon.armor_t79_u_i00"
+    },
+    "robe_4_pants": {
+      "client_item_ids": [
+        2405
+      ],
+      "name": "Tallum Stockings",
+      "icon_ref": "icon.armor_t79_l_i00"
+    },
+    "robe_4_gloves": {
+      "client_item_ids": [
+        5770
+      ],
+      "name": "Tallum Gloves",
+      "icon_ref": "icon.armor_t79_g_i00"
+    },
+    "robe_4_boots": {
+      "client_item_ids": [
+        5782
+      ],
+      "name": "Tallum Boots",
+      "icon_ref": "icon.armor_t79_b_i00"
+    }
+  },
+  "weapons": {
+    "sword": {
+      "client_item_id": 2,
+      "name": "Long Sword",
+      "icon_ref": "icon.weapon_long_sword_i00"
+    },
+    "rod": {
+      "client_item_id": 7,
+      "name": "Apprentice's Rod",
+      "icon_ref": "icon.weapon_apprentices_rod_i00"
+    },
+    "bow": {
+      "client_item_id": 13,
+      "name": "Short Bow",
+      "icon_ref": "icon.weapon_short_bow_i00"
+    },
+    "shield": {
+      "client_item_id": 19,
+      "name": "Small Shield",
+      "icon_ref": "icon.shield_small_shield_i00"
+    }
+  },
+  "icons": {
+    "icon.armor_iron_boots_i00": {
+      "object": "armor_iron_boots_i00",
+      "path": "res://assets/client_icons/armor_iron_boots_i00.png",
+      "sha256": "39894d93c83baafd26dca0c4c76433acde355ddcd2ca8ef609518def3da89e8a"
+    },
+    "icon.armor_t02_b_i00": {
+      "object": "armor_t02_b_i00",
+      "path": "res://assets/client_icons/armor_t02_b_i00.png",
+      "sha256": "b798e3eb5a334506a8a6fff16b724079878a145cfe41b739ba442765051aec8f"
+    },
+    "icon.armor_t04_g_i00": {
+      "object": "armor_t04_g_i00",
+      "path": "res://assets/client_icons/armor_t04_g_i00.png",
+      "sha256": "982313bf1f7b444d843fa2657023dd8db09de9a52576f3c396e5a06a2ebc10f9"
+    },
+    "icon.armor_t04_l_i00": {
+      "object": "armor_t04_l_i00",
+      "path": "res://assets/client_icons/armor_t04_l_i00.png",
+      "sha256": "491dad5bee3ccfc092812fc166b07a3891fb01c31022fc7db9b324dbde367285"
+    },
+    "icon.armor_t04_u_i00": {
+      "object": "armor_t04_u_i00",
+      "path": "res://assets/client_icons/armor_t04_u_i00.png",
+      "sha256": "327a387ce700ef1e6d7b1db71570152482ccc2b90d6de3cb074145a212b43a85"
+    },
+    "icon.armor_t06_l_i00": {
+      "object": "armor_t06_l_i00",
+      "path": "res://assets/client_icons/armor_t06_l_i00.png",
+      "sha256": "ff07818a598544b57c61e37c8e4f32d36bbc14ccac517beaf0d3bf1ca7fb8042"
+    },
+    "icon.armor_t06_u_i00": {
+      "object": "armor_t06_u_i00",
+      "path": "res://assets/client_icons/armor_t06_u_i00.png",
+      "sha256": "59f022dc670d1378c0b5d3f3545e817b9ce7330b9ffb0afb354ce040ee2ffd40"
+    },
+    "icon.armor_t13_b_i00": {
+      "object": "armor_t13_b_i00",
+      "path": "res://assets/client_icons/armor_t13_b_i00.png",
+      "sha256": "1309df34ffeedda33fcb51a9fa3ac3b25d24f2c6fa3ede4f599aeffccbd384cc"
+    },
+    "icon.armor_t13_g_i00": {
+      "object": "armor_t13_g_i00",
+      "path": "res://assets/client_icons/armor_t13_g_i00.png",
+      "sha256": "f4db762b22d3db67fbd0bc350219d3588ca10ecccd3627e2eef4889901e0dc03"
+    },
+    "icon.armor_t13_l_i00": {
+      "object": "armor_t13_l_i00",
+      "path": "res://assets/client_icons/armor_t13_l_i00.png",
+      "sha256": "f18cbce2b9800a42639e765db73069e4f346255b69616c899f2ba1bb43f10c79"
+    },
+    "icon.armor_t13_u_i00": {
+      "object": "armor_t13_u_i00",
+      "path": "res://assets/client_icons/armor_t13_u_i00.png",
+      "sha256": "3c2770979f87dbf3edde12354ef4b66e7ac604e42bfce5ebbf866d02f2d8c38f"
+    },
+    "icon.armor_t41_b_i00": {
+      "object": "armor_t41_b_i00",
+      "path": "res://assets/client_icons/armor_t41_b_i00.png",
+      "sha256": "82d50b77f6d046c78ac62dbabbed0934e26ac30bb10f9a713763d0306c3eae47"
+    },
+    "icon.armor_t41_g_i00": {
+      "object": "armor_t41_g_i00",
+      "path": "res://assets/client_icons/armor_t41_g_i00.png",
+      "sha256": "4e555a693defc3cf2e4f185c2068b32cd9776777b6e5cbcb38bb5c2514fd1054"
+    },
+    "icon.armor_t41_l_i00": {
+      "object": "armor_t41_l_i00",
+      "path": "res://assets/client_icons/armor_t41_l_i00.png",
+      "sha256": "d6ecd33fd5600e840039b30fa20bdfaea10b024704452a0cd5cc8a7ee0042f18"
+    },
+    "icon.armor_t41_u_i00": {
+      "object": "armor_t41_u_i00",
+      "path": "res://assets/client_icons/armor_t41_u_i00.png",
+      "sha256": "7e0029d9e6cf47c2ff8b07c14e63311ed59e1784edd1582dd5a35fc52544e959"
+    },
+    "icon.armor_t43_b_i00": {
+      "object": "armor_t43_b_i00",
+      "path": "res://assets/client_icons/armor_t43_b_i00.png",
+      "sha256": "ee377c01432878df0c11d2d5e0b1d02365ec775b6c292a8cf27906145eb621a9"
+    },
+    "icon.armor_t43_g_i00": {
+      "object": "armor_t43_g_i00",
+      "path": "res://assets/client_icons/armor_t43_g_i00.png",
+      "sha256": "07c4fc0c4a365c50b8619dcb79225e5b9e49aa2cd6c9f0471b7f09f1690e57b6"
+    },
+    "icon.armor_t43_l_i00": {
+      "object": "armor_t43_l_i00",
+      "path": "res://assets/client_icons/armor_t43_l_i00.png",
+      "sha256": "0e6437cd3918ab58a8b2fc77e934b88e486af311ef8378bff03d44a6ae05d1ca"
+    },
+    "icon.armor_t43_u_i00": {
+      "object": "armor_t43_u_i00",
+      "path": "res://assets/client_icons/armor_t43_u_i00.png",
+      "sha256": "a11fbea7dace5297fa9dac9b86f717e85d81863b270427405377293e6ee22c41"
+    },
+    "icon.armor_t53_b_i00": {
+      "object": "armor_t53_b_i00",
+      "path": "res://assets/client_icons/armor_t53_b_i00.png",
+      "sha256": "e9ed458d5a9850bfe83dc671fbadba067f9ebb3e51eaddac05d6a752d4705ade"
+    },
+    "icon.armor_t53_g_i00": {
+      "object": "armor_t53_g_i00",
+      "path": "res://assets/client_icons/armor_t53_g_i00.png",
+      "sha256": "67ba98827f00028b879b685feedbb2ef5edd6126556021e711126a0a0254a512"
+    },
+    "icon.armor_t53_l_i00": {
+      "object": "armor_t53_l_i00",
+      "path": "res://assets/client_icons/armor_t53_l_i00.png",
+      "sha256": "ae70587c95647bf724d6a956bc117ded171699ed450da7d2074130fb03962e23"
+    },
+    "icon.armor_t53_u_i00": {
+      "object": "armor_t53_u_i00",
+      "path": "res://assets/client_icons/armor_t53_u_i00.png",
+      "sha256": "6136366e86440e55705c91607e3f98fa56493f44edca6a5f335490979de251da"
+    },
+    "icon.armor_t55_l_i00": {
+      "object": "armor_t55_l_i00",
+      "path": "res://assets/client_icons/armor_t55_l_i00.png",
+      "sha256": "697e0fdd8794890a4cb23ce0e81af39e839c2569322e031fff20b28999d6d38d"
+    },
+    "icon.armor_t55_u_i00": {
+      "object": "armor_t55_u_i00",
+      "path": "res://assets/client_icons/armor_t55_u_i00.png",
+      "sha256": "18364eec2178eaf85bfe3c0b47ef3d4dabac49c66eb42d5f6a2d59febedc1d30"
+    },
+    "icon.armor_t60_b_i00": {
+      "object": "armor_t60_b_i00",
+      "path": "res://assets/client_icons/armor_t60_b_i00.png",
+      "sha256": "2a2cb5f3583e45db5d939a15602b778096f18b3c54e2ab01f994c8cfbe271ff2"
+    },
+    "icon.armor_t60_g_i00": {
+      "object": "armor_t60_g_i00",
+      "path": "res://assets/client_icons/armor_t60_g_i00.png",
+      "sha256": "940b605451c7a890331eef44d59134b96a16a95881a4e6b66b6bcd1bb50366ae"
+    },
+    "icon.armor_t60_l_i00": {
+      "object": "armor_t60_l_i00",
+      "path": "res://assets/client_icons/armor_t60_l_i00.png",
+      "sha256": "b292e08c5689a46905da2be076c5303818745441fe42285594ed84e2618effbd"
+    },
+    "icon.armor_t60_u_i00": {
+      "object": "armor_t60_u_i00",
+      "path": "res://assets/client_icons/armor_t60_u_i00.png",
+      "sha256": "eaf32e711f8f9133a70833396c8b2f706ec2b2904e5ebb1719083681a4ed8c54"
+    },
+    "icon.armor_t63_b_i00": {
+      "object": "armor_t63_b_i00",
+      "path": "res://assets/client_icons/armor_t63_b_i00.png",
+      "sha256": "e798c141ab4f33c6c6495e9776cd04420e6894d2ac25b4a0039c46e086735f13"
+    },
+    "icon.armor_t63_g_i00": {
+      "object": "armor_t63_g_i00",
+      "path": "res://assets/client_icons/armor_t63_g_i00.png",
+      "sha256": "7cbe3888850968c257479b0585847bd6773aa786f7db81be5ea0bafe00d8ab89"
+    },
+    "icon.armor_t63_l_i00": {
+      "object": "armor_t63_l_i00",
+      "path": "res://assets/client_icons/armor_t63_l_i00.png",
+      "sha256": "f037f37878a5fee56433404ead81d77bf861290206957951c2e252a5a856c34d"
+    },
+    "icon.armor_t63_u_i00": {
+      "object": "armor_t63_u_i00",
+      "path": "res://assets/client_icons/armor_t63_u_i00.png",
+      "sha256": "9bc0b0123e9a56a645e17eb5dfeff22cecfec1543a91cc3375983f768e3a7f64"
+    },
+    "icon.armor_t65_b_i00": {
+      "object": "armor_t65_b_i00",
+      "path": "res://assets/client_icons/armor_t65_b_i00.png",
+      "sha256": "ce54724481873086085602033da1a7ef29d38415cbda9b635d19e9d104fdcd20"
+    },
+    "icon.armor_t65_g_i00": {
+      "object": "armor_t65_g_i00",
+      "path": "res://assets/client_icons/armor_t65_g_i00.png",
+      "sha256": "2d0a7d4a6a61dbf950530cca855a5d085e958e44a493d43ba071db66df479f6d"
+    },
+    "icon.armor_t65_l_i00": {
+      "object": "armor_t65_l_i00",
+      "path": "res://assets/client_icons/armor_t65_l_i00.png",
+      "sha256": "2881201a8c0cac18119f96e677c84a122e1a2b6094d57385bfd444a4b0d17980"
+    },
+    "icon.armor_t65_u_i00": {
+      "object": "armor_t65_u_i00",
+      "path": "res://assets/client_icons/armor_t65_u_i00.png",
+      "sha256": "fb5f3ae3d5b66725a5f80ecf19b9ad7abd57e9916505df646a42d81ac2d68faf"
+    },
+    "icon.armor_t68_b_i00": {
+      "object": "armor_t68_b_i00",
+      "path": "res://assets/client_icons/armor_t68_b_i00.png",
+      "sha256": "7f9aa7f3e55244ca3544f4016710acb5c7c75fc3f98fe5ba356b92cb56428967"
+    },
+    "icon.armor_t68_g_i00": {
+      "object": "armor_t68_g_i00",
+      "path": "res://assets/client_icons/armor_t68_g_i00.png",
+      "sha256": "6f28917cb80963e2c5563b10d2c495961d02dea11a1d87be52656b7893af277a"
+    },
+    "icon.armor_t68_l_i00": {
+      "object": "armor_t68_l_i00",
+      "path": "res://assets/client_icons/armor_t68_l_i00.png",
+      "sha256": "5ce462dfc8d2f7bc1c31dae29fa1053d9dcdc45f1646c8adcef65b57110a674b"
+    },
+    "icon.armor_t68_u_i00": {
+      "object": "armor_t68_u_i00",
+      "path": "res://assets/client_icons/armor_t68_u_i00.png",
+      "sha256": "3e72169926fb63227f58f166150734624fc7b401c9de08d46ce09827d877b6b2"
+    },
+    "icon.armor_t69_b_i00": {
+      "object": "armor_t69_b_i00",
+      "path": "res://assets/client_icons/armor_t69_b_i00.png",
+      "sha256": "d31a1ea49d59a64a026b18661ca5ac7a5c98666477e0de335c3238238a9a9cc2"
+    },
+    "icon.armor_t69_g_i00": {
+      "object": "armor_t69_g_i00",
+      "path": "res://assets/client_icons/armor_t69_g_i00.png",
+      "sha256": "0193634f8dd99b3495a9d522816c8a39eec4ca0a3cfc40317367957fc8caaa5e"
+    },
+    "icon.armor_t69_ul_i00": {
+      "object": "armor_t69_ul_i00",
+      "path": "res://assets/client_icons/armor_t69_ul_i00.png",
+      "sha256": "de13bbdca929a3bd1291dc67d67e39d7acf5b242295d36bbe3c885f67274c375"
+    },
+    "icon.armor_t70_b_i00": {
+      "object": "armor_t70_b_i00",
+      "path": "res://assets/client_icons/armor_t70_b_i00.png",
+      "sha256": "42ea4effb0016ea2e732a215deee223b5dbc886780b26d29241d5030b5d251b8"
+    },
+    "icon.armor_t70_g_i00": {
+      "object": "armor_t70_g_i00",
+      "path": "res://assets/client_icons/armor_t70_g_i00.png",
+      "sha256": "f33280cfc6ce65a14a4cb6d995d80ecde73023fde67ee16085a95553f4567841"
+    },
+    "icon.armor_t70_l_i00": {
+      "object": "armor_t70_l_i00",
+      "path": "res://assets/client_icons/armor_t70_l_i00.png",
+      "sha256": "e0739628f5140a371c5cf141e792f5427d31a540c6920b21a090c58275c7b0a6"
+    },
+    "icon.armor_t70_u_i00": {
+      "object": "armor_t70_u_i00",
+      "path": "res://assets/client_icons/armor_t70_u_i00.png",
+      "sha256": "b692a2414f45d094f6e2862ed7a746c575315be75fe99c1561731b534eed6d58"
+    },
+    "icon.armor_t74_b_i00": {
+      "object": "armor_t74_b_i00",
+      "path": "res://assets/client_icons/armor_t74_b_i00.png",
+      "sha256": "c3db7fe1d8041bec912baab3560992659d32180d4767967cdbd7ae9034945c1e"
+    },
+    "icon.armor_t74_g_i00": {
+      "object": "armor_t74_g_i00",
+      "path": "res://assets/client_icons/armor_t74_g_i00.png",
+      "sha256": "c7c63f26183d2c5fb39350d88ba9d15670037b0f046034e4a28428e3a752d478"
+    },
+    "icon.armor_t74_l_i00": {
+      "object": "armor_t74_l_i00",
+      "path": "res://assets/client_icons/armor_t74_l_i00.png",
+      "sha256": "468a4b6f4786cbadc53ac26dcbf0c370827da07018616125d6783da9681ba277"
+    },
+    "icon.armor_t74_u_i00": {
+      "object": "armor_t74_u_i00",
+      "path": "res://assets/client_icons/armor_t74_u_i00.png",
+      "sha256": "4e195d44742ec7d33312b123afaef73fdb3943e2a7857d9b4cd825a7a9523e8b"
+    },
+    "icon.armor_t75_b_i00": {
+      "object": "armor_t75_b_i00",
+      "path": "res://assets/client_icons/armor_t75_b_i00.png",
+      "sha256": "28a561bc4aac9911f757d3c907fdab87d3985411bda1b4e97b5697f0de851faa"
+    },
+    "icon.armor_t75_g_i00": {
+      "object": "armor_t75_g_i00",
+      "path": "res://assets/client_icons/armor_t75_g_i00.png",
+      "sha256": "11a18e1eec72d4186f17fd872de8a138bee468e05684375ae883654220c7cf7c"
+    },
+    "icon.armor_t75_l_i00": {
+      "object": "armor_t75_l_i00",
+      "path": "res://assets/client_icons/armor_t75_l_i00.png",
+      "sha256": "f2b6fb38c70e758c2979b434f4668fc6430859ce11fd9993f6dd318b79f198e7"
+    },
+    "icon.armor_t75_u_i00": {
+      "object": "armor_t75_u_i00",
+      "path": "res://assets/client_icons/armor_t75_u_i00.png",
+      "sha256": "761d5a481295c59738b09e143d8c2001f726867121ce704de2dcca9d790e68c6"
+    },
+    "icon.armor_t76_b_i00": {
+      "object": "armor_t76_b_i00",
+      "path": "res://assets/client_icons/armor_t76_b_i00.png",
+      "sha256": "4cbafeebf772cd6c5a68394a40631ad55bd06c132799f94dc25314eb58d32513"
+    },
+    "icon.armor_t76_g_i00": {
+      "object": "armor_t76_g_i00",
+      "path": "res://assets/client_icons/armor_t76_g_i00.png",
+      "sha256": "5f41c3206a1474fe6508722e0a68a5ac784f624e562103c2feda42992a0eccc8"
+    },
+    "icon.armor_t76_ul_i00": {
+      "object": "armor_t76_ul_i00",
+      "path": "res://assets/client_icons/armor_t76_ul_i00.png",
+      "sha256": "6dc6b213a88672966ca398c97f9b71e45da8fc776af3989f3db2953e1d0fa979"
+    },
+    "icon.armor_t79_b_i00": {
+      "object": "armor_t79_b_i00",
+      "path": "res://assets/client_icons/armor_t79_b_i00.png",
+      "sha256": "a6989290b55eedda2d4c0d39025a769508d2dd15fabbdd2d844bfebbac9e2f36"
+    },
+    "icon.armor_t79_g_i00": {
+      "object": "armor_t79_g_i00",
+      "path": "res://assets/client_icons/armor_t79_g_i00.png",
+      "sha256": "73260f8b617b1c8631bc052b60ea4076d4935d01ad698b9913e4afa94332cf5e"
+    },
+    "icon.armor_t79_l_i00": {
+      "object": "armor_t79_l_i00",
+      "path": "res://assets/client_icons/armor_t79_l_i00.png",
+      "sha256": "b7d8d889652732a9d5e9f81b44fdde3bda13f7bf8c14dd1c8b8b789b45a9f9f3"
+    },
+    "icon.armor_t79_u_i00": {
+      "object": "armor_t79_u_i00",
+      "path": "res://assets/client_icons/armor_t79_u_i00.png",
+      "sha256": "e98edbb0ee800c49239b19e1da323ab803fcdd4438dff545e0e21ec011c71c96"
+    },
+    "icon.shield_small_shield_i00": {
+      "object": "shield_small_shield_i00",
+      "path": "res://assets/client_icons/shield_small_shield_i00.png",
+      "sha256": "2667297f022cd81639b662a068f83c9f1585b36858ffcbf879d43b1cf5a61797"
+    },
+    "icon.weapon_apprentices_rod_i00": {
+      "object": "weapon_apprentices_rod_i00",
+      "path": "res://assets/client_icons/weapon_apprentices_rod_i00.png",
+      "sha256": "6d2191d0c23fe087d473d4db0311484005b39b650f2dd10dc463ac6c39727390"
+    },
+    "icon.weapon_long_sword_i00": {
+      "object": "weapon_long_sword_i00",
+      "path": "res://assets/client_icons/weapon_long_sword_i00.png",
+      "sha256": "5ec0ed5f4a5f32c36586be83492074de3407a5656899cffb642f28a47d1113af"
+    },
+    "icon.weapon_short_bow_i00": {
+      "object": "weapon_short_bow_i00",
+      "path": "res://assets/client_icons/weapon_short_bow_i00.png",
+      "sha256": "2ee06f9060eb52c2f324092e0d0e2ef0fbd3e5e4370572aca6e111bab59e7f9e"
+    }
+  },
+  "notes": [
+    "Clothing icons follow the actual icon_ref stored in wardrobe_source.json, including retained full-body items.",
+    "Shared client references intentionally share a Texture2D across equipment variants.",
+    "Potion and fictional Grelim fang retain the existing game UI artwork. Skill and potion hotbar artwork is unchanged."
+  ]
+}

@@ -270,6 +270,7 @@ func _bag_panel(column: VBoxContainer) -> void:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		if index < IDS.size():
 			button.icon = icon_for(index)
+			button.expand_icon = true
 			button.add_theme_constant_override("icon_max_width", 46)
 			button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
@@ -459,6 +460,7 @@ func _sync_loot_buttons() -> int:
 		if not loot_buttons.has(item_id):
 			var added_button := button_for("")
 			added_button.custom_minimum_size = Vector2(62, 76)
+			added_button.expand_icon = true
 			added_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			added_button.add_theme_constant_override("icon_max_width", 46)
 			added_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER

@@ -122,8 +122,8 @@ func _run() -> void:
 	for key: String in Catalog.entries:
 		var entry: Dictionary = Catalog.entries[key]
 		var icon := Icons.for_item({"slot": entry.slot, "rarity": Loot.RARITIES[Catalog.GRADES.find(entry.grade)], "lineage_key": key})
-		checked_icons = checked_icons and icon != null and icon.resource_path.ends_with(key + ".png") and icon.get_image().get_used_rect().has_area()
-	check(checked_icons, "every actual equipment entry has a nonempty rendered item thumbnail")
+		checked_icons = checked_icons and icon != null and icon.resource_path == "res://assets/client_icons/" + str(entry.icon_ref).get_slice(".", 1).to_lower() + ".png" and icon.get_size() == Vector2(32, 32) and icon.get_image().get_used_rect().has_area()
+	check(checked_icons, "every equipment entry uses its referenced nonempty original client icon at native resolution")
 	check(Icons.for_item(item("mago", 1, "boots"), "mago") != Icons.for_item(item("mago", 4, "boots"), "mago"), "different equipment grades have distinct item icons")
 	game.queue_free()
 	await process_frame

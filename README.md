@@ -30,3 +30,5 @@ As quatro classes têm ataques e habilidades próprios, incluindo projéteis, cu
 Consulte [o manual do RPG 3D](rpg3d/README.md) para habilidades, equipamentos, limitações visuais e testes.
 
 [Arqueiro com arco original](docs/archer-native-attack.png) · [Humano Mage](docs/mage-native-model.png) · [Curandeiro com Mage](docs/healer-native-model.png)
+
+As classes permanecem em postura normal quando não atacam. O Arqueiro recupera o ataque comum 0,65 s após uma habilidade; a recarga de cada habilidade continua separada. Os graus seguem Comum = No Grade, Incomum = D, Raro = C, Épico = B e Lendário = A, mostrados no inventário e no baú. A associação de cada peça à aparência exata do respectivo conjunto ainda aguarda armorgrp.dat e itemname-e.dat (ou equivalente traduzido) do cliente; as roupas originais atualmente integradas permanecem em uso.

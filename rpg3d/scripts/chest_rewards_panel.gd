@@ -1,4 +1,5 @@
 extends PanelContainer
+const LootItems := preload("res://scripts/loot_items.gd")
 ## Apresentação das recompensas já concedidas. O HUD controla o modal e a pausa.
 signal closed
 
@@ -167,7 +168,7 @@ func _make_card(item: Dictionary) -> PanelContainer:
 	item_name.max_lines_visible = 2
 	item_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	content.add_child(item_name)
-	content.add_child(_label(rarity, 16, tint))
+	content.add_child(_label("%s · %s" % [rarity, LootItems.grade_text(item)], 16, tint))
 	var bonuses: Array[String] = []
 	var attack := int(item.get("attack_bonus", 0))
 	var defense := int(item.get("defense_bonus", 0))

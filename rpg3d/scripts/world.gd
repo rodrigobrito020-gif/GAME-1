@@ -251,6 +251,8 @@ func _apply_equipment() -> void:
 			mesh.visible = LootItems.is_equipped(inventory, slot)
 
 func _play(action: String) -> void:
+	if action in ["idle", "walk", "run", "death"]:
+		animation.speed_scale = 1.0
 	for name in animation.get_animation_list():
 		if name.ends_with(action):
 			if animation.current_animation != name or not animation.is_playing():

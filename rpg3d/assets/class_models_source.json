@@ -1,7 +1,7 @@
 {
   "mage_model": "Magic.ukx / MMagic_M000, original human Mage",
   "mage_animations": [
-    "atkWait_1HS_MMagic",
+    "wait_1HS_MMagic",
     "walk_1HS_MMagic",
     "run_1HS_MMagic",
     "MagicShot_MMagic",
@@ -9,7 +9,7 @@
     "Death_MMagic"
   ],
   "archer_animations": [
-    "atkWait_Bow_MFighter",
+    "wait_Bow_MFighter",
     "walk_Bow_MFighter",
     "run_Bow_MFighter",
     "Atk01_Bow_MFighter",
@@ -22,8 +22,8 @@
   },
   "mage_face": "LineageFaceTex.utx / MMagic_m000_t00_f",
   "sha256": {
-    "human_mage.glb": "69defe99c08f5b8ffa262251072e53ff82f937d117fd954828af6a263ba97726",
-    "human_archer.glb": "d4586f3511f528f0ba700ff13614bcde5fb32b090ee1478b11cb5861bd96b360",
+    "human_mage.glb": "7fbbb576f31410fa1c13e27ed1741eaa16f4db017f16b015cce559498e25c33f",
+    "human_archer.glb": "b73c44e339e3a950d9eb6fa3dd19f0bf0ea3776251980ead60ed0136e61593f4",
     "short_bow.glb": "921b337ba69b4f8e0623baa27de545c1c6361ea0c45bfefb85ab98316f6b28b9",
     "apprentices_rod.glb": "e8eef37d5197c5a57aa544df46786ea534b1e0740f046839732511e88c7d87bd"
   },

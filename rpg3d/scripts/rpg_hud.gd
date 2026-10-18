@@ -1,6 +1,7 @@
 extends CanvasLayer
 ## Interface do RPG: vida, atalhos, inventário e barras projetadas dos inimigos.
 const EquipmentInventory := preload("res://scripts/equipment_inventory.gd")
+const LootItems := preload("res://scripts/loot_items.gd")
 const SkillSlot := preload("res://scripts/skill_slot.gd")
 const RiftMenu := preload("res://scripts/rift_menu.gd")
 const ChestRewardsPanel := preload("res://scripts/chest_rewards_panel.gd")
@@ -438,7 +439,7 @@ func show_reward(item: Dictionary) -> void:
 	var color: Color = colors.get(rarity.to_lower(), Color("b9bfc2"))
 	reward_name.text = str(item.get("name", item.get("nome", "Equipamento obtido")))
 	reward_name.add_theme_color_override("font_color", color)
-	reward_detail.text = "%s · Adicionado à mochila" % rarity
+	reward_detail.text = "%s · %s · Adicionado à mochila" % [rarity, LootItems.grade_text(item)]
 	reward_detail.add_theme_color_override("font_color", color.lightened(0.2))
 	var icon_id := str(item.get("slot", "armor"))
 	if icon_id not in ["sword", "shield", "armor", "gloves", "boots", "potion", "fang"]:

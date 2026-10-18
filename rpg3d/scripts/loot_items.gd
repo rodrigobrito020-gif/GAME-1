@@ -4,6 +4,7 @@ extends RefCounted
 const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots"]
 const BASE_KEYS := {"sword": "equipped", "shield": "shield", "armor": "armor", "gloves": "gloves", "boots": "boots"}
 const RARITIES: Array[String] = ["Comum", "Incomum", "Raro", "Épico", "Lendário"]
+const GRADES := {"Comum": "No Grade", "Incomum": "D", "Raro": "C", "Épico": "B", "Lendário": "A"}
 ## Percentages, totaling 100. The RNG uses one roll for rarity, regardless of slot.
 const WEIGHTS: Array[float] = [65.0, 27.0, 7.5, 0.45, 0.05]
 const RARITY_CUTOFFS: Array[float] = [65.0, 92.0, 99.5, 99.95, 100.0]
@@ -11,6 +12,13 @@ const MAX_STAT_BONUS := 100000
 const ITEM_NAMES := {"sword": "Espada", "shield": "Escudo", "armor": "Armadura", "gloves": "Luvas", "boots": "Botas"}
 const WORLD_NAMES: Array[String] = ["da Campina", "da Floresta", "do Pântano", "das Ruínas", "da Montanha", "do Deserto", "da Geada", "das Cinzas", "do Abismo", "da Aurora"]
 const RARITY_POWER: Array[int] = [1, 2, 4, 8, 16]
+
+static func grade_for_rarity(rarity: String) -> String:
+	return GRADES.get(rarity, "No Grade")
+
+static func grade_text(item: Dictionary) -> String:
+	var grade := grade_for_rarity(str(item.get("rarity", "Comum")))
+	return "No Grade" if grade == "No Grade" else "Grau " + grade
 
 static func rarity_for_roll(roll: float) -> String:
 	# Boundary values belong to the next tier; e.g. 65.0 is Incomum.
@@ -41,7 +49,7 @@ static func create_reward(rng: RandomNumberGenerator, world_number: int) -> Dict
 	# Crypto IDs remain unique across process restarts and save/load. They do not
 	# consume the seeded reward RNG, so seeding still reproduces loot attributes.
 	var id := Crypto.new().generate_random_bytes(16).hex_encode()
-	return {"id": id, "slot": slot, "name": "%s %s" % [ITEM_NAMES[slot], WORLD_NAMES[world - 1]], "rarity": rarity, "attack_bonus": attack, "defense_bonus": defense}
+	return {"id": id, "slot": slot, "name": "%s %s" % [ITEM_NAMES[slot], WORLD_NAMES[world - 1]], "rarity": rarity, "grade": grade_for_rarity(rarity), "attack_bonus": attack, "defense_bonus": defense}
 
 static func is_equipped(inv: Dictionary, slot: String) -> bool:
 	if slot not in SLOTS:
@@ -166,4 +174,7 @@ static func _validated_item(value: Variant) -> Dictionary:
 	for stat: String in ["attack_bonus", "defense_bonus"]:
 		if not value.get(stat) is int or value[stat] < 0 or value[stat] > MAX_STAT_BONUS:
 			return {}
-	return {"id": value.id, "slot": value.slot, "name": value.name, "rarity": value.rarity, "attack_bonus": value.attack_bonus, "defense_bonus": value.defense_bonus}
+	var result := {"id": value.id, "slot": value.slot, "name": value.name, "rarity": value.rarity, "attack_bonus": value.attack_bonus, "defense_bonus": value.defense_bonus}
+	if value.has("grade"):
+		result["grade"] = grade_for_rarity(value.rarity)
+	return result

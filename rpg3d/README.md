@@ -15,7 +15,7 @@ O jogo começa na **Vila da Fenda**, uma área rural segura e inteiramente cerca
 
 O Tanque combate de perto com espada e escudo; Defesa reduz o dano em 65% por quatro segundos. Arqueiro, Mago e Curandeiro têm ataques comuns à distância e habilidades próprias. Flechas e magias viajam como projéteis, colidem com obstáculos e causam dano ao atingir. A seleção de alvos e o dano em área respeitam linha de visão. Passo evasivo e Teleporte respeitam colisões. Cura recupera até 40 de vida; Santuário cura ao longo de quatro segundos. Estas ações funcionam em combate, com alcance e recarga; escolher uma classe muda a jogabilidade.
 
-**Modelos por classe:** o Tanque preserva o Fighter e a pose aprovada de espada/escudo. O Arqueiro usa `human_archer.glb`, com as mesmas malhas texturizadas do Fighter e os clipes nativos `atkWait_Bow`, `walk_Bow`, `run_Bow`, `Atk01_Bow` e `SpAtk01_Bow`. Mago e Curandeiro usam `human_mage.glb`, as malhas MMagic_M000 de `Magic.ukx`, postura, caminhada, corrida, conjuração e morte do Mage. A troca no Instrutor também troca o modelo da prévia do inventário. O ataque preserva a duração do clipe, sem retornar ao repouso após apenas 0,7 s.
+**Modelos por classe:** o Tanque preserva o Fighter e a pose aprovada de espada/escudo. O Arqueiro usa `human_archer.glb`, com as mesmas malhas texturizadas do Fighter e os clipes nativos `wait_Bow`, `walk_Bow`, `run_Bow`, `Atk01_Bow` e `SpAtk01_Bow`. Mago e Curandeiro usam `human_mage.glb`, as malhas MMagic_M000 de `Magic.ukx`, postura, caminhada, corrida, conjuração e morte do Mage. A troca no Instrutor também troca o modelo da prévia do inventário. As posturas de repouso usam `wait_Bow_MFighter` e `wait_1HS_MMagic`, sem a postura de prontidão `atkWait`. O Arqueiro usa a animação de disparo nativa em 0,9 s para ataque comum e 0,65 s para habilidades, ajustando a velocidade do clipe. A longa animação especial de quatro segundos não bloqueia mais o ataque comum; recargas individuais continuam independentes. A velocidade normal é restaurada ao voltar ao repouso, andar, correr ou morrer.
 
 **Texturas originais do Mage:** Mago e Curandeiro usam `MMagic_m000_t1000_u/l/g/b` no corpo/roupa, mãos e botas, e `MMagic_m000_t00_m00_ah_ori` mais `MMagic_m000_t00_m00_bh` nas duas malhas de cabelo. Foram extraídas do MMagic.utx enviado em duas partes, com CRC32 do arquivo verificado (`fd1e1a82`). O rosto mantém `MMagic_m000_t00_f`, de LineageFaceTex.utx. O alpha do corpo não produz transparência; apenas o cabelo usa recorte alpha com limite de 0,05. As texturas seguem os UVs do Mage, sem reutilizar atlas do Fighter.
 
@@ -110,3 +110,19 @@ A validação cobre controles e câmera, animações importadas e pose de morte,
 Corpo, cabelo, traje, luvas e botas usam texturas de `MFighter.utx`; o rosto vem de `LineageFaceTex.utx`. O cabelo conserva as duas partes originais e recorte alpha; nas texturas corporais, o alpha representa especularidade. A normalização dos nomes de ossos preserva as influências da luva. Origem e arquivos estão registrados em `assets/human_fighter_textures.json`.
 
 Espada e escudo originais foram convertidos para `assets/long_sword.glb` e `assets/small_shield.glb`, com registros de origem próprios. O encaixe acompanha os ossos do Fighter e as animações originais. O arco e a varinha originais estão em `assets/short_bow.glb` e `assets/apprentices_rod.glb`, extraídos de LineageWeapons.ukx com as texturas de LineageWeaponsTex.utx. `scripts/class_weapon.gd` cancela a conversão de eixos da malha, como na espada original, sem rotações arbitrárias entre classes. `assets/class_models_source.json` registra origens, clipes, texturas, CRC32 e hashes SHA-256. O Mage está ativo para Mago e Curandeiro, com sete partes texturizadas: corpo superior/inferior, mãos, botas, rosto e cabelo frontal/traseiro. As malhas originais compartilham um esqueleto e preservam caminhada, corrida, conjuração e pose final de morte. Arquivos UKX/UTX completos não são necessários para jogar.
+
+## Graus e roupas do Lineage 2
+
+| Raridade | Grau |
+| --- | --- |
+| Comum | No Grade |
+| Incomum | D |
+| Raro | C |
+| Épico | B |
+| Lendário | A |
+
+O baú e o inventário mostram o grau. Itens antigos sem esse campo continuam válidos e recebem a indicação pelo valor da raridade. Itens novos gravam o grau, e o carregamento valida a correspondência. As probabilidades não mudaram.
+
+**Pendente:** vincular cada peça à malha/textura do conjunto autêntico do respectivo grau. Os pacotes MFighter/MMagic usam nomes técnicos que não identificam sozinhos o nome e o grau do equipamento. Essa associação depende de `armorgrp.dat` e `itemname-e.dat` (ou o arquivo equivalente traduzido), na pasta `system` do cliente do usuário. Até a integração dessa tabela, os itens usam as roupas originais já importadas; o novo grau não representa uma troca visual de conjunto.
+
+Teste da recuperação do Arqueiro: `godot --headless --path . --script res://tests/archer_recovery_test.gd`.

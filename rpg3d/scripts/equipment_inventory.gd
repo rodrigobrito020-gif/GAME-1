@@ -296,6 +296,7 @@ func _details_panel(column: VBoxContainer) -> void:
 	selected_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(selected_name)
 	selected_type = label_for("Arma · Uma mão", 14)
+	selected_type.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	selected_type.add_theme_color_override("font_color", Color("9cc6d3"))
 	column.add_child(selected_type)
 	selected_description = label_for("", 15)
@@ -454,7 +455,7 @@ func _sync_loot_buttons() -> int:
 		var button: Button = loot_buttons[item_id]
 		bag_grid.move_child(button, IDS.size() + present.size() - 1)
 		button.icon = icon_for(IDS.find(item.slot))
-		button.tooltip_text = "%s · %s\nAtaque +%d · Defesa +%d" % [item.name, item.rarity, item.attack_bonus, item.defense_bonus]
+		button.tooltip_text = "%s · %s · %s\nAtaque +%d · Defesa +%d" % [item.name, item.rarity, LootItems.grade_text(item), item.attack_bonus, item.defense_bonus]
 		button.visible = _matches(IDS.find(item.slot))
 		if button.visible:
 			shown += 1
@@ -483,7 +484,7 @@ func _show_current_equipment(index: int) -> Dictionary:
 	current_icon.texture = icon_for(index) if not current.is_empty() else null
 	current_name.text = str(current.name) if not current.is_empty() else "Nenhum equipamento"
 	current_name.add_theme_color_override("font_color", rarity_color(str(current.get("rarity", "Comum"))) if not current.is_empty() and current.rarity != "Inicial" else GOLD)
-	current_description.text = "%s\n%s" % [current.rarity, _bonus_text(current)] if not current.is_empty() else "Slot disponível"
+	current_description.text = "%s · %s\n%s" % [current.rarity, LootItems.grade_text(current), _bonus_text(current)] if not current.is_empty() else "Slot disponível"
 	return current
 
 func _refresh_loot_details(item: Dictionary) -> void:
@@ -492,7 +493,7 @@ func _refresh_loot_details(item: Dictionary) -> void:
 	var current := _show_current_equipment(index)
 	selected_name.text = item.name
 	selected_name.add_theme_color_override("font_color", rarity_color(item.rarity))
-	selected_type.text = "%s · %s" % [TYPES[index], item.rarity]
+	selected_type.text = "%s · %s · %s" % [TYPES[index], item.rarity, LootItems.grade_text(item)]
 	selected_icon.texture = icon_for(index)
 	selected_description.text = _bonus_text(item)
 	if not equipped:

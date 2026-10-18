@@ -32,6 +32,9 @@ func inventory() -> Dictionary:
 	return {"equipped": true, "shield": true, "armor": true, "gloves": true, "boots": true, "loot_items": [], "equipped_loot": {}}
 
 func _test_rarity_rates() -> void:
+	for rarity in LootItems.RARITIES:
+		var expected: String = ["No Grade", "D", "C", "B", "A"][LootItems.RARITIES.find(rarity)]
+		check(LootItems.grade_for_rarity(rarity) == expected, "rarity maps to the requested Lineage grade: " + rarity)
 	check(is_equal_approx(LootItems.WEIGHTS.reduce(func(total: float, weight: float) -> float: return total + weight, 0.0), 100.0), "rarity weights total 100 percent")
 	var boundaries := [[0.0, "Comum"], [64.999999, "Comum"], [65.0, "Incomum"], [91.999999, "Incomum"], [92.0, "Raro"], [99.499999, "Raro"], [99.5, "Épico"], [99.949999, "Épico"], [99.95, "Lendário"], [99.999999, "Lendário"]]
 	for entry: Array in boundaries:
@@ -56,6 +59,7 @@ func _test_generated_rewards() -> void:
 		var generated := LootItems.create_reward(rng, index % 10 + 1)
 		var repeated := LootItems.create_reward(replay, index % 10 + 1)
 		valid = valid and generated.id.length() == 32 and not ids.has(generated.id) and generated.slot in LootItems.SLOTS and generated.rarity in LootItems.RARITIES
+		valid = valid and generated.grade == LootItems.grade_for_rarity(generated.rarity)
 		valid = valid and generated.attack_bonus is int and generated.defense_bonus is int and generated.attack_bonus >= 0 and generated.defense_bonus >= 0
 		ids[generated.id] = true
 		slots[generated.slot] = true

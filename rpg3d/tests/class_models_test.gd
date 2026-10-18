@@ -63,6 +63,8 @@ func _run() -> void:
 		var hand := rig.find_bone("Bip01_L_Hand" if id == "arqueiro" else "Bip01_R_Hand")
 		var idle_hand := rig.get_bone_global_pose(hand).origin
 		if id != "tanque":
+			var resting_hand := (rig.global_transform * rig.get_bone_global_pose(hand)).origin
+			check(resting_hand.y - game.player.global_position.y < 1.15, "normal idle keeps the weapon hand lowered instead of aiming: " + id)
 			check(game.ranged_attachment.bone_name == ("Weapon_L_Bone" if id == "arqueiro" else "Weapon_R_Bone"), "weapon uses the hand socket instead of the shield socket: " + id)
 			var weapon: Node3D = game.ranged_weapon.get_child(0)
 			check(str(weapon.name) == ("OriginalShortBow" if id == "arqueiro" else "OriginalApprenticesRod"), "class uses the extracted client weapon: " + id)

@@ -201,10 +201,15 @@ func _context_valid(game, effect: Dictionary) -> bool:
 func _begin_action(game, action: String, reuse: float) -> void:
 	game.attack_pending = false
 	game.facing.rotation.y = game.yaw
-	game._play(action)
-	# Preserve the original draw/cast motion instead of returning to idle at .7s.
-	game.attack_clock = maxf(0.7, game.animation.current_animation_length)
-	game.cooldown = maxf(game.cooldown, maxf(reuse, game.attack_clock))
+	# Archer skills use the native shot, rather than the four-second flourish.
+	# Their own reuse timer remains independent from the short attack recovery.
+	game.animation.stop()
+	game._play("attack" if game.player_class == "arqueiro" else action)
+	var length: float = game.animation.current_animation_length
+	var recovery := (0.65 if action == "skill" else 0.9) if game.player_class == "arqueiro" else maxf(0.7, length)
+	game.animation.speed_scale = length / recovery if game.player_class == "arqueiro" else 1.0
+	game.attack_clock = recovery
+	game.cooldown = maxf(game.cooldown, recovery if game.player_class == "arqueiro" else maxf(reuse, recovery))
 
 func _forward(game) -> Vector3:
 	return Vector3.FORWARD.rotated(Vector3.UP, game.yaw)

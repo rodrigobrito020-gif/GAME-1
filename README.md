@@ -12,8 +12,8 @@ RPG em terceira pessoa com controle direto, desenvolvido no **Godot 4.6.3**. Est
 
 - **WASD:** mover; **mouse:** câmera; **roda do mouse:** zoom.
 - **Shift:** correr; **Espaço:** pular.
-- **Clique esquerdo:** atacar com espada; **1–4:** habilidades.
-- **Q:** poção; **AUTO**, abaixo da poção: configurar uso automático por porcentagem de vida.
+- **Clique esquerdo:** atacar com espada; **1–4:** habilidades. Arraste um ícone para baixo para ativar automático e para cima para desativar.
+- **Q:** poção; **clique no ícone da poção:** configurar uso automático por porcentagem de vida.
 - **I:** inventário; **Esc:** liberar cursor/fechar janelas; **R:** reiniciar.
 
 O protótipo tem campo aberto de 1000 × 1000 metros, humano guerreiro com animações 3D, Grelims provisórios, combate manual, barras de vida, quatro habilidades, inventário e poções configuráveis. Modelos, efeitos e sistemas ainda estão em desenvolvimento.

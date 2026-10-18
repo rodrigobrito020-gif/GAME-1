@@ -2,6 +2,7 @@ extends CanvasLayer
 ## Interface do RPG: vida, atalhos, inventário e barras projetadas dos inimigos.
 const SkillSlot := preload("res://scripts/skill_slot.gd")
 signal skill_requested(slot: int)
+signal skill_automatic_changed(slot: int, enabled: bool)
 signal inventory_requested
 signal item_requested(item: String)
 signal potion_settings_changed(enabled: bool, threshold: float)
@@ -9,15 +10,14 @@ var health: ProgressBar
 var health_text: Label
 var status: Label
 var notice: Label
-var slot_buttons: Array[Button] = []
+var slot_buttons: Array[Control] = []
 var inventory_panel: PanelContainer
 var inventory_info: Label
 var item_buttons: Array[Button] = []
 var enemy_layer: Control
 var enemy_bars: Dictionary = {}
 var root: Control
-var potion_slot: Button
-var potion_auto_button: Button
+var potion_slot: Control
 var potion_popup: PanelContainer
 var auto_check: CheckButton
 var threshold_slider: HSlider
@@ -116,8 +116,9 @@ func _ready() -> void:
 	for i in range(4):
 		var slot := SkillSlot.new()
 		slot.slot = i
-		slot.tooltip_text = "%d · %s\n%s" % [i + 1, SKILL_NAMES[i], SKILL_HINTS[i]]
-		slot.pressed.connect(func() -> void: skill_requested.emit(i))
+		slot.tooltip_text = "%d · %s\n%s\nSegure e arraste para baixo: automático. Para cima: manual." % [i + 1, SKILL_NAMES[i], SKILL_HINTS[i]]
+		slot.activated.connect(func() -> void: skill_requested.emit(i))
+		slot.automatic_changed.connect(func(enabled: bool) -> void: skill_automatic_changed.emit(i, enabled))
 		bar.add_child(slot)
 		slot_buttons.append(slot)
 	var help := _label("WASD mover · Mouse câmera · Scroll zoom · Clique atacar · 1–4 habilidades · Q poção · I mochila · Esc cursor", 14)
@@ -170,7 +171,7 @@ func _inventory() -> void:
 	column.add_child(close)
 	inventory_panel.hide()
 
-func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead: bool, inventory: Dictionary, guard: float, potion_auto: bool, potion_threshold: float, potion_reuse: float) -> void:
+func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead: bool, inventory: Dictionary, guard: float, potion_auto: bool, potion_threshold: float, potion_reuse: float, automatic_skills: Array[bool]) -> void:
 	health.max_value = maximum
 	health.value = hp
 	health_text.text = "%d / %d" % [ceili(hp), int(maximum)]
@@ -180,9 +181,10 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	for i in range(4):
 		var remaining := float(cooldowns[i])
 		var enabled: bool = not (dead or inventory_panel.visible or remaining > 0 or (i < 2 and not inventory.equipped))
+		slot_buttons[i].automatic = automatic_skills[i]
 		slot_buttons[i].sync(remaining, [6.0, 8.0, 12.0, 7.0][i], enabled)
+	potion_slot.automatic = potion_auto
 	potion_slot.sync_potion(inventory.potions, not dead and not inventory_panel.visible and inventory.potions > 0 and hp < maximum, potion_reuse)
-	potion_auto_button.text = "AUTO %d%%" % int(potion_threshold) if potion_auto else "AUTO: OFF"
 	auto_check.set_pressed_no_signal(potion_auto)
 	threshold_slider.set_value_no_signal(potion_threshold)
 	threshold_label.text = "Usar ao atingir %d%% de vida ou menos" % int(potion_threshold)
@@ -279,24 +281,17 @@ func _target() -> void:
 	target_panel.hide()
 
 func _potions() -> void:
-	var column := VBoxContainer.new()
-	root.add_child(column)
-	column.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	column.offset_left = -228
-	column.offset_right = -156
-	column.offset_top = -111
-	column.offset_bottom = -28
 	potion_slot = SkillSlot.new()
 	potion_slot.slot = 4
-	potion_slot.tooltip_text = "Poção de vida [Q] · Recupera 40 de vida.\nClique para usar. Configure o uso automático no botão abaixo."
-	potion_slot.pressed.connect(func() -> void: item_requested.emit("potion"))
-	column.add_child(potion_slot)
-	potion_auto_button = _button("AUTO: OFF")
-	potion_auto_button.tooltip_text = "Configurar uso automático. Pressione Esc para liberar o cursor."
-	potion_auto_button.add_theme_font_size_override("font_size", 11)
-	potion_auto_button.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
-	potion_auto_button.pressed.connect(func() -> void: potion_popup.visible = not potion_popup.visible)
-	column.add_child(potion_auto_button)
+	root.add_child(potion_slot)
+	potion_slot.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	potion_slot.offset_left = -220
+	potion_slot.offset_right = -156
+	potion_slot.offset_top = -92
+	potion_slot.offset_bottom = -28
+	potion_slot.tooltip_text = "Poção de vida [Q]. Clique no ícone para configurar o uso automático. Q usa manualmente. Arraste para baixo para AUTO e para cima para manual."
+	potion_slot.activated.connect(func() -> void: potion_popup.visible = not potion_popup.visible)
+	potion_slot.automatic_changed.connect(func(enabled: bool) -> void: potion_settings_changed.emit(enabled, threshold_slider.value))
 	potion_popup = _panel(root)
 	potion_popup.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	potion_popup.offset_left = -240

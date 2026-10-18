@@ -29,6 +29,7 @@ var guard_clock := 0.0
 var dash_clock := 0.0
 var dash_direction := Vector3.FORWARD
 var attack_kind := 0
+var automatic_skills: Array[bool] = [false, false, false, false]
 var auto_potion := false
 var potion_threshold := 40.0
 var potion_clock := 0.0
@@ -174,6 +175,7 @@ func _ui() -> void:
 	add_child(hud)
 	notice = hud.notice
 	hud.skill_requested.connect(_activate_skill)
+	hud.skill_automatic_changed.connect(_set_skill_automatic)
 	hud.inventory_requested.connect(_toggle_inventory)
 	hud.item_requested.connect(_use_item)
 	hud.potion_settings_changed.connect(_configure_potions)
@@ -183,7 +185,7 @@ func _maximum_hp() -> float:
 	return 100.0 + (level - 1) * 20.0
 
 func _refresh_hud() -> void:
-	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock, auto_potion, potion_threshold, potion_clock)
+	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock, auto_potion, potion_threshold, potion_clock, automatic_skills)
 	hud.sync_enemies(enemies, camera)
 
 func _toggle_inventory() -> void:
@@ -253,6 +255,28 @@ func _activate_skill(slot: int) -> bool:
 			return false
 	_refresh_hud()
 	return true
+
+func _set_skill_automatic(slot: int, enabled: bool) -> void:
+	if slot >= 0 and slot < automatic_skills.size():
+		automatic_skills[slot] = enabled
+		_refresh_hud()
+
+func _automatic_skills_step() -> void:
+	if dead or attack_clock > 0 or hud.inventory_panel.visible:
+		return
+	var ready: Array[bool] = [false, false, false, false]
+	for foe in enemies:
+		var offset := foe.global_position - player.global_position
+		offset.y = 0
+		var distance := offset.length()
+		var in_front := offset.normalized().dot(Vector3.FORWARD.rotated(Vector3.UP, yaw)) > 0.35
+		ready[0] = ready[0] or (distance <= 3.6 and in_front)
+		ready[1] = ready[1] or distance <= 3.2
+		ready[2] = ready[2] or distance <= 2.5
+		ready[3] = ready[3] or (distance >= 4.5 and distance <= 8.0 and in_front)
+	for slot in range(automatic_skills.size()):
+		if automatic_skills[slot] and ready[slot] and _activate_skill(slot):
+			break
 
 func _spawn_enemies() -> void:
 	for point in [Vector3(-4, 0, -16), Vector3(5, 0, -22), Vector3(0, 0, -30)]:
@@ -354,6 +378,7 @@ func _physics_process(delta: float) -> void:
 		player.move_and_slide()
 	_enemies_step(delta)
 	_auto_potion_step(delta)
+	_automatic_skills_step()
 	_refresh_hud()
 
 func _attack(powered := false) -> bool:
@@ -503,6 +528,8 @@ func _test() -> void:
 	_check(enemies[0].get_node("GrelimVisual").limbs.size() == 4, "Grelims têm corpo e membros 3D no lugar das esferas")
 	_check(sword_attachment.bone_name == "Weapon_R_Bone", "espada vinculada à mão pelo osso da arma")
 	_check(sword_attachment.has_node("Sword/OriginalLongSword"), "espada usa modelo original do cliente")
+	var rig: Skeleton3D = character_model.find_children("*", "Skeleton3D", true, false)[0]
+	_check(rig.find_bone("neutral_bone") == -1, "equipamentos não contêm influência sem osso que deforma a luva")
 	_check(OpenField.SIZE == 1000.0 and has_node("OpenField/FieldCollision"), "campo aberto de 1000 por 1000 metros com chão físico")
 	await get_tree().physics_frame
 	enemies[0].position = player.position + Vector3(0, 0, -2)
@@ -543,6 +570,7 @@ func _test() -> void:
 	await _test_interface()
 	_test_potion_settings()
 	_test_equipment()
+	_test_slot_gestures()
 	print("SMOKE COMPLETE: %d falhas" % failures)
 	get_tree().quit(0 if failures == 0 else 1)
 
@@ -687,3 +715,55 @@ func _test_equipment() -> void:
 	hud.item_buttons[3].pressed.emit()
 	_attack()
 	_check(not _use_item("armor"), "troca de roupa é bloqueada durante golpe")
+
+func _slot_gesture(control: Control, travel: Vector2) -> void:
+	var origin := control.get_global_rect().get_center()
+	var press := InputEventMouseButton.new()
+	press.button_index = MOUSE_BUTTON_LEFT
+	press.pressed = true
+	press.global_position = origin
+	control._gui_input(press)
+	var motion := InputEventMouseMotion.new()
+	motion.global_position = origin + travel
+	control._input(motion)
+	var release := InputEventMouseButton.new()
+	release.button_index = MOUSE_BUTTON_LEFT
+	release.global_position = origin + travel
+	control._input(release)
+
+func _test_slot_gestures() -> void:
+	_restart()
+	automatic_skills.fill(false)
+	for i in range(4):
+		_slot_gesture(hud.slot_buttons[i], Vector2(0, 28))
+		_check(automatic_skills[i] and cooldown == 0, "arrastar para baixo ativa automático sem disparar skill: " + str(i + 1))
+		_slot_gesture(hud.slot_buttons[i], Vector2(0, -28))
+		_check(not automatic_skills[i], "arrastar para cima desativa automático: " + str(i + 1))
+	_slot_gesture(hud.slot_buttons[0], Vector2.ZERO)
+	_check(skill_cooldown == 6.0, "clique curto continua ativando habilidade manual")
+	_refresh_hud()
+	_slot_gesture(hud.slot_buttons[0], Vector2(0, 28))
+	_check(automatic_skills[0], "recarga não impede alterar modo automático")
+	_slot_gesture(hud.slot_buttons[0], Vector2(0, -28))
+	_check(is_equal_approx(hud.potion_slot.global_position.y, hud.slot_buttons[0].global_position.y), "poção alinhada na mesma altura das habilidades")
+	_slot_gesture(hud.potion_slot, Vector2(0, 28))
+	_check(auto_potion and not hud.potion_popup.visible, "arrastar poção para baixo ativa uso automático sem abrir janela")
+	_slot_gesture(hud.potion_slot, Vector2(0, -28))
+	_check(not auto_potion, "arrastar poção para cima desativa uso automático")
+	var count: int = inventory.potions
+	_slot_gesture(hud.potion_slot, Vector2.ZERO)
+	_check(hud.potion_popup.visible and inventory.potions == count, "clicar na poção abre configuração mesmo com vida cheia")
+	hud.potion_popup.hide()
+	_restart()
+	enemies[0].position = player.position + Vector3(0, 0, -2.5)
+	_set_skill_automatic(0, true)
+	_toggle_inventory()
+	_automatic_skills_step()
+	_check(skill_cooldown == 0, "inventário pausado impede habilidades automáticas")
+	_toggle_inventory()
+	_automatic_skills_step()
+	_check(skill_cooldown == 6.0, "skill automática dispara com inimigo próximo à frente")
+	_set_skill_automatic(0, false)
+	_restart()
+	_automatic_skills_step()
+	_check(skill_cooldown == 0, "desativar automático interrompe novos disparos")

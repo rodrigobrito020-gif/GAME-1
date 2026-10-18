@@ -21,5 +21,37 @@
     "MFighter_m000_m00_ah",
     "MFighter_m000_m00_bh"
   ],
-  "face_source_sha256": "7da2bcef4186899307e32695f0914e84e951783dbde5825465626bf1df4c266f"
+  "face_source_sha256": "7da2bcef4186899307e32695f0914e84e951783dbde5825465626bf1df4c266f",
+  "skeleton_normalization": {
+    "parts": [
+      "MFighter_m001_b",
+      "MFighter_m001_g",
+      "MFighter_m001_l"
+    ],
+    "canonical_skeleton": "MFighter_m000_b",
+    "verified_same_bone_count_and_parent_indices": true,
+    "aliases_by_index": {
+      "18": [
+        "Weapon_L_Bone",
+        "Shield_L_Bone"
+      ],
+      "19": [
+        "Shield_L_Bone",
+        "Weapon_L_Bone"
+      ],
+      "27": [
+        "Bip01_L_Finger01",
+        "Bip01_R_Finger01"
+      ],
+      "32": [
+        "Weapon_R_Bone",
+        "Shield_R_Bone"
+      ],
+      "33": [
+        "Shield_R_Bone",
+        "Weapon_R_Bone"
+      ]
+    },
+    "reason": "Nome duplicado no dedo direito era descartado na união do esqueleto e gerava influência neutral_bone; normalizar nomes mantém os pesos originais e elimina a ponta esticada."
+  }
 }

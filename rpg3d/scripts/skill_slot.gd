@@ -1,5 +1,12 @@
-extends Button
+extends Control
 ## Ícones vetoriais e recarga sobre o próprio slot, sem imagens externas.
+signal activated
+signal automatic_changed(enabled: bool)
+var automatic := false
+var held := false
+var press_origin := Vector2.ZERO
+var drag_offset := 0.0
+var maximum_drag := 0.0
 var slot := 0
 var remaining := 0.0
 var total := 1.0
@@ -10,8 +17,7 @@ const COLORS := [Color("c5e9ca"), Color("baa7eb"), Color("9ccfe4"), Color("f1d89
 func _ready() -> void:
 	custom_minimum_size = Vector2(64, 64)
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
-		add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_entered.connect(queue_redraw)
 	mouse_exited.connect(queue_redraw)
 
@@ -19,12 +25,39 @@ func sync(value: float, maximum: float, enabled: bool) -> void:
 	remaining = value
 	total = maximum
 	usable = enabled
-	disabled = not enabled
 	queue_redraw()
 
 func sync_potion(count: int, enabled: bool, reuse: float) -> void:
 	potion_count = count
 	sync(reuse, 2.0, enabled and reuse <= 0)
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		held = true
+		press_origin = event.global_position
+		drag_offset = 0.0
+		maximum_drag = 0.0
+		accept_event()
+
+func _input(event: InputEvent) -> void:
+	if not held:
+		return
+	if event is InputEventMouseMotion:
+		drag_offset = event.global_position.y - press_origin.y
+		maximum_drag = maxf(maximum_drag, event.global_position.distance_to(press_origin))
+		queue_redraw()
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+		var distance: float = event.global_position.y - press_origin.y
+		maximum_drag = maxf(maximum_drag, event.global_position.distance_to(press_origin))
+		held = false
+		if absf(distance) >= 18:
+			automatic_changed.emit(distance > 0)
+		elif maximum_drag < 8 and absf(distance) < 8:
+			activated.emit()
+		drag_offset = 0
+		queue_redraw()
+		get_viewport().set_input_as_handled()
 
 func _line(a: Vector2, b: Vector2, color: Color, width := 2.0) -> void:
 	draw_line(a, b, color, width, true)
@@ -38,6 +71,7 @@ func _sword(origin: Vector2, angle: float, color: Color) -> void:
 	_line(origin + Vector2(0, 12).rotated(angle), origin + Vector2(0, 22).rotated(angle), Color("d6c49b"), 4)
 
 func _draw() -> void:
+	draw_set_transform(Vector2(0, clampf(drag_offset, -14, 14)) if held else Vector2.ZERO)
 	var gold := Color("a68d58")
 	var color: Color = COLORS[slot]
 	draw_rect(Rect2(Vector2.ZERO, size), Color("14191b"))
@@ -96,7 +130,11 @@ func _draw() -> void:
 		var sign_y := 1.0 if corner.y < center.y else -1.0
 		_line(corner, corner + Vector2(sign_x * 12, 0), Color("d1bd86"), 2)
 		_line(corner, corner + Vector2(0, sign_y * 12), Color("d1bd86"), 2)
-	if is_hovered() and usable:
+	if get_global_rect().has_point(get_global_mouse_position()) and usable:
 		draw_rect(Rect2(Vector2(1, 1), size - Vector2(2, 2)), Color("f7e7b6"), false, 2)
 	draw_rect(Rect2(size - Vector2(18, 19), Vector2(16, 17)), Color("131719"))
 	draw_string(ThemeDB.fallback_font, size - Vector2(14, 5), "Q" if slot == 4 else str(slot + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("f1e5c7"))
+
+	if automatic:
+		draw_line(Vector2(6, 5), Vector2(size.x - 6, 5), Color("98e3ab"), 3, true)
+		draw_string(ThemeDB.fallback_font, Vector2(6, 17), "AUTO", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("c8ffcf"))

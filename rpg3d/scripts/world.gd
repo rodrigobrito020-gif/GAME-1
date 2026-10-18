@@ -1,5 +1,6 @@
 extends Node3D
 
+const RPGHud := preload("res://scripts/rpg_hud.gd")
 const FIGHTER := preload("res://assets/human_fighter.glb")
 const GrelimVisual := preload("res://scripts/grelim_visual.gd")
 const OpenField := preload("res://scripts/open_field.gd")
@@ -8,7 +9,7 @@ var facing: Node3D
 var animation: AnimationPlayer
 var boom: SpringArm3D
 var camera: Camera3D
-var stats: Label
+var hud: CanvasLayer
 var notice: Label
 var yaw := 0.0
 var pitch := -0.10
@@ -19,6 +20,15 @@ var kills := 0
 var cooldown := 0.0
 var attack_clock := 0.0
 var skill_cooldown := 0.0
+var spin_cooldown := 0.0
+var guard_cooldown := 0.0
+var dash_cooldown := 0.0
+var guard_clock := 0.0
+var dash_clock := 0.0
+var dash_direction := Vector3.FORWARD
+var attack_kind := 0
+var zoom_distance := 5.0
+var inventory := {"equipped": true, "potions": 3, "fangs": 0, "gold": 0}
 var powered_attack := false
 var sword_attachment: BoneAttachment3D
 var attack_pending := false
@@ -142,25 +152,72 @@ func _play(action: String) -> void:
 			return
 
 func _ui() -> void:
-	var layer := CanvasLayer.new()
-	add_child(layer)
-	stats = Label.new()
-	stats.position = Vector2(24, 20)
-	stats.add_theme_font_size_override("font_size", 24)
-	layer.add_child(stats)
-	notice = Label.new()
-	notice.position = Vector2(24, 60)
-	notice.text = "Campo aberto · Explore livremente e teste os golpes perto dos Grelims"
-	layer.add_child(notice)
-	var help := Label.new()
-	help.position = Vector2(24, 650)
-	help.text = "WASD  mover    Mouse  câmera    Shift  correr    Espaço  pular\nClique esquerdo  espada    1  Golpe potente    Esc  liberar mouse    R  reiniciar"
-	layer.add_child(help)
-	var aim := Label.new()
-	aim.text = "+"
-	aim.position = Vector2(633, 347)
-	aim.add_theme_font_size_override("font_size", 24)
-	layer.add_child(aim)
+	hud = RPGHud.new()
+	add_child(hud)
+	notice = hud.notice
+	hud.skill_requested.connect(_activate_skill)
+	hud.inventory_requested.connect(_toggle_inventory)
+	hud.item_requested.connect(_use_item)
+	_refresh_hud()
+
+func _maximum_hp() -> float:
+	return 100.0 + (level - 1) * 20.0
+
+func _refresh_hud() -> void:
+	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock)
+	hud.sync_enemies(enemies, camera)
+
+func _toggle_inventory() -> void:
+	hud.inventory_panel.visible = not hud.inventory_panel.visible
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if hud.inventory_panel.visible else Input.MOUSE_MODE_CAPTURED
+	animation.speed_scale = 0.0 if hud.inventory_panel.visible else 1.0
+	_refresh_hud()
+
+func _use_item(item: String) -> bool:
+	if dead:
+		return false
+	if item == "sword":
+		if attack_clock > 0:
+			return false
+		inventory.equipped = not inventory.equipped
+		sword_attachment.visible = inventory.equipped
+	elif item == "potion":
+		if inventory.potions <= 0 or hp >= _maximum_hp():
+			return false
+		inventory.potions -= 1
+		hp = minf(_maximum_hp(), hp + 40.0)
+	else:
+		return false
+	_refresh_hud()
+	return true
+
+func _activate_skill(slot: int) -> bool:
+	if dead or hud.inventory_panel.visible:
+		return false
+	match slot:
+		0:
+			return _attack(true)
+		1:
+			if spin_cooldown > 0 or not _attack():
+				return false
+			attack_kind = 2
+			spin_cooldown = 8.0
+			_play("skill")
+		2:
+			if guard_cooldown > 0:
+				return false
+			guard_cooldown = 12.0
+			guard_clock = 4.0
+		3:
+			if dash_cooldown > 0:
+				return false
+			dash_cooldown = 7.0
+			dash_clock = 0.32
+			dash_direction = Vector3.FORWARD.rotated(Vector3.UP, yaw)
+		_:
+			return false
+	_refresh_hud()
+	return true
 
 func _spawn_enemies() -> void:
 	for point in [Vector3(-4, 0, -16), Vector3(5, 0, -22), Vector3(0, 0, -30)]:
@@ -177,42 +234,62 @@ func _spawn_enemies() -> void:
 		var visual := GrelimVisual.new()
 		visual.name = "GrelimVisual"
 		foe.add_child(visual)
-		var label := Label3D.new()
-		label.name = "Health"
-		label.position.y = 2.0
-		label.font_size = 40
-		label.pixel_size = 0.009
-		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		label.text = "Grelim · 60"
-		foe.add_child(label)
 		add_child(foe)
 		enemies.append(foe)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_I:
+			_toggle_inventory()
+			return
 		if event.keycode == KEY_ESCAPE:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		elif event.keycode == KEY_R:
+			if hud.inventory_panel.visible:
+				_toggle_inventory()
+			else:
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			return
+		if hud.inventory_panel.visible:
+			return
+		if event.keycode == KEY_R:
 			_restart()
-		elif event.keycode == KEY_1:
-			_attack(true)
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-		else:
-			_attack()
+		elif event.keycode >= KEY_1 and event.keycode <= KEY_4:
+			_activate_skill(event.keycode - KEY_1)
+	if hud.inventory_panel.visible:
+		return
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			zoom_distance = clampf(zoom_distance - 0.8, 2.0, 14.0)
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			zoom_distance = clampf(zoom_distance + 0.8, 2.0, 14.0)
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			else:
+				_attack()
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		yaw -= event.relative.x * 0.003
 		pitch = clampf(pitch - event.relative.y * 0.003, -1.0, 0.45)
 
 func _physics_process(delta: float) -> void:
+	if hud.inventory_panel.visible:
+		_refresh_hud()
+		return
 	boom.rotation = Vector3(pitch, yaw, 0)
+	boom.spring_length = lerpf(boom.spring_length, zoom_distance, 1.0 - exp(-10.0 * delta))
+	spin_cooldown = maxf(0, spin_cooldown - delta)
+	guard_cooldown = maxf(0, guard_cooldown - delta)
+	dash_cooldown = maxf(0, dash_cooldown - delta)
+	guard_clock = maxf(0, guard_clock - delta)
+	dash_clock = maxf(0, dash_clock - delta)
 	cooldown = maxf(0, cooldown - delta)
 	skill_cooldown = maxf(0, skill_cooldown - delta)
 	if not dead:
 		var input := Input.get_vector("left", "right", "forward", "back")
 		var direction := Vector3(input.x, 0, input.y).rotated(Vector3.UP, yaw)
 		var speed := 6.5 if Input.is_action_pressed("sprint") else 4.0
+		if dash_clock > 0:
+			direction = dash_direction
+			speed = 14.0
 		player.velocity.x = direction.x * speed
 		player.velocity.z = direction.z * speed
 		if not player.is_on_floor():
@@ -230,19 +307,20 @@ func _physics_process(delta: float) -> void:
 		else:
 			if direction.length() > 0.1:
 				facing.rotation.y = lerp_angle(facing.rotation.y, atan2(-direction.x, -direction.z), delta * 12)
-				_play("run" if Input.is_action_pressed("sprint") else "walk")
+				_play("run" if Input.is_action_pressed("sprint") or dash_clock > 0 else "walk")
 			else:
 				_play("idle")
 	else:
 		player.velocity.y -= 20 * delta
 		player.move_and_slide()
 	_enemies_step(delta)
-	stats.text = "HUMANO GUERREIRO   ·   Vida %d/%d   ·   Nível %d   ·   XP %d/3   ·   Golpe %.1fs   ·   Skill [1] %.1fs" % [ceili(hp), 100 + (level - 1) * 20, level, xp, cooldown, skill_cooldown]
+	_refresh_hud()
 
 func _attack(powered := false) -> bool:
-	if dead or cooldown > 0 or (powered and skill_cooldown > 0):
+	if dead or hud.inventory_panel.visible or not inventory.equipped or cooldown > 0 or (powered and skill_cooldown > 0):
 		return false
 	powered_attack = powered
+	attack_kind = 1 if powered else 0
 	if powered:
 		skill_cooldown = 6.0
 	cooldown = 1.57 if powered else 1.54
@@ -255,19 +333,19 @@ func _attack(powered := false) -> bool:
 
 func _melee_hit() -> void:
 	# Um golpe por ação; só acerta inimigos próximos, à frente e sem parede entre eles.
-	if powered_attack:
+	if attack_kind > 0:
 		_skill_arc()
-	var reach := 3.6 if powered_attack else 2.6
+	var reach := 3.2 if attack_kind == 2 else (3.6 if powered_attack else 2.6)
 	for foe in enemies.duplicate():
 		var offset: Vector3 = foe.global_position - player.global_position
 		offset.y = 0
-		if offset.length() > reach or offset.normalized().dot(attack_direction) < 0.35:
+		if offset.length() > reach or (attack_kind != 2 and offset.normalized().dot(attack_direction) < 0.35):
 			continue
 		var query := PhysicsRayQueryParameters3D.create(player.global_position + Vector3.UP, foe.global_position + Vector3.UP * 0.7)
 		query.exclude = [player.get_rid()]
 		var hit := get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty() and hit.collider == foe:
-			_damage_enemy(foe, (60.0 if powered_attack else 25.0) + (level - 1) * 5)
+			_damage_enemy(foe, (40.0 if attack_kind == 2 else (60.0 if powered_attack else 25.0)) + (level - 1) * 5)
 
 func _skill_arc() -> void:
 	var visual := MeshInstance3D.new()
@@ -279,7 +357,8 @@ func _skill_arc() -> void:
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP, material)
 	for i in range(33):
-		var angle := lerpf(-1.15, 1.15, i / 32.0)
+		var sweep := PI if attack_kind == 2 else 1.15
+		var angle := lerpf(-sweep, sweep, i / 32.0)
 		for radius in [2.1, 2.45]:
 			mesh.surface_add_vertex(Vector3(sin(angle) * radius, 0.8, -cos(angle) * radius))
 	mesh.surface_end()
@@ -295,10 +374,15 @@ func _skill_arc() -> void:
 func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 	var health := float(foe.get_meta("hp")) - amount
 	foe.set_meta("hp", health)
-	foe.get_node("Health").text = "Grelim · %d" % maxi(0, ceili(health))
+	foe.get_node("GrelimVisual").hurt()
 	if health <= 0:
 		enemies.erase(foe)
-		foe.queue_free()
+		foe.collision_layer = 0
+		foe.collision_mask = 0
+		foe.get_node("GrelimVisual").fall()
+		get_tree().create_timer(2.0).timeout.connect(foe.queue_free)
+		inventory.fangs += 1
+		inventory.gold += 5
 		xp += 1
 		kills += 1
 		if xp >= 3:
@@ -313,12 +397,14 @@ func _enemies_step(delta: float) -> void:
 		var direction := player.position - foe.position
 		direction.y = 0
 		var distance := direction.length()
-		foe.velocity = direction.normalized() * 1.8 if distance < 11 and distance > 1.3 and not dead else Vector3.ZERO
+		var desired := direction.normalized() * 1.8 if distance < 11 and distance > 1.3 and not dead else Vector3.ZERO
+		foe.velocity.x = move_toward(foe.velocity.x, desired.x, delta * 5.0)
+		foe.velocity.z = move_toward(foe.velocity.z, desired.z, delta * 5.0)
 		foe.velocity.y = -5
 		foe.move_and_slide()
 		var timer := maxf(0, float(foe.get_meta("attack")) - delta)
 		if distance < 1.6 and timer <= 0 and not dead:
-			hp = maxf(0, hp - 12)
+			hp = maxf(0, hp - (4.2 if guard_clock > 0 else 12.0))
 			timer = 1.2
 			if hp <= 0:
 				dead = true
@@ -328,8 +414,8 @@ func _enemies_step(delta: float) -> void:
 				notice.text = "Você caiu. Pressione R para tentar novamente."
 		foe.set_meta("attack", timer)
 		if direction.length() > 0.1:
-			foe.rotation.y = atan2(-direction.x, -direction.z)
-		foe.get_node("GrelimVisual").sync(delta, foe.velocity.length() > 5.05, timer > 1.0)
+			foe.rotation.y = lerp_angle(foe.rotation.y, atan2(-direction.x, -direction.z), 1.0 - exp(-7.0 * delta))
+		foe.get_node("GrelimVisual").sync(delta, Vector2(foe.velocity.x, foe.velocity.z).length() > 0.2, timer > 1.0)
 
 func _restart() -> void:
 	player.position = Vector3(0, 0.05, 5)
@@ -342,6 +428,13 @@ func _restart() -> void:
 	cooldown = 0
 	attack_clock = 0
 	skill_cooldown = 0
+	spin_cooldown = 0
+	guard_cooldown = 0
+	dash_cooldown = 0
+	guard_clock = 0
+	dash_clock = 0
+	inventory = {"equipped": true, "potions": 3, "fangs": 0, "gold": 0}
+	sword_attachment.visible = true
 	powered_attack = false
 	attack_pending = false
 	for foe in enemies:
@@ -403,5 +496,67 @@ func _test() -> void:
 		await get_tree().physics_frame
 	Input.action_release("forward")
 	_check(player.position.z < before.z - 1 and player.position.y > -0.1, "campo permite caminhar longe do centro sem cair")
+	await _test_interface()
 	print("SMOKE COMPLETE: %d falhas" % failures)
 	get_tree().quit(0 if failures == 0 else 1)
+
+func _test_interface() -> void:
+	_restart()
+	await get_tree().physics_frame
+	_check(hud.slot_buttons.size() == 4 and hud.item_buttons.size() == 12, "HUD tem quatro habilidades e inventário de 12 slots")
+	hp = 50
+	_refresh_hud()
+	_check(hud.health.value == 50 and hud.health.max_value == 100, "barra de vida acompanha HP do jogador")
+	_check(_use_item("potion") and hp == 90 and inventory.potions == 2, "poção recupera vida e consome uma unidade")
+	_check(_use_item("potion") and hp == 100 and not _use_item("potion"), "cura respeita vida máxima e não desperdiça poção")
+	_use_item("sword")
+	_check(not sword_attachment.visible and not _attack(), "guardar espada remove arma e bloqueia golpes")
+	_use_item("sword")
+	_check(sword_attachment.visible, "equipar espada restaura arma")
+	_toggle_inventory()
+	var start := player.position
+	_physics_process(0.2)
+	_check(player.position == start and not _activate_skill(0), "inventário aberto pausa combate e habilidades")
+	_toggle_inventory()
+	_check(_activate_skill(2) and guard_clock == 4.0, "Defesa ativa proteção temporária")
+	enemies[0].position = player.position + Vector3(0, 0, -1)
+	_enemies_step(0.01)
+	_check(is_equal_approx(hp, 95.8), "Defesa reduz dano recebido em 65 por cento")
+	_check(not _activate_skill(2), "Defesa respeita recarga")
+	_restart()
+	await get_tree().physics_frame
+	start = player.position
+	_check(_activate_skill(3), "Investida é ativada pelo quarto slot")
+	for i in range(10):
+		_physics_process(1.0 / 60.0)
+		await get_tree().physics_frame
+	_check(player.position.distance_to(start) > 1 and dash_cooldown > 0, "Investida move jogador com colisão e recarga")
+	_restart()
+	enemies[0].position = player.position + Vector3(0, 0, -2)
+	enemies[1].position = player.position + Vector3(0, 0, 2)
+	await get_tree().physics_frame
+	_check(_activate_skill(1), "segundo slot inicia Corte giratório")
+	_melee_hit()
+	_check(float(enemies[0].get_meta("hp")) == 20.0 and float(enemies[1].get_meta("hp")) == 20.0, "Corte giratório atinge inimigos na frente e atrás")
+	_refresh_hud()
+	_check(hud.enemy_bars[enemies[0]].get_node("Life").value == 20, "barra do monstro acompanha o dano")
+	_damage_enemy(enemies[0], 100)
+	_check(inventory.fangs == 1 and inventory.gold == 5, "derrotar monstro adiciona saque à mochila")
+	_refresh_hud()
+	_check(hud.enemy_bars.size() == enemies.size(), "barra de monstro derrotado é removida")
+	var wheel := InputEventMouseButton.new()
+	wheel.pressed = true
+	wheel.button_index = MOUSE_BUTTON_WHEEL_UP
+	for i in range(30):
+		_unhandled_input(wheel)
+	_check(zoom_distance == 2.0, "scroll aproxima até limite de dois metros")
+	_physics_process(0.1)
+	_check(boom.spring_length > 2.0 and boom.spring_length < 5.0, "zoom aproxima gradualmente")
+	wheel.button_index = MOUSE_BUTTON_WHEEL_DOWN
+	for i in range(30):
+		_unhandled_input(wheel)
+	_check(zoom_distance == 14.0, "scroll afasta até limite de 14 metros")
+	var visual = enemies[0].get_node("GrelimVisual")
+	var angle: float = visual.limbs[0].rotation.x
+	visual.sync(1.0 / 60.0, true, true)
+	_check(absf(visual.limbs[0].rotation.x - angle) < 0.2, "ataque do Grelim entra por transição suave")

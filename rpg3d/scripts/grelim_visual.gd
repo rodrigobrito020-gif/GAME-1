@@ -2,6 +2,10 @@ extends Node3D
 ## Criatura 3D provisória inspirada no Grelim enviado como referência visual.
 var limbs: Array[Node3D] = []
 var time := 0.0
+var walk_weight := 0.0
+var attack_weight := 0.0
+var hurt_clock := 0.0
+var fallen := false
 
 func _ready() -> void:
 	_ball(self, Vector3(0, 0.65, 0), Vector3(0.4, 0.48, 0.3), Color("a87936"))
@@ -67,10 +71,31 @@ func _segment(parent: Node3D, start: Vector3, end: Vector3, bottom: float, top: 
 	visual.material_override = _material(color)
 	parent.add_child(visual)
 
+func hurt() -> void:
+	hurt_clock = 0.25
+
+func fall() -> void:
+	fallen = true
+	var tween := create_tween()
+	tween.tween_property(self, "rotation:x", PI * 0.5, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(self, "position:y", 0.22, 0.45)
+
 func sync(delta: float, moving: bool, attacking: bool) -> void:
-	time += delta * (8 if moving else 2)
-	position.y = sin(time * 2) * (0.035 if moving else 0.012)
+	if fallen:
+		return
+	var blend := 1.0 - exp(-9.0 * delta)
+	walk_weight = lerpf(walk_weight, 1.0 if moving else 0.0, blend)
+	attack_weight = lerpf(attack_weight, 1.0 if attacking else 0.0, 1.0 - exp(-14.0 * delta))
+	hurt_clock = maxf(0, hurt_clock - delta)
+	time += delta * lerpf(2.0, 8.0, walk_weight)
+	position.y = sin(time * 2) * lerpf(0.012, 0.035, walk_weight)
+	rotation.z = sin(time) * walk_weight * 0.035 + sin(hurt_clock / 0.25 * PI) * 0.18
 	for i in range(limbs.size()):
-		limbs[i].rotation.x = sin(time + (PI if i >= 2 else 0)) * (0.3 if moving else 0.03)
-		if attacking and i % 2 == 0:
-			limbs[i].rotation.x = -0.9
+		# Braço esquerdo/perna direita avançam juntos, sem trocar de pose de repente.
+		var offset := PI if i >= 2 else 0.0
+		if i % 2 == 1:
+			offset += PI
+		var target := sin(time + offset) * lerpf(0.03, 0.35, walk_weight)
+		if i % 2 == 0:
+			target = lerpf(target, -1.05, attack_weight)
+		limbs[i].rotation.x = lerpf(limbs[i].rotation.x, target, blend)

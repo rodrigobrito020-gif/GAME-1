@@ -45,6 +45,8 @@ O teste executa as animações importadas, golpe manual, acerto frontal, dano e 
 
 ## Texturas do guerreiro
 
-As partes MFighter.z01, MFighter.z02 e MFighter.zip foram reunidas e o conteúdo MFighter.utx passou no CRC32 (`78f9f072`). O GLB incorpora nove imagens originais: corpo básico M000 (u/l/g/b), cabelo t00 e conjunto M001 t01 (u/l/g/b). O alpha das texturas corporais representa especularidade e não é usado como transparência; somente o cabelo usa recorte alpha.
+As partes MFighter.z01, MFighter.z02 e MFighter.zip foram reunidas e o conteúdo MFighter.utx passou no CRC32 (`78f9f072`). O GLB incorpora dez imagens originais: corpo básico M000 (u/l/g/b), cabelo t00 (partes ah e bh) e conjunto M001 t01 (u/l/g/b). O alpha das texturas corporais representa especularidade e não é usado como transparência; somente o cabelo usa recorte alpha.
 
 As imagens também ficam em `assets/human_fighter_MFighter_*.png`, extraídas pelo importador do Godot. `assets/human_fighter_textures.json` registra a origem e a pendência da textura de rosto. As animações e a troca de equipamento continuam usando o mesmo esqueleto. O pacote UTX completo não faz parte do projeto.
+
+A montagem do cabelo inclui as duas partes originais `MFighter_m000_m00_ah` e `MFighter_m000_m00_bh`, para cobrir também a parte posterior da cabeça. O rosto detalhado continua dependendo de `Textures/LineageFaceTex.utx`. Para substituir a espada de teste por uma arma do cliente, são necessários o pacote de modelos `Animations/LineageWeapons.ukx` e o de texturas `Textures/LineageWeaponsTex.utx` (os nomes podem variar conforme o cliente).

@@ -674,9 +674,14 @@ func _test_equipment() -> void:
 		_check(correct, "retirar equipamento restaura malha base: " + slot)
 		_use_item(slot)
 	for mesh in character_model.find_children("*", "MeshInstance3D", true, false):
-		if "_m00_ah" in str(mesh.name).to_lower():
+		if "_m00_ah" in str(mesh.name).to_lower() or "_m00_bh" in str(mesh.name).to_lower():
 			var hair := mesh.get_active_material(0) as StandardMaterial3D
 			_check(hair.albedo_texture != null and hair.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR, "cabelo usa textura e recorte alpha")
+	var hair_parts := 0
+	for mesh in character_model.find_children("*", "MeshInstance3D", true, false):
+		if "_m00_ah" in str(mesh.name).to_lower() or "_m00_bh" in str(mesh.name).to_lower():
+			hair_parts += 1
+	_check(hair_parts == 2, "cabeça inclui as duas partes de cabelo")
 	hud.item_buttons[3].pressed.emit()
 	_check(not inventory.armor and inventory.gloves and inventory.boots, "slot do traje altera somente o traje selecionado")
 	hud.item_buttons[3].pressed.emit()

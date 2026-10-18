@@ -10,9 +10,14 @@
     "MFighter_m001_t01_b_sp",
     "MFighter_m001_t01_g_sp",
     "MFighter_m001_t01_l_sp",
-    "MFighter_m001_t01_u_sp"
+    "MFighter_m001_t01_u_sp",
+    "MFighter_m000_t00_m00_bh"
   ],
   "face_status": "Material provisório sem textura. O pacote Fighter referencia LineageFaceTex para o rosto.",
   "hair_alpha_mode": "MASK",
-  "body_alpha_usage": "RGB como cor; alpha especular não é transparência."
+  "body_alpha_usage": "RGB como cor; alpha especular não é transparência.",
+  "hair_parts": [
+    "MFighter_m000_m00_ah",
+    "MFighter_m000_m00_bh"
+  ]
 }

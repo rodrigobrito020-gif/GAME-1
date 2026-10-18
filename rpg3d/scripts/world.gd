@@ -144,6 +144,9 @@ func _equip_sword(model: Node3D) -> void:
 	sword_attachment.add_child(sword)
 	var blade := LONG_SWORD.instantiate()
 	blade.name = "OriginalLongSword"
+	# A lâmina usa +X; alinhar ao punho, com o centro do cabo no osso.
+	blade.rotation.z = PI / 2
+	blade.position.y = 0.133
 	sword.add_child(blade)
 
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
@@ -295,6 +298,12 @@ func _spawn_enemies() -> void:
 		foe.add_child(visual)
 		add_child(foe)
 		enemies.append(foe)
+
+func _input(event: InputEvent) -> void:
+	# TAB também funciona quando um controle da interface está com foco.
+	if event is InputEventKey and event.keycode == KEY_TAB and event.pressed and not event.echo:
+		_toggle_inventory()
+		get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -732,6 +741,7 @@ func _slot_gesture(control: Control, travel: Vector2) -> void:
 	control._input(release)
 
 func _test_slot_gestures() -> void:
+	_configure_potions(false, 40)
 	_restart()
 	automatic_skills.fill(false)
 	for i in range(4):
@@ -747,13 +757,28 @@ func _test_slot_gestures() -> void:
 	_slot_gesture(hud.slot_buttons[0], Vector2(0, -28))
 	_check(is_equal_approx(hud.potion_slot.global_position.y, hud.slot_buttons[0].global_position.y), "poção alinhada na mesma altura das habilidades")
 	_slot_gesture(hud.potion_slot, Vector2(0, 28))
-	_check(auto_potion and not hud.potion_popup.visible, "arrastar poção para baixo ativa uso automático sem abrir janela")
+	_check(not auto_potion and not hud.potion_popup.visible, "arrastar poção não ativa automático nem abre janela")
 	_slot_gesture(hud.potion_slot, Vector2(0, -28))
-	_check(not auto_potion, "arrastar poção para cima desativa uso automático")
+	_check(not auto_potion, "arrastar poção para cima não altera automático")
 	var count: int = inventory.potions
 	_slot_gesture(hud.potion_slot, Vector2.ZERO)
 	_check(hud.potion_popup.visible and inventory.potions == count, "clicar na poção abre configuração mesmo com vida cheia")
+	hud.auto_check.button_pressed = true
+	_check(auto_potion, "botão da configuração ativa poção automática")
+	_slot_gesture(hud.potion_slot, Vector2(0, -28))
+	_check(auto_potion, "arrastar poção não desliga automático")
+	hud.auto_check.button_pressed = false
+	_check(not auto_potion, "botão da configuração desativa poção automática")
 	hud.potion_popup.hide()
+	var tab := InputEventKey.new()
+	tab.keycode = KEY_TAB
+	tab.pressed = true
+	_input(tab)
+	_check(hud.inventory_panel.visible, "TAB abre inventário")
+	_input(tab)
+	_check(not hud.inventory_panel.visible, "TAB fecha inventário")
+	for i in range(6):
+		_check(hud.item_buttons[i].icon != null, "item possui ícone: " + str(i))
 	_restart()
 	enemies[0].position = player.position + Vector3(0, 0, -2.5)
 	_set_skill_automatic(0, true)

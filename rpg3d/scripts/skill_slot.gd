@@ -51,7 +51,7 @@ func _input(event: InputEvent) -> void:
 		var distance: float = event.global_position.y - press_origin.y
 		maximum_drag = maxf(maximum_drag, event.global_position.distance_to(press_origin))
 		held = false
-		if absf(distance) >= 18:
+		if slot != 4 and absf(distance) >= 18:
 			automatic_changed.emit(distance > 0)
 		elif maximum_drag < 8 and absf(distance) < 8:
 			activated.emit()
@@ -70,7 +70,13 @@ func _sword(origin: Vector2, angle: float, color: Color) -> void:
 	_line(origin + Vector2(-10, 10).rotated(angle), origin + Vector2(10, 10).rotated(angle), Color("bc9d62"), 3)
 	_line(origin + Vector2(0, 12).rotated(angle), origin + Vector2(0, 22).rotated(angle), Color("d6c49b"), 4)
 
+func _has_point(point: Vector2) -> bool:
+	return point.distance_to(size * 0.5) <= 32 if slot == 4 else Rect2(Vector2.ZERO, size).has_point(point)
+
 func _draw() -> void:
+	if slot == 4:
+		_draw_potion()
+		return
 	draw_set_transform(Vector2(0, clampf(drag_offset, -14, 14)) if held else Vector2.ZERO)
 	var gold := Color("a68d58")
 	var color: Color = COLORS[slot]
@@ -138,3 +144,27 @@ func _draw() -> void:
 	if automatic:
 		draw_line(Vector2(6, 5), Vector2(size.x - 6, 5), Color("98e3ab"), 3, true)
 		draw_string(ThemeDB.fallback_font, Vector2(6, 17), "AUTO", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("c8ffcf"))
+
+func _draw_potion() -> void:
+	var center := size * 0.5
+	draw_circle(center, 31, Color("14191b"))
+	draw_circle(center, 27, Color("39242b"))
+	draw_arc(center, 31, 0, TAU, 64, Color("cbb780"), 2, true)
+	draw_arc(center, 27, 0, TAU, 64, Color("756644"), 1, true)
+	draw_circle(center + Vector2(0, 4), 16, Color("a43f49"))
+	draw_arc(center + Vector2(0, 4), 16, 0, TAU, 40, Color("e0c7a4"), 2, true)
+	draw_rect(Rect2(center + Vector2(-6, -20), Vector2(12, 12)), Color("aaa99c"))
+	draw_rect(Rect2(center + Vector2(-8, -23), Vector2(16, 5)), Color("aa8c54"))
+	_line(center + Vector2(-6, 4), center + Vector2(6, 4), Color("ffdbcc"), 3)
+	_line(center + Vector2(0, -2), center + Vector2(0, 10), Color("ffdbcc"), 3)
+	if remaining > 0:
+		var sector := PackedVector2Array([center])
+		for i in range(49):
+			sector.append(center + Vector2.from_angle(-PI / 2 + TAU * clampf(remaining / total, 0, 1) * i / 48.0) * 26)
+		draw_colored_polygon(sector, Color(0, 0, 0, 0.65))
+	if automatic:
+		draw_arc(center, 29, -PI, 0, 32, Color("98e3ab"), 3, true)
+	if _has_point(get_local_mouse_position()):
+		draw_arc(center, 31, 0, TAU, 64, Color("f7e7b6"), 2, true)
+	draw_string(ThemeDB.fallback_font, Vector2(12, 54), str(potion_count), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color.WHITE)
+	draw_string(ThemeDB.fallback_font, Vector2(44, 54), "Q", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("f1e5c7"))

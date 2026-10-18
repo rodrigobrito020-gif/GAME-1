@@ -57,6 +57,7 @@ func _panel(parent: Node) -> PanelContainer:
 
 func _button(text: String) -> Button:
 	var button := Button.new()
+	button.focus_mode = Control.FOCUS_NONE
 	button.text = text
 	button.add_theme_stylebox_override("normal", _style(Color("24231f")))
 	button.add_theme_stylebox_override("disabled", _style(Color("17262b"), Color("394947")))
@@ -97,7 +98,7 @@ func _ready() -> void:
 	notice.add_theme_font_size_override("font_size", 14)
 	notice.add_theme_color_override("font_color", Color("e1d6b7"))
 	root.add_child(notice)
-	var inventory_button := _button("Mochila [I]")
+	var inventory_button := _button("Mochila [I / TAB]")
 	inventory_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	inventory_button.offset_left = -180
 	inventory_button.offset_right = -30
@@ -121,7 +122,7 @@ func _ready() -> void:
 		slot.automatic_changed.connect(func(enabled: bool) -> void: skill_automatic_changed.emit(i, enabled))
 		bar.add_child(slot)
 		slot_buttons.append(slot)
-	var help := _label("WASD mover · Mouse câmera · Scroll zoom · Clique atacar · 1–4 habilidades · Q poção · I mochila · Esc cursor", 14)
+	var help := _label("WASD mover · Mouse câmera · Scroll zoom · Clique atacar · 1–4 habilidades · Q poção · I / TAB mochila · Esc cursor", 14)
 	root.add_child(help)
 	help.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	help.offset_left = -530
@@ -159,6 +160,13 @@ func _inventory() -> void:
 		var item := _button("—")
 		item.custom_minimum_size = Vector2(122, 66)
 		item.disabled = true
+		item.focus_mode = Control.FOCUS_NONE
+		if i < 6:
+			item.icon = load("res://assets/icons/%s.svg" % ["sword", "potion", "fang", "armor", "gloves", "boots"][i])
+			item.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			item.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+			item.expand_icon = false
+			item.add_theme_constant_override("icon_max_width", 32)
 		grid.add_child(item)
 		item_buttons.append(item)
 	item_buttons[0].pressed.connect(func() -> void: item_requested.emit("sword"))
@@ -166,7 +174,7 @@ func _inventory() -> void:
 	for pair in [[3, "armor"], [4, "gloves"], [5, "boots"]]:
 		item_buttons[pair[0]].pressed.connect(func() -> void: item_requested.emit(pair[1]))
 	column.add_child(_label("Equipamentos: clique para equipar ou retirar.\nPoção: clique para recuperar 40 de vida.\nO jogo fica pausado enquanto a mochila estiver aberta.", 14))
-	var close := _button("Voltar ao campo [I / Esc]")
+	var close := _button("Voltar ao campo [I / TAB / Esc]")
 	close.pressed.connect(func() -> void: inventory_requested.emit())
 	column.add_child(close)
 	inventory_panel.hide()
@@ -289,9 +297,8 @@ func _potions() -> void:
 	potion_slot.offset_right = -156
 	potion_slot.offset_top = -92
 	potion_slot.offset_bottom = -28
-	potion_slot.tooltip_text = "Poção de vida [Q]. Clique no ícone para configurar o uso automático. Q usa manualmente. Arraste para baixo para AUTO e para cima para manual."
+	potion_slot.tooltip_text = "Poção de vida [Q]. Clique no ícone para configurar o uso automático. Q usa manualmente. Ative o automático somente na janela de configuração."
 	potion_slot.activated.connect(func() -> void: potion_popup.visible = not potion_popup.visible)
-	potion_slot.automatic_changed.connect(func(enabled: bool) -> void: potion_settings_changed.emit(enabled, threshold_slider.value))
 	potion_popup = _panel(root)
 	potion_popup.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 	potion_popup.offset_left = -240

@@ -6,5 +6,10 @@
   "texture_package_crc32": "cf4d1bf9",
   "model_sha256": "c51e05104b8b24f86806ce3cc8b3c87f14f8e0d078acdf1b43e9faf85c25fe36",
   "attachment_bone": "Weapon_R_Bone",
-  "original_units_to_meters": 0.038
+  "original_units_to_meters": 0.038,
+  "grip_alignment": {
+    "rotation_z_degrees": 90,
+    "offset_y_meters": 0.133,
+    "description": "Align blade +X to weapon bone +Y; center handle on hand attachment."
+  }
 }

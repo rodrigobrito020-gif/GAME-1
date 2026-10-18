@@ -4,9 +4,9 @@ const SHELL := preload("res://assets/small_shield.glb")
 const GRIP_CENTER := Vector3(-0.010, -0.105, 0.117)
 const GRIP_LENGTH := 0.065
 const FOREARM_ROLL := PI / 12
-const PANEL_TURN := -PI / 2
+const PANEL_TURN := -PI / 4
 const PANEL_CENTER_BELOW_WRIST := 0.025
-const PANEL_OUTSIDE_ARM := 0.098
+const PANEL_OUTSIDE_ARM := 0.083
 const PANEL_GEOMETRY_CENTER := 0.10310
 var _skeleton: Skeleton3D
 var _shell: Node3D
@@ -124,7 +124,7 @@ func _update_strap() -> void:
 	var side := down.cross(front).normalized()
 	var long_axis := down * cos(PANEL_TURN) + side * sin(PANEL_TURN)
 	var panel_basis := Basis(long_axis, long_axis.cross(front).normalized(), -front)
-	# Lay the panel across the forearm, keeping its center behind the grip.
+	# Tilt the panel diagonally away from the forearm, around the grip center.
 	_shell.global_transform = Transform3D(panel_basis, wrist + down * PANEL_CENTER_BELOW_WRIST - long_axis * PANEL_GEOMETRY_CENTER + front * PANEL_OUTSIDE_ARM)
 	var half_grip := Vector3.RIGHT * GRIP_LENGTH / 2
 	var left := to_global(GRIP_CENTER - half_grip)

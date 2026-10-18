@@ -661,10 +661,12 @@ func _test_current_weapon_pose(rig: Skeleton3D, action: String, time: float) -> 
 	var shell_mesh: MeshInstance3D = shield.find_children("*", "MeshInstance3D", true, false)[0]
 	var down := (wrist - forearm.origin).normalized()
 	var long_axis := shield.global_basis.x.normalized()
-	_check(absf(long_axis.dot(down)) < 0.001, "escudo deitado transversal ao antebraço: " + action)
+	var forearm_alignment := long_axis.dot(down)
+	_check(forearm_alignment > 0.65 and forearm_alignment < 0.77, "escudo inclinado em diagonal ao antebraço: " + action)
 	_check(shield.to_global(Vector3(ShieldMount.PANEL_GEOMETRY_CENTER, 0, 0)).distance_to(wrist) < 0.11, "painel mantém o centro próximo da empunhadura: " + action)
 	if action == "idle":
-		_check(absf(long_axis.dot(Vector3.UP)) < 0.35, "escudo fica deitado em repouso, sem a ponta para baixo")
+		var vertical_alignment := long_axis.dot(Vector3.UP)
+		_check(vertical_alignment > -0.85 and vertical_alignment < -0.45, "escudo fica em diagonal em repouso, com ponta inclinada para baixo")
 	_check((grip.mesh as CylinderMesh).height <= 0.07, "empunhadura curta atrás da mão: " + action)
 	var fit := ShieldFit.minimum_clearance(_gear_nodes("gloves", true), wrist, shell_mesh)
 	_check(fit.y > 0 and fit.x >= 0.002, "luva fica atrás da madeira, com folga: %s %.3fs (%.1f mm)" % [action, time, fit.x * 1000])

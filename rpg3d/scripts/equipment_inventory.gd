@@ -2,10 +2,10 @@ extends PanelContainer
 ## Equipment screen: live model, paper doll, filterable bag and item inspection.
 signal item_requested(item: String)
 signal closed
-const IDS := ["sword", "potion", "fang", "armor", "gloves", "boots", "shield", "pants"]
-const NAMES := ["Long Sword", "Poção de vida", "Presa Grelim", "Peitoral inicial", "Luvas", "Botas", "Small Shield", "Calça inicial"]
-const TYPES := ["Arma · Uma mão", "Consumível · Vida", "Material · Saque", "Armadura · Peito", "Armadura · Mãos", "Armadura · Pés", "Escudo · Mão esquerda", "Armadura · Pernas"]
-const KEYS := ["equipped", "potions", "fangs", "armor", "gloves", "boots", "shield", "pants"]
+const IDS := ["sword", "potion", "fang", "armor", "gloves", "boots", "shield", "pants", "earring1", "earring2", "ring1", "ring2", "necklace"]
+const NAMES := ["Long Sword", "Poção de vida", "Presa Grelim", "Peitoral inicial", "Luvas", "Botas", "Small Shield", "Calça inicial", "Brinco", "Brinco", "Anel", "Anel", "Colar"]
+const TYPES := ["Arma · Uma mão", "Consumível · Vida", "Material · Saque", "Armadura · Peito", "Armadura · Mãos", "Armadura · Pés", "Escudo · Mão esquerda", "Armadura · Pernas", "Joia · Brinco", "Joia · Brinco", "Joia · Anel", "Joia · Anel", "Joia · Colar"]
+const KEYS := ["equipped", "potions", "fangs", "armor", "gloves", "boots", "shield", "pants", "earring1", "earring2", "ring1", "ring2", "necklace"]
 const OrnateFrame := preload("res://scripts/ornate_frame.gd")
 const LootItems := preload("res://scripts/loot_items.gd")
 const ItemIcons := preload("res://scripts/item_icons.gd")
@@ -182,8 +182,6 @@ func _character_panel(column: VBoxContainer) -> void:
 	_equipment_slot(left, "Arma", 0)
 	_equipment_slot(left, "Cabeça", -1)
 	_equipment_slot(left, "Luvas", 4)
-	_equipment_slot(left, "Anel", -1)
-	_equipment_slot(left, "Colar", -1)
 	var container := SubViewportContainer.new()
 	container.stretch = true
 	container.custom_minimum_size = Vector2(150, 300)
@@ -221,7 +219,14 @@ func _character_panel(column: VBoxContainer) -> void:
 	_equipment_slot(right, "Peito", 3)
 	_equipment_slot(right, "Calça", 7)
 	_equipment_slot(right, "Botas", 5)
-	_equipment_slot(right, "Anel", -1)
+	var jewels := HBoxContainer.new()
+	jewels.alignment = BoxContainer.ALIGNMENT_CENTER
+	jewels.add_theme_constant_override("separation", 9)
+	column.add_child(jewels)
+	for entry: Array in [["Brinco 1", 8], ["Brinco 2", 9], ["Anel 1", 10], ["Anel 2", 11], ["Colar", 12]]:
+		var cell := VBoxContainer.new()
+		jewels.add_child(cell)
+		_equipment_slot(cell, entry[0], entry[1])
 	life_label = label_for("Vida  100 / 100", 18, true)
 	life_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(life_label)
@@ -256,7 +261,7 @@ func _bag_panel(column: VBoxContainer) -> void:
 	var filter_row := HBoxContainer.new()
 	filter_row.add_theme_constant_override("separation", 4)
 	column.add_child(filter_row)
-	for category_name in ["Todos", "Armas", "Trajes", "Poções", "Materiais"]:
+	for category_name in ["Todos", "Armas", "Trajes", "Joias", "Poções", "Materiais"]:
 		var button := button_for(category_name)
 		button.add_theme_font_size_override("font_size", 12)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -443,6 +448,7 @@ func _matches(index: int) -> bool:
 	match category:
 		"Armas": return index in [0, 6]
 		"Trajes": return index in [3, 4, 5, 7]
+		"Joias": return index >= 8
 		"Poções": return index == 1
 		"Materiais": return index == 2
 	return true
@@ -450,6 +456,8 @@ func _matches(index: int) -> bool:
 func _bag_count(index: int) -> int:
 	if index in [1, 2]:
 		return int(data[KEYS[index]])
+	if index >= 8:
+		return 0
 	if int(data.get("identity_version", 0)) >= 1:
 		return 0
 	# Each gear entry represents one owned piece: worn or stored in the bag.
@@ -514,13 +522,15 @@ func _sync_loot_buttons() -> int:
 	return shown
 
 func _bonus_text(item: Dictionary) -> String:
+	if str(item.get("slot", "")) in LootItems.JEWELRY_SLOTS:
+		return "Defesa mágica +%d · Vida +%d" % [int(item.get("magic_defense_bonus", 0)), int(item.get("hp_bonus", 0))]
 	return "Ataque +%d · Defesa +%d" % [int(item.get("attack_bonus", 0)), int(item.get("defense_bonus", 0))]
 
 func _current_slot_item(index: int) -> Dictionary:
 	var loot := LootItems.equipped_item(data, IDS[index])
 	if not loot.is_empty():
 		return loot
-	if bool(data[KEYS[index]]):
+	if bool(data.get(KEYS[index], false)):
 		return {"name": base_name(index), "slot": IDS[index], "rarity": "Inicial", "attack_bonus": 0, "defense_bonus": 0}
 	return {}
 
@@ -533,8 +543,8 @@ func _show_current_equipment(index: int) -> Dictionary:
 	return current
 
 func _refresh_loot_details(item: Dictionary) -> void:
-	var index := IDS.find(item.slot)
 	var equipped := _loot_is_equipped(str(item.id))
+	var index := IDS.find(item.slot if equipped else LootItems.destination_slot(data, item))
 	var current := _show_current_equipment(index)
 	selected_name.text = item.name
 	selected_name.add_theme_color_override("font_color", rarity_color(item.rarity))
@@ -549,9 +559,12 @@ func _refresh_loot_details(item: Dictionary) -> void:
 	if not class_description.is_empty():
 		selected_description.text += "\n" + class_description
 	if not equipped:
-		var attack_change := int(item.attack_bonus) - int(current.get("attack_bonus", 0))
-		var defense_change := int(item.defense_bonus) - int(current.get("defense_bonus", 0))
-		selected_description.text += "\n\nAo equipar:\nAtaque %s\nDefesa %s" % [_signed(attack_change), _signed(defense_change)]
+		if item.slot in LootItems.JEWELRY_SLOTS:
+			selected_description.text += "\n\nAo equipar:\nDefesa mágica %s\nVida %s" % [_signed(int(item.get("magic_defense_bonus", 0)) - int(current.get("magic_defense_bonus", 0))), _signed(int(item.get("hp_bonus", 0)) - int(current.get("hp_bonus", 0)))]
+		else:
+			var attack_change := int(item.attack_bonus) - int(current.get("attack_bonus", 0))
+			var defense_change := int(item.defense_bonus) - int(current.get("defense_bonus", 0))
+			selected_description.text += "\n\nAo equipar:\nAtaque %s\nDefesa %s" % [_signed(attack_change), _signed(defense_change)]
 	else:
 		selected_description.text += "\n\nEquipado no personagem."
 	selected_description.text += _set_details(item)
@@ -611,7 +624,7 @@ func _refresh_items() -> void:
 	selected_name.add_theme_color_override("font_color", GOLD)
 	selected_type.text = ("Arma · Arco" if player_class_id == "arqueiro" else "Arma · Varinha") if selected == 0 and player_class_id != "tanque" else TYPES[selected]
 	selected_icon.texture = icon_for(selected)
-	var equipped: bool = selected not in [1, 2] and bool(data[KEYS[selected]])
+	var equipped: bool = selected not in [1, 2] and bool(data.get(KEYS[selected], false))
 	current_icon.texture = icon_for(selected) if equipped else null
 	current_name.text = base_name(selected) if equipped else "Nenhum equipamento" if selected not in [1, 2] else "Consumível" if selected == 1 else "Material"
 	current_name.add_theme_color_override("font_color", GOLD)
@@ -619,7 +632,7 @@ func _refresh_items() -> void:
 	if selected not in [1, 2] and data.get("equipped_loot", {}).has(IDS[selected]):
 		_show_current_equipment(selected)
 	var descriptions := ["Espada de uma mão.\n\nEmpunhadura: mão direita\nEstado: %s" % ("equipada" if equipped else "guardada"), "Recupera 40 de vida.\n\nEstoque: %d\nIntervalo entre usos: 2 segundos" % data.potions, "Presa coletada de um Grelim.\n\nQuantidade: %d" % data.fangs, "Peitoral inicial.\n\nAltera somente o peito.", "Luvas do conjunto inicial.\n\nSem bônus de atributos nesta etapa.", "Botas do conjunto inicial.\n\nSem bônus de atributos nesta etapa.", "Escudo de uma mão.\n\nEmpunhadura: mão esquerda\nSem bônus passivo nesta etapa.", "Calça inicial.\n\nAltera somente as pernas."]
-	selected_description.text = descriptions[selected]
+	selected_description.text = descriptions[selected] if selected < descriptions.size() else "Joia obtida de monstros ou baús."
 	if selected == 0 and player_class_id != "tanque":
 		selected_description.text = ("Arco original · Mão esquerda.\n\nAnimações nativas de arco do Fighter." if player_class_id == "arqueiro" else "Varinha original · Mão direita.\n\nModelo e conjuração nativos do humano Mage.") + "\nEstado: " + ("equipada" if equipped else "guardada")
 	if IDS[selected] in LootItems.Catalog.CLOTHING_SLOTS:

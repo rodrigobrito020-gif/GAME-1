@@ -104,6 +104,7 @@ godot --headless --path . --script res://tests/instance_classes_flow_test.gd
 godot --headless --path . --script res://tests/ownership_merchant_test.gd
 godot --headless --path . --script res://tests/client_item_icons_test.gd
 godot --headless --path . --script res://tests/rarity_icon_background_test.gd
+godot --headless --path . --script res://tests/storage_jewelry_balance_test.gd
 ```
 
 A validação cobre controles e câmera, animações importadas e pose de morte, combate e recargas, quatro classes, projéteis e obstáculos, cura, equipamentos e bônus, poções, pausa, instâncias, seis ondas, chefe, prazo compartilhado, ausência de portal de retorno, baú único, resultado e passagem até o Mundo 10. Também verifica geração e restauração de itens, raridades, salvamento de classe e progressão, sem alterar o perfil normal do jogador.
@@ -153,7 +154,7 @@ Teste da recuperação do Arqueiro: `godot --headless --path . --script res://te
 
 ## Ícones, peças separadas e bônus de conjunto
 
-Mochila, slots equipados, detalhes e baú usam os ícones originais extraídos do `Icon.utx` enviado: 67 texturas de 32 × 32 pixels atendem às 66 entradas de roupas e às quatro armas/escudo. Cada roupa segue sua referência `icon_ref` nos DATs; espada, escudo, arco e cajado correspondem aos respectivos modelos. Referências iguais compartilham o mesmo ícone, como no cliente. Origem, IDs e hashes estão em `assets/client_icons/source.json`. O fundo gravado nos ícones é substituído na apresentação por um fundo uniforme da raridade: cinza (Comum), verde (Incomum), azul (Raro), roxo (Épico) e dourado (Lendário). Máscaras isolam o fundo; os pixels do equipamento e os PNGs originais são preservados. As variantes são calculadas uma vez e reutilizadas na mochila, slots, detalhes, aviso de saque e baú. Selecionar ou equipar o item mantém sua cor de raridade. Os ícones ocupam o interior dos slots com margem de quatro pixels e o fundo da célula tem exatamente a mesma cor, sem áreas escuras separadas. As miniaturas anteriores em `assets/item_thumbnails/` ficam apenas como material de geração; não são usadas pela interface. A arte da poção e da presa de Grelim, assim como a barra de habilidades, permanece própria do protótipo.
+Mochila, slots equipados, detalhes e baú usam os ícones originais extraídos do `Icon.utx` enviado: 82 texturas de 32 × 32 pixels atendem às 66 entradas de roupas, às quatro armas/escudo e às 15 joias. Cada roupa segue sua referência `icon_ref` nos DATs; espada, escudo, arco e cajado correspondem aos respectivos modelos. Referências iguais compartilham o mesmo ícone, como no cliente. Origem, IDs e hashes estão em `assets/client_icons/source.json`. O fundo gravado nos ícones é substituído na apresentação por um fundo uniforme da raridade: cinza (Comum), verde (Incomum), azul (Raro), roxo (Épico) e dourado (Lendário). Máscaras isolam o fundo; os pixels do equipamento e os PNGs originais são preservados. As variantes são calculadas uma vez e reutilizadas na mochila, slots, detalhes, aviso de saque e baú. Selecionar ou equipar o item mantém sua cor de raridade. Os ícones ocupam o interior dos slots com margem de quatro pixels e o fundo da célula tem exatamente a mesma cor, sem áreas escuras separadas. As miniaturas anteriores em `assets/item_thumbnails/` ficam apenas como material de geração; não são usadas pela interface. A arte da poção e da presa de Grelim, assim como a barra de habilidades, permanece própria do protótipo.
 
 Saves anteriores são convertidos uma única vez: a armadura que juntava duas peças vira peitoral e calça, na mesma localização (vestido ou mochila), com IDs distintos e preservando a soma dos atributos anteriores. A versão do inventário impede repetir a conversão ao reabrir o jogo. Os trajes originalmente inteiriços continuam sendo um item que ocupa dois slots, sem criar uma calça fictícia.
 
@@ -175,7 +176,7 @@ Validação adicional: `godot --headless --path . --script res://tests/equipment
 
 [Slots independentes e bônus ativo](../docs/inventario-peito-calca-bonus.png) · [Tallum separado no Mago](../docs/inventario-tallum-separado.png) · [Calça revelada no baú](../docs/bau-calca-miniatura.png)
 
-Teste dos fundos: `godot --headless --path . --script res://tests/rarity_icon_background_test.gd`. Verifica as cinco raridades nos 67 ícones, preservação dos pixels do equipamento, originais intactos e reutilização das texturas de apresentação.
+Teste dos fundos: `godot --headless --path . --script res://tests/rarity_icon_background_test.gd`. Verifica as cinco raridades nos 82 ícones, preservação dos pixels do equipamento, originais intactos e reutilização das texturas de apresentação.
 
 ## Mercador da vila
 
@@ -184,3 +185,22 @@ Bento fica junto à mesa de poções, à direita do caminho central. Aproxime-se
 `tests/ownership_merchant_test.gd` verifica a migração, a preservação dos itens em cinco trocas de classe, restrições de armas, escudos nas classes mágicas, saques de todas as famílias, uma morte real de monstro com equipamento salvo, compra/venda pelos botões reais, falta de ouro, quantidades inválidas, venda duplicada, proteção dos itens equipados e persistência. Os testes de animação e combate fornecem seus próprios equipamentos de teste por `tests/owned_gear_fixture.gd`; selecionar a classe no jogo não fornece esses itens.
 
 [Mercador na vila](../docs/mercador-na-vila.png) · [Compra de poções](../docs/mercador-compra.png) · [Venda de equipamento](../docs/mercador-venda.png)
+
+
+## Baú pessoal, venda por seleção e joias
+
+O **Baú pessoal** fica junto ao poço da vila. Aproxime-se e pressione **E** para abrir as listas Mochila e Baú. Selecione um item, escolha a quantidade de consumíveis e clique em Guardar ou Retirar. Equipamentos precisam ser retirados do personagem antes de serem guardados. O baú usa o mesmo save local do personagem e permanece disponível após trocar de classe ou reabrir o jogo. Itens no baú não aparecem na lista de venda do mercador. Guardar ou retirar move o mesmo ID e os mesmos atributos; não gera cópias. Esc/TAB fecha a tela.
+
+No mercador, marque as caixas ao lado dos itens e use **Vender selecionados**. O botão informa quantos itens/pilhas serão vendidos e o valor total. Marcar poções ou materiais seleciona a pilha inteira; a venda individual continua permitindo escolher uma quantidade menor. Limpar seleção desmarca tudo. Se qualquer item ficar indisponível ou o limite de ouro for ultrapassado, a venda em lote inteira é rejeitada. Equipamentos vestidos e itens no baú são protegidos. A transação concluída é salva imediatamente.
+
+Os saques de monstros e baús agora incluem **anéis, brincos e colares**, com os ícones originais do cliente em cada grau. Existem dois slots de anel, dois de brinco e um de colar, separados das roupas. Um anel ou brinco ocupa primeiro o slot vazio da dupla. Todas as classes podem usar as mesmas joias; trocar de classe conserva sua identidade e seus atributos. A categoria Joias filtra a mochila. As joias concedem Vida e Defesa mágica; esta última reduz os impactos mágicos do chefe, sem aumentar a defesa física. Os valores são próprios do protótipo, registrados em `scripts/jewelry_catalog.gd`. As probabilidades de raridade permanecem **65% / 27% / 7,5% / 0,45% / 0,05%**. Os nove tipos de saque têm o mesmo peso: seis equipamentos e três tipos de joia. Os slots adicionais começam vazios, sem entregar joias gratuitas.
+
+[Baú na vila](../docs/bau-pessoal-vila.png) · [Guardar e retirar](../docs/bau-pessoal-interface.png) · [Venda por seleção](../docs/mercador-venda-selecionados.png) · [Joias equipadas](../docs/inventario-joias.png)
+
+## Progressão e dificuldade
+
+A antiga regra concedia um nível a cada três mortes e restaurava toda a vida. Agora cada nível exige `60 + 25 × nível` de experiência; monstros concedem `4 + 2 × mundo` e o chefe cinco vezes esse valor. A experiência excedente passa para o próximo nível. Subir de nível acrescenta apenas a diferença de Vida máxima à Vida atual: não oferece cura completa. O crescimento básico é de 8 de Vida e 1,5 de Ataque por nível até 30; depois há retornos menores. **Níveis, ouro, equipamentos e mundos liberados dos saves existentes são preservados**, mas os atributos passam a usar essas novas regras.
+
+Cada mundo aumenta Vida, dano e velocidade dos monstros. Dentro da mesma instância, ondas posteriores ficam mais fortes. Os níveis sugeridos na fenda vão de 1 a 19, sem bloquear a entrada pela quantidade de níveis. A defesa agora reduz uma porcentagem do dano (`dano × 100 / (100 + defesa)`), evitando que uma defesa baixa anule ataques inteiros. O chefe tem mais Vida e dano, marca a posição de jogadores até 24 metros e acelera gradualmente após 35 segundos de luta, até 50%. Sair da área vermelha antes do impacto continua evitando o golpe. A tentativa mantém seis ondas de cinco monstros, um chefe e dez minutos de combate.
+
+Validação: `godot --headless --path . --script res://tests/storage_jewelry_balance_test.gd`. Exercita os botões reais, quantidades e limites, transferências sem duplicação, persistência em arquivo, venda em lote atômica, proteção do baú/equipamentos, quinze joias, cinco slots, Defesa mágica e Vida no combate, troca de classe, preservação do save nível 115, experiência sem cura completa, aumento de dificuldade e ataques do chefe à distância. Os testes de inventário, conjuntos, ícones e smoke continuam cobrindo os fluxos anteriores. O ajuste numérico é inicial e ainda pode receber refinamentos com partidas completas dos jogadores.

@@ -27,6 +27,11 @@ const ClassWeapon := preload("res://scripts/class_weapon.gd")
 const Wardrobe := preload("res://scripts/wardrobe.gd")
 const MerchantMenu := preload("res://scripts/merchant_menu.gd")
 const MerchantStock := preload("res://scripts/merchant_stock.gd")
+const StorageMenu := preload("res://scripts/storage_menu.gd")
+const StorageItems := preload("res://scripts/storage_items.gd")
+const Balance := preload("res://scripts/combat_balance.gd")
+var storage_menu: PanelContainer
+var storage_backdrop: ColorRect
 var merchant_menu: PanelContainer
 var merchant_backdrop: ColorRect
 var player_class := "tanque"
@@ -304,7 +309,18 @@ func _ui() -> void:
 	hud.root.add_child(merchant_menu)
 	merchant_menu.closed.connect(_close_merchant)
 	merchant_menu.trade_requested.connect(_trade)
+	merchant_menu.sell_selected_requested.connect(_sell_selected)
 	merchant_menu.visibility_changed.connect(func() -> void: merchant_backdrop.visible = merchant_menu.visible)
+	storage_backdrop = ColorRect.new()
+	storage_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	storage_backdrop.color = Color(0.01, 0.02, 0.03, 0.78)
+	storage_backdrop.hide()
+	hud.root.add_child(storage_backdrop)
+	storage_menu = StorageMenu.new()
+	hud.root.add_child(storage_menu)
+	storage_menu.closed.connect(_close_storage)
+	storage_menu.transfer_requested.connect(_storage_transfer)
+	storage_menu.visibility_changed.connect(func() -> void: storage_backdrop.visible = storage_menu.visible)
 	_sync_class()
 	_refresh_hud()
 
@@ -312,7 +328,7 @@ func _movement_speed(sprinting: bool) -> float:
 	return (6.5 if sprinting else 4.0) * (1.0 + float(LootItems.set_bonuses(inventory, player_class).speed_percent) / 100.0)
 
 func _maximum_hp() -> float:
-	return float(PlayerClasses.get_definition(player_class).max_hp) + (level - 1) * 20.0 + float(LootItems.set_bonuses(inventory, player_class).hp)
+	return float(PlayerClasses.get_definition(player_class).max_hp) + Balance.health_growth(level) + float(LootItems.set_bonuses(inventory, player_class).hp) + float(LootItems.jewelry_bonuses(inventory).hp)
 
 func _sync_class() -> void:
 	LootItems.ensure_identity(inventory, player_class)
@@ -370,6 +386,8 @@ func _refresh_hud() -> void:
 			prompt = "[E] Instrutor · Escolher classe humana"
 		elif _near_merchant():
 			prompt = "[E] Bento · Comprar e vender"
+		elif _near_storage():
+			prompt = "[E] Baú pessoal · Guardar e retirar itens"
 		elif _near_portal():
 			prompt = "[E] Acessar a fenda dimensional"
 	hud.set_interaction_prompt(prompt)
@@ -397,7 +415,37 @@ func _open_chest() -> bool:
 	return true
 
 func _modal_open() -> bool:
-	return hud.inventory_panel.visible or hud.rift_panel.visible or (is_instance_valid(class_menu) and class_menu.visible) or (is_instance_valid(merchant_menu) and merchant_menu.visible) or hud.run_result_panel.visible or hud.chest_rewards_panel.visible
+	return hud.inventory_panel.visible or hud.rift_panel.visible or (is_instance_valid(class_menu) and class_menu.visible) or (is_instance_valid(merchant_menu) and merchant_menu.visible) or (is_instance_valid(storage_menu) and storage_menu.visible) or hud.run_result_panel.visible or hud.chest_rewards_panel.visible
+
+func _near_storage() -> bool:
+	return current_world == 0 and player.position.distance_to(Village.STORAGE_POSITION) <= 2.8
+
+func _close_storage() -> void:
+	storage_menu.hide()
+	animation.speed_scale = 1.0
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_refresh_hud()
+
+func _storage_transfer(direction: String, id: String, quantity: int) -> bool:
+	if dead or not storage_menu.visible or not _near_storage(): return false
+	var result := StorageItems.transfer(inventory, direction, id, quantity)
+	storage_menu.sync_inventory(inventory, player_class)
+	storage_menu.status_label.text = result.message
+	if result.ok:
+		_refresh_hud()
+		_save_profile()
+	return result.ok
+
+func _sell_selected(selection: Dictionary) -> bool:
+	if dead or not merchant_menu.visible or not _near_merchant(): return false
+	var result := MerchantStock.sell_selected(inventory, selection)
+	if result.ok: merchant_menu.sale_selection.clear()
+	merchant_menu.sync_inventory(inventory, player_class)
+	merchant_menu.status_label.text = result.message
+	if result.ok:
+		_refresh_hud()
+		_save_profile()
+	return result.ok
 
 func _near_merchant() -> bool:
 	return current_world == 0 and player.position.distance_to(Village.MERCHANT_POSITION) <= 3.2
@@ -428,6 +476,13 @@ func _interact() -> bool:
 		return false
 	if _near_chest():
 		return _open_chest()
+	if _near_storage():
+		storage_menu.sync_inventory(inventory, player_class)
+		storage_menu.show()
+		hud.potion_popup.hide()
+		animation.speed_scale = 0.0
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		return true
 	if _near_merchant():
 		merchant_menu.sync_inventory(inventory, player_class)
 		merchant_menu.show()
@@ -496,6 +551,7 @@ func _change_zone(number: int) -> void:
 	hud.hide_chest_rewards()
 	class_menu.hide()
 	merchant_menu.hide()
+	storage_menu.hide()
 	class_combat.cancel(self)
 	animation.speed_scale = 1.0
 	hud.focus_enemy = null
@@ -554,7 +610,7 @@ func _change_zone(number: int) -> void:
 
 func _update_location() -> void:
 	if current_world == 0:
-		hud.set_location("VILA DA FENDA", "E · Instrutor de classes ou fenda dimensional", true)
+		hud.set_location("VILA DA FENDA", "E · Instrutor, mercador, baú pessoal ou fenda dimensional", true)
 	else:
 		var definition := WorldCatalog.get_world(current_world)
 		var objective := "Vença seis ondas e derrote o chefe para receber o baú."
@@ -595,12 +651,12 @@ func _load_profile() -> void:
 	var state: Dictionary = progress.load_profile()
 	player_class = PlayerClasses.normalize(str(state.get("player_class", "tanque")))
 	level = maxi(1, int(state.get("level", 1)))
-	xp = clampi(int(state.get("xp", 0)), 0, 2)
+	xp = clampi(int(state.get("xp", 0)), 0, Balance.xp_needed(level) - 1)
 	kills = maxi(0, int(state.get("kills", 0)))
 	var saved_inventory: Variant = state.get("inventory", {})
 	if saved_inventory is Dictionary:
 		for key in LootItems.BASE_KEYS.values():
-			inventory[key] = bool(saved_inventory.get(key, true))
+			inventory[key] = bool(saved_inventory.get(key, key not in LootItems.JEWELRY_SLOTS))
 		for key in ["potions", "fangs", "gold"]:
 			inventory[key] = clampi(int(saved_inventory.get(key, inventory[key])), 0, 999999)
 		LootItems.restore_items(inventory, saved_inventory, player_class)
@@ -635,7 +691,7 @@ func _toggle_inventory() -> void:
 	_refresh_hud()
 
 func _use_item(item: String) -> bool:
-	if dead or hud.rift_panel.visible or class_menu.visible or merchant_menu.visible or hud.run_result_panel.visible or hud.chest_rewards_panel.visible:
+	if dead or hud.rift_panel.visible or class_menu.visible or merchant_menu.visible or storage_menu.visible or hud.run_result_panel.visible or hud.chest_rewards_panel.visible:
 		return false
 	if attack_clock > 0 and item != "potion":
 		return false
@@ -753,6 +809,7 @@ func _spawn_enemies(wave_number: int = 1) -> void:
 	if current_world == 0 or not enemies.is_empty():
 		return
 	var definition := WorldCatalog.get_world(current_world)
+	var stats := Balance.enemy(current_world, level, wave_number)
 	var combatants := active_zone.get_node_or_null("Combatants")
 	if combatants == null:
 		combatants = Node3D.new()
@@ -761,9 +818,10 @@ func _spawn_enemies(wave_number: int = 1) -> void:
 	for point in definition.enemy_spawns:
 		var foe := CharacterBody3D.new()
 		foe.position = point
-		foe.set_meta("hp", float(definition.enemy_hp))
-		foe.set_meta("maximum_hp", float(definition.enemy_hp))
-		foe.set_meta("damage", float(definition.enemy_damage))
+		foe.set_meta("hp", float(stats.hp))
+		foe.set_meta("maximum_hp", float(stats.hp))
+		foe.set_meta("damage", float(stats.damage))
+		foe.set_meta("speed", float(stats.speed))
 		foe.set_meta("attack", 0.0)
 		var collision := CollisionShape3D.new()
 		var shape := SphereShape3D.new()
@@ -782,14 +840,16 @@ func _spawn_enemies(wave_number: int = 1) -> void:
 func _spawn_boss() -> void:
 	if current_world == 0 or not enemies.is_empty() or arena_run.phase != InstanceRun.Phase.BOSS:
 		return
-	var definition := WorldCatalog.get_world(current_world)
 	var foe := CharacterBody3D.new()
 	foe.name = "RiftGuardian"
 	foe.position = Vector3(0, 0.05, -7)
-	var maximum := float(definition.enemy_hp) * 8.0 + current_world * 80.0
+	var stats := Balance.enemy(current_world, level)
+	var maximum := float(stats.hp) * 8.0 + current_world * 80.0
 	foe.set_meta("hp", maximum)
 	foe.set_meta("maximum_hp", maximum)
-	foe.set_meta("damage", float(definition.enemy_damage) * 3.0)
+	foe.set_meta("damage", float(stats.damage) * 3.0)
+	foe.set_meta("speed", 3.0 + current_world * 0.06)
+	foe.set_meta("fight_time", 0.0)
 	foe.set_meta("attack", 1.5)
 	foe.set_meta("windup", 0.0)
 	foe.set_meta("is_boss", true)
@@ -815,6 +875,9 @@ func _boss_step(foe: CharacterBody3D, delta: float) -> void:
 	if dead:
 		return
 	var visual := foe.get_node("GrelimVisual")
+	var fight_time := float(foe.get_meta("fight_time", 0.0)) + delta
+	foe.set_meta("fight_time", fight_time)
+	var rage := minf(1.5, 1.0 + floorf(fight_time / 35.0) * 0.1)
 	var windup := float(foe.get_meta("windup", 0.0))
 	var direction := player.position - foe.position
 	direction.y = 0.0
@@ -832,13 +895,13 @@ func _boss_step(foe: CharacterBody3D, delta: float) -> void:
 			var offset := player.position - impact
 			offset.y = 0
 			if offset.length() <= 2.8:
-				_receive_damage(float(foe.get_meta("damage")))
+				_receive_damage(float(foe.get_meta("damage")) * rage, true)
 			visual.set_motion("attack")
-			foe.set_meta("attack", 2.2)
+			foe.set_meta("attack", 2.2 / rage)
 		return
 	var timer := maxf(0.0, float(foe.get_meta("attack")) - delta)
 	foe.set_meta("attack", timer)
-	if direction.length() <= 3.8 and timer <= 0.0:
+	if direction.length() <= 24.0 and timer <= 0.0:
 		var impact := player.position
 		impact.y = 0.04
 		foe.set_meta("impact_position", impact)
@@ -846,7 +909,7 @@ func _boss_step(foe: CharacterBody3D, delta: float) -> void:
 		foe.set_meta("danger_marker", _danger_marker(impact))
 		visual.set_motion("windup")
 		return
-	var desired := direction.normalized() * 2.2 if direction.length() > 2.5 and timer < 1.6 else Vector3.ZERO
+	var desired := direction.normalized() * float(foe.get_meta("speed", 3.0)) * rage if direction.length() > 2.5 and timer < 1.6 else Vector3.ZERO
 	foe.velocity = Vector3(move_toward(foe.velocity.x, desired.x, delta * 6.0), -5, move_toward(foe.velocity.z, desired.z, delta * 6.0))
 	foe.move_and_slide()
 	if direction.length() > 0.1 and timer < 1.6:
@@ -884,8 +947,9 @@ func _danger_marker(at: Vector3) -> Node3D:
 	marker.add_child(edge)
 	return marker
 
-func _receive_damage(amount: float) -> void:
-	var damage := maxf(1.0, amount - float(LootItems.bonuses(inventory, player_class).defense))
+func _receive_damage(amount: float, magical := false) -> void:
+	var defense := float(LootItems.bonuses(inventory, player_class).defense) + (float(LootItems.jewelry_bonuses(inventory).magic_defense) if magical else 0.0)
+	var damage := Balance.incoming_damage(amount, defense)
 	hp = maxf(0.0, hp - damage * (0.35 if guard_clock > 0 else 1.0))
 	if hp <= 0 and not dead:
 		dead = true
@@ -897,7 +961,9 @@ func _receive_damage(amount: float) -> void:
 func _input(event: InputEvent) -> void:
 	# TAB também funciona quando um controle da interface está com foco.
 	if event is InputEventKey and event.keycode == KEY_TAB and event.pressed and not event.echo:
-		if merchant_menu.visible:
+		if storage_menu.visible:
+			_close_storage()
+		elif merchant_menu.visible:
 			_close_merchant()
 		elif class_menu.visible:
 			_close_classes()
@@ -916,7 +982,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_toggle_inventory()
 			return
 		if event.keycode == KEY_ESCAPE:
-			if merchant_menu.visible:
+			if storage_menu.visible:
+				_close_storage()
+			elif merchant_menu.visible:
 				_close_merchant()
 			elif class_menu.visible:
 				_close_classes()
@@ -1044,7 +1112,7 @@ func _melee_hit() -> void:
 		query.exclude = [player.get_rid()]
 		var hit := get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty() and hit.collider == foe:
-			_damage_enemy(foe, (40.0 if attack_kind == 2 else (60.0 if powered_attack else 25.0)) + (level - 1) * 5 + LootItems.bonuses(inventory, player_class).attack)
+			_damage_enemy(foe, (40.0 if attack_kind == 2 else (60.0 if powered_attack else 25.0)) + Balance.attack_growth(level) + LootItems.bonuses(inventory, player_class).attack)
 
 func _skill_arc() -> void:
 	var visual := MeshInstance3D.new()
@@ -1093,14 +1161,15 @@ func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 			var dropped := LootItems.create_world_drop(loot_rng, current_world)
 			inventory.loot_items.append(dropped)
 			hud.show_reward(dropped)
-		xp += 1
+		var previous_maximum := _maximum_hp()
+		xp += Balance.experience(current_world, is_boss)
 		kills += 1
 		if not is_boss:
 			instance_kills += 1
-		if xp >= 3:
-			xp = 0
+		while xp >= Balance.xp_needed(level):
+			xp -= Balance.xp_needed(level)
 			level += 1
-			hp = _maximum_hp()
+		hp = minf(_maximum_hp(), hp + maxf(0, _maximum_hp() - previous_maximum))
 		if is_boss:
 			arena_run.boss_defeated()
 		else:
@@ -1118,7 +1187,7 @@ func _enemies_step(delta: float) -> void:
 		var direction := player.position - foe.position
 		direction.y = 0
 		var distance := direction.length()
-		var desired := direction.normalized() * 1.8 if distance > 1.3 and not dead else Vector3.ZERO
+		var desired := direction.normalized() * float(foe.get_meta("speed", 2.5)) if distance > 1.3 and not dead else Vector3.ZERO
 		foe.velocity.x = move_toward(foe.velocity.x, desired.x, delta * 5.0)
 		foe.velocity.z = move_toward(foe.velocity.z, desired.z, delta * 5.0)
 		foe.velocity.y = -5
@@ -1195,7 +1264,7 @@ func _test() -> void:
 	_check(not _attack(true), "recarga da skill bloqueia repetição")
 	for foe in enemies.duplicate():
 		_damage_enemy(foe, 100)
-	_check(enemies.size() == 5 and level == 2 and kills == 5 and arena_run.wave == 2, "combate concede experiência e inicia a onda seguinte após cinco derrotas")
+	_check(enemies.size() == 5 and level == 1 and xp == 30 and kills == 5 and arena_run.wave == 2, "cinco derrotas concedem experiência sem níveis instantâneos e iniciam a próxima onda")
 	_reset_test_combat()
 	_check(enemies.size() == 5 and hp == 100, "reinício restaura combate")
 	await get_tree().physics_frame
@@ -1629,7 +1698,7 @@ func _test_instance_flow() -> void:
 		if number == 2:
 			_damage_enemy(enemies[0], 1)
 			_refresh_hud()
-			_check(hud.target_health.max_value == 70 and hud.target_health.value == 69, "barras respeitam a vida do mundo atual")
+			_check(is_equal_approx(hud.target_health.max_value, float(enemies[0].get_meta("maximum_hp"))) and is_equal_approx(hud.target_health.value, hud.target_health.max_value - 1), "barras respeitam a vida do mundo atual")
 		_finish_test_run()
 		_check(progress.completed_worlds.size() == number and instance_kills == 30, "ondas e chefe concluem cada mundo em ordem: " + str(number))
 		await get_tree().process_frame
@@ -1661,7 +1730,7 @@ func _test_instance_flow() -> void:
 	_use_item("loot_equip:smoke-armor")
 	enemies[0].position = player.position + Vector3(0, 0, -1)
 	_enemies_step(0.01)
-	_check(hp == 95, "defesa de saque reduz dano real")
+	_check(is_equal_approx(hp, 100.0 - 1200.0 / 107.0), "defesa de saque reduz dano real sem anular ataques")
 	hp = 1
 	enemies[0].set_meta("attack", 0.0)
 	_enemies_step(0.01)

@@ -4,6 +4,7 @@ const SPAWN := Vector3(0, 0.05, 10)
 const PORTAL_POSITION := Vector3(0, 0, -15)
 const CLASS_TRAINER_POSITION := Vector3(-3.0, 0.035, 7.7)
 const MERCHANT_POSITION := Vector3(5.2, 0.035, 3.0)
+const STORAGE_POSITION := Vector3(-4.5, 0.035, 0.6)
 const BOUNDARY := 27.0
 const TravelGate := preload("res://scripts/travel_gate.gd")
 const ClassTrainer := preload("res://scripts/class_trainer.gd")
@@ -40,6 +41,27 @@ func _ready() -> void:
 	merchant.position = MERCHANT_POSITION
 	merchant.rotation.y = -0.65
 	add_child(merchant)
+	var storage := StaticBody3D.new()
+	storage.name = "PersonalStorage"
+	storage.position = STORAGE_POSITION
+	add_child(storage)
+	storage.add_to_group("personal_storage")
+	var chest := preload("res://scripts/reward_chest.gd").new()
+	storage.add_child(chest)
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(1.1, 0.8, 0.8)
+	collision.shape = shape
+	collision.position.y = 0.4
+	storage.add_child(collision)
+	var label := Label3D.new()
+	label.text = "Baú pessoal\nE · Guardar / Retirar"
+	label.position.y = 1.35
+	label.font_size = 25
+	label.pixel_size = 0.006
+	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	label.outline_size = 5
+	storage.add_child(label)
 
 func _materials_setup() -> void:
 	_materials["stone"] = _textured_material("888d7d", "535c54", 0)

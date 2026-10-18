@@ -215,7 +215,7 @@ func _forward(game) -> Vector3:
 	return Vector3.FORWARD.rotated(Vector3.UP, game.yaw)
 
 func _damage(game, base: float) -> float:
-	return base * float(PlayerClasses.get_definition(game.player_class).attack_scale) + (game.level - 1) * 5.0 + LootItems.bonuses(game.inventory, game.player_class).attack
+	return base * float(PlayerClasses.get_definition(game.player_class).attack_scale) + preload("res://scripts/combat_balance.gd").attack_growth(game.level) + LootItems.bonuses(game.inventory, game.player_class).attack
 
 func _target(game, reach: float):
 	var selected = null

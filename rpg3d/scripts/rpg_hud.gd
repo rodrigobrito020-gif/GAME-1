@@ -515,8 +515,9 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	health.value = hp
 	health_text.text = "%d / %d" % [ceili(hp), int(maximum)]
 	status.text = "Nv. %d  %s%s" % [level, _class_name, " · Defesa %.0fs" % guard if guard > 0 else ""]
+	experience.max_value = preload("res://scripts/combat_balance.gd").xp_needed(level)
 	experience.value = xp
-	experience.tooltip_text = "Experiência: %d / 3" % xp
+	experience.tooltip_text = "Experiência: %d / %d · Crescimento de atributos reduzido após o nível 30." % [xp, int(experience.max_value)]
 	for i in range(4):
 		var remaining := float(cooldowns[i])
 		var has_weapon: bool = bool(inventory.get("equipped", false)) or inventory.get("equipped_loot", {}).has("sword")

@@ -3,6 +3,7 @@ extends RefCounted
 const Catalog := preload("res://scripts/equipment_catalog.gd")
 const Client := preload("res://scripts/client_item_icons.gd")
 const BackgroundMasks := preload("res://scripts/icon_background_masks.gd")
+const Jewelry := preload("res://scripts/jewelry_catalog.gd")
 const RARITY_COLORS := {
 	"Comum": Color("b1b4b9"), "Incomum": Color("71bb72"),
 	"Raro": Color("60a7df"), "Épico": Color("ba84df"),
@@ -15,6 +16,10 @@ const FALLBACK := {
 }
 static func for_item(item: Dictionary, class_id: String = "tanque") -> Texture2D:
 	var slot := str(item.get("slot", "armor"))
+	if not Jewelry.kind_for_slot(slot).is_empty():
+		var key: String = item.get("jewelry_key", Jewelry.key_for(slot, str(item.get("rarity", "Comum"))))
+		var jewel: Dictionary = Jewelry.ITEMS.get(key, Jewelry.ITEMS[Jewelry.key_for(slot, "Comum")])
+		return Client.ICONS[jewel.icon_ref]
 	if slot in Catalog.CLOTHING_SLOTS:
 		var grade: String = {"Incomum":"D","Raro":"C","Épico":"B","Lendário":"A"}.get(str(item.get("rarity", "Comum")), "No Grade")
 		var key: String = item.get("lineage_key", Catalog.key_for(class_id, grade, slot))

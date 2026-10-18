@@ -1,6 +1,7 @@
 extends PanelContainer
 signal closed
 signal trade_requested(mode: String, id: String, quantity: int)
+signal sell_selected_requested(selection: Dictionary)
 const Stock := preload("res://scripts/merchant_stock.gd")
 const Icons := preload("res://scripts/item_icons.gd")
 var status_label: Label
@@ -14,6 +15,9 @@ var selected_mode := "buy"
 var selected_id := "potion"
 var _inventory: Dictionary = {}
 var _class_id := "tanque"
+var sale_selection: Dictionary = {}
+var sale_checks: Dictionary = {}
+var sell_selected_button: Button
 
 func _style(background: Color, border := Color("9f885e")) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
@@ -99,7 +103,19 @@ func _ready() -> void:
 	action_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	action_button.pressed.connect(func() -> void: trade_requested.emit(selected_mode, selected_id, int(quantity.value)))
 	footer.add_child(action_button)
-	status_label = _label("Equipamentos vestidos precisam ser retirados antes de vender.", 14)
+	var bulk := HBoxContainer.new()
+	column.add_child(bulk)
+	sell_selected_button = _button("Vender selecionados")
+	sell_selected_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sell_selected_button.pressed.connect(func() -> void: sell_selected_requested.emit(sale_selection.duplicate()))
+	bulk.add_child(sell_selected_button)
+	var clear_button := _button("Limpar seleção")
+	clear_button.pressed.connect(func() -> void:
+		sale_selection.clear()
+		sync_inventory(_inventory, _class_id)
+	)
+	bulk.add_child(clear_button)
+	status_label = _label("Marque as caixas para vender vários itens. Marcar consumíveis seleciona a pilha inteira.", 14)
 	status_label.custom_minimum_size.y = 22
 	column.add_child(status_label)
 	hide()
@@ -115,11 +131,50 @@ func _row(list: VBoxContainer, mode: String, item: Dictionary, price: int) -> vo
 	button.add_theme_constant_override("h_separation", 12)
 	button.tooltip_text = str(item.get("description", item.name))
 	button.pressed.connect(select_entry.bind(mode, str(item.id)))
-	list.add_child(button)
+	if mode == "sell":
+		var row := HBoxContainer.new()
+		list.add_child(row)
+		var check := CheckBox.new()
+		check.custom_minimum_size.x = 36
+		check.focus_mode = Control.FOCUS_NONE
+		for state: String in ["checked", "checked_disabled"]:
+			check.add_theme_icon_override(state, preload("res://assets/icons/sale_checked.svg"))
+		for state: String in ["unchecked", "unchecked_disabled"]:
+			check.add_theme_icon_override(state, preload("res://assets/icons/sale_unchecked.svg"))
+		check.button_pressed = sale_selection.has(item.id)
+		check.tooltip_text = "Selecionar para vender a pilha inteira (×%d)." % int(item.get("count", 1))
+		check.toggled.connect(toggle_sale.bind(str(item.id)))
+		row.add_child(check)
+		sale_checks[item.id] = check
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(button)
+	else:
+		list.add_child(button)
+
+func toggle_sale(enabled: bool, id: String) -> void:
+	if not enabled:
+		sale_selection.erase(id)
+	else:
+		for item: Dictionary in Stock.selling_entries(_inventory):
+			if item.id == id: sale_selection[id] = int(item.count)
+	_update_bulk()
+
+func _update_bulk() -> void:
+	var total := 0
+	for item: Dictionary in Stock.selling_entries(_inventory):
+		if sale_selection.has(item.id): total += Stock.sale_price(item) * int(sale_selection[item.id])
+	sell_selected_button.text = "Vender %d selecionados · +%d ouro" % [sale_selection.size(), total]
+	sell_selected_button.disabled = sale_selection.is_empty()
 
 func sync_inventory(inv: Dictionary, class_id: String) -> void:
 	_inventory = inv
 	_class_id = class_id
+	var valid_ids := {}
+	for item: Dictionary in Stock.selling_entries(inv): valid_ids[item.id] = int(item.count)
+	for id: String in sale_selection.keys():
+		if not valid_ids.has(id): sale_selection.erase(id)
+		else: sale_selection[id] = mini(sale_selection[id], valid_ids[id])
+	sale_checks.clear()
 	gold_label.text = "%d ouro" % int(inv.get("gold", 0))
 	for list: VBoxContainer in [buy_list, sell_list]:
 		for child in list.get_children():
@@ -135,6 +190,7 @@ func sync_inventory(inv: Dictionary, class_id: String) -> void:
 		_row(sell_list, "sell", item, Stock.sale_price(item))
 	if entries.is_empty(): sell_list.add_child(_label("Nenhum item guardado para vender.", 15))
 	_update_choice()
+	_update_bulk()
 
 func select_entry(mode: String, id: String) -> void:
 	selected_mode = mode

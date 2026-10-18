@@ -19,6 +19,9 @@ func _initialize() -> void:
 		specimens[entry.icon_ref] = {"item":{"slot":entry.slot, "lineage_key":key}, "class_id":"tanque"}
 	for slot: String in Client.WEAPONS:
 		specimens[Client.WEAPONS[slot]] = {"item":{"slot":"shield" if slot == "shield" else "sword"}, "class_id":"arqueiro" if slot == "bow" else "mago" if slot == "rod" else "tanque"}
+	for key: String in Icons.Jewelry.ITEMS:
+		var entry: Dictionary = Icons.Jewelry.ITEMS[key]
+		specimens[entry.icon_ref] = {"item":{"slot": {"ring":"ring1", "earring":"earring1", "necklace":"necklace"}[entry.kind], "jewelry_key":key}, "class_id":"tanque"}
 	for ref: String in specimens:
 		var specimen: Dictionary = specimens[ref]
 		var original: Image = Client.ICONS[ref].get_image()

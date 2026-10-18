@@ -829,6 +829,81 @@
       "object": "weapon_short_bow_i00",
       "path": "res://assets/client_icons/weapon_short_bow_i00.png",
       "sha256": "2ee06f9060eb52c2f324092e0d0e2ef0fbd3e5e4370572aca6e111bab59e7f9e"
+    },
+    "icon.accessary_ring_of_knowledge_i00": {
+      "object": "accessary_ring_of_knowledge_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_knowledge_i00.png",
+      "sha256": "05b5f73fdde29ead28530404a7dc2de5044350c2b30c9ba685c0dcdc193798c8"
+    },
+    "icon.accessary_elven_ring_i00": {
+      "object": "accessary_elven_ring_i00",
+      "path": "res://assets/client_icons/accessary_elven_ring_i00.png",
+      "sha256": "814ef2e13eb974b8dec88a665e672d7c9d7c9d4cf142de3b604ed93f4b56da1e"
+    },
+    "icon.accessary_ring_of_protection_i00": {
+      "object": "accessary_ring_of_protection_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_protection_i00.png",
+      "sha256": "6890bf9f3bb016713c9ab01a3a4be181183d9050c5faa56dbaf7b423aa59d7ad"
+    },
+    "icon.accessary_ring_of_black_ore_i00": {
+      "object": "accessary_ring_of_black_ore_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_black_ore_i00.png",
+      "sha256": "9e55c5d7072561831d7fc6969e1b9fad2a4370748c3905a5f65881b6d70c382b"
+    },
+    "icon.accessary_inferno_ring_i00": {
+      "object": "accessary_inferno_ring_i00",
+      "path": "res://assets/client_icons/accessary_inferno_ring_i00.png",
+      "sha256": "e85a65182df02223b0301cd8a5d2f56883416e779272f12d19f89049e8846ef6"
+    },
+    "icon.accessary_catseye_earing_i00": {
+      "object": "accessary_catseye_earing_i00",
+      "path": "res://assets/client_icons/accessary_catseye_earing_i00.png",
+      "sha256": "3812f093598e9b8c4481f8064a3e3ae705732b9ff6b00da8c7ebaf39cf781ff7"
+    },
+    "icon.accessary_elven_earing_i00": {
+      "object": "accessary_elven_earing_i00",
+      "path": "res://assets/client_icons/accessary_elven_earing_i00.png",
+      "sha256": "35d3740f57cce8a970c5dce67ed06255cb20f1cd5775c3093ab77bd53e959cda"
+    },
+    "icon.accessary_earing_of_protection_i00": {
+      "object": "accessary_earing_of_protection_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_protection_i00.png",
+      "sha256": "e67dd490a1f1760cca6b52228d1afbe90cfd5e5497d422795553779c8c0bea64"
+    },
+    "icon.accessary_earing_of_black_ore_i00": {
+      "object": "accessary_earing_of_black_ore_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_black_ore_i00.png",
+      "sha256": "5ac0bad53ec9ee19b4191f656af32b2ccf5c5ee06734ca0157a2576e251f8793"
+    },
+    "icon.accessary_inferno_earing_i00": {
+      "object": "accessary_inferno_earing_i00",
+      "path": "res://assets/client_icons/accessary_inferno_earing_i00.png",
+      "sha256": "fd2b6496afcc8dba0a0871b5dd12ffed60b4c0142daf6f899163564de56905fe"
+    },
+    "icon.accessary_necklace_of_knowledge_i00": {
+      "object": "accessary_necklace_of_knowledge_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_knowledge_i00.png",
+      "sha256": "86c2ef7db01ba9c9a12792e9aeb0138f52cb717eaedd60011802bf9c8810d95f"
+    },
+    "icon.accessary_elven_necklace_i00": {
+      "object": "accessary_elven_necklace_i00",
+      "path": "res://assets/client_icons/accessary_elven_necklace_i00.png",
+      "sha256": "d01040dd8b6f68e671043ad96b9d06142784f0137037db3532aa068661536664"
+    },
+    "icon.accessary_necklace_of_protection_i00": {
+      "object": "accessary_necklace_of_protection_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_protection_i00.png",
+      "sha256": "e2e490cf5b48183552ff69c94fedb22292d5b5c636702a72bd361343c7c4e749"
+    },
+    "icon.accessary_necklace_of_black_ore_i00": {
+      "object": "accessary_necklace_of_black_ore_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_black_ore_i00.png",
+      "sha256": "d4f24ff2dd9567c4489c2b8893da3c3be9bb339a30d5906149d619a82871013a"
+    },
+    "icon.accessary_inferno_necklace_i00": {
+      "object": "accessary_inferno_necklace_i00",
+      "path": "res://assets/client_icons/accessary_inferno_necklace_i00.png",
+      "sha256": "a4b97ff04d3bd6c6a9aa4efd32d3f9f3d0e615294afc589f02cd1c549202bf2e"
     }
   },
   "notes": [
@@ -839,7 +914,7 @@
   "display_backgrounds": {
     "script": "res://scripts/item_icons.gd",
     "masks": "res://scripts/icon_background_masks.gd",
-    "mask_sha256": "b4c0fd39534fe86ad21a6e02166d911179ee32cdf21e9d78da92e49bf18dc9fd",
+    "mask_sha256": "77920ab90a9ab0d575593f3def708ccbc386c6f03a474bb827cb1ad460e7a773",
     "method": "Shared-background color samples and border-connected masks; original PNG files are unchanged. Display textures replace only masked background pixels with a uniform rarity color matching the slot, and are cached by icon and rarity.",
     "palette": {
       "Comum": "b1b4b9",
@@ -850,5 +925,142 @@
     },
     "generator": "res://tools/generate_icon_background_masks.gd",
     "weapon_reference_count": 90
+  },
+  "jewelry": {
+    "ring_0": {
+      "kind": "ring",
+      "grade": "No Grade",
+      "name": "Ring of Knowledge",
+      "client_item_id": 875,
+      "icon_ref": "icon.accessary_ring_of_knowledge_i00",
+      "magic_defense_bonus": 2,
+      "hp_bonus": 4
+    },
+    "ring_1": {
+      "kind": "ring",
+      "grade": "D",
+      "name": "Elven Ring",
+      "client_item_id": 881,
+      "icon_ref": "icon.accessary_elven_ring_i00",
+      "magic_defense_bonus": 4,
+      "hp_bonus": 6
+    },
+    "ring_2": {
+      "kind": "ring",
+      "grade": "C",
+      "name": "Ring of Protection",
+      "client_item_id": 884,
+      "icon_ref": "icon.accessary_ring_of_protection_i00",
+      "magic_defense_bonus": 8,
+      "hp_bonus": 10
+    },
+    "ring_3": {
+      "kind": "ring",
+      "grade": "B",
+      "name": "Ring of Black Ore",
+      "client_item_id": 895,
+      "icon_ref": "icon.accessary_ring_of_black_ore_i00",
+      "magic_defense_bonus": 12,
+      "hp_bonus": 14
+    },
+    "ring_4": {
+      "kind": "ring",
+      "grade": "A",
+      "name": "Majestic Ring",
+      "client_item_id": 893,
+      "icon_ref": "icon.accessary_inferno_ring_i00",
+      "magic_defense_bonus": 18,
+      "hp_bonus": 20
+    },
+    "earring_0": {
+      "kind": "earring",
+      "grade": "No Grade",
+      "name": "Cat's Eye Earring",
+      "client_item_id": 845,
+      "icon_ref": "icon.accessary_catseye_earing_i00",
+      "magic_defense_bonus": 3,
+      "hp_bonus": 4
+    },
+    "earring_1": {
+      "kind": "earring",
+      "grade": "D",
+      "name": "Elven Earring",
+      "client_item_id": 850,
+      "icon_ref": "icon.accessary_elven_earing_i00",
+      "magic_defense_bonus": 5,
+      "hp_bonus": 7
+    },
+    "earring_2": {
+      "kind": "earring",
+      "grade": "C",
+      "name": "Earring of Protection",
+      "client_item_id": 853,
+      "icon_ref": "icon.accessary_earing_of_protection_i00",
+      "magic_defense_bonus": 10,
+      "hp_bonus": 11
+    },
+    "earring_3": {
+      "kind": "earring",
+      "grade": "B",
+      "name": "Earring of Black Ore",
+      "client_item_id": 864,
+      "icon_ref": "icon.accessary_earing_of_black_ore_i00",
+      "magic_defense_bonus": 16,
+      "hp_bonus": 15
+    },
+    "earring_4": {
+      "kind": "earring",
+      "grade": "A",
+      "name": "Majestic Earring",
+      "client_item_id": 862,
+      "icon_ref": "icon.accessary_inferno_earing_i00",
+      "magic_defense_bonus": 23,
+      "hp_bonus": 22
+    },
+    "necklace_0": {
+      "kind": "necklace",
+      "grade": "No Grade",
+      "name": "Necklace of Knowledge",
+      "client_item_id": 906,
+      "icon_ref": "icon.accessary_necklace_of_knowledge_i00",
+      "magic_defense_bonus": 4,
+      "hp_bonus": 6
+    },
+    "necklace_1": {
+      "kind": "necklace",
+      "grade": "D",
+      "name": "Elven Necklace",
+      "client_item_id": 913,
+      "icon_ref": "icon.accessary_elven_necklace_i00",
+      "magic_defense_bonus": 7,
+      "hp_bonus": 9
+    },
+    "necklace_2": {
+      "kind": "necklace",
+      "grade": "C",
+      "name": "Necklace of Protection",
+      "client_item_id": 916,
+      "icon_ref": "icon.accessary_necklace_of_protection_i00",
+      "magic_defense_bonus": 14,
+      "hp_bonus": 15
+    },
+    "necklace_3": {
+      "kind": "necklace",
+      "grade": "B",
+      "name": "Necklace of Black Ore",
+      "client_item_id": 926,
+      "icon_ref": "icon.accessary_necklace_of_black_ore_i00",
+      "magic_defense_bonus": 22,
+      "hp_bonus": 21
+    },
+    "necklace_4": {
+      "kind": "necklace",
+      "grade": "A",
+      "name": "Majestic Necklace",
+      "client_item_id": 924,
+      "icon_ref": "icon.accessary_inferno_necklace_i00",
+      "magic_defense_bonus": 32,
+      "hp_bonus": 30
+    }
   }
 }

@@ -103,5 +103,6 @@ func show_worlds(unlocked: int, completed: Array[int]) -> void:
 			button.add_theme_stylebox_override("normal", _style(Color("3b3428"), Color("c6a963")))
 			button.add_theme_color_override("font_color", Color("f1dfb5"))
 			button.tooltip_text = "30s de preparação · 6 ondas de 5 monstros + chefe · Limite de 10 minutos.\nDerrote o chefe para conquistar o baú especial e liberar o próximo mundo."
+		button.tooltip_text += "\nNível sugerido: %d · Ondas e chefe ficam mais fortes a cada mundo." % (1 + index * 2)
 	progress_label.text = "%d / 10 mundos concluídos · %d / 10 liberados" % [finished_count, last_unlocked]
 	show()

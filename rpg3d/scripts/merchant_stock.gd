@@ -13,7 +13,7 @@ static func sale_price(item: Dictionary) -> int:
 	if item.get("slot", "") == "fang": return 2
 	if Loot._validated_item(item).is_empty(): return 0
 	var tier := Loot.RARITIES.find(item.rarity)
-	return [8, 20, 60, 180, 600][tier] + mini(1000, int(item.attack_bonus) + int(item.defense_bonus))
+	return [8, 20, 60, 180, 600][tier] + mini(1000, int(item.attack_bonus) + int(item.defense_bonus) + int(item.get("magic_defense_bonus", 0)) + int(item.get("hp_bonus", 0)))
 
 static func selling_entries(inv: Dictionary) -> Array[Dictionary]:
 	var entries: Array[Dictionary] = []
@@ -30,7 +30,7 @@ static func selling_entries(inv: Dictionary) -> Array[Dictionary]:
 
 static func trade(inv: Dictionary, mode: String, id: String, quantity: int) -> Dictionary:
 	var rejected := {"ok":false, "message":"Transação indisponível."}
-	if quantity < 1 or quantity > 99: return rejected
+	if quantity < 1 or quantity > (99 if mode == "buy" else LIMIT): return rejected
 	var gold := int(inv.get("gold", 0))
 	if gold < 0 or gold > LIMIT: return rejected
 	if mode == "buy":
@@ -61,3 +61,16 @@ static func trade(inv: Dictionary, mode: String, id: String, quantity: int) -> D
 		inv.gold = gold + proceeds
 		return {"ok":true, "message":"Venda concluída: %s ×%d · +%d ouro." % [item.name, quantity, proceeds]}
 	return rejected
+
+static func sell_selected(inv: Dictionary, selection: Dictionary) -> Dictionary:
+	if selection.is_empty(): return {"ok":false, "message":"Selecione os itens que deseja vender."}
+	var working := inv.duplicate(true)
+	var before := int(inv.get("gold", 0))
+	for id: Variant in selection:
+		if not id is String or not selection[id] is int:
+			return {"ok":false, "message":"Seleção inválida. Nenhum item foi vendido."}
+		var result := trade(working, "sell", id, selection[id])
+		if not result.ok:
+			return {"ok":false, "message":"A seleção mudou ou contém item indisponível. Nenhum item foi vendido."}
+	inv.merge(working, true)
+	return {"ok":true, "message":"%d itens/pilhas vendidos · +%d ouro." % [selection.size(), int(inv.gold) - before]}

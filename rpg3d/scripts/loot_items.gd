@@ -1,16 +1,19 @@
 extends RefCounted
 ## Equipment rewards and the transfer of unique items between bag and equipment.
 const Catalog := preload("res://scripts/equipment_catalog.gd")
+const Jewelry := preload("res://scripts/jewelry_catalog.gd")
+const STARTER_SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots", "pants"]
+const JEWELRY_SLOTS: Array[String] = ["earring1", "earring2", "ring1", "ring2", "necklace"]
 
-const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots", "pants"]
-const BASE_KEYS := {"sword": "equipped", "shield": "shield", "armor": "armor", "gloves": "gloves", "boots": "boots", "pants": "pants"}
+const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots", "pants", "earring1", "earring2", "ring1", "ring2", "necklace"]
+const BASE_KEYS := {"sword":"equipped", "shield":"shield", "armor":"armor", "gloves":"gloves", "boots":"boots", "pants":"pants", "earring1":"earring1", "earring2":"earring2", "ring1":"ring1", "ring2":"ring2", "necklace":"necklace"}
 const RARITIES: Array[String] = ["Comum", "Incomum", "Raro", "Épico", "Lendário"]
 const GRADES := {"Comum": "No Grade", "Incomum": "D", "Raro": "C", "Épico": "B", "Lendário": "A"}
 ## Percentages, totaling 100. The RNG uses one roll for rarity, regardless of slot.
 const WEIGHTS: Array[float] = [65.0, 27.0, 7.5, 0.45, 0.05]
 const RARITY_CUTOFFS: Array[float] = [65.0, 92.0, 99.5, 99.95, 100.0]
 const MAX_STAT_BONUS := 100000
-const ITEM_NAMES := {"sword": "Espada", "shield": "Escudo", "armor": "Peitoral", "gloves": "Luvas", "boots": "Botas", "pants": "Calça"}
+const ITEM_NAMES := {"sword":"Espada", "shield":"Escudo", "armor":"Peitoral", "gloves":"Luvas", "boots":"Botas", "pants":"Calça", "ring1":"Anel", "ring2":"Anel", "earring1":"Brinco", "earring2":"Brinco", "necklace":"Colar"}
 const WORLD_NAMES: Array[String] = ["da Campina", "da Floresta", "do Pântano", "das Ruínas", "da Montanha", "do Deserto", "da Geada", "das Cinzas", "do Abismo", "da Aurora"]
 const RARITY_POWER: Array[int] = [1, 2, 4, 8, 16]
 
@@ -32,7 +35,8 @@ static func rarity_for_roll(roll: float) -> String:
 
 static func create_reward(rng: RandomNumberGenerator, world_number: int, class_id: String = "tanque") -> Dictionary:
 	var rarity := rarity_for_roll(rng.randf() * 100.0)
-	var slot := SLOTS[rng.randi_range(0, SLOTS.size() - 1)]
+	var drop_slots := STARTER_SLOTS + ["earring1", "ring1", "necklace"]
+	var slot: String = drop_slots[rng.randi_range(0, drop_slots.size() - 1)]
 	var world := clampi(world_number, 1, WORLD_NAMES.size())
 	var power := world * RARITY_POWER[RARITIES.find(rarity)]
 	var attack := 0
@@ -58,6 +62,15 @@ static func create_reward(rng: RandomNumberGenerator, world_number: int, class_i
 	elif slot == "sword":
 		reward["weapon_type"] = weapon_type_for_class(class_id)
 		reward["name"] = weapon_name(reward.weapon_type)
+	elif slot in JEWELRY_SLOTS:
+		var key := Jewelry.key_for(slot, rarity)
+		var jewel: Dictionary = Jewelry.ITEMS[key]
+		reward["jewelry_key"] = key
+		reward.name = jewel.name
+		reward.attack_bonus = 0
+		reward.defense_bonus = 0
+		reward["magic_defense_bonus"] = jewel.magic_defense_bonus
+		reward["hp_bonus"] = jewel.hp_bonus
 	return reward
 
 static func weapon_type_for_class(class_id: String) -> String:
@@ -78,7 +91,7 @@ static func ensure_identity(inv: Dictionary, class_id: String) -> void:
 	# A class change never repeats this migration or generates another starter kit.
 	for item: Dictionary in inv.loot_items + inv.equipped_loot.values():
 		_identify_legacy_item(item, class_id)
-	for slot: String in SLOTS:
+	for slot: String in STARTER_SLOTS:
 		var item := {"id":"starter-" + class_id + "-" + slot, "slot":slot, "name":ITEM_NAMES[slot], "rarity":"Comum", "attack_bonus":0, "defense_bonus":0}
 		_identify_legacy_item(item, class_id)
 		if slot == "sword": item.name = weapon_name(item.weapon_type)
@@ -89,6 +102,7 @@ static func ensure_identity(inv: Dictionary, class_id: String) -> void:
 			inv.loot_items.append(item)
 		inv[BASE_KEYS[slot]] = false
 	inv["identity_version"] = 1
+	for slot: String in JEWELRY_SLOTS: inv[slot] = false
 
 static func _identify_legacy_item(item: Dictionary, class_id: String) -> void:
 	if item.slot == "sword" and not item.has("weapon_type"):
@@ -121,6 +135,14 @@ static func equipped_item(inv: Dictionary, slot: String) -> Dictionary:
 		return equipped.armor
 	return equipped.get(slot, {})
 
+static func destination_slot(inv: Dictionary, item: Dictionary) -> String:
+	var slot := str(item.slot)
+	for pair: Array in [["ring1", "ring2"], ["earring1", "earring2"]]:
+		if slot in pair and item.has("jewelry_key"):
+			for candidate: String in pair:
+				if not inv.get("equipped_loot", {}).has(candidate): return candidate
+	return slot
+
 static func equip_item(inv: Dictionary, id: String, class_id: String = "") -> bool:
 	var bag_value: Variant = inv.get("loot_items", [])
 	var equipped_value: Variant = inv.get("equipped_loot", {})
@@ -142,7 +164,8 @@ static func equip_item(inv: Dictionary, id: String, class_id: String = "") -> bo
 		return false
 	if not class_id.is_empty() and not Catalog.compatible(selected, class_id):
 		return false
-	var slot: String = selected.slot
+	var slot := destination_slot(inv, selected)
+	selected.slot = slot
 	if covers_pants(selected):
 		unequip_slot(inv, "pants")
 	elif slot == "pants" and covers_pants(equipped.get("armor", {})):
@@ -192,10 +215,12 @@ static func restore_items(inv: Dictionary, saved: Dictionary, class_id: String =
 	var saved_equipped: Variant = saved.get("equipped_loot", {})
 	for slot: String in SLOTS:
 		var base_key: String = BASE_KEYS[slot]
-		if saved.get(base_key) is bool:
+		if slot in JEWELRY_SLOTS:
+			inv[base_key] = false
+		elif saved.get(base_key) is bool:
 			inv[base_key] = saved[base_key]
 		elif not inv.get(base_key) is bool:
-			inv[base_key] = true
+			inv[base_key] = slot in STARTER_SLOTS
 		if not saved_equipped is Dictionary:
 			continue
 		var item := _validated_item(saved_equipped.get(slot, {}))
@@ -214,6 +239,19 @@ static func restore_items(inv: Dictionary, saved: Dictionary, class_id: String =
 			seen[item.id] = true
 	inv["loot_items"] = bag
 	inv["equipped_loot"] = equipped
+	var stored: Array[Dictionary] = []
+	var saved_storage: Variant = saved.get("storage_items", [])
+	if saved_storage is Array:
+		for value: Variant in saved_storage:
+			var item := _validated_item(value)
+			if item.is_empty() or seen.has(item.id): continue
+			stored.append(item)
+			seen[item.id] = true
+	if saved.has("storage_items"): inv["storage_items"] = stored
+	else: inv.erase("storage_items")
+	for key: String in ["storage_potions", "storage_fangs"]:
+		if saved.has(key): inv[key] = clampi(int(saved[key]), 0, 999999)
+		else: inv.erase(key)
 	inv["equipment_version"] = 2
 	if saved.has("identity_version"):
 		inv["identity_version"] = int(saved.identity_version)
@@ -263,6 +301,16 @@ static func _validated_item(value: Variant) -> Dictionary:
 		if not value.get(stat) is int or value[stat] < 0 or value[stat] > MAX_STAT_BONUS:
 			return {}
 	var result := {"id": value.id, "slot": value.slot, "name": value.name, "rarity": value.rarity, "attack_bonus": value.attack_bonus, "defense_bonus": value.defense_bonus}
+	for stat: String in ["magic_defense_bonus", "hp_bonus"]:
+		if value.has(stat):
+			if not value[stat] is int or value[stat] < 0 or value[stat] > MAX_STAT_BONUS: return {}
+			result[stat] = value[stat]
+	if value.has("jewelry_key"):
+		if not value.jewelry_key is String or not Jewelry.ITEMS.has(value.jewelry_key): return {}
+		var jewel: Dictionary = Jewelry.ITEMS[value.jewelry_key]
+		if Jewelry.kind_for_slot(value.slot) != jewel.kind or grade_for_rarity(value.rarity) != jewel.grade: return {}
+		result["jewelry_key"] = value.jewelry_key
+		result.name = jewel.name
 	if value.has("weapon_type"):
 		if value.slot != "sword" or value.weapon_type not in ["sword", "bow", "rod"]:
 			return {}
@@ -278,6 +326,14 @@ static func _validated_item(value: Variant) -> Dictionary:
 			return {}
 		result["lineage_key"] = key
 		result["name"] = entry.name
+	return result
+
+static func jewelry_bonuses(inv: Dictionary) -> Dictionary:
+	var result := {"hp":0, "magic_defense":0}
+	for slot: String in JEWELRY_SLOTS:
+		var item := equipped_item(inv, slot)
+		result.hp += int(item.get("hp_bonus", 0))
+		result.magic_defense += int(item.get("magic_defense_bonus", 0))
 	return result
 
 static func store_incompatible_clothing(inv: Dictionary, class_id: String) -> void:

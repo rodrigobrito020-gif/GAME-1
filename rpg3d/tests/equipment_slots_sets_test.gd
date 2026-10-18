@@ -86,7 +86,7 @@ func _run() -> void:
 		check(is_equal_approx(game.class_combat._damage(game, 25), expected_hit), "ranged damage calculation receives the active set attack bonus")
 		game.hp = game._maximum_hp()
 		game._receive_damage(50)
-		check(game.hp == expected_hp - (18 if class_id == "tanque" else 30), "incoming damage uses the active set defense bonus")
+		check(is_equal_approx(game.hp, expected_hp - 5000.0 / (132.0 if class_id == "tanque" else 120.0)), "incoming damage uses the active set defense bonus")
 		if class_id == "arqueiro":
 			check(is_equal_approx(game._movement_speed(false), 4.28), "complete light set increases actual WASD movement speed by seven percent")
 		game._toggle_inventory()

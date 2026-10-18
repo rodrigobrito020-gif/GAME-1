@@ -16,6 +16,7 @@ const TINTS := [
 
 static func get_world(number: int) -> Dictionary:
 	var index := clampi(number, 1, COUNT) - 1
+	var stats := preload("res://scripts/combat_balance.gd").enemy(index + 1, 1)
 	var spawns: Array[Vector3] = [
 		Vector3(-9, 0, -8), Vector3(-4, 0, -13), Vector3(4, 0, -13),
 		Vector3(9, 0, -8), Vector3(0, 0, -4),
@@ -24,8 +25,9 @@ static func get_world(number: int) -> Dictionary:
 		"number": index + 1,
 		"title": "Mundo %d" % (index + 1),
 		"subtitle": NAMES[index],
-		"enemy_hp": 60 + index * 10,
-		"enemy_damage": 12 + index * 2,
+		"enemy_hp": stats.hp,
+		"enemy_damage": stats.damage,
+		"recommended_level": stats.recommended_level,
 		"enemy_count": 5,
 		"seed": 2741 + index * 7919,
 		"tint": TINTS[index],

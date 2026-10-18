@@ -29,7 +29,7 @@ func item(id: String, slot: String, attack: int = 3, defense: int = 5) -> Dictio
 	return {"id": id, "slot": slot, "name": "Equipamento de teste", "rarity": "Raro", "attack_bonus": attack, "defense_bonus": defense}
 
 func inventory() -> Dictionary:
-	return {"equipped": true, "shield": true, "armor": true, "pants": true, "equipment_version": 2, "gloves": true, "boots": true, "loot_items": [], "equipped_loot": {}}
+	return {"earring1":false, "earring2":false, "ring1":false, "ring2":false, "necklace":false, "equipped": true, "shield": true, "armor": true, "pants": true, "equipment_version": 2, "gloves": true, "boots": true, "loot_items": [], "equipped_loot": {}}
 
 func _test_rarity_rates() -> void:
 	for rarity in LootItems.RARITIES:
@@ -67,7 +67,7 @@ func _test_generated_rewards() -> void:
 		generated.erase("id")
 		repeated.erase("id")
 		deterministic = deterministic and generated == repeated
-	check(valid and ids.size() == 400 and slots.size() == 6, "generated rewards have unique persistent IDs, valid bonuses and all six equipment slots")
+	check(valid and ids.size() == 400 and slots.size() == 9, "generated rewards have unique persistent IDs, valid bonuses and all nine drop categories")
 	check(deterministic, "seeded RNG reproduces reward attributes while IDs remain unique")
 
 func _test_transfers() -> void:
@@ -161,14 +161,14 @@ func _test_inventory_ui() -> void:
 		reward.rarity = LootItems.RARITIES[index % LootItems.RARITIES.size()]
 		inv.loot_items.append(reward)
 	panel.sync_items(inv, false, 1, 100, 100)
-	check(panel.capacity_label.text == "MOCHILA  7 / 20", "UI counts six stored rewards and one potion stack")
+	check(panel.capacity_label.text == "MOCHILA  12 / 20", "UI counts eleven stored rewards and one potion stack")
 	for slot in LootItems.SLOTS:
 		var id := "ui-" + slot
 		var index := EquipmentInventory.IDS.find(slot)
 		panel.loot_buttons[id].pressed.emit()
-		check(panel.selected_loot_id == id and panel.action_button.text == "Equipar" and "Ataque" in panel.selected_description.text, "reward details show bonuses and Equipar: " + slot)
+		check(panel.selected_loot_id == id and panel.action_button.text == "Equipar" and ("Vida" if slot in LootItems.JEWELRY_SLOTS else "Ataque") in panel.selected_description.text, "reward details show bonuses and Equipar: " + slot)
 		panel.action_button.pressed.emit()
-		check(inv.equipped_loot[slot].id == id and not panel.loot_buttons.has(id) and panel.item_buttons[index].visible, "UI equip moves reward to its slot and stores base gear: " + slot)
+		check(inv.equipped_loot[slot].id == id and not panel.loot_buttons.has(id) and (index >= 8 or panel.item_buttons[index].visible), "UI equip moves reward to its slot and stores base gear: " + slot)
 		var frame := panel.equipped_buttons[index].get_theme_stylebox("normal") as StyleBoxFlat
 		check(frame.border_color == panel.rarity_color(inv.equipped_loot[slot].rarity), "equipment slot frame displays reward rarity: " + slot)
 		panel.select_item(1)
@@ -184,11 +184,11 @@ func _test_inventory_ui() -> void:
 		if child.visible:
 			visible_cells += 1
 	check(visible_cells > 20 and panel.loot_buttons.size() == inv.loot_items.size(), "UI retains every item above twenty bag spaces in its scrolling grid")
-	for category in ["Armas", "Trajes", "Poções", "Materiais", "Todos"]:
+	for category in ["Armas", "Trajes", "Joias", "Poções", "Materiais", "Todos"]:
 		panel.set_category(category)
 		var matches := true
 		for reward in inv.loot_items:
-			var expected: bool = category == "Todos" or (category == "Armas" and reward.slot in ["sword", "shield"]) or (category == "Trajes" and reward.slot in ["armor", "pants", "gloves", "boots"])
+			var expected: bool = category == "Todos" or (category == "Armas" and reward.slot in ["sword", "shield"]) or (category == "Trajes" and reward.slot in ["armor", "pants", "gloves", "boots"]) or (category == "Joias" and reward.slot in LootItems.JEWELRY_SLOTS)
 			matches = matches and panel.loot_buttons[reward.id].visible == expected
 		check(matches, "UI filter applies to reward equipment: " + category)
 	panel.queue_free()

@@ -16,6 +16,7 @@ const ICONS := {
 const SLOT_NAMES := {
 	"sword": "ARMA", "shield": "ESCUDO", "armor": "ARMADURA",
 	"gloves": "LUVAS", "boots": "BOTAS", "potion": "POÇÃO", "pants": "CALÇA",
+	"ring1":"ANEL", "ring2":"ANEL", "earring1":"BRINCO", "earring2":"BRINCO", "necklace":"COLAR",
 }
 const RARITY_COLORS := {
 	"Comum": Color("b7bdc3"), "Incomum": Color("7bce87"),
@@ -178,6 +179,8 @@ func _make_card(item: Dictionary) -> PanelContainer:
 		bonuses.append("Ataque +%d" % attack)
 	if defense > 0:
 		bonuses.append("Defesa +%d" % defense)
+	if int(item.get("magic_defense_bonus", 0)) > 0: bonuses.append("Defesa mágica +%d" % int(item.magic_defense_bonus))
+	if int(item.get("hp_bonus", 0)) > 0: bonuses.append("Vida +%d" % int(item.hp_bonus))
 	var bonus_label := _label("\n".join(bonuses) if not bonuses.is_empty() else "Sem bônus de atributos", 14, Color("c8dcbf"))
 	bonus_label.custom_minimum_size.y = 36
 	bonus_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER

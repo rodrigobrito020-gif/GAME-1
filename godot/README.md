@@ -17,6 +17,7 @@ Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar
 - Classes do conceito: Bounty Hunter (anã/tank), Bishop (humano/healer), Silver Ranger (elfa branca/arqueira), Spellhowler (elfa negra/maga) e Destroyer (orc/guerreiro), com uma habilidade ativa provisória cada. As cinco classes têm imagens próprias inspiradas nas referências visuais fornecidas pelo usuário.
 - Dano, cura, proteção, recargas, habilidades automáticas/manuais, derrota e nova tentativa.
 - Três ondas e um chefe por fase; fases seguintes com atributos maiores.
+- Cenário de entrada de vila medieval junto à floresta, com chão em perspectiva; os marcadores de formação aparecem somente na preparação.
 - Adena por vitória, treino até nível 50 e salvamento de níveis, formação, Adena e fase.
 - Arquivo de progresso local em `user://progress.json`, no diretório de dados do aplicativo que o Godot escolhe para seu sistema. O teste de fumaça não lê nem altera esse progresso.
 
@@ -24,7 +25,7 @@ Os números são de teste. As classes seguem os nomes de referência do conceito
 
 ## Escopo ainda por implementar
 
-Este protótipo não contém o prólogo narrativo, os 30 heróis, passivas, raridades/fusão, equipamentos, invocações, recompensas offline ou evolução Mítica/Divina do documento. A campanha atual repete o cenário de teste. Não é uma versão publicada ou um jogo completo.
+Este protótipo não contém o prólogo narrativo, os 30 heróis, passivas, raridades/fusão, equipamentos, invocações, recompensas offline ou evolução Mítica/Divina do documento. A campanha atual repete o cenário de entrada da vila; mapa de regiões e lobby navegável ainda não estão implementados. Não é uma versão publicada ou um jogo completo.
 
 O projeto é voltado também ao navegador, mas esta entrega foi validada como projeto Godot nativo. Exportações Web e Android precisam dos templates de exportação correspondentes e de testes nas plataformas antes de publicação.
 

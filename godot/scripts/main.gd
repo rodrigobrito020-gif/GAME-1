@@ -1,6 +1,7 @@
 extends Node2D
 ## Regras e interface do protótipo. Personagens visuais em scenes/hero_visual.tscn.
 
+const BATTLE_BACKGROUND := preload("res://art/backgrounds/village_edge.png")
 const SAVE_PATH := "user://progress.json"
 const SkillCircle := preload("res://scripts/skill_circle.gd")
 const GRELIM_TEXTURE := preload("res://art/enemies/grelim.tres")
@@ -153,7 +154,7 @@ func _build_ui() -> void:
 		theme.set_stylebox(style_name, "Button", style)
 	interface.theme = theme
 	_label("RELOAD ADVENTURE", Vector2(36, 18), Vector2(600, 38), 28, Color("dfd3a6"))
-	_label("PROTÓTIPO GODOT  /  PERSONAGENS PROVISÓRIOS", Vector2(38, 59), Vector2(700, 25), 13, Color("92aaa9"))
+	_label("PREPARE SUA EQUIPE  ·  AVANCE PELAS REGIÕES", Vector2(38, 59), Vector2(700, 25), 13, Color("92aaa9"))
 	wallet_label = _label("", Vector2(850, 26), Vector2(390, 32), 21, Color("dfd3a6"))
 	wallet_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	title_label = _label("", Vector2(38, 109), Vector2(810, 36), 23)
@@ -179,7 +180,7 @@ func _build_ui() -> void:
 	speed_button = _button("Velocidade: 1×", Vector2(942, 699), Vector2(298, 34), _toggle_speed)
 	log_label = _label("", Vector2(650, 550), Vector2(590, 44), 12, Color("b8c5ba"))
 	log_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_label("Arte original provisória · progresso salvo neste dispositivo", Vector2(942, 751), Vector2(300, 35), 11, Color("7e9598"))
+	_label("Progresso salvo automaticamente neste dispositivo", Vector2(942, 751), Vector2(300, 35), 11, Color("7e9598"))
 
 func _prepare_heroes() -> void:
 	heroes.clear()
@@ -461,23 +462,20 @@ func _unhandled_input(event: InputEvent) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	draw_rect(Rect2(22, 97, 1236, 450), Color("10272d"))
-	draw_rect(Rect2(22, 97, 1236, 450), Color("355256"), false, 2)
-	# Silhuetas de floresta; sem texturas de terceiros.
-	for i in range(18):
-		var x := float(i * 83 - 25)
-		draw_rect(Rect2(x, 199, 17, 330), Color("142f33"))
-		draw_colored_polygon(PackedVector2Array([Vector2(x - 45, 310), Vector2(x + 9, 183 + (i % 3) * 17), Vector2(x + 62, 310)]), Color("183a3a"))
-	draw_rect(Rect2(24, 287, 1232, 258), Color(0.08, 0.20, 0.19, 0.72))
-	for i in range(45):
-		var pos := Vector2(42 + (i * 137) % 1190, 300 + (i * 71) % 230)
-		draw_line(pos, pos + Vector2(9, -4), Color("2b4940"), 2)
-	draw_line(Vector2(637, 262), Vector2(637, 529), Color("35514b"), 1)
-	for i in range(SLOT_POSITIONS.size()):
-		var pos: Vector2 = SLOT_POSITIONS[i]
-		draw_arc(pos + Vector2(0, 8), 43, 0, TAU, 32, Color("4b7169") if slots[i] < 0 else Color("719989"), 2)
-		if slots[i] < 0:
-			draw_string(ThemeDB.fallback_font, pos + Vector2(-22, -20), "VAZIO", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("72968b"))
+	# O cenário ocupa o campo inteiro; cabeçalho e coleção têm fundos próprios.
+	draw_texture_rect(BATTLE_BACKGROUND, Rect2(0, 180, 1280, 370), false)
+	draw_rect(Rect2(0, 97, 1280, 83), Color("101d24"))
+	draw_rect(Rect2(0, 180, 1280, 43), Color(0.025, 0.045, 0.05, 0.38))
+	draw_rect(Rect2(0, 548, 1280, 252), Color("0b141b"))
+	draw_line(Vector2(0, 548), Vector2(1280, 548), Color("7c7451"), 2)
+	if mode != "battle":
+		for i in range(SLOT_POSITIONS.size()):
+			var pos: Vector2 = SLOT_POSITIONS[i]
+			draw_set_transform(pos + Vector2(0, 7), 0, Vector2(1, 0.3))
+			draw_arc(Vector2.ZERO, 43, 0, TAU, 48, Color("bcae7f") if slots[i] < 0 else Color("dacd9c"), 2)
+			draw_set_transform(Vector2.ZERO)
+			if slots[i] < 0:
+				draw_string(ThemeDB.fallback_font, pos + Vector2(-22, -16), "VAZIO", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("e4d9b4"))
 	for foe in foes:
 		_draw_unit(foe, _unit_position(foe, true), true)
 	for hero in heroes:
@@ -503,11 +501,15 @@ func _draw_unit(unit: Dictionary, pos: Vector2, enemy: bool) -> void:
 		draw_arc(pos + Vector2(0, -45), 57, 0, TAU, 36, Color("a6d5f0"), 3)
 	var bar_width := 100.0 if unit.kind == "boss" else 86.0
 	var bar_pos := pos + Vector2(-bar_width / 2, -57 * size_factor if enemy else -110.0)
+	var name_width := maxf(bar_width, ThemeDB.fallback_font.get_string_size(unit.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 8)
+	draw_rect(Rect2(bar_pos + Vector2(-4, -21), Vector2(name_width, 20)), Color(0.025, 0.04, 0.045, 0.82))
 	draw_rect(Rect2(bar_pos, Vector2(bar_width, 6)), Color("293735"))
 	draw_rect(Rect2(bar_pos, Vector2(bar_width * maxf(0, unit.hp / unit.max_hp), 6)), Color("cc8f8c") if enemy else Color("91cba7"))
 	draw_string(ThemeDB.fallback_font, bar_pos + Vector2(0, -7), unit.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("d5deda"))
 	if not enemy and int(unit.id) == selected:
-		draw_arc(pos + Vector2(0, 8), 35, 0, TAU, 32, Color("e5d09a"), 2)
+		draw_set_transform(pos + Vector2(0, 8), 0, Vector2(1, 0.3))
+		draw_arc(Vector2.ZERO, 35, 0, TAU, 48, Color("e5d09a"), 2)
+		draw_set_transform(Vector2.ZERO)
 	if not alive:
 		draw_line(pos + Vector2(-17, -80), pos + Vector2(17, -45), Color("d69a90"), 4)
 		draw_line(pos + Vector2(17, -80), pos + Vector2(-17, -45), Color("d69a90"), 4)

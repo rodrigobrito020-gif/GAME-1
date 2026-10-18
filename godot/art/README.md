@@ -19,3 +19,7 @@ Estes visuais ainda precisam da avaliação do usuário, especialmente silhueta,
 ## Grelim
 
 `enemies/grelim.png` adapta o modelo visual enviado pelo usuário para pixel art: cabeça rochosa ocre, dois chifres, orelhas pontudas, olhos âmbar e garras longas. A imagem já está voltada à esquerda, na direção dos heróis. O Grelim comum e o chefe reutilizam a mesma pose, em tamanhos diferentes. Repouso, impulso ao atacar, dano e estado caído usam os mesmos movimentos procedurais dos heróis. Animações quadro a quadro ainda não estão presentes.
+
+## Cenário
+
+`backgrounds/village_edge.png` é uma primeira proposta de cenário de batalha em pixel art, produzida com geração de imagem para o projeto: casas de madeira e palha, muralha de pedra, floresta ao fundo e um campo aberto em perspectiva para as equipes. É uma imagem de fundo estática; não implementa navegação pela vila nem edifícios interativos. O cenário ocupa a largura do campo, com fundos separados para o cabeçalho e a coleção.

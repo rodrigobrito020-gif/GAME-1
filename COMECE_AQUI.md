@@ -1,11 +1,13 @@
-# Reload Adventure
+# Reload Adventure — RPG 3D
 
-O projeto atual está na pasta **godot/**. Abra **godot/project.godot** no **Godot 4.6.3** e pressione **F5** para jogar.
+Este é o único projeto Godot desta versão.
 
-Veja **godot/README.md** para controles, funcionalidades e validação.
+1. Extraia o ZIP em uma **pasta nova**.
+2. No Godot, importe **rpg3d/project.godot**.
+3. Pressione **F5** para jogar.
 
-O desenvolvimento de Reload Adventure segue na pasta `godot/`.
+**WASD** move, **mouse** gira a câmera, **scroll** ajusta o zoom, **clique esquerdo** ataca e **1–4** usam habilidades. **I** abre a mochila, **Q** usa poção e **AUTO** configura o uso automático. **Esc** libera o cursor.
 
-## Novo protótipo com controle direto em 3D
+Se o projeto antigo ainda aparecer no gerenciador do Godot, remova apenas a entrada **Reload Adventure** da lista. Abra **Reload Adventure — RPG 3D**. O gerenciador pode manter entradas de pastas importadas anteriormente.
 
-Para jogar com **WASD e mouse na câmera**, abra **rpg3d/project.godot** e pressione **F5**. O personagem atual é o humano guerreiro num campo de 1000 × 1000 metros. Clique esquerdo ataca com espada; 1–4 ativam habilidades, I abre a mochila, a roda do mouse ajusta o zoom, Shift corre, Espaço pula, Esc libera o mouse e R reinicia. Veja `rpg3d/README.md`.
+Veja [o manual](rpg3d/README.md) para todos os controles e detalhes.

@@ -1,6 +1,6 @@
 # Reload Adventure — RPG 3D em campo aberto
 
-Abra **rpg3d/project.godot** no Godot **4.6.3 padrão** e pressione **F5**. Este projeto é separado do combate em equipe em `godot/`.
+Abra **rpg3d/project.godot** no Godot **4.6.3 padrão** e pressione **F5**. Este é o único projeto Godot do repositório.
 
 Você controla o **humano guerreiro (Fighter)** em terceira pessoa, num campo de **1000 × 1000 metros**, com uma clareira central ampla, vegetação afastada e colinas no horizonte. O terreno jogável é plano; as colinas são cenário distante. Há limite de deslocamento a 490 metros do centro, sem muros fechando a vista.
 

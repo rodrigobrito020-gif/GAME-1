@@ -157,10 +157,13 @@ func _draw_potion() -> void:
 	draw_rect(Rect2(center + Vector2(-8, -23), Vector2(16, 5)), Color("aa8c54"))
 	_line(center + Vector2(-6, 4), center + Vector2(6, 4), Color("ffdbcc"), 3)
 	_line(center + Vector2(0, -2), center + Vector2(0, 10), Color("ffdbcc"), 3)
-	if remaining > 0:
+	var progress := clampf(remaining / total, 0, 1)
+	if progress >= 0.999:
+		draw_circle(center, 26, Color(0, 0, 0, 0.65))
+	elif progress > 0.001:
 		var sector := PackedVector2Array([center])
 		for i in range(49):
-			sector.append(center + Vector2.from_angle(-PI / 2 + TAU * clampf(remaining / total, 0, 1) * i / 48.0) * 26)
+			sector.append(center + Vector2.from_angle(-PI / 2 + TAU * progress * i / 48.0) * 26)
 		draw_colored_polygon(sector, Color(0, 0, 0, 0.65))
 	if automatic:
 		draw_arc(center, 29, -PI, 0, 32, Color("98e3ab"), 3, true)

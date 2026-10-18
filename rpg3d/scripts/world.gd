@@ -1,6 +1,7 @@
 extends Node3D
 
 const RPGHud := preload("res://scripts/rpg_hud.gd")
+const SMALL_SHIELD := preload("res://assets/small_shield.glb")
 const LONG_SWORD := preload("res://assets/long_sword.glb")
 const FIGHTER := preload("res://assets/human_fighter.glb")
 const GrelimVisual := preload("res://scripts/grelim_visual.gd")
@@ -34,8 +35,9 @@ var auto_potion := false
 var potion_threshold := 40.0
 var potion_clock := 0.0
 var zoom_distance := 5.0
-var inventory := {"equipped": true, "armor": true, "gloves": true, "boots": true, "potions": 3, "fangs": 0, "gold": 0}
+var inventory := {"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
 var powered_attack := false
+var shield_attachment: BoneAttachment3D
 var sword_attachment: BoneAttachment3D
 var attack_pending := false
 var attack_direction := Vector3.FORWARD
@@ -144,10 +146,23 @@ func _equip_sword(model: Node3D) -> void:
 	sword_attachment.add_child(sword)
 	var blade := LONG_SWORD.instantiate()
 	blade.name = "OriginalLongSword"
-	# A lâmina usa +X; alinhar ao punho, com o centro do cabo no osso.
-	blade.rotation.z = PI / 2
-	blade.position.y = 0.133
+	# A empunhadura atravessa a palma no eixo +Z do osso, não no eixo dos dedos.
+	blade.basis = Basis(Vector3.UP, -PI / 2) * Basis(Vector3.RIGHT, PI / 2)
+	blade.position = Vector3(-0.029, 0.042, 0.154)
 	sword.add_child(blade)
+	shield_attachment = BoneAttachment3D.new()
+	shield_attachment.name = "ShieldAttachment"
+	shield_attachment.bone_name = "Shield_L_Bone"
+	skeleton.add_child(shield_attachment)
+	var shield := SMALL_SHIELD.instantiate()
+	shield.name = "OriginalSmallShield"
+	shield.rotation.y = -PI / 2
+	shield.position.x = -0.08
+	# Compensar somente a escala do guerreiro; preservar o tamanho original do escudo.
+	var holder := Node3D.new()
+	holder.scale = Vector3.ONE / 0.038
+	shield_attachment.add_child(holder)
+	holder.add_child(shield)
 
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	var results: Array[MeshInstance3D] = []
@@ -176,6 +191,7 @@ func _play(action: String) -> void:
 func _ui() -> void:
 	hud = RPGHud.new()
 	add_child(hud)
+	hud.inventory_panel.set_character_source(character_model)
 	notice = hud.notice
 	hud.skill_requested.connect(_activate_skill)
 	hud.skill_automatic_changed.connect(_set_skill_automatic)
@@ -205,6 +221,11 @@ func _use_item(item: String) -> bool:
 			return false
 		inventory.equipped = not inventory.equipped
 		sword_attachment.visible = inventory.equipped
+	elif item == "shield":
+		if attack_clock > 0:
+			return false
+		inventory.shield = not inventory.shield
+		shield_attachment.visible = inventory.shield
 	elif item in ["armor", "gloves", "boots"]:
 		if attack_clock > 0:
 			return false
@@ -509,8 +530,9 @@ func _restart() -> void:
 	dash_cooldown = 0
 	guard_clock = 0
 	dash_clock = 0
-	inventory = {"equipped": true, "armor": true, "gloves": true, "boots": true, "potions": 3, "fangs": 0, "gold": 0}
+	inventory = {"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
 	sword_attachment.visible = true
+	shield_attachment.visible = true
 	_apply_equipment()
 	powered_attack = false
 	attack_pending = false
@@ -535,8 +557,13 @@ func _test() -> void:
 		_play(action)
 		_check(animation.current_animation.ends_with(action), "animação Fighter: " + action)
 	_check(enemies[0].get_node("GrelimVisual").limbs.size() == 4, "Grelims têm corpo e membros 3D no lugar das esferas")
+	_check(shield_attachment.bone_name == "Shield_L_Bone", "escudo vinculado ao braço esquerdo")
+	_check(_use_item("shield") and not shield_attachment.visible, "escudo pode ser guardado no inventário")
+	_check(_use_item("shield") and shield_attachment.visible, "escudo pode ser equipado novamente")
 	_check(sword_attachment.bone_name == "Weapon_R_Bone", "espada vinculada à mão pelo osso da arma")
 	_check(sword_attachment.has_node("Sword/OriginalLongSword"), "espada usa modelo original do cliente")
+	var blade: Node3D = sword_attachment.get_node("Sword/OriginalLongSword")
+	_check(blade.basis.x.normalized().dot(Vector3.BACK) > 0.99, "lâmina alinhada para fora da palma, sem apontar pelo eixo dos dedos")
 	var rig: Skeleton3D = character_model.find_children("*", "Skeleton3D", true, false)[0]
 	_check(rig.find_bone("neutral_bone") == -1, "equipamentos não contêm influência sem osso que deforma a luva")
 	_check(OpenField.SIZE == 1000.0 and has_node("OpenField/FieldCollision"), "campo aberto de 1000 por 1000 metros com chão físico")
@@ -586,7 +613,7 @@ func _test() -> void:
 func _test_interface() -> void:
 	_restart()
 	await get_tree().physics_frame
-	_check(hud.slot_buttons.size() == 4 and hud.item_buttons.size() == 12, "HUD tem quatro habilidades e inventário de 12 slots")
+	_check(hud.slot_buttons.size() == 4 and hud.item_buttons.size() == 20, "HUD tem quatro habilidades e inventário de 20 slots")
 	hp = 50
 	_refresh_hud()
 	_check(hud.health.value == 50 and hud.health.max_value == 100, "barra de vida acompanha HP do jogador")
@@ -720,8 +747,13 @@ func _test_equipment() -> void:
 			hair_parts += 1
 	_check(hair_parts == 2, "cabeça inclui as duas partes de cabelo")
 	hud.item_buttons[3].pressed.emit()
+	_check(inventory.armor, "selecionar traje exibe detalhes sem alterar equipamento")
+	hud.inventory_panel.action_button.pressed.emit()
 	_check(not inventory.armor and inventory.gloves and inventory.boots, "slot do traje altera somente o traje selecionado")
-	hud.item_buttons[3].pressed.emit()
+	hud.inventory_panel.action_button.pressed.emit()
+	hud.inventory_panel.set_category("Poções")
+	_check(hud.item_buttons[1].visible and not hud.item_buttons[0].visible, "filtro de poções oculta armas")
+	hud.inventory_panel.set_category("Todos")
 	_attack()
 	_check(not _use_item("armor"), "troca de roupa é bloqueada durante golpe")
 
@@ -775,10 +807,14 @@ func _test_slot_gestures() -> void:
 	tab.pressed = true
 	_input(tab)
 	_check(hud.inventory_panel.visible, "TAB abre inventário")
+	_check(hud.inventory_panel.preview != null and hud.inventory_panel.preview != character_model, "inventário mostra uma prévia 3D independente do personagem")
 	_input(tab)
 	_check(not hud.inventory_panel.visible, "TAB fecha inventário")
-	for i in range(6):
-		_check(hud.item_buttons[i].icon != null, "item possui ícone: " + str(i))
+	for i in range(7):
+		if i == 2 and inventory.fangs == 0:
+			_check(hud.item_buttons[i].icon == null and hud.item_buttons[i].disabled, "material sem estoque aparece como espaço vazio")
+		else:
+			_check(hud.item_buttons[i].icon != null, "item possui ícone: " + str(i))
 	_restart()
 	enemies[0].position = player.position + Vector3(0, 0, -2.5)
 	_set_skill_automatic(0, true)

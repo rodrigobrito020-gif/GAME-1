@@ -1,5 +1,6 @@
 extends CanvasLayer
 ## Interface do RPG: vida, atalhos, inventário e barras projetadas dos inimigos.
+const EquipmentInventory := preload("res://scripts/equipment_inventory.gd")
 const SkillSlot := preload("res://scripts/skill_slot.gd")
 signal skill_requested(slot: int)
 signal skill_automatic_changed(slot: int, enabled: bool)
@@ -12,7 +13,6 @@ var status: Label
 var notice: Label
 var slot_buttons: Array[Control] = []
 var inventory_panel: PanelContainer
-var inventory_info: Label
 var item_buttons: Array[Button] = []
 var enemy_layer: Control
 var enemy_bars: Dictionary = {}
@@ -140,44 +140,11 @@ func _ready() -> void:
 	_potions()
 
 func _inventory() -> void:
-	inventory_panel = _panel(root)
-	inventory_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	inventory_panel.offset_left = -270
-	inventory_panel.offset_right = 270
-	inventory_panel.offset_top = -215
-	inventory_panel.offset_bottom = 215
-	inventory_panel.custom_minimum_size = Vector2(540, 420)
-	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 12)
-	inventory_panel.add_child(column)
-	column.add_child(_label("INVENTÁRIO", 23))
-	inventory_info = _label("")
-	column.add_child(inventory_info)
-	var grid := GridContainer.new()
-	grid.columns = 4
-	column.add_child(grid)
-	for i in range(12):
-		var item := _button("—")
-		item.custom_minimum_size = Vector2(122, 66)
-		item.disabled = true
-		item.focus_mode = Control.FOCUS_NONE
-		if i < 6:
-			item.icon = load("res://assets/icons/%s.svg" % ["sword", "potion", "fang", "armor", "gloves", "boots"][i])
-			item.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			item.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
-			item.expand_icon = false
-			item.add_theme_constant_override("icon_max_width", 32)
-		grid.add_child(item)
-		item_buttons.append(item)
-	item_buttons[0].pressed.connect(func() -> void: item_requested.emit("sword"))
-	item_buttons[1].pressed.connect(func() -> void: item_requested.emit("potion"))
-	for pair in [[3, "armor"], [4, "gloves"], [5, "boots"]]:
-		item_buttons[pair[0]].pressed.connect(func() -> void: item_requested.emit(pair[1]))
-	column.add_child(_label("Equipamentos: clique para equipar ou retirar.\nPoção: clique para recuperar 40 de vida.\nO jogo fica pausado enquanto a mochila estiver aberta.", 14))
-	var close := _button("Voltar ao campo [I / TAB / Esc]")
-	close.pressed.connect(func() -> void: inventory_requested.emit())
-	column.add_child(close)
-	inventory_panel.hide()
+	inventory_panel = EquipmentInventory.new()
+	root.add_child(inventory_panel)
+	item_buttons = inventory_panel.item_buttons
+	inventory_panel.item_requested.connect(func(item: String) -> void: item_requested.emit(item))
+	inventory_panel.closed.connect(func() -> void: inventory_requested.emit())
 
 func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead: bool, inventory: Dictionary, guard: float, potion_auto: bool, potion_threshold: float, potion_reuse: float, automatic_skills: Array[bool]) -> void:
 	health.max_value = maximum
@@ -196,17 +163,7 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	auto_check.set_pressed_no_signal(potion_auto)
 	threshold_slider.set_value_no_signal(potion_threshold)
 	threshold_label.text = "Usar ao atingir %d%% de vida ou menos" % int(potion_threshold)
-	inventory_info.text = "Ouro: %d · Espada %s" % [inventory.gold, "equipada" if inventory.equipped else "guardada"]
-	item_buttons[0].text = "Long Sword\n%s" % ("Equipada" if inventory.equipped else "Equipar")
-	item_buttons[0].disabled = dead
-	item_buttons[1].text = "Poção ×%d\nUsar" % inventory.potions
-	item_buttons[1].disabled = dead or inventory.potions == 0 or hp >= maximum
-	item_buttons[2].text = "Presa Grelim\n×%d" % inventory.fangs
-	for pair in [[3, "armor", "Traje inicial"], [4, "gloves", "Luvas"], [5, "boots", "Botas"]]:
-		var button: Button = item_buttons[pair[0]]
-		button.text = "%s\n%s" % [pair[2], "Equipado" if inventory[pair[1]] else "Equipar"]
-		button.disabled = dead
-		button.tooltip_text = "Peça original do conjunto M001, com textura do MFighter.utx. Troca visual, sem bônus de atributos nesta etapa."
+	inventory_panel.sync_items(inventory, dead, level, hp, maximum)
 
 func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 	target_panel.visible = is_instance_valid(focus_enemy) and focus_enemy in enemies

@@ -11,3 +11,5 @@ Este é o único projeto Godot desta versão.
 Se o projeto antigo ainda aparecer no gerenciador do Godot, remova apenas a entrada **Reload Adventure** da lista. Abra **Reload Adventure — RPG 3D**. O gerenciador pode manter entradas de pastas importadas anteriormente.
 
 Veja [o manual](rpg3d/README.md) para todos os controles e detalhes.
+
+Na mochila, selecione um item no centro e use o botão do painel direito para equipar, retirar ou usar. Os slots à esquerda mostram o equipamento atual, ao lado da prévia 3D do personagem.

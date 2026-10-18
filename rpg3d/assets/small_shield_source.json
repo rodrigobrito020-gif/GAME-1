@@ -1,0 +1,11 @@
+{
+  "model_package": "LineageWeapons.ukx",
+  "model_object": "small_shield_m00_sh",
+  "texture_package": "LineageWeaponsTex.utx",
+  "texture_object": "small_shield_t00_sh",
+  "attachment_bone": "Shield_L_Bone",
+  "original_units_to_meters": 0.038,
+  "model_sha256": "f8a1c5b2c942d3df4cac1e7337623f76cb20e9e4df986cc392c6f7737fe9262c",
+  "rotation_y_degrees": -90,
+  "offset_x_meters": -0.08
+}

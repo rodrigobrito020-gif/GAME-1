@@ -8,8 +8,12 @@
   "attachment_bone": "Weapon_R_Bone",
   "original_units_to_meters": 0.038,
   "grip_alignment": {
-    "rotation_z_degrees": 90,
-    "offset_y_meters": 0.133,
-    "description": "Align blade +X to weapon bone +Y; center handle on hand attachment."
+    "rotation_order": "Y(-90 degrees) * X(90 degrees)",
+    "offset_meters": [
+      -0.029,
+      0.042,
+      0.154
+    ],
+    "description": "Blade +X aligned with weapon bone +Z, perpendicular to palm; handle moved from finger tip to palm center."
   }
 }

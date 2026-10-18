@@ -16,6 +16,6 @@ RPG em terceira pessoa com controle direto, desenvolvido no **Godot 4.6.3**. Est
 - **Q:** poção; **clique no ícone da poção:** configurar uso automático por porcentagem de vida.
 - **I / TAB:** inventário; **Esc:** liberar cursor/fechar janelas; **R:** reiniciar.
 
-O protótipo tem campo aberto de 1000 × 1000 metros, humano guerreiro com animações 3D, Grelims provisórios, combate manual, barras de vida, quatro habilidades, inventário e poções configuráveis. Modelos, efeitos e sistemas ainda estão em desenvolvimento.
+O protótipo tem campo aberto de 1000 × 1000 metros, humano guerreiro com animações 3D, Grelims provisórios, combate manual, barras de vida, quatro habilidades, inventário com prévia 3D do guerreiro, filtros de itens e poções configuráveis. Modelos, efeitos e sistemas ainda estão em desenvolvimento.
 
 Consulte [o manual do RPG 3D](rpg3d/README.md) para funcionalidades, limitações e testes.

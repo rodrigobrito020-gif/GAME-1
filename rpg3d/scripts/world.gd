@@ -2,6 +2,7 @@ extends Node3D
 
 const RPGHud := preload("res://scripts/rpg_hud.gd")
 const ShieldFit := preload("res://tests/shield_fit.gd")
+const ShieldCarryPose := preload("res://scripts/shield_carry_pose.gd")
 const ShieldMount := preload("res://scripts/shield_mount.gd")
 const LONG_SWORD := preload("res://assets/long_sword.glb")
 const FIGHTER := preload("res://assets/human_fighter.glb")
@@ -38,6 +39,7 @@ var potion_clock := 0.0
 var zoom_distance := 5.0
 var inventory := {"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
 var powered_attack := false
+var shield_carry_pose: SkeletonModifier3D
 var shield_attachment: BoneAttachment3D
 var sword_attachment: BoneAttachment3D
 var attack_pending := false
@@ -138,6 +140,9 @@ func _player() -> void:
 
 func _equip_sword(model: Node3D) -> void:
 	var skeleton: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
+	shield_carry_pose = ShieldCarryPose.new()
+	shield_carry_pose.name = "ShieldCarryPose"
+	skeleton.add_child(shield_carry_pose)
 	sword_attachment = BoneAttachment3D.new()
 	sword_attachment.bone_name = "Weapon_R_Bone"
 	skeleton.add_child(sword_attachment)
@@ -224,6 +229,7 @@ func _use_item(item: String) -> bool:
 			return false
 		inventory.shield = not inventory.shield
 		shield_attachment.visible = inventory.shield
+		shield_carry_pose.shield_equipped = inventory.shield
 	elif item in ["armor", "gloves", "boots"]:
 		if attack_clock > 0:
 			return false
@@ -531,6 +537,7 @@ func _restart() -> void:
 	inventory = {"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
 	sword_attachment.visible = true
 	shield_attachment.visible = true
+	shield_carry_pose.shield_equipped = true
 	_apply_equipment()
 	powered_attack = false
 	attack_pending = false
@@ -611,36 +618,53 @@ func _test() -> void:
 	get_tree().quit(0 if failures == 0 else 1)
 
 func _test_weapon_alignment() -> void:
-	var blade: Node3D = sword_attachment.get_node("Sword/OriginalLongSword")
-	var shield: Node3D = shield_attachment.find_child("OriginalSmallShield", true, false)
 	var rig: Skeleton3D = character_model.find_children("*", "Skeleton3D", true, false)[0]
-	# Measured center of the original narrow handle, expressed in static GLB coordinates.
-	var native_grip := Vector3(-1.85 * 0.038, 0, 0)
 	for pose in [["idle", 0.4], ["walk", 0.4], ["run", 0.4], ["attack", 0.4], ["skill", 0.4], ["death", 0.4], ["attack", 0.923], ["run", 0.554], ["death", 0.0]]:
 		var action: String = pose[0]
 		for animation_name in animation.get_animation_list():
 			if animation_name.ends_with(action):
 				animation.play(animation_name, 0)
+		# SkeletonModifier3D restores its input after rendering. Capture the final
+		# animated pose in skeleton_updated, exactly as the attachments do.
+		var sample := {"done": false}
+		var capture := func() -> void:
+			if not sample.done:
+				sample.done = true
+				_test_current_weapon_pose(rig, action, pose[1])
+		rig.skeleton_updated.connect(capture)
 		animation.advance(pose[1])
 		animation.pause()
 		await get_tree().process_frame
-		var weapon_socket := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Weapon_R_Bone"))
-		_check(blade.to_global(native_grip).distance_to(sword_attachment.global_position) < 0.001, "cabo centrado no socket: " + action)
-		_check(blade.global_basis.x.normalized().dot(weapon_socket.basis.x.normalized()) > 0.999, "espada acompanha o eixo animado do socket: " + action)
-		var mount: Node3D = shield_attachment.get_node("ShieldMount")
-		var shield_front := (shield.global_basis * Vector3.FORWARD).normalized()
-		var turn := Basis(Vector3.BACK, ShieldMount.PRESENTATION_ANGLE)
-		var expected_front := (mount.global_basis * turn.y).normalized()
-		var grip: MeshInstance3D = mount.get_node("HandGrip/LeatherGrip")
-		var cuff: MeshInstance3D = mount.get_node("ForearmStrap")
-		var wrist := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Bip01_L_Hand")).origin
-		_check(shield_front.dot(expected_front) > 0.99, "face do escudo orientada para frente e para fora: " + action)
-		_check(grip.global_position.distance_to(mount.to_global(ShieldMount.GRIP_CENTER)) < 0.001, "alça do escudo permanece no punho: " + action)
-		_check(absf(cuff.global_position.distance_to(wrist) - 0.07) < 0.003, "tira acompanha o antebraço durante a animação: " + action)
-		var shell_mesh: MeshInstance3D = shield.find_children("*", "MeshInstance3D", true, false)[0]
-		var fit := ShieldFit.minimum_clearance(_gear_nodes("gloves", true), wrist, shell_mesh)
-		_check(fit.y > 0 and fit.x >= 0.005, "luva fica atrás da madeira, com folga: %s %.3fs (%.1f mm)" % [action, pose[1], fit.x * 1000])
+		await get_tree().process_frame
+		rig.skeleton_updated.disconnect(capture)
+		_check(sample.done, "pose final do escudo foi verificada: " + action)
 	_play("idle")
+
+func _test_current_weapon_pose(rig: Skeleton3D, action: String, time: float) -> void:
+	var blade: Node3D = sword_attachment.get_node("Sword/OriginalLongSword")
+	var shield: Node3D = shield_attachment.find_child("OriginalSmallShield", true, false)
+	var native_grip := Vector3(-1.85 * 0.038, 0, 0)
+	var weapon_socket := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Weapon_R_Bone"))
+	_check(blade.to_global(native_grip).distance_to(sword_attachment.global_position) < 0.001, "cabo centrado no socket: " + action)
+	_check(blade.global_basis.x.normalized().dot(weapon_socket.basis.x.normalized()) > 0.999, "espada acompanha o eixo animado do socket: " + action)
+	var mount: Node3D = shield_attachment.get_node("ShieldMount")
+	var shield_front := (shield.global_basis * Vector3.FORWARD).normalized()
+	var forearm := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Bip01_L_Forearm"))
+	var forearm_basis := forearm.basis.orthonormalized()
+	var expected_front := (forearm_basis.z * cos(ShieldMount.FOREARM_ROLL) + forearm_basis.y * sin(ShieldMount.FOREARM_ROLL)).normalized()
+	var grip: MeshInstance3D = mount.get_node("HandGrip/LeatherGrip")
+	var cuff: MeshInstance3D = mount.get_node("ForearmStrap")
+	var wrist := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Bip01_L_Hand")).origin
+	_check(shield_front.dot(expected_front) > 0.99, "face do escudo acompanha a orientação do antebraço: " + action)
+	_check(grip.global_position.distance_to(mount.to_global(ShieldMount.GRIP_CENTER)) < 0.001, "alça do escudo permanece no punho: " + action)
+	_check(absf(cuff.global_position.distance_to(wrist) - 0.07) < 0.003, "tira acompanha o antebraço durante a animação: " + action)
+	var shell_mesh: MeshInstance3D = shield.find_children("*", "MeshInstance3D", true, false)[0]
+	var down := (wrist - forearm.origin).normalized()
+	_check(shield.global_basis.x.normalized().dot(down) > 0.999, "painel alinhado ao comprimento do antebraço: " + action)
+	_check(absf((shield.to_global(Vector3(-0.170424, 0, 0)) - forearm.origin).dot(down)) < 0.05, "borda superior próxima ao cotovelo: " + action)
+	_check((grip.mesh as CylinderMesh).height <= 0.07, "empunhadura curta atrás da mão: " + action)
+	var fit := ShieldFit.minimum_clearance(_gear_nodes("gloves", true), wrist, shell_mesh)
+	_check(fit.y > 0 and fit.x >= 0.002, "luva fica atrás da madeira, com folga: %s %.3fs (%.1f mm)" % [action, time, fit.x * 1000])
 
 func _test_interface() -> void:
 	_restart()

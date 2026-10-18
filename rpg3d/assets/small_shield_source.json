@@ -6,19 +6,23 @@
   "attachment_bone": "Shield_L_Bone",
   "original_units_to_meters": 0.038,
   "model_sha256": "f8a1c5b2c942d3df4cac1e7337623f76cb20e9e4df986cc392c6f7737fe9262c",
-  "description": "Shield panel turns around a physical inner grip; leather cuff follows the forearm. Native convex face remains outward, with 20mm added clearance for the animated glove.",
+  "description": "Shield carried against the left forearm, with its upper rim near the elbow and the fist behind the wood. Short leather grip and continuous leather straps attach to the actual rear panel surface.",
   "mount": {
     "script": "res://scripts/shield_mount.gd",
-    "native_frame": "Y(-90 degrees) * X(90 degrees)",
-    "presentation_rotation_z_degrees": 45,
+    "carry_pose_script": "res://scripts/shield_carry_pose.gd",
+    "carry_twist_local_forearm_x_degrees": 30,
+    "panel_long_axis": "elbow to wrist",
+    "panel_front_forearm_roll_degrees": 15,
+    "panel_center_below_wrist_meters": 0.025,
+    "panel_outside_arm_meters": 0.067,
     "grip_center_meters": [
-      -0.005,
-      -0.095,
-      0.105
+      -0.010,
+      -0.105,
+      0.117
     ],
-    "outward_clearance_meters": 0.02,
-    "grip_length_meters": 0.12,
-    "grip_radius_meters": 0.013,
-    "forearm_cuff_distance_from_wrist_meters": 0.07
+    "grip_length_meters": 0.065,
+    "grip_radius_meters": 0.011,
+    "forearm_strap_distance_from_wrist_meters": 0.07,
+    "strap_attachment": "Continuous leather ribbons anchored into the rear wood; no projecting metal brackets."
   }
 }

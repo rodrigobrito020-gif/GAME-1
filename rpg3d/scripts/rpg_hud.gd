@@ -162,7 +162,9 @@ func _inventory() -> void:
 		item_buttons.append(item)
 	item_buttons[0].pressed.connect(func() -> void: item_requested.emit("sword"))
 	item_buttons[1].pressed.connect(func() -> void: item_requested.emit("potion"))
-	column.add_child(_label("Espada: clique para equipar ou guardar.\nPoção: clique para recuperar 40 de vida.\nO jogo fica pausado enquanto a mochila estiver aberta.", 14))
+	for pair in [[3, "armor"], [4, "gloves"], [5, "boots"]]:
+		item_buttons[pair[0]].pressed.connect(func() -> void: item_requested.emit(pair[1]))
+	column.add_child(_label("Equipamentos: clique para equipar ou retirar.\nPoção: clique para recuperar 40 de vida.\nO jogo fica pausado enquanto a mochila estiver aberta.", 14))
 	var close := _button("Voltar ao campo [I / Esc]")
 	close.pressed.connect(func() -> void: inventory_requested.emit())
 	column.add_child(close)
@@ -190,6 +192,11 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	item_buttons[1].text = "Poção ×%d\nUsar" % inventory.potions
 	item_buttons[1].disabled = dead or inventory.potions == 0 or hp >= maximum
 	item_buttons[2].text = "Presa Grelim\n×%d" % inventory.fangs
+	for pair in [[3, "armor", "Traje inicial"], [4, "gloves", "Luvas"], [5, "boots", "Botas"]]:
+		var button: Button = item_buttons[pair[0]]
+		button.text = "%s\n%s" % [pair[2], "Equipado" if inventory[pair[1]] else "Equipar"]
+		button.disabled = dead
+		button.tooltip_text = "Peça original do conjunto M001; texturas ainda pendentes. Troca visual, sem bônus de atributos nesta etapa."
 
 func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 	target_panel.visible = is_instance_valid(focus_enemy) and focus_enemy in enemies

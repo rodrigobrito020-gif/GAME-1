@@ -5,6 +5,7 @@ const FIGHTER := preload("res://assets/human_fighter.glb")
 const GrelimVisual := preload("res://scripts/grelim_visual.gd")
 const OpenField := preload("res://scripts/open_field.gd")
 var player: CharacterBody3D
+var character_model: Node3D
 var facing: Node3D
 var animation: AnimationPlayer
 var boom: SpringArm3D
@@ -31,7 +32,7 @@ var auto_potion := false
 var potion_threshold := 40.0
 var potion_clock := 0.0
 var zoom_distance := 5.0
-var inventory := {"equipped": true, "potions": 3, "fangs": 0, "gold": 0}
+var inventory := {"equipped": true, "armor": true, "gloves": true, "boots": true, "potions": 3, "fangs": 0, "gold": 0}
 var powered_attack := false
 var sword_attachment: BoneAttachment3D
 var attack_pending := false
@@ -110,6 +111,7 @@ func _player() -> void:
 	facing = Node3D.new()
 	player.add_child(facing)
 	var model := FIGHTER.instantiate()
+	character_model = model
 	model.rotation.y = PI
 	facing.add_child(model)
 	animation = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
@@ -146,6 +148,23 @@ func _equip_sword(model: Node3D) -> void:
 		mesh.position = part[0]
 		mesh.material_override = _material(part[2])
 		sword.add_child(mesh)
+
+func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
+	var results: Array[MeshInstance3D] = []
+	var suffixes: Array = {"armor": ["_u", "_l"], "gloves": ["_g"], "boots": ["_b"]}[slot]
+	var prefix := "mfighter_m001" if alternate else "mfighter_m000"
+	for node in character_model.find_children("*", "MeshInstance3D", true, false):
+		for suffix in suffixes:
+			if str(node.name).to_lower().begins_with(prefix + suffix):
+				results.append(node)
+	return results
+
+func _apply_equipment() -> void:
+	for slot in ["armor", "gloves", "boots"]:
+		for mesh in _gear_nodes(slot, false):
+			mesh.visible = not bool(inventory[slot])
+		for mesh in _gear_nodes(slot, true):
+			mesh.visible = bool(inventory[slot])
 
 func _play(action: String) -> void:
 	for name in animation.get_animation_list():
@@ -185,6 +204,11 @@ func _use_item(item: String) -> bool:
 			return false
 		inventory.equipped = not inventory.equipped
 		sword_attachment.visible = inventory.equipped
+	elif item in ["armor", "gloves", "boots"]:
+		if attack_clock > 0:
+			return false
+		inventory[item] = not bool(inventory[item])
+		_apply_equipment()
 	elif item == "potion":
 		if inventory.potions <= 0 or hp >= _maximum_hp() or potion_clock > 0:
 			return false
@@ -455,8 +479,9 @@ func _restart() -> void:
 	dash_cooldown = 0
 	guard_clock = 0
 	dash_clock = 0
-	inventory = {"equipped": true, "potions": 3, "fangs": 0, "gold": 0}
+	inventory = {"equipped": true, "armor": true, "gloves": true, "boots": true, "potions": 3, "fangs": 0, "gold": 0}
 	sword_attachment.visible = true
+	_apply_equipment()
 	powered_attack = false
 	attack_pending = false
 	for foe in enemies:
@@ -520,6 +545,7 @@ func _test() -> void:
 	_check(player.position.z < before.z - 1 and player.position.y > -0.1, "campo permite caminhar longe do centro sem cair")
 	await _test_interface()
 	_test_potion_settings()
+	_test_equipment()
 	print("SMOKE COMPLETE: %d falhas" % failures)
 	get_tree().quit(0 if failures == 0 else 1)
 
@@ -621,3 +647,29 @@ func _test_potion_settings() -> void:
 	_check(hp == 10 and inventory.potions == 0, "poção automática respeita estoque vazio")
 	_refresh_hud()
 	_check(hud.potion_slot.slot == 4 and hud.slot_buttons.size() == 4, "poção fica separada dos quatro slots de habilidade")
+
+func _test_equipment() -> void:
+	_restart()
+	for slot in ["armor", "gloves", "boots"]:
+		var base := _gear_nodes(slot, false)
+		var equipped := _gear_nodes(slot, true)
+		_check(not base.is_empty() and not equipped.is_empty(), "malhas originais carregadas: " + slot)
+		var correct := true
+		for mesh in base:
+			correct = correct and not mesh.visible
+		for mesh in equipped:
+			correct = correct and mesh.visible
+		_check(correct, "peça equipada substitui malha base sem sobreposição: " + slot)
+		_check(_use_item(slot), "inventário permite retirar: " + slot)
+		correct = true
+		for mesh in base:
+			correct = correct and mesh.visible
+		for mesh in equipped:
+			correct = correct and not mesh.visible
+		_check(correct, "retirar equipamento restaura malha base: " + slot)
+		_use_item(slot)
+	hud.item_buttons[3].pressed.emit()
+	_check(not inventory.armor and inventory.gloves and inventory.boots, "slot do traje altera somente o traje selecionado")
+	hud.item_buttons[3].pressed.emit()
+	_attack()
+	_check(not _use_item("armor"), "troca de roupa é bloqueada durante golpe")

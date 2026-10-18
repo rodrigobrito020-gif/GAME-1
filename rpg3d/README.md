@@ -18,7 +18,7 @@ Você controla o **humano guerreiro (Fighter)** em terceira pessoa, num campo de
 - **Esc:** fecha a mochila ou libera o cursor; clique na janela para capturá-lo novamente.
 - **R:** reiniciar campo, vida, nível e inimigos.
 
-O guerreiro usa o modelo 3D original enviado pelo usuário, com esqueleto e animações de repouso, caminhada, corrida, ataque comum, ataque especial e morte. A espada é uma malha provisória criada para o teste, presa ao osso da arma; não é um equipamento extraído do cliente. O material do personagem é cinza: texturas e equipamentos definitivos continuam pendentes. O salto ainda não tem animação própria.
+O guerreiro usa o modelo 3D original enviado pelo usuário, com esqueleto e animações de repouso, caminhada, corrida, ataque comum, ataque especial e morte. A espada é uma malha provisória criada para o teste, presa ao osso da arma; não é um equipamento extraído do cliente. O modelo agora inclui o traje inicial, as luvas e as botas M001 do próprio Fighter. Na mochila [I], clique em cada peça para equipar ou retirar; retirar restaura a malha básica M000, mantendo rosto/cabelo e animações. As peças começam equipadas e a troca fica bloqueada durante um golpe. Nesta etapa, são equipamentos visuais, sem bônus de atributos. O material continua cinza porque as texturas originais ainda não foram enviadas; falta o pacote MFighter.utx, normalmente encontrado em Textures no cliente. O salto ainda não tem animação própria.
 
 Os três **Grelims provisórios em 3D** substituem as esferas de treino: corpo, rosto, olhos, chifres, orelhas, braços e garras. Foram montados com geometria simples inspirada na referência enviada pelo usuário, sem extrair modelos de monstros do cliente. Movimentam braços e pernas proceduralmente, aproximam-se e atacam. Os modelos e animações definitivos dos monstros ainda precisam ser importados.
 
@@ -39,6 +39,6 @@ O teste executa as animações importadas, golpe manual, acerto frontal, dano e 
 
 ## Modelo e arquivos
 
-`assets/human_fighter.glb` foi convertido de `Fighter.ukx` enviado pelo usuário. Animações: `wait_1HS_MFighter`, `walk_1HS_MFighter`, `run_1HS_MFighter`, `Atk01_1HS_MFighter`, `SpAtk01_1HS_MFighter`, `Death_MFighter`. Conversão com UEViewer, importador PSK/PSA 7.1.3 e Blender 4.3.2; um esqueleto compartilhado pelas partes do corpo. O projeto usa o GLB diretamente; não requer Blender no computador do jogador.
+`assets/human_fighter.glb` foi convertido de `Fighter.ukx` enviado pelo usuário. Inclui as malhas M000 (base) e M001 (traje superior/inferior, luvas e botas); o jogo alterna a visibilidade sem sobrepor as duas versões. Animações: `wait_1HS_MFighter`, `walk_1HS_MFighter`, `run_1HS_MFighter`, `Atk01_1HS_MFighter`, `SpAtk01_1HS_MFighter`, `Death_MFighter`. Conversão com UEViewer, importador PSK/PSA 7.1.3 e Blender 4.3.2; um esqueleto compartilhado pelas partes do corpo. O projeto usa o GLB diretamente; não requer Blender no computador do jogador.
 
 `assets/human_mage.glb` conserva o teste anterior do mago para uso futuro; o personagem ativo desta versão é o guerreiro. `scripts/open_field.gd` cria o campo e agrupa a vegetação em MultiMesh; `scripts/grelim_visual.gd` monta os monstros provisórios; `scripts/world.gd` controla câmera, movimento e combate; `scripts/rpg_hud.gd` constrói a interface e projeta as barras dos inimigos.

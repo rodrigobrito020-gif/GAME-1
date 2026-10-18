@@ -313,7 +313,8 @@ func refresh_preview() -> void:
 	if preview != null:
 		viewport.remove_child(preview)
 		preview.queue_free()
-	preview = source.duplicate() as Node3D
+	# Each preview reconnects its own skeleton attachments in _ready().
+	preview = source.duplicate(Node.DUPLICATE_SCRIPTS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_USE_INSTANTIATION) as Node3D
 	viewport.add_child(preview)
 	preview.position = Vector3.ZERO
 	var animation := preview.find_child("AnimationPlayer", true, false) as AnimationPlayer

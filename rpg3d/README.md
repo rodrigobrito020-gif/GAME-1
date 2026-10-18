@@ -4,6 +4,8 @@ Abra **rpg3d/project.godot** no Godot **4.6.3 padrão** e pressione **F5**. Este
 
 Você controla o **humano guerreiro (Fighter)** em terceira pessoa, num campo de **1000 × 1000 metros**, com uma clareira central ampla, vegetação afastada e colinas no horizonte. O terreno jogável é plano; as colinas são cenário distante. Há limite de deslocamento a 490 metros do centro, sem muros fechando a vista.
 
+O campo tem **textura de grama** em escala de 1,8 metro, com variação natural de cor e relevo fino. Perto do jogador há tufos de grama em geometria 3D, curvados e movidos suavemente pelo vento. Os blocos de vegetação acompanham a exploração por todo o campo; à distância, os tufos diminuem gradualmente e o solo texturizado continua visível. São instâncias MultiMesh opacas, sem cartões transparentes nem milhares de colisores. A textura foi gerada para o projeto; a origem está em `assets/environment/meadow_grass_source.json`.
+
 - **WASD:** caminhar em relação à câmera; **mouse:** girar a câmera.
 - **Roda do mouse:** para cima aproxima, para baixo afasta. Zoom suave entre 2 e 14 metros, encurtado pelo SpringArm quando houver obstáculos.
 - **Shift:** correr; **Espaço:** pular.
@@ -55,4 +57,4 @@ A montagem do cabelo inclui as duas partes originais `MFighter_m000_m00_ah` e `M
 
 A ponta fina que parecia sair da espada vinha de uma influência descartada na malha M001 da luva: havia um nome de osso de dedo duplicado. Os nomes do esqueleto foram normalizados pela ordem e hierarquia do M000, preservando os pesos e a geometria. O GLB não contém mais a influência neutral_bone. A origem e os aliases corrigidos estão em assets/human_fighter_textures.json.
 
-O guerreiro começa também com o Small Shield original no braço esquerdo (Shield_L_Bone). O escudo possui ícone no inventário e pode ser equipado ou guardado; acompanha as animações. Nesta etapa é um equipamento visual, sem bônus passivo adicional. O encaixe compensa a conversão de eixos das malhas glTF, preserva o eixo original da lâmina e centraliza o cabo no socket da mão.
+O guerreiro começa também com o Small Shield original no braço esquerdo (Shield_L_Bone). O escudo possui ícone no inventário e pode ser equipado ou guardado; acompanha as animações. O painel fica voltado para a frente em torno da alça interna, com suportes metálicos e uma tira de couro que acompanha o antebraço. O espaço entre a luva e a madeira é verificado nas poses importadas, incluindo o fim do golpe. Nesta etapa é um equipamento visual, sem bônus passivo adicional. O encaixe compensa a conversão de eixos das malhas glTF, preserva o eixo original da lâmina e centraliza o cabo no socket da mão.

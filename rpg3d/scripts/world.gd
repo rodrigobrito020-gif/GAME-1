@@ -1,7 +1,8 @@
 extends Node3D
 
 const RPGHud := preload("res://scripts/rpg_hud.gd")
-const SMALL_SHIELD := preload("res://assets/small_shield.glb")
+const ShieldFit := preload("res://tests/shield_fit.gd")
+const ShieldMount := preload("res://scripts/shield_mount.gd")
 const LONG_SWORD := preload("res://assets/long_sword.glb")
 const FIGHTER := preload("res://assets/human_fighter.glb")
 const GrelimVisual := preload("res://scripts/grelim_visual.gd")
@@ -156,14 +157,10 @@ func _equip_sword(model: Node3D) -> void:
 	shield_attachment.name = "ShieldAttachment"
 	shield_attachment.bone_name = "Shield_L_Bone"
 	skeleton.add_child(shield_attachment)
-	var shield := SMALL_SHIELD.instantiate()
-	shield.name = "OriginalSmallShield"
-	shield.basis = Basis(Vector3.UP, -PI / 2) * Basis(Vector3.RIGHT, PI / 2)
-	# Compensar somente a escala do guerreiro; preservar o tamanho original do escudo.
-	var holder := Node3D.new()
-	holder.scale = Vector3.ONE / 0.038
-	shield_attachment.add_child(holder)
-	holder.add_child(shield)
+	var mount := ShieldMount.new()
+	mount.name = "ShieldMount"
+	mount.scale = Vector3.ONE / 0.038
+	shield_attachment.add_child(mount)
 
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	var results: Array[MeshInstance3D] = []
@@ -619,18 +616,30 @@ func _test_weapon_alignment() -> void:
 	var rig: Skeleton3D = character_model.find_children("*", "Skeleton3D", true, false)[0]
 	# Measured center of the original narrow handle, expressed in static GLB coordinates.
 	var native_grip := Vector3(-1.85 * 0.038, 0, 0)
-	for action in ["idle", "walk", "run", "attack", "skill", "death"]:
+	for pose in [["idle", 0.4], ["walk", 0.4], ["run", 0.4], ["attack", 0.4], ["skill", 0.4], ["death", 0.4], ["attack", 0.923], ["run", 0.554], ["death", 0.0]]:
+		var action: String = pose[0]
 		for animation_name in animation.get_animation_list():
 			if animation_name.ends_with(action):
 				animation.play(animation_name, 0)
-		animation.advance(0.4)
+		animation.advance(pose[1])
 		animation.pause()
 		await get_tree().process_frame
-		var hand := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Bip01_R_Hand"))
+		var weapon_socket := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Weapon_R_Bone"))
 		_check(blade.to_global(native_grip).distance_to(sword_attachment.global_position) < 0.001, "cabo centrado no socket: " + action)
-		_check(blade.global_basis.x.normalized().dot(hand.basis.z.normalized()) > 0.98, "lâmina alinhada ao eixo da empunhadura: " + action)
+		_check(blade.global_basis.x.normalized().dot(weapon_socket.basis.x.normalized()) > 0.999, "espada acompanha o eixo animado do socket: " + action)
+		var mount: Node3D = shield_attachment.get_node("ShieldMount")
 		var shield_front := (shield.global_basis * Vector3.FORWARD).normalized()
-		_check(shield_front.dot(shield_attachment.global_basis.y.normalized()) > 0.99 and shield.global_position.distance_to(shield_attachment.global_position) < 0.001, "face do escudo para fora do braço: " + action)
+		var turn := Basis(Vector3.BACK, ShieldMount.PRESENTATION_ANGLE)
+		var expected_front := (mount.global_basis * turn.y).normalized()
+		var grip: MeshInstance3D = mount.get_node("HandGrip/LeatherGrip")
+		var cuff: MeshInstance3D = mount.get_node("ForearmStrap")
+		var wrist := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Bip01_L_Hand")).origin
+		_check(shield_front.dot(expected_front) > 0.99, "face do escudo orientada para frente e para fora: " + action)
+		_check(grip.global_position.distance_to(mount.to_global(ShieldMount.GRIP_CENTER)) < 0.001, "alça do escudo permanece no punho: " + action)
+		_check(absf(cuff.global_position.distance_to(wrist) - 0.07) < 0.003, "tira acompanha o antebraço durante a animação: " + action)
+		var shell_mesh: MeshInstance3D = shield.find_children("*", "MeshInstance3D", true, false)[0]
+		var fit := ShieldFit.minimum_clearance(_gear_nodes("gloves", true), wrist, shell_mesh)
+		_check(fit.y > 0 and fit.x >= 0.005, "luva fica atrás da madeira, com folga: %s %.3fs (%.1f mm)" % [action, pose[1], fit.x * 1000])
 	_play("idle")
 
 func _test_interface() -> void:

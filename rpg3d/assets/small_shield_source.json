@@ -6,11 +6,19 @@
   "attachment_bone": "Shield_L_Bone",
   "original_units_to_meters": 0.038,
   "model_sha256": "f8a1c5b2c942d3df4cac1e7337623f76cb20e9e4df986cc392c6f7737fe9262c",
-  "rotation_order": "Y(-90 degrees) * X(90 degrees)",
-  "offset_meters": [
-    0,
-    0,
-    0
-  ],
-  "description": "Cancel static GLB axis conversion; raw long axis +X becomes Shield_L_Bone +Z (down); convex face raw +Y faces bone +Y (outward). Socket already lies outside wrist."
+  "description": "Shield panel turns around a physical inner grip; leather cuff follows the forearm. Native convex face remains outward, with 20mm added clearance for the animated glove.",
+  "mount": {
+    "script": "res://scripts/shield_mount.gd",
+    "native_frame": "Y(-90 degrees) * X(90 degrees)",
+    "presentation_rotation_z_degrees": 45,
+    "grip_center_meters": [
+      -0.005,
+      -0.095,
+      0.105
+    ],
+    "outward_clearance_meters": 0.02,
+    "grip_length_meters": 0.12,
+    "grip_radius_meters": 0.013,
+    "forearm_cuff_distance_from_wrist_meters": 0.07
+  }
 }

@@ -1,6 +1,18 @@
 extends Node3D
-## Campo de um quilômetro de lado, com clareira ampla e vegetação em instâncias.
+## Campo de um quilômetro, com solo texturizado e relva 3D em blocos reciclados.
 const SIZE := 1000.0
+const GRASS_TEXTURE := preload("res://assets/environment/meadow_grass_albedo.png")
+const GROUND_SHADER := preload("res://shaders/meadow_ground.gdshader")
+const BLADE_SHADER := preload("res://shaders/meadow_blades.gdshader")
+const GRASS_CHUNK_SIZE := 12.0
+const GRASS_CHUNK_RADIUS := 4
+const GRASS_TUFTS_PER_CHUNK := 520
+var grass_chunks: Dictionary = {}
+var grass_mesh: ArrayMesh
+var grass_material: ShaderMaterial
+var grass_density := FastNoiseLite.new()
+var grass_center := Vector2i(99999, 99999)
+var grass_update_clock := 0.0
 
 func _ready() -> void:
 	var ground := MeshInstance3D.new()
@@ -16,20 +28,10 @@ func _ready() -> void:
 	texture.height = 512
 	texture.seamless = true
 	texture.noise = noise
-	var shader := Shader.new()
-	shader.code = """shader_type spatial;
-	uniform sampler2D grass_noise : repeat_enable;
-	varying vec3 world_pos;
-	void vertex() { world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
-	void fragment() {
-		float broad = texture(grass_noise, world_pos.xz * 0.002).r;
-		float detail = texture(grass_noise, world_pos.xz * 0.05).r;
-		ALBEDO = mix(vec3(0.19, 0.28, 0.10), vec3(0.42, 0.48, 0.22), broad) * (0.8 + detail * 0.35);
-		ROUGHNESS = 1.0;
-	}"""
 	var material := ShaderMaterial.new()
-	material.shader = shader
-	material.set_shader_parameter("grass_noise", texture)
+	material.shader = GROUND_SHADER
+	material.set_shader_parameter("grass_albedo", GRASS_TEXTURE)
+	material.set_shader_parameter("meadow_noise", texture)
 	ground.material_override = material
 	add_child(ground)
 	var floor_body := StaticBody3D.new()
@@ -41,8 +43,113 @@ func _ready() -> void:
 	collision.position.y = -0.5
 	floor_body.add_child(collision)
 	add_child(floor_body)
+	_grass()
 	_vegetation()
 	_hills()
+
+func _process(delta: float) -> void:
+	grass_update_clock += delta
+	if grass_update_clock < 0.2:
+		return
+	grass_update_clock = 0.0
+	var player := get_parent().get_node_or_null("Player") as Node3D
+	if player != null:
+		_update_grass(player.global_position)
+
+func _grass() -> void:
+	grass_density.seed = 8627
+	grass_density.frequency = 0.075
+	grass_mesh = _grass_tuft_mesh()
+	grass_material = ShaderMaterial.new()
+	grass_material.shader = BLADE_SHADER
+	grass_material.set_shader_parameter("grass_albedo", GRASS_TEXTURE)
+	_update_grass(Vector3.ZERO)
+
+func _grass_tuft_mesh() -> ArrayMesh:
+	# Five curved, tapering blades: 15 triangles/tuft, opaque and double sided.
+	# Real geometry avoids transparent grass cards, heavy overdraw and sorting.
+	var mesh := SurfaceTool.new()
+	mesh.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 1638
+	for blade in range(5):
+		var angle := TAU * blade / 5.0 + rng.randf_range(-0.35, 0.35)
+		var outward := Vector3(cos(angle), 0.0, sin(angle))
+		var side := Vector3(-sin(angle), 0.0, cos(angle))
+		var base := outward * rng.randf_range(0.015, 0.09)
+		var height := rng.randf_range(0.10, 0.20)
+		var width := rng.randf_range(0.004, 0.009)
+		var middle := base + outward * height * 0.19 + Vector3.UP * height * 0.55
+		var tip := base + outward * height * 0.65 + Vector3.UP * height
+		var points := [base - side * width, base + side * width, middle - side * width * 0.62, middle + side * width * 0.62, tip]
+		var uvs := [Vector2(0, 0), Vector2(1, 0), Vector2(0, 0.55), Vector2(1, 0.55), Vector2(0.5, 1)]
+		var shade := rng.randf_range(0.88, 1.12)
+		for point in [0, 2, 1, 1, 2, 3, 2, 4, 3]:
+			mesh.set_normal(Vector3.UP)
+			mesh.set_uv(uvs[point])
+			mesh.set_color(Color(shade, shade, shade, 1.0))
+			mesh.add_vertex(points[point])
+	return mesh.commit()
+
+func _update_grass(at: Vector3) -> void:
+	var center := Vector2i(floori(at.x / GRASS_CHUNK_SIZE), floori(at.z / GRASS_CHUNK_SIZE))
+	if center == grass_center:
+		return
+	grass_center = center
+	var active: Dictionary = {}
+	var recycled: Array[MultiMeshInstance3D] = []
+	for x in range(-GRASS_CHUNK_RADIUS, GRASS_CHUNK_RADIUS + 1):
+		for z in range(-GRASS_CHUNK_RADIUS, GRASS_CHUNK_RADIUS + 1):
+			# Omit corner chunks entirely outside the 43m grass draw distance.
+			if Vector2(x, z).length() <= 4.5:
+				active[center + Vector2i(x, z)] = true
+	for key in grass_chunks.keys():
+		if not active.has(key):
+			recycled.append(grass_chunks[key])
+			grass_chunks.erase(key)
+	for key in active:
+		if grass_chunks.has(key):
+			continue
+		var batch: MultiMeshInstance3D
+		if recycled.is_empty():
+			batch = MultiMeshInstance3D.new()
+			batch.name = "MeadowGrass"
+			batch.multimesh = MultiMesh.new()
+			batch.multimesh.transform_format = MultiMesh.TRANSFORM_3D
+			batch.multimesh.mesh = grass_mesh
+			batch.multimesh.instance_count = GRASS_TUFTS_PER_CHUNK
+			batch.material_override = grass_material
+			batch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			batch.visibility_range_end = 62.0
+			batch.extra_cull_margin = 0.3
+			add_child(batch)
+		else:
+			batch = recycled.pop_back()
+		_fill_grass_chunk(batch, key)
+		grass_chunks[key] = batch
+	for batch in recycled:
+		batch.queue_free()
+
+func _fill_grass_chunk(batch: MultiMeshInstance3D, key: Vector2i) -> void:
+	var origin := Vector3(key.x * GRASS_CHUNK_SIZE, 0.003, key.y * GRASS_CHUNK_SIZE)
+	batch.position = origin
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(key) ^ 52791
+	var count := 0
+	for i in range(GRASS_TUFTS_PER_CHUNK):
+		var position := Vector3(rng.randf() * GRASS_CHUNK_SIZE, 0.0, rng.randf() * GRASS_CHUNK_SIZE)
+		var world_position := origin + position
+		if absf(world_position.x) >= SIZE * 0.5 or absf(world_position.z) >= SIZE * 0.5:
+			continue
+		# Irregular patches keep the floor readable and the meadow from resembling carpet.
+		var density := grass_density.get_noise_2d(world_position.x, world_position.z)
+		if density < -0.13 and rng.randf() < 0.74:
+			continue
+		var scale := rng.randf_range(0.7, 1.3)
+		var basis := Basis(Vector3.UP, rng.randf() * TAU).scaled(Vector3(scale, rng.randf_range(0.75, 1.2), scale))
+		batch.multimesh.set_instance_transform(count, Transform3D(basis, position))
+		count += 1
+	batch.multimesh.visible_instance_count = count
 
 func _material(color: Color) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()

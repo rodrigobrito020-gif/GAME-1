@@ -1,0 +1,9 @@
+{
+  "asset": "meadow_grass_albedo.png",
+  "origin": "Generated specifically for Reload Adventure with image_gen on 2026-10-18",
+  "description": "Top-down seamless meadow grass albedo, no baked directional light, 1254 by 1254 pixels",
+  "material": "World-space 1.8m turf tiles, two scales and macro color variation; mipmaps and anisotropic filtering",
+  "grass_geometry": "Five native tapered curved blades per tuft, opaque double sided, no imported grass cards",
+  "streaming": "12m chunks recycled around the player; maximum 69 chunks of 520 tufts, soft distance reduction from 30m to 43m",
+  "dependencies": "No external terrain assets, texture downloads or additional plugins required"
+}

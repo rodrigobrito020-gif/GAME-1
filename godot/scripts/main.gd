@@ -1,19 +1,31 @@
 extends Node2D
-## Protótipo independente: a arte provisória é desenhada aqui, sem assets externos.
+## Regras e interface do protótipo. Personagens visuais em scenes/hero_visual.tscn.
 
 const SAVE_PATH := "user://progress.json"
 const SkillCircle := preload("res://scripts/skill_circle.gd")
+const HERO_VISUAL := preload("res://scenes/hero_visual.tscn")
+const HERO_HEIGHTS := [78.0, 92.0, 96.0, 96.0, 100.0]
+const SKILL_OFFSET := Vector2(46, -148)
+const HERO_TEXTURES := [
+	preload("res://art/heroes/bounty_hunter.tres"),
+	preload("res://art/heroes/bishop.tres"),
+	preload("res://art/heroes/silver_ranger.tres"),
+	preload("res://art/heroes/spellhowler.tres"),
+	preload("res://art/heroes/destroyer.tres"),
+]
 const HEROES := [
-	{"name": "Bounty Hunter", "role": "Tank", "kind": "tank", "color": Color("77b5d4"), "hp": 240.0, "atk": 15.0, "rate": 1.4, "skill": "Muralha", "description": "Protege a si mesmo por 5 segundos."},
-	{"name": "Bishop", "role": "Healer", "kind": "healer", "color": Color("8ad3a2"), "hp": 140.0, "atk": 12.0, "rate": 1.7, "skill": "Renovar", "description": "Cura todos os aliados vivos."},
-	{"name": "Silver Ranger", "role": "Arqueira", "kind": "archer", "color": Color("e3ba72"), "hp": 145.0, "atk": 23.0, "rate": 1.15, "skill": "Tiro preciso", "description": "Causa dano elevado em um alvo."},
-	{"name": "Spellhowler", "role": "Maga", "kind": "mage", "color": Color("b89ce5"), "hp": 125.0, "atk": 27.0, "rate": 1.65, "skill": "Tempestade", "description": "Atinge todos os inimigos vivos."},
-	{"name": "Destroyer", "role": "Guerreiro", "kind": "warrior", "color": Color("db9277"), "hp": 200.0, "atk": 22.0, "rate": 1.4, "skill": "Impacto", "description": "Golpe poderoso no inimigo da frente."},
+	{"name": "Bounty Hunter", "race": "Anã", "gender": "Mulher", "role": "Tank", "kind": "tank", "color": Color("77b5d4"), "hp": 240.0, "atk": 15.0, "rate": 1.4, "skill": "Muralha", "description": "Protege a si mesmo por 5 segundos."},
+	{"name": "Bishop", "race": "Humano", "gender": "Homem", "role": "Healer", "kind": "healer", "color": Color("8ad3a2"), "hp": 140.0, "atk": 12.0, "rate": 1.7, "skill": "Renovar", "description": "Cura todos os aliados vivos."},
+	{"name": "Silver Ranger", "race": "Elfa branca", "gender": "Mulher", "role": "Arqueira", "kind": "archer", "color": Color("e3ba72"), "hp": 145.0, "atk": 23.0, "rate": 1.15, "skill": "Tiro preciso", "description": "Causa dano elevado em um alvo."},
+	{"name": "Spellhowler", "race": "Elfa negra", "gender": "Mulher", "role": "Maga", "kind": "mage", "color": Color("b89ce5"), "hp": 125.0, "atk": 27.0, "rate": 1.65, "skill": "Tempestade", "description": "Atinge todos os inimigos vivos."},
+	{"name": "Destroyer", "race": "Orc", "gender": "Homem", "role": "Guerreiro", "kind": "warrior", "color": Color("db9277"), "hp": 200.0, "atk": 22.0, "rate": 1.4, "skill": "Impacto", "description": "Golpe poderoso no inimigo da frente."},
 ]
 const SLOT_POSITIONS := [Vector2(456, 360), Vector2(456, 500), Vector2(303, 360), Vector2(303, 500), Vector2(150, 360), Vector2(150, 500)]
 const FOE_POSITIONS := [Vector2(825, 360), Vector2(825, 500), Vector2(985, 360), Vector2(985, 500), Vector2(1135, 360), Vector2(1135, 500)]
 const WAVE_NAMES := ["Primeira onda", "Segunda onda", "Terceira onda", "Chefe da região"]
 
+var hero_visuals: Array[Node2D] = []
+var hero_visual_root: Node2D
 var heroes: Array[Dictionary] = []
 var foes: Array[Dictionary] = []
 var slots: Array[int] = [0, 4, 2, -1, 1, 3]
@@ -54,11 +66,33 @@ func _ready() -> void:
 		_load_progress()
 	_build_ui()
 	_prepare_heroes()
+	_create_hero_visuals()
 	_preview_foes()
 	_message("Arraste os heróis entre os círculos. A frente recebe os ataques primeiro.")
 	_refresh_ui()
 	if smoke_test:
 		_run_smoke_test.call_deferred()
+
+func _create_hero_visuals() -> void:
+	hero_visual_root = Node2D.new()
+	hero_visual_root.name = "HeroVisuals"
+	hero_visual_root.y_sort_enabled = true
+	add_child(hero_visual_root)
+	move_child(hero_visual_root, 0)
+	for i in range(HEROES.size()):
+		var visual := HERO_VISUAL.instantiate()
+		visual.name = HEROES[i].name.replace(" ", "")
+		visual.artwork = HERO_TEXTURES[i]
+		visual.character_height = HERO_HEIGHTS[i]
+		visual.phase = i * 0.8
+		hero_visual_root.add_child(visual)
+		hero_visuals.append(visual)
+	_sync_hero_visuals(0)
+
+func _sync_hero_visuals(delta: float) -> void:
+	for i in range(hero_visuals.size()):
+		hero_visuals[i].position = drag_position if dragging == i else _unit_position(heroes[i], false)
+		hero_visuals[i].sync_visual(heroes[i], delta, paused)
 
 func _label(text: String, position: Vector2, size: Vector2, font_size: int, color := Color("e6ecea")) -> Label:
 	var node := Label.new()
@@ -191,6 +225,7 @@ func _damage(source: Dictionary, target: Dictionary, amount: float, target_is_en
 		return
 	var actual := amount * (0.35 if target.guard > 0.0 else 1.0)
 	target.hp = maxf(0.0, target.hp - actual)
+	target["hurt"] = 0.18
 	source.pulse = 0.18
 	effects.append({"from": _unit_position(source, not target_is_enemy) + Vector2(0, -40), "to": _unit_position(target, target_is_enemy) + Vector2(0, -40), "text": "−" + str(roundi(actual)), "color": Color("efd398") if target_is_enemy else Color("ee9891"), "life": 0.7})
 
@@ -238,6 +273,7 @@ func _process(delta: float) -> void:
 		return
 	if mode == "battle" and not paused:
 		_tick(minf(delta, 0.1) * speed)
+	_sync_hero_visuals(delta)
 	_refresh_ui()
 	queue_redraw()
 
@@ -256,6 +292,7 @@ func _tick(dt: float) -> void:
 	for hero in heroes:
 		if hero.hp <= 0.0:
 			continue
+		hero["hurt"] = maxf(0.0, float(hero.get("hurt", 0)) - dt)
 		hero.guard = maxf(0.0, hero.guard - dt)
 		hero.pulse = maxf(0.0, hero.pulse - dt)
 		hero.cooldown = maxf(0.0, hero.cooldown - dt)
@@ -349,11 +386,12 @@ func _refresh_ui() -> void:
 	for i in range(HEROES.size()):
 		cards[i].text = ("● " if i == selected else "") + HEROES[i].name + "\n" + HEROES[i].role + " · Nv. " + str(levels[i])
 		cards[i].modulate = HEROES[i].color if i == selected else Color.WHITE
+		cards[i].tooltip_text = HEROES[i].race + " · " + HEROES[i].gender + " · " + HEROES[i].role
 		var hero := heroes[i] if heroes.size() > i else {}
 		if not hero.is_empty():
 			var circle = skill_circles[i]
 			var pos := drag_position if dragging == i else _unit_position(hero, false)
-			circle.position = pos + Vector2(12, -148)
+			circle.position = pos + SKILL_OFFSET
 			circle.remaining = maxf(0, hero.cooldown)
 			circle.cooling = mode == "battle" and hero.cooldown > 0 and hero.hp > 0
 			circle.fallen = hero.hp <= 0
@@ -362,7 +400,7 @@ func _refresh_ui() -> void:
 			circle.queue_redraw()
 	train_button.text = "Treinar: " + str(_train_cost()) + " Adena" if levels[selected] < 50 else "Nível máximo: 50"
 	train_button.disabled = mode == "battle" or levels[selected] >= 50 or coins < _train_cost()
-	detail_label.text = HEROES[selected].name + " · Comum · " + HEROES[selected].description + "\nTreino: +12% dos atributos base por nível. Raridades e demais sistemas virão depois."
+	detail_label.text = HEROES[selected].name + " · " + HEROES[selected].race + " · Comum · " + HEROES[selected].description + "\nTreino: +12% dos atributos base por nível. Raridades e demais sistemas virão depois."
 
 func _move_hero(id: int, target: int) -> void:
 	if mode == "battle" or target < 0 or target >= slots.size():
@@ -383,7 +421,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			for i in range(slots.size()):
-				if slots[i] >= 0 and event.position.distance_to(SLOT_POSITIONS[i] + Vector2(0, -28)) < 60:
+				if slots[i] >= 0 and Rect2(SLOT_POSITIONS[i] + Vector2(-55, -110), Vector2(110, 125)).has_point(event.position):
 					dragging = slots[i]
 					drag_position = event.position + Vector2(0, 28)
 					_select_hero(dragging)
@@ -441,11 +479,27 @@ func _draw_unit(unit: Dictionary, pos: Vector2, enemy: bool) -> void:
 	var color: Color = unit.color if alive else Color("536263")
 	var size_factor := 2.5 if unit.kind == "boss" else 1.8
 	var outline := Color("15232b")
-	if alive and unit.pulse > 0:
+	if enemy and alive and unit.pulse > 0:
 		pos.x += (-7 if enemy else 7) * sin(unit.pulse * 16)
 	draw_set_transform(pos + Vector2(0, 9), 0, Vector2(1, 0.28))
 	draw_circle(Vector2.ZERO, 25 * size_factor / 2.15, Color(0, 0, 0, 0.24))
 	draw_set_transform(Vector2.ZERO)
+	if enemy:
+		_draw_placeholder(unit, pos, enemy, size_factor, color, outline)
+	if unit.guard > 0:
+		draw_arc(pos + Vector2(0, -45), 57, 0, TAU, 36, Color("a6d5f0"), 3)
+	var bar_width := 100.0 if unit.kind == "boss" else 86.0
+	var bar_pos := pos + Vector2(-bar_width / 2, -57 * size_factor if enemy else -110.0)
+	draw_rect(Rect2(bar_pos, Vector2(bar_width, 6)), Color("293735"))
+	draw_rect(Rect2(bar_pos, Vector2(bar_width * maxf(0, unit.hp / unit.max_hp), 6)), Color("cc8f8c") if enemy else Color("91cba7"))
+	draw_string(ThemeDB.fallback_font, bar_pos + Vector2(0, -7), unit.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("d5deda"))
+	if not enemy and int(unit.id) == selected:
+		draw_arc(pos + Vector2(0, 8), 35, 0, TAU, 32, Color("e5d09a"), 2)
+	if not alive:
+		draw_line(pos + Vector2(-17, -80), pos + Vector2(17, -45), Color("d69a90"), 4)
+		draw_line(pos + Vector2(17, -80), pos + Vector2(-17, -45), Color("d69a90"), 4)
+
+func _draw_placeholder(unit: Dictionary, pos: Vector2, enemy: bool, size_factor: float, color: Color, outline: Color) -> void:
 	var parts := [
 		[Rect2(-10, -29, 20, 25), outline], [Rect2(-9, -28, 18, 20), color.darkened(0.2)],
 		[Rect2(-10, -33, 7, 9), color.lightened(0.15)], [Rect2(4, -33, 7, 9), color.lightened(0.15)],
@@ -471,18 +525,6 @@ func _draw_unit(unit: Dictionary, pos: Vector2, enemy: bool) -> void:
 	else:
 		_pixel_rect(pos, Rect2(16, -40, 4, 31), Color("c3cace"), enemy, size_factor)
 		_pixel_rect(pos, Rect2(12, -13, 12, 3), Color("b59660"), enemy, size_factor)
-	if unit.guard > 0:
-		draw_arc(pos + Vector2(0, -45), 57, 0, TAU, 36, Color("a6d5f0"), 3)
-	var bar_width := 100.0 if unit.kind == "boss" else 86.0
-	var bar_pos := pos + Vector2(-bar_width / 2, -57 * size_factor)
-	draw_rect(Rect2(bar_pos, Vector2(bar_width, 6)), Color("293735"))
-	draw_rect(Rect2(bar_pos, Vector2(bar_width * maxf(0, unit.hp / unit.max_hp), 6)), Color("cc8f8c") if enemy else Color("91cba7"))
-	draw_string(ThemeDB.fallback_font, bar_pos + Vector2(0, -7), unit.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("d5deda"))
-	if not enemy and int(unit.id) == selected:
-		draw_arc(pos + Vector2(0, 8), 35, 0, TAU, 32, Color("e5d09a"), 2)
-	if not alive:
-		draw_line(pos + Vector2(-17, -80), pos + Vector2(17, -45), Color("d69a90"), 4)
-		draw_line(pos + Vector2(17, -80), pos + Vector2(-17, -45), Color("d69a90"), 4)
 
 func _save_progress() -> void:
 	if smoke_test:
@@ -524,13 +566,28 @@ func _check(condition: bool, explanation: String) -> void:
 
 func _run_smoke_test() -> void:
 	_check(heroes.size() == 5 and slots.size() == 6, "cinco heróis em seis posições")
+	_check(hero_visuals.size() == 5, "cinco cenas visuais de personagens instanciadas")
+	for i in range(hero_visuals.size()):
+		_check(hero_visuals[i].body.texture == HERO_TEXTURES[i] and HERO_TEXTURES[i].get_height() > 0, "arte carregada: " + HEROES[i].name)
+	_check(hero_visuals[0].character_height < hero_visuals[4].character_height, "escala da anã menor que a do orc")
+	var visual_sample: Dictionary = heroes[0].duplicate()
+	visual_sample.pulse = 0.15
+	hero_visuals[0].sync_visual(visual_sample, 0.05, false)
+	_check(hero_visuals[0].body.position.x > 0, "movimento básico de ataque aplicado ao sprite")
+	visual_sample["hurt"] = 0.1
+	hero_visuals[0].sync_visual(visual_sample, 0, false)
+	_check(hero_visuals[0].body.modulate.g < 1.0, "dano tem indicação visual")
+	visual_sample.hp = 0.0
+	hero_visuals[0].sync_visual(visual_sample, 0, false)
+	_check(hero_visuals[0].body.scale.y < hero_visuals[0].body.scale.x, "derrota altera a pose visual")
+	_sync_hero_visuals(0)
 	var sorted_slots := slots.duplicate()
 	sorted_slots.sort()
 	_check(sorted_slots == [-1, 0, 1, 2, 3, 4], "cada herói aparece uma vez e há uma posição vazia")
 	_move_hero(0, 3)
 	_check(slots[3] == 0 and slots[0] == -1, "mover para posição vazia")
 	_refresh_ui()
-	_check(skill_circles[0].position == SLOT_POSITIONS[3] + Vector2(12, -148), "círculo acompanha o herói após mover a formação")
+	_check(skill_circles[0].position == SLOT_POSITIONS[3] + SKILL_OFFSET, "círculo acompanha o herói após mover a formação")
 	_move_hero(0, 1)
 	_check(slots[1] == 0 and slots[3] == 4, "trocar dois heróis")
 	slots = [0, 4, 2, -1, 1, 3]

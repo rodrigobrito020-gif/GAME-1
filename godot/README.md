@@ -14,13 +14,13 @@ Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar
 
 ## O que já funciona
 
-- Classes do conceito: Bounty Hunter (anã/tank), Bishop (humano/healer), Silver Ranger (elfa branca/arqueira), Spellhowler (elfa negra/maga) e Destroyer (orc/guerreiro), com uma habilidade ativa provisória cada. A arte continua genérica.
+- Classes do conceito: Bounty Hunter (anã/tank), Bishop (humano/healer), Silver Ranger (elfa branca/arqueira), Spellhowler (elfa negra/maga) e Destroyer (orc/guerreiro), com uma habilidade ativa provisória cada. As cinco classes têm imagens próprias inspiradas nas referências visuais fornecidas pelo usuário.
 - Dano, cura, proteção, recargas, habilidades automáticas/manuais, derrota e nova tentativa.
 - Três ondas e um chefe por fase; fases seguintes com atributos maiores.
 - Adena por vitória, treino até nível 50 e salvamento de níveis, formação, Adena e fase.
 - Arquivo de progresso local em `user://progress.json`, no diretório de dados do aplicativo que o Godot escolhe para seu sistema. O teste de fumaça não lê nem altera esse progresso.
 
-Os números são de teste. As classes seguem os nomes de referência do conceito; nomes pessoais e habilidades definitivas ainda não foram definidos. Os personagens são desenhos geométricos próprios feitos pelo código, sem assets de Lineage 2 ou de outros jogos. Um pequeno avanço e os efeitos de combate indicam os ataques; animações por sprite sheet e arte final ainda serão integradas.
+Os números são de teste. As classes seguem os nomes de referência do conceito; nomes pessoais e habilidades definitivas ainda não foram definidos. Os cinco heróis usam PNGs transparentes preparados com geração de imagem a partir das referências fornecidas pelo usuário, sem extração de arquivos de Lineage 2. Os inimigos ainda usam desenhos geométricos provisórios. Cada herói tem uma pose: repouso com movimento sutil, avanço/inclinação ao atacar, indicação de dano e compressão ao cair são movimentos procedurais. Ainda não são animações desenhadas quadro a quadro; corrida, ataques completos e habilidades animadas por sprite sheet continuam pendentes de produção e aprovação visual.
 
 ## Escopo ainda por implementar
 
@@ -49,4 +49,4 @@ mkdir -p /tmp/reload-godot/data /tmp/reload-godot/config /tmp/reload-godot/cache
 XDG_DATA_HOME=/tmp/reload-godot/data XDG_CONFIG_HOME=/tmp/reload-godot/config XDG_CACHE_HOME=/tmp/reload-godot/cache godot --headless --path . -- --smoke-test
 ```
 
-`scripts/main.gd` contém o protótipo e desenha a arte provisória. As definições de heróis estão em `HEROES`; a apresentação visual está em `_draw_unit()`. Podemos substituir esse desenho por cenas com `AnimatedSprite2D` e sprite sheets quando o padrão visual estiver aprovado, preservando as regras de batalha.
+`scripts/main.gd` contém as regras e a interface. As definições de heróis estão em `HEROES`, incluindo raça e gênero. Cada herói instancia `scenes/hero_visual.tscn`, com um `Sprite2D` controlado por `scripts/hero_visual.gd`. Os PNGs separados estão em `art/heroes/`; os recursos `.tres` recortam apenas a margem transparente, sem modificar o PNG. `HERO_HEIGHTS` define a escala de apresentação. O próximo passo visual é substituir as poses estáticas por `AnimatedSprite2D` e sprite sheets, preservando as regras de batalha. O progresso existente continua usando os mesmos IDs e formato de salvamento.

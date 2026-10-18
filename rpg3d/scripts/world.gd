@@ -1,6 +1,8 @@
 extends Node3D
 
-const MAGE := preload("res://assets/human_mage.glb")
+const FIGHTER := preload("res://assets/human_fighter.glb")
+const GrelimVisual := preload("res://scripts/grelim_visual.gd")
+const OpenField := preload("res://scripts/open_field.gd")
 var player: CharacterBody3D
 var facing: Node3D
 var animation: AnimationPlayer
@@ -15,11 +17,13 @@ var level := 1
 var xp := 0
 var kills := 0
 var cooldown := 0.0
-var cast_clock := 0.0
-var cast_pending := false
-var cast_direction := Vector3.FORWARD
+var attack_clock := 0.0
+var skill_cooldown := 0.0
+var powered_attack := false
+var sword_attachment: BoneAttachment3D
+var attack_pending := false
+var attack_direction := Vector3.FORWARD
 var enemies: Array[CharacterBody3D] = []
-var bolts: Array[Dictionary] = []
 var dead := false
 var smoke := false
 var failures := 0
@@ -51,24 +55,6 @@ func _material(color: Color) -> StandardMaterial3D:
 	material.roughness = 0.85
 	return material
 
-func _box(at: Vector3, size: Vector3, color: Color, solid := true) -> void:
-	var mesh := MeshInstance3D.new()
-	var cube := BoxMesh.new()
-	cube.size = size
-	mesh.mesh = cube
-	mesh.material_override = _material(color)
-	mesh.position = at
-	add_child(mesh)
-	if solid:
-		var body := StaticBody3D.new()
-		var collision := CollisionShape3D.new()
-		var shape := BoxShape3D.new()
-		shape.size = size
-		collision.shape = shape
-		body.position = at
-		body.add_child(collision)
-		add_child(body)
-
 func _world() -> void:
 	var environment := WorldEnvironment.new()
 	environment.environment = Environment.new()
@@ -84,16 +70,18 @@ func _world() -> void:
 	sun.light_energy = 0.8
 	sun.shadow_enabled = true
 	add_child(sun)
-	_box(Vector3(0, -0.25, 0), Vector3(40, 0.5, 40), Color("61765b"))
-	_box(Vector3(0, 0.006, -5), Vector3(6, 0.01, 28), Color("998c70"), false)
-	for x in [-20, 20]:
-		_box(Vector3(x, 1.5, 0), Vector3(0.5, 3, 40), Color("626c69"))
-	for z in [-20, 20]:
-		_box(Vector3(0, 1.5, z), Vector3(40, 3, 0.5), Color("626c69"))
-	for x in [-7, 7]:
-		for z in [-15, -6, 5]:
-			_box(Vector3(x, 1.5, z), Vector3(1.2, 3, 1.2), Color("7c8277"))
-			_box(Vector3(x, 3.1, z), Vector3(1.6, 0.3, 1.6), Color("a4a58c"))
+	var sky := Sky.new()
+	var sky_material := ProceduralSkyMaterial.new()
+	sky_material.sky_top_color = Color("598cbe")
+	sky_material.sky_horizon_color = Color("c6d8d5")
+	sky_material.ground_horizon_color = Color("c6d8d5")
+	sky_material.ground_bottom_color = Color("617550")
+	sky.sky_material = sky_material
+	environment.environment.sky = sky
+	environment.environment.background_mode = Environment.BG_SKY
+	var field := OpenField.new()
+	field.name = "OpenField"
+	add_child(field)
 
 func _player() -> void:
 	player = CharacterBody3D.new()
@@ -108,12 +96,12 @@ func _player() -> void:
 	player.add_child(collision)
 	facing = Node3D.new()
 	player.add_child(facing)
-	var model := MAGE.instantiate()
+	var model := FIGHTER.instantiate()
 	model.rotation.y = PI
 	facing.add_child(model)
 	animation = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	for name in animation.get_animation_list():
-		if name.ends_with("idle") or name.ends_with("run"):
+		if name.ends_with("idle") or name.ends_with("run") or name.ends_with("walk"):
 			animation.get_animation(name).loop_mode = Animation.LOOP_LINEAR
 	boom = SpringArm3D.new()
 	boom.spring_length = 5.0
@@ -123,8 +111,28 @@ func _player() -> void:
 	camera = Camera3D.new()
 	camera.current = true
 	camera.fov = 65
+	camera.far = 1800
 	boom.add_child(camera)
+	_equip_sword(model)
 	_restart()
+
+func _equip_sword(model: Node3D) -> void:
+	var skeleton: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
+	sword_attachment = BoneAttachment3D.new()
+	sword_attachment.bone_name = "Weapon_R_Bone"
+	skeleton.add_child(sword_attachment)
+	var sword := Node3D.new()
+	sword.name = "Sword"
+	sword.scale = Vector3.ONE / 0.038
+	sword_attachment.add_child(sword)
+	for part in [[Vector3(0, 0.63, 0), Vector3(0.09, 0.95, 0.035), Color("bdccd4")], [Vector3(0, 0.13, 0), Vector3(0.32, 0.06, 0.08), Color("a78845")], [Vector3(0, 0.01, 0), Vector3(0.07, 0.2, 0.07), Color("493d31")]]:
+		var mesh := MeshInstance3D.new()
+		var box := BoxMesh.new()
+		box.size = part[1]
+		mesh.mesh = box
+		mesh.position = part[0]
+		mesh.material_override = _material(part[2])
+		sword.add_child(mesh)
 
 func _play(action: String) -> void:
 	for name in animation.get_animation_list():
@@ -142,11 +150,11 @@ func _ui() -> void:
 	layer.add_child(stats)
 	notice = Label.new()
 	notice.position = Vector2(24, 60)
-	notice.text = "Pátio das ruínas · Derrote os guardiões de treino"
+	notice.text = "Campo aberto · Explore livremente e teste os golpes perto dos Grelims"
 	layer.add_child(notice)
 	var help := Label.new()
 	help.position = Vector2(24, 650)
-	help.text = "WASD  mover    Mouse  câmera    Shift  correr    Espaço  pular\nClique esquerdo / 1  magia    Esc  liberar mouse    R  reiniciar"
+	help.text = "WASD  mover    Mouse  câmera    Shift  correr    Espaço  pular\nClique esquerdo  espada    1  Golpe potente    Esc  liberar mouse    R  reiniciar"
 	layer.add_child(help)
 	var aim := Label.new()
 	aim.text = "+"
@@ -155,7 +163,7 @@ func _ui() -> void:
 	layer.add_child(aim)
 
 func _spawn_enemies() -> void:
-	for point in [Vector3(-2, 0, -9), Vector3(3, 0, -13), Vector3(0, 0, -17)]:
+	for point in [Vector3(-4, 0, -16), Vector3(5, 0, -22), Vector3(0, 0, -30)]:
 		var foe := CharacterBody3D.new()
 		foe.position = point
 		foe.set_meta("hp", 60.0)
@@ -166,21 +174,16 @@ func _spawn_enemies() -> void:
 		collision.shape = shape
 		collision.position.y = 0.7
 		foe.add_child(collision)
-		var visual := MeshInstance3D.new()
-		var sphere := SphereMesh.new()
-		sphere.radius = 0.65
-		sphere.height = 1.3
-		visual.mesh = sphere
-		visual.position.y = 0.7
-		visual.material_override = _material(Color("b96f43"))
+		var visual := GrelimVisual.new()
+		visual.name = "GrelimVisual"
 		foe.add_child(visual)
 		var label := Label3D.new()
 		label.name = "Health"
-		label.position.y = 1.7
+		label.position.y = 2.0
 		label.font_size = 40
 		label.pixel_size = 0.009
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		label.text = "Guardião · 60"
+		label.text = "Grelim · 60"
 		foe.add_child(label)
 		add_child(foe)
 		enemies.append(foe)
@@ -192,12 +195,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_R:
 			_restart()
 		elif event.keycode == KEY_1:
-			_cast()
+			_attack(true)
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		else:
-			_cast()
+			_attack()
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		yaw -= event.relative.x * 0.003
 		pitch = clampf(pitch - event.relative.y * 0.003, -1.0, 0.45)
@@ -205,6 +208,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	boom.rotation = Vector3(pitch, yaw, 0)
 	cooldown = maxf(0, cooldown - delta)
+	skill_cooldown = maxf(0, skill_cooldown - delta)
 	if not dead:
 		var input := Input.get_vector("left", "right", "forward", "back")
 		var direction := Vector3(input.x, 0, input.y).rotated(Vector3.UP, yaw)
@@ -216,73 +220,82 @@ func _physics_process(delta: float) -> void:
 		elif Input.is_action_just_pressed("jump"):
 			player.velocity.y = 7
 		player.move_and_slide()
-		if cast_clock > 0:
-			cast_clock = maxf(0, cast_clock - delta)
-			if cast_pending and cast_clock <= 0.35:
-				cast_pending = false
-				_launch()
+		player.position.x = clampf(player.position.x, -490.0, 490.0)
+		player.position.z = clampf(player.position.z, -490.0, 490.0)
+		if attack_clock > 0:
+			attack_clock = maxf(0, attack_clock - delta)
+			if attack_pending and attack_clock <= 0.75:
+				attack_pending = false
+				_melee_hit()
 		else:
 			if direction.length() > 0.1:
 				facing.rotation.y = lerp_angle(facing.rotation.y, atan2(-direction.x, -direction.z), delta * 12)
-				_play("run")
+				_play("run" if Input.is_action_pressed("sprint") else "walk")
 			else:
 				_play("idle")
+	else:
+		player.velocity.y -= 20 * delta
+		player.move_and_slide()
 	_enemies_step(delta)
-	_bolts_step(delta)
-	stats.text = "HUMANO MAGO   ·   Vida %d/%d   ·   Nível %d   ·   XP %d/3   ·   Magia %.1fs" % [ceili(hp), 100 + (level - 1) * 20, level, xp, cooldown]
+	stats.text = "HUMANO GUERREIRO   ·   Vida %d/%d   ·   Nível %d   ·   XP %d/3   ·   Golpe %.1fs   ·   Skill [1] %.1fs" % [ceili(hp), 100 + (level - 1) * 20, level, xp, cooldown, skill_cooldown]
 
-func _cast() -> bool:
-	if dead or cooldown > 0:
+func _attack(powered := false) -> bool:
+	if dead or cooldown > 0 or (powered and skill_cooldown > 0):
 		return false
-	cooldown = 1.0
-	cast_clock = 0.83
-	cast_pending = true
-	var origin := player.global_position + Vector3.UP * 1.1
-	var ray_origin := camera.global_position
-	var ray_end := ray_origin - camera.global_basis.z * 40
-	var query := PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
-	query.exclude = [player.get_rid()]
-	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	cast_direction = ((hit.position if not hit.is_empty() else ray_end) - origin).normalized()
-	facing.rotation.y = atan2(-cast_direction.x, -cast_direction.z)
-	_play("cast")
+	powered_attack = powered
+	if powered:
+		skill_cooldown = 6.0
+	cooldown = 1.57 if powered else 1.54
+	attack_clock = cooldown
+	attack_pending = true
+	attack_direction = Vector3.FORWARD.rotated(Vector3.UP, yaw)
+	facing.rotation.y = yaw
+	_play("skill" if powered else "attack")
 	return true
 
-func _launch() -> void:
-	var mesh := MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.13
-	sphere.height = 0.26
-	mesh.mesh = sphere
-	var mat := _material(Color("8ce2ff"))
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mesh.material_override = mat
-	add_child(mesh)
-	mesh.global_position = player.global_position + Vector3.UP * 1.1
-	bolts.append({"mesh": mesh, "direction": cast_direction, "life": 2.5})
-
-func _bolts_step(delta: float) -> void:
-	for i in range(bolts.size() - 1, -1, -1):
-		var bolt := bolts[i]
-		var start: Vector3 = bolt.mesh.global_position
-		var end: Vector3 = start + bolt.direction * delta * 19
-		var query := PhysicsRayQueryParameters3D.create(start, end)
+func _melee_hit() -> void:
+	# Um golpe por ação; só acerta inimigos próximos, à frente e sem parede entre eles.
+	if powered_attack:
+		_skill_arc()
+	var reach := 3.6 if powered_attack else 2.6
+	for foe in enemies.duplicate():
+		var offset: Vector3 = foe.global_position - player.global_position
+		offset.y = 0
+		if offset.length() > reach or offset.normalized().dot(attack_direction) < 0.35:
+			continue
+		var query := PhysicsRayQueryParameters3D.create(player.global_position + Vector3.UP, foe.global_position + Vector3.UP * 0.7)
 		query.exclude = [player.get_rid()]
 		var hit := get_world_3d().direct_space_state.intersect_ray(query)
-		bolt.mesh.global_position = end
-		bolt.life -= delta
-		if not hit.is_empty():
-			if hit.collider in enemies:
-				_damage_enemy(hit.collider, 25.0 + (level - 1) * 5)
-			bolt.life = 0.0
-		if bolt.life <= 0:
-			bolt.mesh.queue_free()
-			bolts.remove_at(i)
+		if not hit.is_empty() and hit.collider == foe:
+			_damage_enemy(foe, (60.0 if powered_attack else 25.0) + (level - 1) * 5)
+
+func _skill_arc() -> void:
+	var visual := MeshInstance3D.new()
+	var mesh := ImmediateMesh.new()
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.albedo_color = Color("8ce9ff")
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP, material)
+	for i in range(33):
+		var angle := lerpf(-1.15, 1.15, i / 32.0)
+		for radius in [2.1, 2.45]:
+			mesh.surface_add_vertex(Vector3(sin(angle) * radius, 0.8, -cos(angle) * radius))
+	mesh.surface_end()
+	visual.mesh = mesh
+	add_child(visual)
+	visual.position = player.position
+	visual.rotation.y = facing.rotation.y
+	var tween := create_tween()
+	tween.tween_property(visual, "scale", Vector3.ONE * 1.35, 0.3)
+	tween.parallel().tween_property(material, "albedo_color:a", 0.0, 0.3)
+	tween.tween_callback(visual.queue_free)
 
 func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 	var health := float(foe.get_meta("hp")) - amount
 	foe.set_meta("hp", health)
-	foe.get_node("Health").text = "Guardião · %d" % maxi(0, ceili(health))
+	foe.get_node("Health").text = "Grelim · %d" % maxi(0, ceili(health))
 	if health <= 0:
 		enemies.erase(foe)
 		foe.queue_free()
@@ -293,7 +306,7 @@ func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 			level += 1
 			hp = 100 + (level - 1) * 20
 		if enemies.is_empty():
-			notice.text = "Pátio concluído! Nível %d · R para jogar novamente" % level
+			notice.text = "Treino concluído! Nível %d · R para jogar novamente" % level
 
 func _enemies_step(delta: float) -> void:
 	for foe in enemies:
@@ -309,11 +322,14 @@ func _enemies_step(delta: float) -> void:
 			timer = 1.2
 			if hp <= 0:
 				dead = true
-				cast_pending = false
+				attack_pending = false
 				player.velocity = Vector3.ZERO
 				_play("death")
 				notice.text = "Você caiu. Pressione R para tentar novamente."
 		foe.set_meta("attack", timer)
+		if direction.length() > 0.1:
+			foe.rotation.y = atan2(-direction.x, -direction.z)
+		foe.get_node("GrelimVisual").sync(delta, foe.velocity.length() > 5.05, timer > 1.0)
 
 func _restart() -> void:
 	player.position = Vector3(0, 0.05, 5)
@@ -324,17 +340,16 @@ func _restart() -> void:
 	kills = 0
 	dead = false
 	cooldown = 0
-	cast_clock = 0
-	cast_pending = false
-	for bolt in bolts:
-		bolt.mesh.queue_free()
-	bolts.clear()
+	attack_clock = 0
+	skill_cooldown = 0
+	powered_attack = false
+	attack_pending = false
 	for foe in enemies:
 		foe.queue_free()
 	enemies.clear()
 	if notice != null:
 		_spawn_enemies()
-		notice.text = "Pátio das ruínas · Derrote os guardiões de treino"
+		notice.text = "Campo aberto · Explore livremente e teste os golpes perto dos Grelims"
 	_play("idle")
 
 func _check(ok: bool, description: String) -> void:
@@ -345,42 +360,48 @@ func _check(ok: bool, description: String) -> void:
 		print("PASS: " + description)
 
 func _test() -> void:
-	_check(animation != null, "modelo 3D com esqueleto importado")
-	for action in ["idle", "run", "cast", "death"]:
+	_check(animation != null, "Fighter 3D com esqueleto importado")
+	for action in ["idle", "walk", "run", "attack", "skill", "death"]:
 		_play(action)
-		_check(animation.current_animation.ends_with(action), "animação disponível: " + action)
+		_check(animation.current_animation.ends_with(action), "animação Fighter: " + action)
+	_check(enemies[0].get_node("GrelimVisual").limbs.size() == 4, "Grelims têm corpo e membros 3D no lugar das esferas")
+	_check(sword_attachment.bone_name == "Weapon_R_Bone", "espada vinculada à mão pelo osso da arma")
+	_check(OpenField.SIZE == 1000.0 and has_node("OpenField/FieldCollision"), "campo aberto de 1000 por 1000 metros com chão físico")
 	await get_tree().physics_frame
-	_check(_cast(), "jogador pode conjurar manualmente")
-	_check(not _cast(), "recarga bloqueia disparo duplicado")
-	_launch()
-	_check(bolts.size() == 1, "magia cria projétil 3D")
-	for bolt in bolts:
-		bolt.mesh.queue_free()
-	bolts.clear()
-	cast_direction = (enemies[0].global_position + Vector3.UP * 0.7 - player.global_position - Vector3.UP * 1.1).normalized()
-	_launch()
-	for i in range(60):
-		_bolts_step(1.0 / 60.0)
-		await get_tree().physics_frame
-	_check(float(enemies[0].get_meta("hp")) == 35.0, "projétil atinge alvo por colisão e aplica dano")
+	enemies[0].position = player.position + Vector3(0, 0, -2)
+	enemies[1].position = player.position + Vector3(0, 0, 2)
+	await get_tree().physics_frame
+	_check(_attack(), "ataque manual inicia golpe")
+	_check(not _attack(), "recarga impede golpe duplicado")
+	_check(float(enemies[0].get_meta("hp")) == 60.0, "dano aguarda o momento do golpe")
+	_melee_hit()
+	_check(float(enemies[0].get_meta("hp")) == 35.0, "golpe atinge inimigo próximo à frente")
+	_check(float(enemies[1].get_meta("hp")) == 60.0 and float(enemies[2].get_meta("hp")) == 60.0, "golpe não atinge inimigo atrás ou distante")
+	cooldown = 0.0
+	_check(_attack(true) and skill_cooldown == 6.0, "habilidade manual inicia ataque forte e recarga")
+	_melee_hit()
+	_check(enemies.size() == 2, "skill causa dano reforçado no inimigo à frente")
+	cooldown = 0.0
+	_check(not _attack(true), "recarga da skill bloqueia repetição")
 	for foe in enemies.duplicate():
 		_damage_enemy(foe, 100)
-	_check(enemies.is_empty() and level == 2 and kills == 3, "derrotas concedem XP e nível")
+	_check(enemies.is_empty() and level == 2 and kills == 3, "combate concede experiência e nível")
 	_restart()
-	_check(enemies.size() == 3 and hp == 100 and bolts.is_empty(), "reinício restaura combate")
+	_check(enemies.size() == 3 and hp == 100, "reinício restaura combate")
 	await get_tree().physics_frame
 	hp = 1
 	enemies[0].position = player.position + Vector3(0, 0, -1)
 	_enemies_step(0.1)
-	_check(dead and animation.current_animation.ends_with("death"), "ataque inimigo causa morte e animação")
-	_check(not _cast(), "morte impede conjuração")
+	_check(dead and animation.current_animation.ends_with("death"), "derrota reproduz morte do Fighter")
+	_check(not _attack(), "morte impede ataque")
 	_restart()
+	player.position = Vector3(150, 0.05, 150)
 	var before := player.position
 	Input.action_press("forward")
 	for i in range(30):
 		_physics_process(1.0 / 60.0)
 		await get_tree().physics_frame
 	Input.action_release("forward")
-	_check(player.position.z < before.z - 1, "W movimenta o personagem pelo cenário")
+	_check(player.position.z < before.z - 1 and player.position.y > -0.1, "campo permite caminhar longe do centro sem cair")
 	print("SMOKE COMPLETE: %d falhas" % failures)
 	get_tree().quit(0 if failures == 0 else 1)

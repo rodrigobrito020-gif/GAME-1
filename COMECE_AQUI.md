@@ -8,4 +8,4 @@ O desenvolvimento de Reload Adventure segue na pasta `godot/`.
 
 ## Novo protótipo com controle direto em 3D
 
-Para jogar com **WASD e mouse na câmera**, abra **rpg3d/project.godot** e pressione **F5**. Clique esquerdo lança magia; Shift corre, Espaço pula, Esc libera o mouse e R reinicia. Veja `rpg3d/README.md`.
+Para jogar com **WASD e mouse na câmera**, abra **rpg3d/project.godot** e pressione **F5**. O personagem atual é o humano guerreiro num campo de 1000 × 1000 metros. Clique esquerdo ataca com espada; 1 usa Golpe potente, Shift corre, Espaço pula, Esc libera o mouse e R reinicia. Veja `rpg3d/README.md`.

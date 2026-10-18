@@ -1,0 +1,5 @@
+Teste de movimento do humano mago para o Bishop.
+Fonte: Magic.ukx enviado pelo usuário; sequência CastShort_MMagic.
+13 renders transparentes, quadros 0..24 em passos de 2, origem 30 fps.
+Material cinza; texturas, arma e adaptação à pixel art pendentes.
+Detalhes e ferramentas: ../../README.md

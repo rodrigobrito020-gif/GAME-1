@@ -8,6 +8,22 @@ const SkillCircle := preload("res://scripts/skill_circle.gd")
 const GRELIM_TEXTURE := preload("res://art/enemies/grelim.tres")
 const HERO_VISUAL := preload("res://scenes/hero_visual.tscn")
 const HERO_HEIGHTS := [120.0, 142.0, 148.0, 148.0, 156.0]
+const BISHOP_CAST_TIME := 25.0 / 30.0
+const BISHOP_CAST_FRAMES: Array[Texture2D] = [
+	preload("res://art/heroes/magic_test/frame-00.png"),
+	preload("res://art/heroes/magic_test/frame-01.png"),
+	preload("res://art/heroes/magic_test/frame-02.png"),
+	preload("res://art/heroes/magic_test/frame-03.png"),
+	preload("res://art/heroes/magic_test/frame-04.png"),
+	preload("res://art/heroes/magic_test/frame-05.png"),
+	preload("res://art/heroes/magic_test/frame-06.png"),
+	preload("res://art/heroes/magic_test/frame-07.png"),
+	preload("res://art/heroes/magic_test/frame-08.png"),
+	preload("res://art/heroes/magic_test/frame-09.png"),
+	preload("res://art/heroes/magic_test/frame-10.png"),
+	preload("res://art/heroes/magic_test/frame-11.png"),
+	preload("res://art/heroes/magic_test/frame-12.png"),
+]
 const HERO_TEXTURES := [
 	preload("res://art/heroes/bounty_hunter.tres"),
 	preload("res://art/heroes/bishop.tres"),
@@ -98,6 +114,8 @@ func _create_hero_visuals() -> void:
 		var visual := HERO_VISUAL.instantiate()
 		visual.name = HEROES[i].name.replace(" ", "")
 		visual.artwork = HERO_TEXTURES[i]
+		if i == 1:
+			visual.cast_frames = BISHOP_CAST_FRAMES
 		visual.character_height = HERO_HEIGHTS[i]
 		visual.phase = i * 0.8
 		hero_visual_root.add_child(visual)
@@ -363,6 +381,9 @@ func _queue_attack(source: Dictionary, target: Dictionary, amount: float, target
 	if kind == "storm":
 		delay = 0.5
 		duration = 1.0
+	elif kind == "spark":
+		delay = BISHOP_CAST_TIME * 0.94
+		duration = BISHOP_CAST_TIME
 	source["action_clock"] = duration
 	source["action_length"] = duration
 	source["action_style"] = kind
@@ -379,12 +400,12 @@ func _queue_attack(source: Dictionary, target: Dictionary, amount: float, target
 	return true
 
 func _queue_heal(source: Dictionary, target: Dictionary, amount: float) -> void:
-	source["action_clock"] = 0.65
-	source["action_length"] = 0.65
+	source["action_clock"] = BISHOP_CAST_TIME
+	source["action_length"] = BISHOP_CAST_TIME
 	source["action_style"] = "heal"
 	source.erase("move_to")
 	var destination := _unit_position(target, false) + Vector2(0, -45)
-	_effect("heal", _unit_position(source, false), destination, Color("a1f4ac"), 1.0, 0.45, func() -> void: _heal(target, amount), source)
+	_effect("heal", _unit_position(source, false), destination, Color("a1f4ac"), 1.15, BISHOP_CAST_TIME * 0.94, func() -> void: _heal(target, amount), source)
 
 func _apply_damage(source: Dictionary, target: Dictionary, amount: float, target_is_enemy: bool) -> void:
 	if target.is_empty() or target.hp <= 0.0:
@@ -779,7 +800,8 @@ func _run_smoke_test() -> void:
 	_check(enemy_visuals[0].attack_direction == -1.0, "Grelims atacam na direção dos heróis")
 	_check(hero_visuals.size() == 5, "cinco cenas visuais de personagens instanciadas")
 	for i in range(hero_visuals.size()):
-		_check(hero_visuals[i].body.texture == HERO_TEXTURES[i] and HERO_TEXTURES[i].get_height() > 0, "arte carregada: " + HEROES[i].name)
+		var expected_texture: Texture2D = BISHOP_CAST_FRAMES[0] if i == 1 else HERO_TEXTURES[i]
+		_check(hero_visuals[i].body.texture == expected_texture and expected_texture.get_height() > 0, "arte carregada: " + HEROES[i].name)
 	_check(hero_visuals[0].character_height < hero_visuals[4].character_height, "escala da anã menor que a do orc")
 	var visual_sample: Dictionary = heroes[0].duplicate()
 	visual_sample.pulse = 0.15
@@ -813,8 +835,27 @@ func _run_smoke_test() -> void:
 	_check(heroes[0].hp < hp, "dano altera vida")
 	heroes[1].cooldown = 0.0
 	_check(_use_skill(1), "healer inicia habilidade de cura")
-	_step_effects(0.6)
+	_sync_hero_visuals(0)
+	_check(hero_visuals[1].cast_frame == 0, "conjuração começa no primeiro quadro")
+	var hp_before_heal: float = heroes[0].hp
+	_decay_visuals(0.4)
+	_step_effects(0.4)
+	_sync_hero_visuals(0)
+	_check(hero_visuals[1].cast_frame > 0 and heroes[0].hp == hp_before_heal, "quadros avançam antes do impacto da cura")
+	var frame_before_pause: int = hero_visuals[1].cast_frame
+	paused = true
+	_advance(0.1)
+	_sync_hero_visuals(0.1)
+	_check(hero_visuals[1].cast_frame == frame_before_pause, "pausa mantém o quadro da conjuração")
+	paused = false
+	_decay_visuals(0.4)
+	_step_effects(0.4)
+	_sync_hero_visuals(0)
+	_check(hero_visuals[1].cast_frame == 12, "conjuração alcança a pose final")
 	_check(heroes[0].hp > hp - 20, "cura é aplicada no momento do efeito")
+	_decay_visuals(0.1)
+	_sync_hero_visuals(0)
+	_check(hero_visuals[1].cast_frame == 0, "Bishop volta ao repouso após conjurar")
 	var level_before := levels[0]
 	_train_selected()
 	_check(levels[0] == level_before, "treino bloqueado durante batalha")

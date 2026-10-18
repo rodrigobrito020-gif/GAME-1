@@ -3,15 +3,21 @@
 Este é o único projeto Godot desta versão.
 
 1. Extraia o ZIP em uma **pasta nova**.
-2. No Godot, importe **rpg3d/project.godot**.
+2. No Godot **4.6.3 padrão**, importe **rpg3d/project.godot**.
 3. Pressione **F5** para jogar.
 
-Você começa na **Vila da Fenda**, pequena, cercada e segura. Siga o caminho de terra até a **fenda dimensional**. Perto dela, pressione **E** e escolha o **Mundo 1**. Aguarde os **30 segundos de preparação**. Depois, derrote **6 ondas de 5 Grelims (30 no total)** em até **10 minutos de combate** para liberar o próximo mundo. Cada onda só aparece quando todos da anterior forem derrotados. Ao vencer, surge um **baú no centro da arena**: chegue perto e pressione **E** para receber um equipamento na mochila. A sequência continua até o Mundo 10. Use a fenda de retorno perto da chegada de cada mundo para voltar à vila. O progresso e os equipamentos ficam salvos neste computador. Depois de morrer ou esgotar o prazo, **R** retorna à vila com a vida recuperada. Uma tentativa encerrada sem vitória não concede baú.
+Você começa na **Vila da Fenda**, pequena, cercada e segura. Perto do **Instrutor**, pressione **E** para escolher **Tanque, Arqueiro, Mago ou Curandeiro**. As habilidades mudam com a classe; os modelos e clipes de animação ainda reutilizam o humano Fighter, com arco e cajados provisórios. Sem escolha anterior salva, a classe inicial é Tanque.
 
-**WASD** move, **mouse** gira a câmera, **scroll** ajusta o zoom, **clique esquerdo** ataca e **1–4** usam habilidades. **I ou TAB** abre a mochila, **Q** usa poção e **clique no ícone da poção** configura o uso automático. Arraste os ícones das habilidades para baixo para ativar o automático e para cima para desativar. **Esc** libera o cursor.
+Siga até a **fenda dimensional**, pressione **E** e escolha o **Mundo 1**. Aguarde os **30 segundos de preparação**. Depois, vença **seis ondas de cinco monstros e o Guardião da Fenda**, tudo dentro de **10 minutos de combate**. A próxima onda só aparece quando a anterior acaba. Quando o chefe marcar uma área vermelha, saia dela antes do impacto.
+
+A vitória libera o próximo mundo e faz surgir um **baú especial**. Chegue perto e pressione **E**, ou clique em **Coletar baú** no aviso de vitória. A revelação mostra o equipamento recebido, sua raridade e seus bônus. **Continuar** abre a escolha entre seguir ao próximo mundo e voltar à vila. A sequência termina no Mundo 10; você pode revisitar mundos concluídos.
+
+**Não há portal de retorno nas arenas.** Ao morrer ou esgotar o tempo, use **Voltar à vila** no painel ou pressione **R**. Você recupera a vida e mantém o progresso já obtido; essa tentativa não concede baú. O jogo salva classe, equipamentos e desbloqueios neste computador e sempre reabre na vila.
+
+**WASD** move, **mouse** gira a câmera, **scroll** ajusta o zoom, **clique esquerdo** usa o ataque da classe e **1–4** ativam habilidades. **I ou TAB** abre a mochila e pausa a simulação. **Q** usa poção; clicar no ícone circular abre a configuração do uso automático. Arraste uma habilidade para baixo para ativar seu automático e para cima para desativar. **Esc** libera o cursor.
+
+Na mochila, selecione um item e use **Equipar** no painel direito. Ele sai da grade e ocupa somente o slot correspondente do personagem. Clique nesse slot e em **Retirar** para devolvê-lo à mochila. Trocar uma peça devolve a anterior à bolsa. Itens de baú têm raridade e bônus de ataque ou defesa; a grade ganha rolagem quando houver mais itens.
 
 Se o projeto antigo ainda aparecer no gerenciador do Godot, remova apenas a entrada **Reload Adventure** da lista. Abra **Reload Adventure — RPG 3D**. O gerenciador pode manter entradas de pastas importadas anteriormente.
 
-Veja [o manual](rpg3d/README.md) para todos os controles e detalhes.
-
-Na mochila, selecione um item no centro e use o botão do painel direito para equipar ou usar. Ao equipar, a peça sai da mochila e aparece somente no slot correspondente à esquerda, ao lado da prévia 3D do personagem. Clique nesse slot e em **Retirar** para devolver a peça à mochila. Equipamentos vestidos não ocupam espaço na mochila. A grade começa com 20 espaços e ganha rolagem quando houver mais itens. Itens de baú possuem raridade e bônus; equipar uma peça devolve a anterior à mochila.
+Veja [o manual](rpg3d/README.md) para habilidades, probabilidades do baú e detalhes.

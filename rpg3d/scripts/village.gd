@@ -2,8 +2,10 @@ extends Node3D
 ## Pequena aldeia rural fechada: quatro casas e trilhas de terra numa clareira.
 const SPAWN := Vector3(0, 0.05, 10)
 const PORTAL_POSITION := Vector3(0, 0, -15)
+const CLASS_TRAINER_POSITION := Vector3(-3.0, 0.035, 7.7)
 const BOUNDARY := 27.0
 const TravelGate := preload("res://scripts/travel_gate.gd")
+const ClassTrainer := preload("res://scripts/class_trainer.gd")
 var _materials: Dictionary = {}
 var _batches: Dictionary = {}
 var _rng := RandomNumberGenerator.new()
@@ -23,6 +25,12 @@ func _ready() -> void:
 	gate.position = PORTAL_POSITION
 	gate.scale = Vector3.ONE * 0.78
 	add_child(gate)
+	var trainer := ClassTrainer.new()
+	trainer.name = "HumanClassTrainer"
+	trainer.position = CLASS_TRAINER_POSITION
+	# The native human model faces +Z; turn him toward the arrival point.
+	trainer.rotation.y = atan2(SPAWN.x - CLASS_TRAINER_POSITION.x, SPAWN.z - CLASS_TRAINER_POSITION.z)
+	add_child(trainer)
 
 func _materials_setup() -> void:
 	_materials["stone"] = _textured_material("888d7d", "535c54", 0)

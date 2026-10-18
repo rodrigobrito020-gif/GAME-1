@@ -8,6 +8,10 @@ var press_origin := Vector2.ZERO
 var drag_offset := 0.0
 var maximum_drag := 0.0
 var slot := 0
+var class_id := "tanque":
+	set(value):
+		class_id = value
+		queue_redraw()
 var remaining := 0.0
 var total := 1.0
 var usable := true
@@ -73,18 +77,145 @@ func _sword(origin: Vector2, angle: float, color: Color) -> void:
 func _has_point(point: Vector2) -> bool:
 	return point.distance_to(size * 0.5) <= 32 if slot == 4 else Rect2(Vector2.ZERO, size).has_point(point)
 
-func _draw() -> void:
-	if slot == 4:
-		_draw_potion()
-		return
-	draw_set_transform(Vector2(0, clampf(drag_offset, -14, 14)) if held else Vector2.ZERO)
-	var gold := Color("a68d58")
-	var color: Color = COLORS[slot]
-	draw_rect(Rect2(Vector2.ZERO, size), Color("14191b"))
-	for i in range(24):
-		var glow: Color = color.darkened(0.82 + i * 0.005)
-		draw_circle(size * 0.5, 29 - i, glow)
-	var center := size * 0.5
+func _class_key() -> String:
+	match class_id.to_lower():
+		"arqueiro", "archer":
+			return "arqueiro"
+		"mago", "mage":
+			return "mago"
+		"healer", "curandeiro", "curandeira":
+			return "healer"
+	return "tanque"
+
+func _skill_color() -> Color:
+	match _class_key():
+		"arqueiro":
+			return [Color("d4e8a1"), Color("f0d493"), Color("97d7bb"), Color("b9dce4")][slot]
+		"mago":
+			return [Color("f4b074"), Color("d1b2ef"), Color("9edce7"), Color("b5b9f5")][slot]
+		"healer":
+			return [Color("f5dda0"), Color("aee5b7"), Color("a8dedc"), Color("e8e8b7")][slot]
+	return COLORS[slot]
+
+func _arrow(origin: Vector2, angle: float, length: float, color: Color, width := 2.5) -> void:
+	var direction := Vector2.from_angle(angle)
+	var side := direction.orthogonal()
+	var tip := origin + direction * length
+	_line(origin, tip - direction * 3, color, width)
+	draw_colored_polygon(PackedVector2Array([tip, tip - direction * 10 + side * 5, tip - direction * 10 - side * 5]), color)
+	_line(origin + direction * 4 - side * 4, origin + direction * 8, color.darkened(0.12), 1.5)
+	_line(origin + direction * 4 + side * 4, origin + direction * 8, color.darkened(0.12), 1.5)
+
+func _cross(center: Vector2, radius: float, color: Color, width := 4.0) -> void:
+	_line(center - Vector2(radius, 0), center + Vector2(radius, 0), color, width)
+	_line(center - Vector2(0, radius), center + Vector2(0, radius), color, width)
+
+func _diamond(center: Vector2, radius: float, color: Color) -> void:
+	draw_colored_polygon(PackedVector2Array([center + Vector2(0, -radius), center + Vector2(radius * 0.6, 0), center + Vector2(0, radius), center + Vector2(-radius * 0.6, 0)]), color)
+
+func _draw_skill_icon(center: Vector2, color: Color) -> void:
+	match _class_key():
+		"arqueiro":
+			_draw_archer_icon(center, color)
+		"mago":
+			_draw_mage_icon(center, color)
+		"healer":
+			_draw_healer_icon(center, color)
+		_:
+			_draw_tank_icon(center, color)
+
+func _draw_archer_icon(center: Vector2, color: Color) -> void:
+	match slot:
+		0:
+			# Arco, corda tensionada e flecha apontando para a direita.
+			draw_arc(center + Vector2(-17, 0), 23, -1.4, 1.4, 24, color, 3, true)
+			var string_path := PackedVector2Array([center + Vector2(-13, -23), center + Vector2(-19, 0), center + Vector2(-13, 23)])
+			draw_polyline(string_path, color.lightened(0.2), 1.2, true)
+			_arrow(center + Vector2(-19, 0), 0, 43, color.lightened(0.12))
+		1:
+			# Três trajetórias abertas, com pontas bem separadas.
+			for angle in [-0.52, 0.0, 0.52]:
+				_arrow(center + Vector2(-18, 0), angle, 42, color, 2)
+		2:
+			# Bota e rastro de um passo lateral.
+			var boot := PackedVector2Array([center + Vector2(-1, -18), center + Vector2(10, -16), center + Vector2(7, 6), center + Vector2(18, 13), center + Vector2(17, 20), center + Vector2(-4, 20), center + Vector2(-7, 11)])
+			draw_colored_polygon(boot, color.darkened(0.55))
+			draw_polyline(boot + PackedVector2Array([boot[0]]), color, 2, true)
+			for y in [-10, 0, 10]:
+				_line(center + Vector2(-23, y), center + Vector2(-12, y), color, 2)
+			draw_arc(center + Vector2(0, 2), 25, -2.8, -1.0, 18, color.lightened(0.15), 1.5, true)
+		3:
+			# Chuva de flechas descendentes.
+			draw_arc(center + Vector2(0, -8), 19, PI, TAU, 20, color.darkened(0.2), 2, true)
+			for x in [-16, 0, 16]:
+				_arrow(center + Vector2(x, -17 if x == 0 else -10), PI / 2, 35 if x == 0 else 28, color, 2)
+
+func _draw_mage_icon(center: Vector2, color: Color) -> void:
+	match slot:
+		0:
+			# Chama com núcleo de orbe luminoso.
+			var flame := PackedVector2Array([center + Vector2(-5, 23), center + Vector2(-19, 11), center + Vector2(-20, -2), center + Vector2(-9, -18), center + Vector2(-5, -5), center + Vector2(7, -25), center + Vector2(10, -9), center + Vector2(20, 5), center + Vector2(16, 16), center + Vector2(6, 23)])
+			draw_colored_polygon(flame, color.darkened(0.22))
+			draw_circle(center + Vector2(0, 9), 10, color)
+			draw_circle(center + Vector2(1, 8), 5, Color("fff0c4"))
+		1:
+			# Explosão arcana de oito raios.
+			var star := PackedVector2Array()
+			for i in range(16):
+				star.append(center + Vector2.from_angle(i * TAU / 16 - PI / 2) * (24 if i % 2 == 0 else 9))
+			draw_colored_polygon(star, color)
+			draw_circle(center, 6, Color("f6edff"))
+		2:
+			# Barreira curva em torno de um cristal.
+			draw_arc(center, 24, -PI * 0.95, -PI * 0.05, 30, color, 3, true)
+			_line(center + Vector2(-24, -3), center + Vector2(-17, 19), color, 2)
+			_line(center + Vector2(24, -3), center + Vector2(17, 19), color, 2)
+			_line(center + Vector2(-18, 20), center + Vector2(18, 20), color, 2)
+			_diamond(center, 14, color.lightened(0.1))
+		3:
+			# Dois portais unidos pela trajetória de teleporte.
+			for x in [-17, 17]:
+				var ring := PackedVector2Array()
+				for i in range(33):
+					var angle := i * TAU / 32
+					ring.append(center + Vector2(x + cos(angle) * 6, sin(angle) * 21))
+				draw_polyline(ring, color.darkened(0.12 if x < 0 else 0.0), 2, true)
+			_arrow(center + Vector2(-15, 0), 0, 33, color.lightened(0.2), 2)
+			_diamond(center + Vector2(-5, 0), 9, Color("e8ddff"))
+
+func _draw_healer_icon(center: Vector2, color: Color) -> void:
+	match slot:
+		0:
+			# Luz sagrada: cristal e raios solares.
+			for i in range(8):
+				var direction := Vector2.from_angle(i * TAU / 8)
+				_line(center + direction * 17, center + direction * 24, color, 2)
+			_diamond(center, 15, color.lightened(0.2))
+			_line(center + Vector2(-5, 0), center + Vector2(5, 0), Color("fff8df"), 2)
+		1:
+			# Cura direta, distinta da luz ofensiva.
+			draw_circle(center, 22, color.darkened(0.73))
+			draw_arc(center, 22, 0, TAU, 40, color, 2, true)
+			_cross(center, 13, color.lightened(0.12), 7)
+		2:
+			# Santuário: cúpula, cruz e círculo de proteção no chão.
+			draw_arc(center + Vector2(0, 8), 22, PI, TAU, 30, color, 2.5, true)
+			_line(center + Vector2(-22, 8), center + Vector2(-22, 15), color, 2)
+			_line(center + Vector2(22, 8), center + Vector2(22, 15), color, 2)
+			var ground := PackedVector2Array()
+			for i in range(33):
+				var angle := i * TAU / 32
+				ground.append(center + Vector2(cos(angle) * 23, 15 + sin(angle) * 6))
+			draw_polyline(ground, color.darkened(0.1), 2, true)
+			_cross(center + Vector2(0, -1), 8, color.lightened(0.2), 3)
+		3:
+			# Onda sagrada: pulsos ascendentes em torno de uma luz.
+			for radius in [13, 20, 27]:
+				draw_arc(center + Vector2(0, 17), radius, -PI * 0.9, -PI * 0.1, 24, color, 2.5, true)
+			_cross(center + Vector2(0, -17), 5, color.lightened(0.2), 2.5)
+			draw_circle(center + Vector2(0, 17), 3, color.lightened(0.2))
+
+func _draw_tank_icon(center: Vector2, color: Color) -> void:
 	match slot:
 		0:
 			_sword(center, 0.6, color)
@@ -112,6 +243,20 @@ func _draw() -> void:
 			_line(center + Vector2(-5, 5), center + Vector2(5, 5), Color("ffdbcc"), 2)
 			_line(center + Vector2(0, 0), center + Vector2(0, 10), Color("ffdbcc"), 2)
 			draw_string(ThemeDB.fallback_font, Vector2(7, size.y - 6), str(potion_count), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color.WHITE)
+
+func _draw() -> void:
+	if slot == 4:
+		_draw_potion()
+		return
+	draw_set_transform(Vector2(0, clampf(drag_offset, -14, 14)) if held else Vector2.ZERO)
+	var gold := Color("a68d58")
+	var color := _skill_color()
+	draw_rect(Rect2(Vector2.ZERO, size), Color("14191b"))
+	for i in range(24):
+		var glow: Color = color.darkened(0.82 + i * 0.005)
+		draw_circle(size * 0.5, 29 - i, glow)
+	var center := size * 0.5
+	_draw_skill_icon(center, color)
 	if not usable:
 		draw_rect(Rect2(Vector2(3, 3), size - Vector2(6, 6)), Color(0, 0, 0, 0.28))
 	if remaining > 0:

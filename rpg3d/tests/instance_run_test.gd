@@ -14,8 +14,9 @@ func check(condition: bool, description: String) -> void:
 		push_error(description)
 
 func _events(run: RefCounted) -> Dictionary:
-	var events := {"waves": [], "completed": 0, "failed": []}
+	var events := {"waves": [], "bosses": 0, "completed": 0, "failed": []}
 	run.wave_requested.connect(func(number: int) -> void: events.waves.append(number))
+	run.boss_requested.connect(func() -> void: events.bosses += 1)
 	run.completed.connect(func() -> void: events.completed += 1)
 	run.failed.connect(func(reason: String) -> void: events.failed.append(reason))
 	return events
@@ -23,6 +24,7 @@ func _events(run: RefCounted) -> Dictionary:
 func _run() -> void:
 	_test_preparation_and_waves()
 	_test_time_limit()
+	_test_boss_clock_and_defeat()
 	_test_invalid_updates_and_terminal_states()
 	_test_restart_and_stop()
 	print("INSTANCE RUN COMPLETE: %d failures" % failures)
@@ -34,6 +36,7 @@ func _test_preparation_and_waves() -> void:
 	run.begin()
 	check(run.phase == InstanceRun.Phase.PREPARATION and run.preparation_left == 30.0 and run.time_left == 600.0, "attempt starts with 30 seconds to prepare and a separate ten-minute combat clock")
 	run.monster_defeated()
+	run.boss_defeated()
 	run.tick(29.5)
 	check(events.waves.is_empty() and run.alive == 0 and run.kills == 0 and run.wave == 0, "preparation spawns no enemies and ignores defeated notifications")
 	check(run.preparation_left == 0.5 and run.time_left == 600.0, "preparation does not consume combat time")
@@ -46,12 +49,18 @@ func _test_preparation_and_waves() -> void:
 			check(run.wave == number and run.alive == 4 - defeated, "wave %d waits until all five monsters are defeated" % number)
 		run.monster_defeated()
 	check(events.waves == [1, 2, 3, 4, 5, 6], "only the six requested waves are spawned, in order")
-	check(run.kills == 30 and run.alive == 0 and run.phase == InstanceRun.Phase.VICTORY and events.completed == 1, "the thirtieth defeat completes the attempt once")
+	check(run.kills == 30 and run.alive == 1 and run.phase == InstanceRun.Phase.BOSS and events.bosses == 1 and events.completed == 0, "the thirtieth common monster spawns one boss without completing the attempt")
 	for index in range(10):
 		run.monster_defeated()
+	check(run.kills == 30 and run.alive == 1 and events.bosses == 1 and events.completed == 0, "extra common-monster notifications neither defeat nor respawn the boss")
+	run.boss_defeated()
+	check(run.kills == 30 and run.alive == 0 and run.phase == InstanceRun.Phase.VICTORY and events.completed == 1, "only defeating the boss completes the attempt once")
+	for index in range(10):
+		run.monster_defeated()
+		run.boss_defeated()
 	run.tick(900.0)
 	run.fail()
-	check(run.kills == 30 and events.completed == 1 and events.failed.is_empty() and events.waves.size() == 6, "extra defeats, elapsed time and failure calls cannot alter a victory")
+	check(run.kills == 30 and events.bosses == 1 and events.completed == 1 and events.failed.is_empty() and events.waves.size() == 6, "extra defeats, elapsed time and failure calls cannot alter a victory")
 
 func _test_time_limit() -> void:
 	var run := InstanceRun.new()
@@ -70,6 +79,47 @@ func _test_time_limit() -> void:
 	run.begin()
 	run.tick(10000.0)
 	check(run.phase == InstanceRun.Phase.FAILED and run.preparation_left == 0.0 and run.time_left == 0.0 and run.wave == 1, "an oversized frame clamps both clocks and creates no extra waves")
+
+func _reach_boss(run: RefCounted) -> void:
+	run.begin()
+	run.tick(InstanceRun.PREPARATION_TIME)
+	for index in range(InstanceRun.TOTAL_MONSTERS):
+		run.monster_defeated()
+
+func _test_boss_clock_and_defeat() -> void:
+	var run := InstanceRun.new()
+	var events := _events(run)
+	run.begin()
+	run.tick(130.0)
+	run.boss_defeated()
+	check(run.phase == InstanceRun.Phase.COMBAT and run.alive == 5 and events.completed == 0, "a boss defeat reported during common waves is ignored")
+	for index in range(InstanceRun.TOTAL_MONSTERS):
+		run.monster_defeated()
+	check(run.phase == InstanceRun.Phase.BOSS and run.time_left == 500.0, "boss combat inherits the remaining world time instead of resetting the clock")
+	for invalid in [-10.0, 0.0, INF, -INF, NAN]:
+		run.tick(invalid)
+	check(run.time_left == 500.0 and run.alive == 1, "invalid frame times leave the boss and remaining deadline unchanged")
+	run.tick(499.75)
+	check(run.phase == InstanceRun.Phase.BOSS and run.time_left == 0.25 and events.failed.is_empty(), "boss remains active until the shared deadline expires")
+	run.tick(0.25)
+	check(run.phase == InstanceRun.Phase.FAILED and run.time_left == 0.0 and events.failed == ["timeout"] and events.completed == 0, "ten-minute timeout during the boss prevents victory")
+	run.boss_defeated()
+	run.monster_defeated()
+	run.fail()
+	check(events.completed == 0 and events.failed == ["timeout"] and run.kills == 30, "a late boss defeat cannot award completion after timeout")
+	_reach_boss(run)
+	run.fail("death")
+	run.boss_defeated()
+	run.tick(1.0)
+	check(run.phase == InstanceRun.Phase.FAILED and events.failed == ["timeout", "death"] and events.completed == 0 and run.time_left == 600.0, "death during the boss is terminal and keeps completion locked")
+	_reach_boss(run)
+	run.stop()
+	run.boss_defeated()
+	check(run.phase == InstanceRun.Phase.FAILED and run.alive == 0 and events.failed == ["timeout", "death"] and events.completed == 0, "leaving during boss combat cancels it silently")
+	_reach_boss(run)
+	run.tick(599.99)
+	run.boss_defeated()
+	check(run.phase == InstanceRun.Phase.VICTORY and events.completed == 1 and run.kills == 30 and run.time_left > 0.0, "defeating the boss before the deadline awards victory with thirty common kills")
 
 func _test_invalid_updates_and_terminal_states() -> void:
 	var run := InstanceRun.new()

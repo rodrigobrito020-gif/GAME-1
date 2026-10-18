@@ -1,10 +1,11 @@
 extends RefCounted
 ## Estado de uma tentativa. O controlador decide quando o relógio pode avançar.
 signal wave_requested(wave_number: int)
+signal boss_requested
 signal completed
 signal failed(reason: String)
 
-enum Phase { PREPARATION, COMBAT, VICTORY, FAILED }
+enum Phase { PREPARATION, COMBAT, BOSS, VICTORY, FAILED }
 
 const WAVE_COUNT := 6
 const WAVE_SIZE := 5
@@ -42,7 +43,7 @@ func tick(delta: float) -> void:
 		phase = Phase.COMBAT
 		_start_wave()
 	# Signals can end the run synchronously; do not advance a finished attempt.
-	if phase != Phase.COMBAT:
+	if phase not in [Phase.COMBAT, Phase.BOSS]:
 		return
 	time_left = maxf(0.0, time_left - remaining)
 	if time_left <= 0.0:
@@ -58,11 +59,19 @@ func monster_defeated() -> void:
 	if wave < WAVE_COUNT:
 		_start_wave()
 	elif kills == TOTAL_MONSTERS:
-		phase = Phase.VICTORY
-		completed.emit()
+		phase = Phase.BOSS
+		alive = 1
+		boss_requested.emit()
+
+func boss_defeated() -> void:
+	if not _started or phase != Phase.BOSS or alive != 1:
+		return
+	alive = 0
+	phase = Phase.VICTORY
+	completed.emit()
 
 func fail(reason: String = "death") -> void:
-	if not _started or phase not in [Phase.PREPARATION, Phase.COMBAT]:
+	if not _started or phase not in [Phase.PREPARATION, Phase.COMBAT, Phase.BOSS]:
 		return
 	phase = Phase.FAILED
 	failed.emit(reason)

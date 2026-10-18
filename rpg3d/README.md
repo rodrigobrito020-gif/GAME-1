@@ -2,50 +2,61 @@
 
 Abra **rpg3d/project.godot** no Godot **4.6.3 padrão** e pressione **F5**. Este é o único projeto Godot do repositório.
 
-Você controla o **humano guerreiro (Fighter)** em terceira pessoa. O jogo inicia na **Vila da Fenda**, uma pequena área rural segura e inteiramente cercada por uma paliçada, com quatro casas térreas, poço, caminhos de terra, horta, árvores e a fenda dimensional. Ataques e habilidades ficam desativados na vila. As casas e bancas são cenografia, com colisão; NPCs e lojas ainda não foram implementados.
+## Vila, classes e controles
 
-Aproxime-se da fenda e pressione **E** para abrir os **Mundos 1 a 10**. Apenas o Mundo 1 começa disponível. Concluir as seis ondas dentro do prazo vence aquele mundo e libera somente o seguinte. É possível revisitar mundos concluídos, sem pular etapas. Uma fenda de retorno fica perto da chegada em cada mundo; aproxime-se e pressione E para voltar à vila, recuperar a vida e manter nível, itens e ouro. Sair antes de concluir não libera o próximo mundo. Uma nova entrada reinicia os monstros e o objetivo da instância.
+O jogo começa na **Vila da Fenda**, uma área rural segura e inteiramente cercada, com casas térreas, poço, caminhos de terra, vegetação e uma fenda dimensional. Ataques e habilidades ficam desativados na vila. Aproxime-se do **Instrutor** e pressione **E** para escolher uma das quatro classes humanas. A escolha recupera a vida e atualiza habilidades, ícones, recargas e equipamento visual.
 
-Cada mundo carrega uma arena separada de **54 × 54 metros**, usando o mesmo limite de 27 metros da vila. A vila é descarregada ao entrar no combate e o mundo é descarregado ao retornar. Os dez mundos usam uma base de cenário comum, com sementes, paletas, pedras, ruínas e dificuldade crescente; são cenários iniciais para testar a progressão. O terreno jogável é plano, as colinas são cenário distante e o perímetro tem paredes físicas e limite de deslocamento próximo de 27 metros do centro.
+| Classe | Vida inicial | Habilidades 1–4 | Recargas |
+| --- | ---: | --- | --- |
+| Tanque | 100 | Golpe potente; Corte giratório; Defesa; Investida | 6 / 8 / 12 / 7 s |
+| Arqueiro | 85 | Disparo potente; Rajada de flechas; Passo evasivo; Chuva de flechas | 6 / 8 / 9 / 12 s |
+| Mago | 75 | Bola de fogo; Explosão arcana; Barreira arcana; Teleporte | 6 / 8 / 12 / 7 s |
+| Curandeiro | 90 | Luz sagrada; Cura; Santuário; Onda sagrada | 6 / 8 / 14 / 10 s |
 
-Desbloqueios, nível, experiência, inventário e configurações de habilidades e poções são salvos automaticamente em `user://adventure_save.cfg`. Ao abrir o jogo novamente, o personagem reaparece na vila com esses dados restaurados. A execução dos testes usa estado isolado e não altera o perfil normal. As instâncias são locais; ainda não há servidor ou multiplayer.
+O Tanque combate de perto com espada e escudo; Defesa reduz o dano em 65% por quatro segundos. Arqueiro, Mago e Curandeiro têm ataques comuns à distância e habilidades próprias. Flechas e magias viajam como projéteis, colidem com obstáculos e causam dano ao atingir. A seleção de alvos e o dano em área respeitam linha de visão. Passo evasivo e Teleporte respeitam colisões. Cura recupera até 40 de vida; Santuário cura ao longo de quatro segundos. Estas ações funcionam em combate, com alcance e recarga; escolher uma classe muda a jogabilidade.
 
-[Veja a vila](../docs/village-gameplay.png), [a seleção de mundos](../docs/dimensional-rift-worlds.png), [a primeira onda](../docs/arena-wave-one.png) e [o inventário com recompensa](../docs/arena-loot-inventory.png).
+**Limitação visual atual:** as quatro classes usam o mesmo corpo humano Fighter, suas texturas e seus clipes originais de uma mão. Arco e cajados são modelos procedurais provisórios. As animações de ataque reutilizadas ainda são as do Fighter; não são animações originais de arco ou de mago. O arquivo `assets/human_mage.glb` continua reservado para uso futuro e ainda não tem suas texturas integradas.
 
-O campo tem **textura de grama** em escala de 1,8 metro, com variação natural de cor e relevo fino. Perto do jogador há tufos de grama em geometria 3D, curvados e movidos suavemente pelo vento. Os blocos de vegetação acompanham a exploração por todo o campo; à distância, os tufos diminuem gradualmente e o solo texturizado continua visível. São instâncias MultiMesh opacas, sem cartões transparentes nem milhares de colisores. A textura foi gerada para o projeto; a origem está em `assets/environment/meadow_grass_source.json`.
+- **WASD:** mover em relação à câmera; **mouse:** girar a câmera.
+- **Roda do mouse:** aproximar/afastar, com zoom suave de 2 a 14 metros e SpringArm para obstáculos.
+- **Shift:** correr; **Espaço:** pular. O salto ainda não tem animação própria.
+- **E:** falar com o Instrutor, acessar a fenda da vila ou abrir o baú próximo.
+- **Clique esquerdo:** ataque comum da classe; **1–4:** habilidades.
+- **Q:** poção manual; **clique no ícone circular da poção:** configurar automático.
+- **I / TAB:** abrir/fechar inventário e pausar a simulação.
+- **Esc:** fechar menus ou liberar o cursor; clique no campo para capturá-lo novamente.
+- **R:** voltar à vila após morrer ou esgotar o tempo.
 
-- **WASD:** caminhar em relação à câmera; **mouse:** girar a câmera.
-- **Roda do mouse:** para cima aproxima, para baixo afasta. Zoom suave entre 2 e 14 metros, encurtado pelo SpringArm quando houver obstáculos.
-- **Shift:** correr; **Espaço:** pular.
-- **E:** acessar a fenda na vila, voltar pela fenda de retorno ou abrir o baú após vencer.
-- **Clique esquerdo:** ataque comum com espada, manual, até 2,6 metros à frente. O dano acontece no momento do golpe.
-- **1 — Golpe potente:** outra animação de ataque, com efeito de arco azul, dano reforçado e alcance de 3,6 metros. Recarga de 6 segundos, além do intervalo do golpe comum. Acerte de perto e de frente; obstáculos bloqueiam o golpe.
-- **2 — Corte giratório:** atinge os inimigos ao redor, até 3,2 metros; recarga de 8 segundos. Usa a animação de ataque especial como base provisória.
-- **3 — Defesa:** reduz o dano recebido em 65% por 4 segundos; recarga de 12 segundos.
-- **4 — Investida:** avanço curto na direção da câmera, com colisão; recarga de 7 segundos.
-- **Q — Poção manual:** recupera 40 de vida, com intervalo de 2 segundos e consumo de uma unidade.
-- **Configuração da poção:** libere o cursor com Esc e clique diretamente no ícone da poção, alinhado com as habilidades. O clique abre a janela e não consome o item. Ative “Usar automaticamente” e ajuste o limite entre 10% e 90% de vida, em passos de 5%. Exemplo: em 40%, a poção só é usada quando a vida chega a 40% ou menos. A opção começa desligada; só consome se houver poção no estoque, o personagem estiver vivo e o intervalo de dois segundos tiver terminado. O uso automático também pausa com os menus abertos e fica desativado na vila. A configuração é salva entre sessões.
-- **I / TAB — Inventário:** abre/fecha a mochila e pausa a simulação. Espada pode ser equipada/guardada selecionando o item e clicando no botão do painel de detalhes; três poções iniciais recuperam 40 de vida cada. Vida cheia não consome poção. Cada Grelim derrotado adiciona uma presa e 5 de ouro automaticamente. Tela de equipamentos com personagem 3D, slots do corpo, mochila com 20 espaços iniciais, expansão com rolagem e filtros Todos/Armas/Trajes/Poções/Materiais. Clique em um item para inspecionar e use Equipar ou Usar poção no painel direito. Ao equipar, a peça sai da grade e da contagem da mochila e aparece somente no slot correspondente do personagem. Clique nesse slot e em Retirar para devolver a peça à mochila. Espada, escudo, traje, luvas e botas aparecem no personagem da prévia; slots sem equipamento ficam vazios. A seleção da fenda também pausa a simulação; TAB ou Esc fecha esse menu. A organização livre da mochila ainda não foi implementada.
-- **Esc:** fecha a mochila ou libera o cursor; clique na janela para capturá-lo novamente.
-- **R:** após morrer ou esgotar o tempo, retornar à vila com vida recuperada, preservando itens e progresso.
+Cada habilidade pode ser colocada em automático: segure o ícone e arraste **para baixo** para ligar ou **para cima** para desligar. Um clique curto usa manualmente. O indicador AUTO identifica as ativas. O automático respeita recargas, alcance, alvos, vida, área segura e menus. Poções têm configuração separada, sem gesto de arrastar: ative **Usar automaticamente** e ajuste o limite entre 10% e 90% de vida, em passos de 5%. Cada poção recupera até 40 de vida, consome uma unidade e tem intervalo de dois segundos. Vida cheia não consome poção.
 
-O guerreiro usa o modelo 3D original enviado pelo usuário, com esqueleto e animações de repouso, caminhada, corrida, ataque comum, ataque especial e morte. A espada agora é a Long Sword original (`long_sword_m00_wp`), extraída de LineageWeapons.ukx, com a textura correspondente de LineageWeaponsTex.utx e presa ao osso Weapon_R_Bone. Ela substitui a espada geométrica provisória e acompanha as animações de repouso, movimento e ataque. O modelo agora inclui o traje inicial, as luvas e as botas M001 do próprio Fighter. Na mochila [I / TAB], selecione a peça e clique em Equipar/Retirar; retirar restaura a malha básica M000, mantendo rosto/cabelo e animações. As peças começam equipadas e a troca fica bloqueada durante um golpe. O conjunto inicial mantém os atributos base; equipamentos recebidos no baú usam essas mesmas malhas 3D e acrescentam bônus de ataque ou defesa conforme a raridade. Corpo, traje inicial, cabelo, luvas e botas agora usam texturas originais do MFighter.utx enviado pelo usuário. Foram mantidos os UVs do modelo e o recorte alpha do cabelo. O rosto também recebeu a textura original MFighter_m000_t00_f, do pacote compartilhado LineageFaceTex.utx enviado pelo usuário. O salto ainda não tem animação própria.
+[Classes humanas](../docs/classes-humanas.png) · [Vila](../docs/village-gameplay.png) · [Seleção de mundos](../docs/dimensional-rift-worlds.png)
 
-Os **Grelims provisórios em 3D** substituem as esferas de treino: corpo, rosto, olhos, chifres, orelhas, braços e garras. Foram montados com geometria simples inspirada na referência enviada pelo usuário, sem extrair modelos de monstros do cliente. Movimentam braços e pernas proceduralmente, aproximam-se e atacam. Os modelos e animações definitivos dos monstros ainda precisam ser importados.
+## Mundos, ondas e chefe
 
-A interface mantém vida, nível e experiência no canto superior esquerdo. A barra inferior tem quatro ícones quadrados, molduras escuras/douradas, teclas 1–4 e recarga sobre o ícone. Nome e descrição aparecem ao passar o mouse. Segure um ícone e arraste para baixo para ativar o modo automático; arraste para cima para desativar. O indicador verde AUTO identifica slots ativos. Um clique curto continua usando a habilidade manualmente. A poção tem um slot circular próprio à esquerda das habilidades, sem gesto de arrastar. Clique na poção para abrir a configuração; somente o botão “Usar automaticamente” liga ou desliga o automático. O último Grelim atingido também tem uma barra fina no topo central; ela desaparece quando ele é derrotado. Os Grelims têm pequenas barras de vida sobre a cabeça, acompanhando sua posição, ocultas quando distantes ou atrás da câmera.
+Aproxime-se da fenda da vila e pressione **E** para escolher entre os **Mundos 1 a 10**. Apenas o primeiro começa disponível. Vencer o chefe de um mundo libera somente o seguinte; mundos concluídos podem ser revisitados. Uma nova entrada sempre inicia uma nova tentativa.
 
-Os Grelims aceleram e viram gradualmente. A caminhada considera apenas a velocidade no chão; braços e pernas alternam lados com transições suaves entre repouso, caminhada e ataque. Há reação ao dano e queda ao morrer. São animações procedurais provisórias, não animações do cliente.
+Cada mundo é uma arena separada de **54 × 54 metros**, com paredes físicas no perímetro de 27 metros do centro. Há variações de paleta, sementes, pedras, ruínas e dificuldade, usando uma base de cenário comum. A vila é descarregada ao entrar na arena, que é descarregada ao voltar. **Não há portal de retorno nas arenas.**
 
-Cada três Grelims derrotados concedem um nível. O ataque comum continua manual. Cada habilidade pode ser colocada em automático individualmente pelo gesto no ícone: as ofensivas usam seu alcance, Defesa reage a inimigos próximos e Investida só avança se houver inimigo à frente entre 4,5 e 8 metros. São respeitados recarga, morte, espada equipada, vila segura e pausa dos menus. Câmera com limite vertical e SpringArm; colisão com chão, casas, paliçada e troncos. Ao morrer, o guerreiro mantém o último quadro da animação até retornar à vila. Habilidades, itens, números e a arte dos mundos são provisórios para testar a jogabilidade.
+A sequência da tentativa é:
 
-## Ondas, tempo e baú
+1. **Preparação de 30 segundos**, sem inimigos.
+2. **Seis ondas de cinco monstros**, totalizando trinta. A próxima onda só nasce quando a anterior termina.
+3. **Guardião da Fenda**, o chefe que aparece após a sexta onda.
+4. **Baú especial**, disponível somente após derrotar o chefe.
 
-Ao entrar, a arena fica vazia por **30 segundos** para preparação. Depois começa o prazo de **600 segundos (10 minutos)** de combate, separado da preparação. São **seis ondas de cinco monstros**; a próxima aparece somente quando o último da anterior é derrotado. O HUD mostra preparação, onda, vivos, total derrotado e tempo restante. A mochila pausa o combate e o cronômetro juntos.
+O limite é de **600 segundos (10 minutos)** para ondas **e chefe juntos**; a preparação não consome esse prazo e o relógio não reinicia quando o chefe aparece. A mochila e os menus de seleção pausam a simulação e os cronômetros. O HUD mostra preparação, onda, vivos, derrotados, fase do chefe e tempo restante.
 
-A trigésima derrota dentro do prazo encerra a tentativa com vitória, libera o próximo mundo e faz aparecer um baú no centro. Pressione **E** perto do baú para abrir a tampa e receber **um equipamento**, uma única vez por tentativa. Se o tempo acabar ou o personagem morrer, não há baú; R retorna à vila. Reentrar começa outra preparação e reinicia as ondas. O baú não coletado desaparece ao deixar a instância.
+O Guardião tem visual maior, barra de vida dourada e um ataque carregado: uma **área vermelha no chão** avisa o local do impacto. Saia dela antes do golpe para evitar o dano. Sua vida é `8 × vida do monstro comum + 80 × número do mundo`, e seu dano é `3 × dano do monstro comum`. No Mundo 1, isso corresponde a **560 de vida e 36 de dano base**, antes de defesa e equipamentos.
 
-As probabilidades iniciais são:
+Morte ou tempo esgotado encerra a tentativa sem baú. O painel apresenta **Voltar à vila**; **R** faz o mesmo. O personagem recupera a vida ao voltar e mantém itens e progresso já obtidos. A animação de morte termina e conserva a pose final enquanto o painel está aberto.
+
+Ao derrotar o chefe, o mundo é concluído e surge um baú no centro. O aviso de vitória permite **Coletar baú**, que leva o personagem até o baú real e o abre; também é possível caminhar até ele e pressionar **E**. A abertura mostra uma janela de revelação com ícone, nome, raridade e atributos do item já colocado na mochila. **Continuar** fecha essa janela e apresenta **Seguir para o mundo seguinte** ou **Voltar à vila**. O Mundo 10 oferece somente o retorno, sem criar um Mundo 11. Seguir inicia uma nova preparação com a vida recuperada.
+
+[Guardião da Fenda](../docs/chefe-da-fenda.png) · [Revelação do baú](../docs/revelacao-do-bau.png) · [Resultado da instância](../docs/resultado-da-instancia.png)
+
+## Equipamentos e inventário
+
+Cada baú concede **um equipamento**, uma única vez por tentativa. O item pode ser espada, escudo, armadura, luvas ou botas e tem ID próprio, raridade e bônus de ataque ou defesa.
 
 | Raridade | Chance por baú |
 | --- | ---: |
@@ -55,11 +66,25 @@ As probabilidades iniciais são:
 | Épico | 0,45% |
 | Lendário | 0,05% |
 
-O equipamento sorteado pode ser espada, escudo, armadura, luvas ou botas. Cada peça tem ID próprio, ícone, raridade e bônus. Equipar move a peça da bolsa para seu slot e devolve a anterior à bolsa; retirar faz o caminho inverso. Itens equipados de saque aumentam o dano e/ou reduzem o dano recebido. A raridade altera atributos e moldura do inventário; as malhas visuais continuam sendo as do guerreiro e seus equipamentos já importados. O perfil salva também os itens sorteados e os slots onde foram equipados.
+Na mochila, selecione um item e use **Equipar** no painel direito. Ele sai da grade e ocupa somente seu slot no personagem; a peça anterior volta à bolsa. Clique no slot e em **Retirar** para devolvê-lo à mochila. Equipamentos vestidos não ocupam espaços da grade. A mochila começa com vinte espaços, tem filtros e ganha rolagem quando necessário. A prévia 3D acompanha classe e equipamento; as molduras e os detalhes mostram a raridade e a comparação de atributos. A organização livre da grade ainda não foi implementada.
 
-[Preparação](../docs/arena-preparation.png), [baú aberto e recompensa](../docs/arena-reward-received.png) e [equipamento no slot do personagem](../docs/arena-loot-equipped.png).
+Peças de saque equipadas aumentam o dano ou reduzem o dano recebido. Elas reutilizam as malhas disponíveis, sem criar aparências inéditas para cada raridade. O conjunto inicial mantém os atributos base. O Tanque usa a Long Sword e o Small Shield originais; o escudo mantém a inclinação aprovada de **45°**, mão atrás da madeira e encaixe igual no campo e na prévia. As demais classes usam o arco ou cajado provisório correspondente.
+
+Retirar a arma oculta a espada, o arco ou o cajado da classe e bloqueia ataques comuns e habilidades ofensivas. Cura, defesa e habilidades de movimento continuam disponíveis sem arma, respeitando suas demais condições.
+
+Cada Grelim derrotado concede uma presa e cinco de ouro; o chefe concede três presas e cinquenta de ouro. Cada três monstros comuns derrotados concedem um nível. Equipar ou retirar peças fica bloqueado durante um golpe. A simulação permanece pausada enquanto a mochila está aberta.
+
+## Perfil e estado atual
+
+Classe escolhida (`player_class`), nível, experiência, inventário, itens de saque equipados, configurações e mundos liberados são salvos em `user://adventure_save.cfg`. Perfis antigos ou com classe inválida usam **Tanque** como padrão. Ao abrir o jogo novamente, você reaparece na vila. A tentativa em andamento e um baú ainda não coletado não são retomados. Testes usam estado isolado.
+
+As instâncias são locais; ainda não há servidor ou multiplayer. Casas e bancas são cenografia com colisão; o Instrutor tem interação de classe, mas lojas ainda não estão implementadas. Grelims e Guardião usam geometria e animações procedurais provisórias; não são modelos de monstros extraídos do cliente. As classes mudam ações e equipamentos, mas compartilham o Fighter. Valores e cenários continuam em fase de protótipo.
+
+O campo usa textura de grama em escala de 1,8 metro, variação de cor e relevo fino. Tufos 3D perto do personagem se movem com o vento e acompanham a exploração em blocos MultiMesh. À distância, os tufos diminuem e o solo texturizado permanece visível. A textura foi gerada para o projeto; a origem está em `assets/environment/meadow_grass_source.json`.
 
 ## Validação
+
+Execute a partir da pasta `rpg3d`:
 
 ```sh
 godot --headless --path . --editor --import --quit
@@ -67,30 +92,16 @@ godot --headless --path . -- --smoke-test
 godot --headless --path . --script res://tests/progression_test.gd
 godot --headless --path . --script res://tests/instance_run_test.gd
 godot --headless --path . --script res://tests/loot_items_test.gd
+godot --headless --path . --script res://tests/player_classes_test.gd
+godot --headless --path . --script res://tests/instance_classes_flow_test.gd
 ```
 
-O teste executa as animações importadas, golpe manual, acerto frontal, dano e recargas das habilidades, defesa, investida, barras de vida, poções, equipamento, pausa da mochila, saque, zoom e limites de câmera, transições dos Grelims, experiência, morte, reinício e deslocamento longe do centro com chão físico. Também verifica o limite de vida para poções automáticas, desativação, estoque, morte, pausa e intervalo entre usos.
-
-O fluxo por instâncias verifica início na vila, interação próxima da fenda, dez escolhas, bloqueio de mundos, pausa do menu, entrada e retorno, preservação de inventário, abandono sem desbloqueio, repetição sem pular etapas e conclusões sequenciais até o Mundo 10, trinta segundos sem inimigos, seis ondas, prazo de combate, baú único e bônus reais dos equipamentos. O teste separado cobre gravação e restauração de perfil, limites e validação dos desbloqueios carregados.
+A validação cobre controles e câmera, animações importadas e pose de morte, combate e recargas, quatro classes, projéteis e obstáculos, cura, equipamentos e bônus, poções, pausa, instâncias, seis ondas, chefe, prazo compartilhado, ausência de portal de retorno, baú único, resultado e passagem até o Mundo 10. Também verifica geração e restauração de itens, raridades, salvamento de classe e progressão, sem alterar o perfil normal do jogador.
 
 ## Modelo e arquivos
 
-`assets/human_fighter.glb` foi convertido de `Fighter.ukx` enviado pelo usuário. Inclui as malhas M000 (base) e M001 (traje superior/inferior, luvas e botas); o jogo alterna a visibilidade sem sobrepor as duas versões. Animações: `wait_1HS_MFighter`, `walk_1HS_MFighter`, `run_1HS_MFighter`, `Atk01_1HS_MFighter`, `SpAtk01_1HS_MFighter`, `Death_MFighter`. Conversão com UEViewer, importador PSK/PSA 7.1.3 e Blender 4.3.2; um esqueleto compartilhado pelas partes do corpo. O projeto usa o GLB diretamente; não requer Blender no computador do jogador.
+`assets/human_fighter.glb` foi convertido de `Fighter.ukx` enviado pelo usuário com UEViewer, importador PSK/PSA 7.1.3 e Blender 4.3.2. Contém malhas M000/M001 e um esqueleto compartilhado; o jogo alterna peças sem sobrepor versões. Os clipes reutilizados são `wait_1HS_MFighter`, `walk_1HS_MFighter`, `run_1HS_MFighter`, `Atk01_1HS_MFighter`, `SpAtk01_1HS_MFighter` e `Death_MFighter`. O GLB funciona diretamente no Godot, sem Blender no computador do jogador.
 
-`assets/human_mage.glb` conserva o teste anterior do mago para uso futuro; o personagem ativo desta versão é o guerreiro. `scripts/open_field.gd` cria o campo e agrupa a vegetação em MultiMesh; `scripts/grelim_visual.gd` monta os monstros provisórios; `scripts/world.gd` controla câmera, movimento e combate; `scripts/rpg_hud.gd` constrói a interface e projeta as barras dos inimigos.
+Corpo, cabelo, traje, luvas e botas usam texturas de `MFighter.utx`; o rosto vem de `LineageFaceTex.utx`. O cabelo conserva as duas partes originais e recorte alpha; nas texturas corporais, o alpha representa especularidade. A normalização dos nomes de ossos preserva as influências da luva. Origem e arquivos estão registrados em `assets/human_fighter_textures.json`.
 
-## Texturas do guerreiro
-
-As partes MFighter.z01, MFighter.z02 e MFighter.zip foram reunidas e o conteúdo MFighter.utx passou no CRC32 (`78f9f072`). O GLB incorpora onze imagens originais: corpo básico M000 (u/l/g/b), cabelo t00 (partes ah e bh) e conjunto M001 t01 (u/l/g/b), mais o rosto t00 de LineageFaceTex.utx. O alpha das texturas corporais representa especularidade e não é usado como transparência; somente o cabelo usa recorte alpha.
-
-As imagens também ficam em `assets/human_fighter_MFighter_*.png`, extraídas pelo importador do Godot. `assets/human_fighter_textures.json` registra a origem das texturas e do rosto. As animações e a troca de equipamento continuam usando o mesmo esqueleto. O pacote UTX completo não faz parte do projeto.
-
-A montagem do cabelo inclui as duas partes originais `MFighter_m000_m00_ah` e `MFighter_m000_m00_bh`, para cobrir também a parte posterior da cabeça. O rosto recebeu a textura do pacote LineageFaceTex.utx. A Long Sword original e sua textura foram convertidas para `assets/long_sword.glb`; o registro de origem está em `assets/long_sword_source.json`. Não há dependência de arquivos UKX/UTX no computador do jogador.
-
-## Correção da luva
-
-A ponta fina que parecia sair da espada vinha de uma influência descartada na malha M001 da luva: havia um nome de osso de dedo duplicado. Os nomes do esqueleto foram normalizados pela ordem e hierarquia do M000, preservando os pesos e a geometria. O GLB não contém mais a influência neutral_bone. A origem e os aliases corrigidos estão em assets/human_fighter_textures.json.
-
-O guerreiro começa também com o Small Shield original no braço esquerdo (Shield_L_Bone). O escudo possui ícone no inventário e pode ser equipado ou guardado; acompanha as animações. O painel fica em diagonal, com giro de 45° em relação ao antebraço e a ponta inclinada para baixo e para fora, mantendo a mão atrás da madeira. A postura aplica uma torção de 30° ao antebraço esquerdo enquanto o escudo está equipado, preservando os clipes originais. A empunhadura tem 6,5 cm e as tiras de couro se ligam à madeira, sem barras metálicas compridas. A prévia do inventário usa a mesma postura. O espaço entre a luva e a madeira é verificado nas poses importadas, incluindo o fim do golpe. O Small Shield inicial não acrescenta bônus; escudos de baú reutilizam a mesma malha e aplicam seu bônus de defesa. A espada mantém seu encaixe no socket original da mão direita.
-
-[Veja a postura do escudo no jogo](../docs/shield-reference-fit.png) e [na prévia do inventário](../docs/shield-sideways-inventory.png).
+Espada e escudo originais foram convertidos para `assets/long_sword.glb` e `assets/small_shield.glb`, com registros de origem próprios. O encaixe acompanha os ossos do Fighter e as animações originais. Arco e cajados estão em `scripts/class_weapon.gd`; seus visuais são provisórios. O mago de `assets/human_mage.glb` não é usado pelas classes ativas e continua sem texturas integradas. Arquivos UKX/UTX completos não são necessários para jogar.

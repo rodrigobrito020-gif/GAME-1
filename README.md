@@ -8,19 +8,23 @@ RPG em terceira pessoa com controle direto, desenvolvido no **Godot 4.6.3**. Est
 2. No Godot, clique em **Importar** e selecione **rpg3d/project.godot**.
 3. Abra o projeto e pressione **F5**.
 
+Você começa na **Vila da Fenda**, cercada e segura. Aproxime-se do **Instrutor** e pressione **E** para escolher **Tanque, Arqueiro, Mago ou Curandeiro**. A fenda dimensional da vila oferece dez mundos: apenas o primeiro começa liberado; vencer um mundo libera o seguinte, e os concluídos podem ser revisitados.
+
+Cada arena tem **54 × 54 metros**, **30 segundos de preparação** e **10 minutos de combate** para vencer **seis ondas de cinco monstros e o Guardião da Fenda**. O chefe avisa seu ataque com uma área vermelha no chão. Morte ou tempo esgotado abre a opção **Voltar à vila**, também disponível por **R**. As arenas não têm portal de retorno.
+
+Ao vencer o chefe, aproxime-se do baú e pressione **E**, ou use **Coletar baú** no aviso de vitória. A abertura revela **um equipamento real**, já adicionado à mochila. **Continuar** mostra as opções de seguir ao próximo mundo ou voltar à vila. O Mundo 10 encerra a sequência. Chances por baú: **65% Comum, 27% Incomum, 7,5% Raro, 0,45% Épico e 0,05% Lendário**.
+
+As quatro classes têm ataques e habilidades próprios, incluindo projéteis, cura e movimento. Nesta versão, todas reutilizam o modelo humano Fighter e seus clipes originais; arco e cajados são visuais procedurais provisórios. A classe escolhida, nível, inventário, configurações e mundos liberados ficam salvos neste computador. A mochila pausa a simulação.
+
 ## Controles
 
 - **WASD:** mover; **mouse:** câmera; **roda do mouse:** zoom.
 - **Shift:** correr; **Espaço:** pular.
-- **E:** acessar a fenda, voltar à vila ou abrir o baú de recompensa.
-- **Clique esquerdo:** atacar com espada; **1–4:** habilidades. Arraste um ícone para baixo para ativar automático e para cima para desativar.
+- **E:** falar com o Instrutor, acessar a fenda da vila ou abrir o baú próximo.
+- **Clique esquerdo:** ataque da classe; **1–4:** habilidades. Arraste um ícone para baixo para ativar automático e para cima para desativar.
 - **Q:** poção; **clique no ícone da poção:** configurar uso automático por porcentagem de vida.
-- **I / TAB:** inventário; **Esc:** liberar cursor/fechar janelas; **R:** retornar à vila após morrer ou esgotar o tempo.
+- **I / TAB:** inventário; **Esc:** liberar cursor/fechar menus; **R:** voltar à vila após derrota ou tempo esgotado.
 
-O jogo começa em uma pequena vila rústica totalmente cercada, sem monstros, com casas térreas, caminhos de terra, poço, vegetação e uma **fenda dimensional**. Aproxime-se da fenda e pressione **E** para escolher entre **10 mundos**. Apenas o Mundo 1 começa liberado; derrotar todos os Grelims de um mundo libera o seguinte. Mundos concluídos podem ser revisitados. Nível, inventário, configurações e desbloqueios são salvos neste computador.
+[Veja as classes](docs/classes-humanas.png), [o chefe](docs/chefe-da-fenda.png), [a revelação do baú](docs/revelacao-do-bau.png) e [o resultado da instância](docs/resultado-da-instancia.png).
 
-Os mundos são arenas locais separadas de **54 × 54 metros**, com o mesmo limite da vila. Após **30 segundos de preparação**, começam **6 ondas de 5 monstros**, totalizando **30**. A onda seguinte só nasce quando a anterior acaba. Há **10 minutos de combate** para vencer todas e fazer surgir um baú; se o prazo acabar, a tentativa falha e não há baú. O baú concede um equipamento de Comum a Lendário: **65% Comum, 27% Incomum, 7,5% Raro, 0,45% Épico e 0,05% Lendário**. Os itens podem ser equipados e dão bônus de ataque ou defesa. A vila e os mundos ainda usam cenários de protótipo. Casas e bancas são cenografia; lojas e NPCs ainda não estão implementados.
-
-[Veja a vila no jogo](docs/village-gameplay.png), [a vista mais afastada](docs/village-rustic-overview.png), [a seleção dos mundos](docs/dimensional-rift-worlds.png), [as ondas de combate](docs/arena-wave-one.png), [o baú](docs/arena-reward-chest.png) e [os itens no inventário](docs/arena-loot-inventory.png).
-
-Consulte [o manual do RPG 3D](rpg3d/README.md) para funcionalidades, limitações e testes.
+Consulte [o manual do RPG 3D](rpg3d/README.md) para habilidades, equipamentos, limitações visuais e testes.

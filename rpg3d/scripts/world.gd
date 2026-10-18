@@ -17,6 +17,17 @@ const TravelGate := preload("res://scripts/travel_gate.gd")
 const InstanceRun := preload("res://scripts/instance_run.gd")
 const RewardChest := preload("res://scripts/reward_chest.gd")
 const LootItems := preload("res://scripts/loot_items.gd")
+const PlayerClasses := preload("res://scripts/player_classes.gd")
+const ClassMenu := preload("res://scripts/class_menu.gd")
+const ClassCombat := preload("res://scripts/class_combat.gd")
+const ArenaBossVisual := preload("res://scripts/arena_boss_visual.gd")
+const ClassWeapon := preload("res://scripts/class_weapon.gd")
+var player_class := "tanque"
+var class_menu: PanelContainer
+var class_backdrop: ColorRect
+var class_combat := ClassCombat.new()
+var ranged_attachment: BoneAttachment3D
+var ranged_weapon: Node3D
 var progress := PlayerProgress.new()
 var arena_run: RefCounted
 var reward_chest: Node3D
@@ -187,6 +198,14 @@ func _equip_sword(model: Node3D) -> void:
 	mount.name = "ShieldMount"
 	mount.scale = Vector3.ONE / 0.038
 	shield_attachment.add_child(mount)
+	ranged_attachment = BoneAttachment3D.new()
+	ranged_attachment.name = "ClassWeaponAttachment"
+	ranged_attachment.bone_name = "Weapon_R_Bone"
+	skeleton.add_child(ranged_attachment)
+	ranged_weapon = ClassWeapon.new()
+	ranged_weapon.name = "ClassWeapon"
+	ranged_weapon.scale = Vector3.ONE / 0.038
+	ranged_attachment.add_child(ranged_weapon)
 
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	var results: Array[MeshInstance3D] = []
@@ -199,9 +218,15 @@ func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	return results
 
 func _apply_equipment() -> void:
-	sword_attachment.visible = LootItems.is_equipped(inventory, "sword")
-	shield_attachment.visible = LootItems.is_equipped(inventory, "shield")
+	sword_attachment.visible = player_class == "tanque" and LootItems.is_equipped(inventory, "sword")
+	shield_attachment.visible = player_class == "tanque" and LootItems.is_equipped(inventory, "shield")
 	shield_carry_pose.shield_equipped = shield_attachment.visible
+	if is_instance_valid(ranged_attachment):
+		ranged_attachment.visible = player_class != "tanque" and LootItems.is_equipped(inventory, "sword")
+		ranged_attachment.bone_name = "Shield_L_Bone" if player_class == "arqueiro" else "Weapon_R_Bone"
+		if ranged_weapon.class_id != player_class:
+			ranged_weapon.configure(player_class)
+		ranged_weapon.rotation.z = 0.0 if player_class == "arqueiro" else PI
 	for slot in ["armor", "gloves", "boots"]:
 		for mesh in _gear_nodes(slot, false):
 			mesh.visible = not LootItems.is_equipped(inventory, slot)
@@ -227,13 +252,61 @@ func _ui() -> void:
 	hud.potion_settings_changed.connect(_configure_potions)
 	hud.world_requested.connect(_enter_world)
 	hud.rift_closed.connect(_close_rift)
+	hud.return_requested.connect(_return_to_village)
+	hud.next_world_requested.connect(_next_world)
+	hud.chest_requested.connect(_collect_victory_chest)
+	hud.rewards_closed.connect(_finish_rewards)
+	class_backdrop = ColorRect.new()
+	class_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	class_backdrop.color = Color(0.01, 0.02, 0.03, 0.78)
+	class_backdrop.hide()
+	hud.root.add_child(class_backdrop)
+	class_menu = ClassMenu.new()
+	hud.root.add_child(class_menu)
+	class_menu.class_requested.connect(_choose_class)
+	class_menu.closed.connect(_close_classes)
+	class_menu.visibility_changed.connect(func() -> void: class_backdrop.visible = class_menu.visible)
+	_sync_class()
 	_refresh_hud()
 
 func _maximum_hp() -> float:
-	return 100.0 + (level - 1) * 20.0
+	return float(PlayerClasses.get_definition(player_class).max_hp) + (level - 1) * 20.0
+
+func _sync_class() -> void:
+	var definition := PlayerClasses.get_definition(player_class)
+	hud.set_player_class(definition)
+	hud.inventory_panel.set_player_class(definition)
+	_apply_equipment()
+
+func _near_trainer() -> bool:
+	return current_world == 0 and player.position.distance_to(Village.CLASS_TRAINER_POSITION) <= 3.2
+
+func _choose_class(id: String) -> bool:
+	if current_world != 0 or dead or not class_menu.visible or not _near_trainer() or id not in PlayerClasses.IDS:
+		return false
+	player_class = PlayerClasses.normalize(id)
+	automatic_skills.fill(false)
+	skill_cooldown = 0.0
+	spin_cooldown = 0.0
+	guard_cooldown = 0.0
+	dash_cooldown = 0.0
+	guard_clock = 0.0
+	dash_clock = 0.0
+	hp = _maximum_hp()
+	_sync_class()
+	_close_classes()
+	notice.text = "Classe escolhida: %s. As quatro habilidades foram atualizadas." % PlayerClasses.get_definition(player_class).name
+	_save_profile()
+	return true
+
+func _close_classes() -> void:
+	class_menu.hide()
+	animation.speed_scale = 1.0
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_refresh_hud()
 
 func _refresh_hud() -> void:
-	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock, auto_potion, potion_threshold, potion_clock, automatic_skills, current_world > 0 and not _instance_failed() and not hud.rift_panel.visible)
+	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock, auto_potion, potion_threshold, potion_clock, automatic_skills, current_world > 0 and not _instance_failed() and not _modal_open())
 	hud.sync_enemies(enemies, camera)
 	if arena_run != null and not _modal_open():
 		hud.sync_instance(String(InstanceRun.Phase.keys()[arena_run.phase]).to_lower(), arena_run.preparation_left, arena_run.time_left, arena_run.wave, arena_run.kills, arena_run.alive)
@@ -243,8 +316,10 @@ func _refresh_hud() -> void:
 	if not dead and not _modal_open():
 		if _near_chest():
 			prompt = "[E] Abrir baú de recompensa"
+		elif _near_trainer():
+			prompt = "[E] Instrutor · Escolher classe humana"
 		elif _near_portal():
-			prompt = "[E] Acessar a fenda dimensional" if current_world == 0 else "[E] Voltar à vila"
+			prompt = "[E] Acessar a fenda dimensional"
 	hud.set_interaction_prompt(prompt)
 
 func _instance_failed() -> bool:
@@ -262,23 +337,30 @@ func _open_chest() -> bool:
 	if not inventory.has("loot_items"):
 		inventory.loot_items = []
 	inventory.loot_items.append(reward)
-	hud.show_reward(reward)
+	hud.show_chest_rewards([reward])
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	notice.text = "Baú: %s (%s) · Item recebido na mochila." % [reward.name, reward.rarity]
 	_save_profile()
 	_refresh_hud()
 	return true
 
 func _modal_open() -> bool:
-	return hud.inventory_panel.visible or hud.rift_panel.visible
+	return hud.inventory_panel.visible or hud.rift_panel.visible or (is_instance_valid(class_menu) and class_menu.visible) or hud.run_result_panel.visible or hud.chest_rewards_panel.visible
 
 func _near_portal() -> bool:
-	return Vector2(player.position.x - portal_position.x, player.position.z - portal_position.z).length() <= 4.0
+	return current_world == 0 and Vector2(player.position.x - portal_position.x, player.position.z - portal_position.z).length() <= 4.0
 
 func _interact() -> bool:
 	if dead or attack_clock > 0 or _modal_open():
 		return false
 	if _near_chest():
 		return _open_chest()
+	if _near_trainer():
+		class_menu.show_classes(player_class)
+		hud.potion_popup.hide()
+		animation.speed_scale = 0.0
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		return true
 	if not _near_portal():
 		return false
 	if current_world == 0:
@@ -305,10 +387,35 @@ func _return_to_village() -> void:
 	_change_zone(0)
 	_save_profile()
 
+func _next_world() -> bool:
+	if current_world <= 0 or current_world >= WorldCatalog.COUNT or arena_run == null or arena_run.phase != InstanceRun.Phase.VICTORY or not is_instance_valid(reward_chest) or not reward_chest.opened or not progress.can_enter(current_world + 1) or hud.chest_rewards_panel.visible:
+		return false
+	_change_zone(current_world + 1)
+	hp = _maximum_hp()
+	_save_profile()
+	return true
+
+func _collect_victory_chest() -> void:
+	if arena_run == null or arena_run.phase != InstanceRun.Phase.VICTORY or not is_instance_valid(reward_chest) or reward_chest.opened:
+		return
+	# The victory shortcut collects the real chest; E remains available nearby.
+	player.position = reward_chest.position + Vector3(0, 0.05, 2.0)
+	_open_chest()
+
+func _finish_rewards() -> void:
+	if arena_run != null and arena_run.phase == InstanceRun.Phase.VICTORY:
+		hud.show_run_result(true, current_world, "", false)
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	_refresh_hud()
+
 func _change_zone(number: int) -> void:
 	hud.inventory_panel.hide()
 	hud.rift_panel.hide()
 	hud.potion_popup.hide()
+	hud.hide_run_result()
+	hud.hide_chest_rewards()
+	class_menu.hide()
+	class_combat.cancel(self)
 	animation.speed_scale = 1.0
 	hud.focus_enemy = null
 	enemies.clear()
@@ -348,17 +455,13 @@ func _change_zone(number: int) -> void:
 		active_zone.name = "OpenField"
 		active_zone.configure(WorldCatalog.get_world(number))
 		player.position = Vector3(0, 0.05, 17)
-		portal_position = Vector3(0, 0, 22)
+		portal_position = Vector3.ZERO
 	add_child(active_zone)
 	if number > 0:
-		var gate := TravelGate.new()
-		gate.name = "ReturnRift"
-		gate.title = "Retorno à vila"
-		gate.position = portal_position
-		active_zone.add_child(gate)
 		instance_goal = InstanceRun.TOTAL_MONSTERS
 		arena_run = InstanceRun.new()
 		arena_run.wave_requested.connect(_spawn_enemies)
+		arena_run.boss_requested.connect(_spawn_boss)
 		arena_run.completed.connect(_complete_instance)
 		arena_run.failed.connect(_fail_instance)
 		arena_run.begin()
@@ -370,14 +473,16 @@ func _change_zone(number: int) -> void:
 
 func _update_location() -> void:
 	if current_world == 0:
-		hud.set_location("VILA DA FENDA", "Acesse a fenda dimensional com E", true)
+		hud.set_location("VILA DA FENDA", "E · Instrutor de classes ou fenda dimensional", true)
 	else:
 		var definition := WorldCatalog.get_world(current_world)
-		var objective := "Derrote as seis ondas para receber o baú."
+		var objective := "Vença seis ondas e derrote o chefe para receber o baú."
 		if arena_run != null and arena_run.phase == InstanceRun.Phase.PREPARATION:
 			objective = "Prepare seus equipamentos antes da primeira onda."
 		elif _instance_failed():
-			objective = "Instância encerrada · R para voltar à vila."
+			objective = "Instância encerrada · Retorne à vila pelo painel."
+		elif arena_run != null and arena_run.phase == InstanceRun.Phase.BOSS:
+			objective = "CHEFE · Guardião da Fenda · Desvie do ataque carregado!"
 		elif arena_run != null and arena_run.phase == InstanceRun.Phase.VICTORY:
 			objective = "Mundo concluído · Abra o baú no centro da arena com E."
 		hud.set_location("MUNDO %d · %s" % [current_world, definition.subtitle], objective, false)
@@ -388,20 +493,26 @@ func _complete_instance() -> void:
 	reward_chest.name = "RewardChest"
 	reward_chest.position = Vector3(0, 0, -1)
 	active_zone.add_child(reward_chest)
-	notice.text = "30 monstros derrotados! Abra o baú no centro da arena."
+	notice.text = "Chefe derrotado! Você conquistou o baú desta instância."
 	if unlocked and current_world < WorldCatalog.COUNT:
 		notice.text += " Mundo %d liberado." % (current_world + 1)
 	_update_location()
+	hud.show_run_result(true, current_world, "", true)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_save_profile()
 
 func _fail_instance(reason: String) -> void:
 	attack_pending = false
 	attack_clock = 0.0
-	notice.text = "Tempo esgotado! R para retornar à vila." if reason == "timeout" else "Você caiu. R para retornar à vila."
+	notice.text = "Tempo esgotado! Retorne à vila para tentar novamente." if reason == "timeout" else "Você caiu. Retorne à vila para tentar novamente."
+	hud.potion_popup.hide()
+	hud.show_run_result(false, current_world, reason, false)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_update_location()
 
 func _load_profile() -> void:
 	var state: Dictionary = progress.load_profile()
+	player_class = PlayerClasses.normalize(str(state.get("player_class", "tanque")))
 	level = maxi(1, int(state.get("level", 1)))
 	xp = clampi(int(state.get("xp", 0)), 0, 2)
 	kills = maxi(0, int(state.get("kills", 0)))
@@ -418,12 +529,12 @@ func _load_profile() -> void:
 	if saved_skills is Array:
 		for index in mini(saved_skills.size(), 4):
 			automatic_skills[index] = bool(saved_skills[index])
-	_apply_equipment()
+	_sync_class()
 
 func _save_profile() -> void:
 	if smoke:
 		return
-	var result := progress.save_profile({"level": level, "xp": xp, "kills": kills, "inventory": inventory.duplicate(true), "auto_potion": auto_potion, "potion_threshold": potion_threshold, "automatic_skills": automatic_skills.duplicate()})
+	var result := progress.save_profile({"player_class": player_class, "level": level, "xp": xp, "kills": kills, "inventory": inventory.duplicate(true), "auto_potion": auto_potion, "potion_threshold": potion_threshold, "automatic_skills": automatic_skills.duplicate()})
 	if result != OK and not save_error_reported:
 		save_error_reported = true
 		push_warning("Não foi possível salvar o progresso: " + error_string(result))
@@ -433,7 +544,7 @@ func _notification(what: int) -> void:
 		_save_profile()
 
 func _toggle_inventory() -> void:
-	if hud.rift_panel.visible:
+	if _modal_open() and not hud.inventory_panel.visible:
 		return
 	hud.inventory_panel.visible = not hud.inventory_panel.visible
 	if hud.inventory_panel.visible:
@@ -443,7 +554,7 @@ func _toggle_inventory() -> void:
 	_refresh_hud()
 
 func _use_item(item: String) -> bool:
-	if dead or hud.rift_panel.visible:
+	if dead or hud.rift_panel.visible or class_menu.visible or hud.run_result_panel.visible or hud.chest_rewards_panel.visible:
 		return false
 	if attack_clock > 0 and item != "potion":
 		return false
@@ -489,6 +600,8 @@ func _auto_potion_step(delta: float) -> void:
 func _activate_skill(slot: int) -> bool:
 	if current_world == 0 or _instance_failed() or dead or _modal_open():
 		return false
+	if player_class != "tanque":
+		return class_combat.activate_skill(self, slot)
 	match slot:
 		0:
 			return _attack(true)
@@ -521,9 +634,15 @@ func _set_skill_automatic(slot: int, enabled: bool) -> void:
 		_save_profile()
 
 func _automatic_skills_step() -> void:
-	if current_world == 0 or dead or attack_clock > 0 or _modal_open():
+	if current_world == 0 or _instance_failed() or dead or attack_clock > 0 or _modal_open():
 		return
 	var ready: Array[bool] = [false, false, false, false]
+	if player_class != "tanque":
+		ready = class_combat.auto_ready(self)
+		for slot in range(automatic_skills.size()):
+			if automatic_skills[slot] and ready[slot] and _activate_skill(slot):
+				break
+		return
 	for foe in enemies:
 		var offset := foe.global_position - player.global_position
 		offset.y = 0
@@ -567,10 +686,127 @@ func _spawn_enemies(wave_number: int = 1) -> void:
 	notice.text = "Onda %d / 6 · Derrote os cinco monstros." % wave_number
 	_update_location()
 
+func _spawn_boss() -> void:
+	if current_world == 0 or not enemies.is_empty() or arena_run.phase != InstanceRun.Phase.BOSS:
+		return
+	var definition := WorldCatalog.get_world(current_world)
+	var foe := CharacterBody3D.new()
+	foe.name = "RiftGuardian"
+	foe.position = Vector3(0, 0.05, -7)
+	var maximum := float(definition.enemy_hp) * 8.0 + current_world * 80.0
+	foe.set_meta("hp", maximum)
+	foe.set_meta("maximum_hp", maximum)
+	foe.set_meta("damage", float(definition.enemy_damage) * 3.0)
+	foe.set_meta("attack", 1.5)
+	foe.set_meta("windup", 0.0)
+	foe.set_meta("is_boss", true)
+	foe.set_meta("display_name", "Guardião da Fenda · CHEFE")
+	foe.set_meta("bar_height", 3.8)
+	var collision := CollisionShape3D.new()
+	var shape := CapsuleShape3D.new()
+	shape.radius = 0.9
+	shape.height = 2.9
+	collision.shape = shape
+	collision.position.y = 1.45
+	foe.add_child(collision)
+	var visual := ArenaBossVisual.new()
+	visual.name = "GrelimVisual"
+	foe.add_child(visual)
+	active_zone.get_node("Combatants").add_child(foe)
+	enemies.append(foe)
+	hud.focus_enemy = foe
+	notice.text = "O Guardião da Fenda despertou! Saia da área vermelha antes do impacto."
+	_update_location()
+
+func _boss_step(foe: CharacterBody3D, delta: float) -> void:
+	if dead:
+		return
+	var visual := foe.get_node("GrelimVisual")
+	var windup := float(foe.get_meta("windup", 0.0))
+	var direction := player.position - foe.position
+	direction.y = 0.0
+	if windup > 0.0:
+		windup = maxf(0.0, windup - delta)
+		foe.set_meta("windup", windup)
+		foe.velocity = Vector3(0, -5, 0)
+		foe.move_and_slide()
+		if windup <= 0.0:
+			var marker: Node3D = (foe.get_meta("danger_marker") if foe.has_meta("danger_marker") else null)
+			var impact: Vector3 = foe.get_meta("impact_position")
+			if is_instance_valid(marker):
+				marker.queue_free()
+			foe.set_meta("danger_marker", null)
+			var offset := player.position - impact
+			offset.y = 0
+			if offset.length() <= 2.8:
+				_receive_damage(float(foe.get_meta("damage")))
+			visual.set_motion("attack")
+			foe.set_meta("attack", 2.2)
+		return
+	var timer := maxf(0.0, float(foe.get_meta("attack")) - delta)
+	foe.set_meta("attack", timer)
+	if direction.length() <= 3.8 and timer <= 0.0:
+		var impact := player.position
+		impact.y = 0.04
+		foe.set_meta("impact_position", impact)
+		foe.set_meta("windup", 0.85)
+		foe.set_meta("danger_marker", _danger_marker(impact))
+		visual.set_motion("windup")
+		return
+	var desired := direction.normalized() * 2.2 if direction.length() > 2.5 and timer < 1.6 else Vector3.ZERO
+	foe.velocity = Vector3(move_toward(foe.velocity.x, desired.x, delta * 6.0), -5, move_toward(foe.velocity.z, desired.z, delta * 6.0))
+	foe.move_and_slide()
+	if direction.length() > 0.1 and timer < 1.6:
+		foe.rotation.y = lerp_angle(foe.rotation.y, atan2(-direction.x, -direction.z), 1.0 - exp(-5 * delta))
+	if timer < 1.6:
+		visual.set_motion("walk" if desired.length() > 0.2 else "idle")
+
+func _danger_marker(at: Vector3) -> Node3D:
+	var marker := Node3D.new()
+	marker.name = "BossDangerArea"
+	active_zone.add_child(marker)
+	marker.position = at
+	var material := _material(Color(0.9, 0.12, 0.04, 0.24))
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	var disk := MeshInstance3D.new()
+	var shape := CylinderMesh.new()
+	shape.top_radius = 2.8
+	shape.bottom_radius = 2.8
+	shape.height = 0.012
+	shape.radial_segments = 64
+	disk.mesh = shape
+	disk.material_override = material
+	disk.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	marker.add_child(disk)
+	var edge := MeshInstance3D.new()
+	var ring := TorusMesh.new()
+	ring.inner_radius = 2.73
+	ring.outer_radius = 2.8
+	ring.rings = 64
+	ring.ring_segments = 6
+	edge.mesh = ring
+	edge.material_override = _material(Color("f75b36"))
+	edge.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	marker.add_child(edge)
+	return marker
+
+func _receive_damage(amount: float) -> void:
+	var damage := maxf(1.0, amount - float(LootItems.bonuses(inventory).defense))
+	hp = maxf(0.0, hp - damage * (0.35 if guard_clock > 0 else 1.0))
+	if hp <= 0 and not dead:
+		dead = true
+		attack_pending = false
+		player.velocity = Vector3.ZERO
+		_play("death")
+		arena_run.fail("death")
+
 func _input(event: InputEvent) -> void:
 	# TAB também funciona quando um controle da interface está com foco.
 	if event is InputEventKey and event.keycode == KEY_TAB and event.pressed and not event.echo:
-		if hud.rift_panel.visible:
+		if class_menu.visible:
+			_close_classes()
+		elif hud.rift_panel.visible:
 			_close_rift()
 		else:
 			_toggle_inventory()
@@ -578,11 +814,16 @@ func _input(event: InputEvent) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_R and (dead or _instance_failed()) and current_world > 0:
+			_return_to_village()
+			return
 		if event.keycode == KEY_I:
 			_toggle_inventory()
 			return
 		if event.keycode == KEY_ESCAPE:
-			if hud.rift_panel.visible:
+			if class_menu.visible:
+				_close_classes()
+			elif hud.rift_panel.visible:
 				_close_rift()
 			elif hud.potion_popup.visible:
 				hud.potion_popup.hide()
@@ -624,6 +865,10 @@ func _physics_process(delta: float) -> void:
 		return
 	if arena_run != null:
 		arena_run.tick(delta)
+		if _modal_open():
+			_refresh_hud()
+			return
+	class_combat.tick(self, delta)
 	boom.rotation = Vector3(pitch, yaw, 0)
 	boom.spring_length = lerpf(boom.spring_length, zoom_distance, 1.0 - exp(-10.0 * delta))
 	spin_cooldown = maxf(0, spin_cooldown - delta)
@@ -670,6 +915,8 @@ func _physics_process(delta: float) -> void:
 	_refresh_hud()
 
 func _attack(powered := false) -> bool:
+	if player_class != "tanque":
+		return class_combat.basic_attack(self, powered)
 	if current_world == 0 or _instance_failed() or dead or _modal_open() or not LootItems.is_equipped(inventory, "sword") or cooldown > 0 or (powered and skill_cooldown > 0):
 		return false
 	powered_attack = powered
@@ -727,7 +974,7 @@ func _skill_arc() -> void:
 	tween.tween_callback(visual.queue_free)
 
 func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
-	if current_world == 0 or arena_run == null or arena_run.phase != InstanceRun.Phase.COMBAT or not is_instance_valid(foe) or foe not in enemies:
+	if current_world == 0 or arena_run == null or arena_run.phase not in [InstanceRun.Phase.COMBAT, InstanceRun.Phase.BOSS] or not is_instance_valid(foe) or foe not in enemies:
 		return
 	hud.focus_enemy = foe
 	var health := float(foe.get_meta("hp")) - amount
@@ -738,24 +985,35 @@ func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 		foe.collision_layer = 0
 		foe.collision_mask = 0
 		foe.get_node("GrelimVisual").fall()
+		var marker: Variant = (foe.get_meta("danger_marker") if foe.has_meta("danger_marker") else null)
+		if is_instance_valid(marker):
+			marker.queue_free()
 		get_tree().create_timer(2.0).timeout.connect(foe.queue_free)
-		inventory.fangs += 1
-		inventory.gold += 5
+		var is_boss := bool(foe.get_meta("is_boss", false))
+		inventory.fangs += 3 if is_boss else 1
+		inventory.gold += 50 if is_boss else 5
 		xp += 1
 		kills += 1
-		instance_kills += 1
+		if not is_boss:
+			instance_kills += 1
 		if xp >= 3:
 			xp = 0
 			level += 1
-			hp = 100 + (level - 1) * 20
-		arena_run.monster_defeated()
+			hp = _maximum_hp()
+		if is_boss:
+			arena_run.boss_defeated()
+		else:
+			arena_run.monster_defeated()
 		_update_location()
 		_save_profile()
 
 func _enemies_step(delta: float) -> void:
-	if current_world == 0 or arena_run == null or arena_run.phase != InstanceRun.Phase.COMBAT:
+	if current_world == 0 or arena_run == null or arena_run.phase not in [InstanceRun.Phase.COMBAT, InstanceRun.Phase.BOSS]:
 		return
 	for foe in enemies:
+		if bool(foe.get_meta("is_boss", false)):
+			_boss_step(foe, delta)
+			continue
 		var direction := player.position - foe.position
 		direction.y = 0
 		var distance := direction.length()
@@ -766,15 +1024,8 @@ func _enemies_step(delta: float) -> void:
 		foe.move_and_slide()
 		var timer := maxf(0, float(foe.get_meta("attack")) - delta)
 		if distance < 1.6 and timer <= 0 and not dead:
-			var damage := maxf(1.0, float(foe.get_meta("damage", 12.0)) - LootItems.bonuses(inventory).defense)
-			hp = maxf(0, hp - damage * (0.35 if guard_clock > 0 else 1.0))
+			_receive_damage(float(foe.get_meta("damage", 12.0)))
 			timer = 1.2
-			if hp <= 0:
-				dead = true
-				attack_pending = false
-				player.velocity = Vector3.ZERO
-				_play("death")
-				arena_run.fail("death")
 		foe.set_meta("attack", timer)
 		if direction.length() > 0.1:
 			foe.rotation.y = lerp_angle(foe.rotation.y, atan2(-direction.x, -direction.z), 1.0 - exp(-7.0 * delta))
@@ -785,6 +1036,8 @@ func _reset_test_combat() -> void:
 	hp = 100
 	potion_clock = 0
 	level = 1
+	player_class = "tanque"
+	_sync_class()
 	xp = 0
 	kills = 0
 	inventory = {"equipped": true, "armor": true, "gloves": true, "boots": true, "shield": true, "potions": 3, "fangs": 0, "gold": 0}
@@ -1187,122 +1440,132 @@ func _test_slot_gestures() -> void:
 func _finish_test_run() -> void:
 	if arena_run.phase == InstanceRun.Phase.PREPARATION:
 		arena_run.tick(InstanceRun.PREPARATION_TIME)
-	while arena_run.phase == InstanceRun.Phase.COMBAT:
+	while arena_run.phase in [InstanceRun.Phase.COMBAT, InstanceRun.Phase.BOSS]:
 		for foe in enemies.duplicate():
 			_damage_enemy(foe, 100000)
 
 func _test_instance_flow() -> void:
 	progress = PlayerProgress.new()
 	_change_zone(0)
-	_check(current_world == 0 and enemies.is_empty(), "retorno à vila descarrega os inimigos da instância")
-	_check(progress.unlocked_world() == 1, "apenas o Mundo 1 está liberado inicialmente")
-	_check(not _interact(), "fenda só pode ser acessada de perto")
+	_check(current_world == 0 and enemies.is_empty(), "retorno à vila descarrega a instância")
+	_check(progress.unlocked_world() == 1, "somente Mundo 1 começa liberado")
+	_check(not _interact(), "interações exigem proximidade")
 	player.position = portal_position + Vector3(0, 0.05, 2.5)
-	_check(_interact() and hud.rift_panel.visible, "E perto da fenda abre a seleção dos dez mundos")
-	_check(hud.rift_panel.world_buttons.size() == 10, "fenda mostra os mundos de 1 a 10")
-	_check(not hud.rift_panel.world_buttons[0].disabled and hud.rift_panel.world_buttons[1].disabled, "menu diferencia mundo disponível de mundo bloqueado")
-	var position_before := player.position
+	_check(_interact() and hud.rift_panel.visible and hud.rift_panel.world_buttons.size() == 10, "E abre a fenda com os dez mundos")
+	_check(not _enter_world(2) and not _enter_world(0) and not _enter_world(11), "fenda impede saltar mundos ou índices inválidos")
+	var start := player.position
 	Input.action_press("forward")
 	_physics_process(0.2)
 	Input.action_release("forward")
-	_check(player.position == position_before and not _activate_skill(3), "seleção da fenda pausa movimento e habilidades")
-	_check(not _enter_world(2) and current_world == 0, "controlador também impede pular o Mundo 1")
-	_check(not _enter_world(0) and not _enter_world(11), "fenda rejeita números fora dos dez mundos")
-	_check(_enter_world(1) and enemies.is_empty() and arena_run.preparation_left == 30, "arena começa com trinta segundos de preparação sem monstros")
-	_check(hud.instance_panel.visible and hud.instance_timer.text == "00:30", "HUD mostra a preparação da instância")
+	_check(player.position == start and not _activate_skill(3), "fenda aberta pausa movimento e combate")
+	_check(_enter_world(1) and enemies.is_empty() and arena_run.preparation_left == 30, "entrada inicia trinta segundos de preparação")
+	_check(not active_zone.has_node("ReturnRift") and not _near_portal() and not _interact(), "instância não possui portal de retorno nem interação fantasma")
+	_check(hud.instance_panel.visible and hud.instance_timer.text == "00:30", "HUD mostra preparação")
 	arena_run.tick(29)
-	_check(enemies.is_empty() and arena_run.wave == 0 and arena_run.time_left == 600, "nenhum monstro aparece antes dos trinta segundos")
+	_check(enemies.is_empty() and arena_run.time_left == 600, "preparação não gera monstros nem consome dez minutos")
 	arena_run.tick(1)
-	_check(enemies.size() == 5 and arena_run.wave == 1 and arena_run.time_left == 600, "primeira onda de cinco começa depois da preparação")
-	_refresh_hud()
-	_check(hud.instance_panel.visible and "ONDA 1/6" in hud.instance_heading.text, "HUD mostra a onda e o prazo de combate")
+	_check(enemies.size() == 5 and arena_run.wave == 1, "primeira onda tem cinco monstros")
 	for index in range(4):
 		_damage_enemy(enemies[0], 1000)
-	_check(enemies.size() == 1 and arena_run.wave == 1 and not is_instance_valid(reward_chest), "onda seguinte e baú aguardam o último monstro")
-	var loot_before := int(inventory.fangs)
-	var gold_before := int(inventory.gold)
-	player.position = portal_position + Vector3(0, 0.05, -2.5)
-	_check(_interact() and current_world == 0, "fenda de retorno permite abandonar uma instância")
-	_check(progress.unlocked_world() == 1, "abandonar uma instância incompleta não libera o próximo mundo")
-	_check(int(inventory.fangs) == loot_before and int(inventory.gold) == gold_before, "troca de cenário preserva itens e ouro obtidos")
-	_check(hp == _maximum_hp() and not dead, "vila recupera a vida sem consumir poções")
-	player.position = portal_position + Vector3(0, 0.05, 2.5)
-	_interact()
-	_enter_world(1)
-	_check(enemies.is_empty() and instance_kills == 0, "nova entrada reinicia a preparação e o objetivo")
-	_finish_test_run()
-	_check(instance_kills == 30 and arena_run.wave == 6 and enemies.is_empty(), "seis ondas de cinco encerram a instância com trinta derrotas")
-	_check(progress.unlocked_world() == 2 and progress.completed_worlds == [1], "concluir as seis ondas libera somente o próximo mundo")
-	_check(is_instance_valid(reward_chest) and not reward_chest.opened, "vitória faz aparecer um baú fechado")
-	_check(not _open_chest(), "recompensa exige chegar perto do baú")
+	_check(enemies.size() == 1 and arena_run.wave == 1 and not is_instance_valid(reward_chest), "próxima onda aguarda o último monstro")
+	while arena_run.phase == InstanceRun.Phase.COMBAT:
+		for foe in enemies.duplicate():
+			_damage_enemy(foe, 100000)
+	_check(instance_kills == 30 and arena_run.phase == InstanceRun.Phase.BOSS and enemies.size() == 1, "seis ondas dão lugar a um único chefe")
+	_check(not is_instance_valid(reward_chest) and progress.unlocked_world() == 1, "trinta comuns não liberam recompensa ou próximo mundo antes do chefe")
+	_refresh_hud()
+	_check("CHEFE" in hud.instance_heading.text and hud.target_health.max_value > 60, "chefe tem identificação e barra de vida próprias")
+	var boss := enemies[0]
+	_check(bool(boss.get_meta("is_boss")) and float(boss.get_meta("damage")) > 12, "chefe tem mais vida e dano que os comuns")
+	boss.set_meta("attack", 0.0)
+	player.position = boss.position + Vector3(0, 0, 3)
+	var before := hp
+	_boss_step(boss, 0.01)
+	_check(float(boss.get_meta("windup")) > 0 and hp == before and is_instance_valid(boss.get_meta("danger_marker")), "ataque do chefe avisa no chão antes de causar dano")
+	_boss_step(boss, 0.4)
+	player.position.x += 5
+	_boss_step(boss, 0.5)
+	_check(hp == before, "sair da área marcada evita o golpe do chefe")
+	player.position = boss.position + Vector3(0, 0, 3)
+	boss.set_meta("attack", 0.0)
+	_boss_step(boss, 0.01)
+	_boss_step(boss, 0.9)
+	_check(hp < before and not dead, "permanecer na área marcada recebe o golpe do chefe")
+	_damage_enemy(boss, 100000)
+	_check(arena_run.phase == InstanceRun.Phase.VICTORY and instance_kills == 30 and enemies.is_empty(), "derrotar o chefe conclui a instância mantendo contador de trinta comuns")
+	_check(progress.unlocked_world() == 2 and is_instance_valid(reward_chest), "vitória libera somente o próximo mundo e um baú")
+	_check(hud.victory_banner.visible and not _next_world(), "vitória mostra coleta e não permite ignorar a recompensa")
 	var rewards_before: int = inventory.get("loot_items", []).size()
-	player.position = reward_chest.position + Vector3(0, 0.05, 2)
-	_check(_interact() and reward_chest.opened, "E abre o baú e concede o item")
-	_check(inventory.loot_items.size() == rewards_before + 1, "recompensa vai para a mochila")
-	_check(not _open_chest() and inventory.loot_items.size() == rewards_before + 1, "baú não concede um segundo item ao clicar novamente")
+	hud.collect_button.pressed.emit()
+	_check(reward_chest.opened and hud.chest_rewards_panel.visible, "Coletar baú abre o baú real e revela os itens em tela especial")
+	_check(inventory.loot_items.size() == rewards_before + 1, "recompensa é guardada na mochila")
+	_check(not _open_chest() and not _next_world(), "revelação impede coleta repetida ou transição prematura")
 	var reward: Dictionary = inventory.loot_items.back().duplicate(true)
-	_check(reward.rarity in LootItems.RARITIES, "item do baú possui uma raridade válida")
-	_check(_use_item("loot_equip:" + reward.id), "item do baú pode ser equipado")
-	_check(inventory.equipped_loot[reward.slot].id == reward.id and LootItems.is_equipped(inventory, reward.slot), "equipamento de saque ocupa seu slot e aparece no personagem")
-	_check(_use_item("loot_remove:" + reward.slot), "retirar equipamento devolve o saque à mochila")
-	_check(_use_item(reward.slot), "equipamento básico pode ser usado novamente")
-	var earned_level := level
+	_check(reward.rarity in LootItems.RARITIES, "recompensa tem raridade válida")
+	hud.chest_rewards_panel.continue_button.pressed.emit()
+	_check(hud.run_result_panel.visible and hud.next_world_button.visible, "após a revelação aparecem próximo mundo e retorno à vila")
+	hud.next_world_button.pressed.emit()
+	_check(current_world == 2 and arena_run.phase == InstanceRun.Phase.PREPARATION and enemies.is_empty() and hp == _maximum_hp(), "botão avança direto ao mundo seguinte com preparação nova e vida recuperada")
+	_check(not hud.run_result_panel.visible and not hud.chest_rewards_panel.visible and not _next_world(), "transição fecha menus antigos e não pula outra fase")
+	_check(_use_item("loot_equip:" + reward.id) and LootItems.is_equipped(inventory, reward.slot), "recompensa revelada funciona como equipamento real")
+	_check(_use_item("loot_remove:" + reward.slot) and _use_item(reward.slot), "saque pode voltar à mochila e equipamento básico pode ser restaurado")
 	var earned_items := inventory.duplicate(true)
 	_return_to_village()
-	_check(level == earned_level and inventory == earned_items, "retorno preserva nível e todo o inventário")
+	_check(inventory == earned_items and hp == _maximum_hp(), "retorno preserva inventário e recupera vida")
 	player.position = portal_position + Vector3(0, 0.05, 2.5)
 	_interact()
-	_check(not hud.rift_panel.world_buttons[1].disabled and hud.rift_panel.world_buttons[2].disabled, "menu atualiza o próximo desbloqueio sem liberar os demais")
 	_enter_world(1)
 	_finish_test_run()
 	_check(progress.unlocked_world() == 2, "repetir mundo concluído não pula a progressão")
 	for number in range(2, WorldCatalog.COUNT + 1):
-		_return_to_village()
-		player.position = portal_position + Vector3(0, 0.05, 2.5)
-		_interact()
-		_check(_enter_world(number), "mundo seguinte liberado pode ser acessado: " + str(number))
+		_change_zone(number)
 		_check(enemies.is_empty() and arena_run.preparation_left == 30, "cada mundo começa com preparação: " + str(number))
 		arena_run.tick(30)
 		_check(enemies.size() == 5, "cada onda tem cinco monstros: " + str(number))
 		if number == 2:
-			_check(float(enemies[0].get_meta("maximum_hp")) == 70.0, "novo mundo aplica vida própria aos inimigos")
 			_damage_enemy(enemies[0], 1)
 			_refresh_hud()
-			_check(hud.target_health.max_value == 70 and hud.target_health.value == 69, "barras de inimigos respeitam a vida do mundo atual")
+			_check(hud.target_health.max_value == 70 and hud.target_health.value == 69, "barras respeitam a vida do mundo atual")
 		_finish_test_run()
-		_check(progress.completed_worlds.size() == number and instance_kills == 30, "conclusão das trinta derrotas é registrada em ordem: " + str(number))
+		_check(progress.completed_worlds.size() == number and instance_kills == 30, "ondas e chefe concluem cada mundo em ordem: " + str(number))
 		await get_tree().process_frame
-	_check(progress.unlocked_world() == 10 and not progress.can_enter(11), "concluir Mundo 10 encerra a sequência sem criar Mundo 11")
+	_check(progress.unlocked_world() == 10 and not progress.can_enter(11), "Mundo 10 encerra a sequência")
+	_collect_victory_chest()
+	hud.chest_rewards_panel.continue_button.pressed.emit()
+	_check(hud.run_result_panel.visible and not hud.next_world_button.visible, "vitória final oferece vila sem inventar Mundo 11")
+	hud.return_button.pressed.emit()
+	_check(current_world == 0, "botão de retorno da vitória leva à vila")
 	_reset_test_combat()
 	var completed_before := progress.completed_worlds.duplicate()
 	arena_run.tick(600)
-	_check(_instance_failed() and not is_instance_valid(reward_chest), "dez minutos sem concluir encerram a tentativa sem baú")
+	_check(_instance_failed() and not is_instance_valid(reward_chest) and hud.run_result_panel.visible, "tempo esgotado mostra retorno sem baú")
 	_damage_enemy(enemies[0], 1000)
-	_check(instance_kills == 0 and progress.completed_worlds == completed_before and not _attack(), "tentativa encerrada não aceita dano, conclusão ou recompensa")
-	var rescue := InputEventKey.new()
-	rescue.keycode = KEY_R
-	rescue.pressed = true
-	_unhandled_input(rescue)
-	_check(current_world == 0 and hp == _maximum_hp(), "R após expirar o tempo retorna à vila")
+	_check(instance_kills == 0 and progress.completed_worlds == completed_before and not _attack(), "tentativa fracassada não recebe dano ou recompensa tardia")
+	hud.return_button.pressed.emit()
+	_check(current_world == 0 and hp == _maximum_hp(), "botão após tempo esgotado retorna à vila")
 	_reset_test_combat()
 	inventory.loot_items = [{"id": "smoke-sword", "slot": "sword", "name": "Espada de teste", "rarity": "Raro", "attack_bonus": 17, "defense_bonus": 0}]
-	_check(_use_item("loot_equip:smoke-sword") and sword_attachment.visible, "espada de saque funciona mesmo com a básica guardada")
+	_check(_use_item("loot_equip:smoke-sword") and sword_attachment.visible, "espada de saque funciona com a básica guardada")
 	enemies[0].position = player.position + Vector3(0, 0, -2)
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	_check(_attack(), "espada de saque permite ataques")
 	_melee_hit()
-	_check(float(enemies[0].get_meta("hp")) == 18, "bônus do item equipado aumenta o dano real")
+	_check(float(enemies[0].get_meta("hp")) == 18, "bônus equipado aumenta dano real")
 	_reset_test_combat()
 	inventory.loot_items = [{"id": "smoke-armor", "slot": "armor", "name": "Armadura de teste", "rarity": "Raro", "attack_bonus": 0, "defense_bonus": 7}]
 	_use_item("loot_equip:smoke-armor")
 	enemies[0].position = player.position + Vector3(0, 0, -1)
 	_enemies_step(0.01)
-	_check(hp == 95, "bônus de defesa do item equipado reduz o dano real")
-	dead = true
-	hp = 0
-	arena_run.fail("death")
+	_check(hp == 95, "defesa de saque reduz dano real")
+	hp = 1
+	enemies[0].set_meta("attack", 0.0)
+	_enemies_step(0.01)
+	_check(dead and hud.run_result_panel.visible and animation.current_animation.ends_with("death"), "morte preserva animação e mostra painel de retorno")
+	var rescue := InputEventKey.new()
+	rescue.keycode = KEY_R
+	rescue.pressed = true
 	_unhandled_input(rescue)
-	_check(current_world == 0 and not dead and hp == _maximum_hp(), "R após morrer resgata o personagem na vila")
+	_check(current_world == 0 and not dead and hp == _maximum_hp(), "R também retorna à vila após a morte")
 	await get_tree().process_frame
-	_check(not has_node("OpenField") and has_node("Village"), "vila e mundo de combate não ficam carregados ao mesmo tempo")
+	_check(not has_node("OpenField") and has_node("Village"), "somente o cenário atual fica carregado")

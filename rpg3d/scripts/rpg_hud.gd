@@ -3,6 +3,7 @@ extends CanvasLayer
 const EquipmentInventory := preload("res://scripts/equipment_inventory.gd")
 const SkillSlot := preload("res://scripts/skill_slot.gd")
 const RiftMenu := preload("res://scripts/rift_menu.gd")
+const ChestRewardsPanel := preload("res://scripts/chest_rewards_panel.gd")
 signal skill_requested(slot: int)
 signal skill_automatic_changed(slot: int, enabled: bool)
 signal inventory_requested
@@ -10,6 +11,10 @@ signal item_requested(item: String)
 signal potion_settings_changed(enabled: bool, threshold: float)
 signal world_requested(world_number: int)
 signal rift_closed
+signal return_requested
+signal next_world_requested
+signal rewards_closed
+signal chest_requested
 var health: ProgressBar
 var health_text: Label
 var status: Label
@@ -44,8 +49,23 @@ var reward_panel: PanelContainer
 var reward_icon: TextureRect
 var reward_name: Label
 var reward_detail: Label
+var run_result_panel: PanelContainer
+var run_result_title: Label
+var run_result_description: Label
+var return_button: Button
+var next_world_button: Button
+var victory_banner: PanelContainer
+var victory_banner_label: Label
+var collect_button: Button
+var chest_rewards_panel: PanelContainer
+var run_backdrop: ColorRect
 var _reward_tween: Tween
 var _combat_allowed := true
+var _class_name := "GUERREIRO"
+var _class_id := "tanque"
+var _class_cooldowns: Array = [6.0, 8.0, 12.0, 7.0]
+var _class_skill_names: Array = SKILL_NAMES.duplicate()
+var _class_skill_hints: Array = SKILL_HINTS.duplicate()
 const SKILL_NAMES := ["Golpe potente", "Corte giratório", "Defesa", "Investida"]
 const SKILL_HINTS := ["Golpe frontal reforçado. Recarga: 6s.", "Atinge inimigos ao redor. Recarga: 8s.", "Reduz dano recebido em 65% por 4s. Recarga: 12s.", "Avança na direção da câmera. Recarga: 7s."]
 
@@ -144,9 +164,10 @@ func _ready() -> void:
 	for i in range(4):
 		var slot := SkillSlot.new()
 		slot.slot = i
-		slot.tooltip_text = "%d · %s\n%s\nSegure e arraste para baixo: automático. Para cima: manual." % [i + 1, SKILL_NAMES[i], SKILL_HINTS[i]]
+		slot.set("class_id", _class_id)
+		slot.tooltip_text = _skill_tooltip(i)
 		slot.activated.connect(func() -> void:
-			if _combat_allowed and not rift_panel.visible:
+			if _combat_allowed and not rift_panel.visible and not run_modal_open():
 				skill_requested.emit(i)
 		)
 		slot.automatic_changed.connect(func(enabled: bool) -> void: skill_automatic_changed.emit(i, enabled))
@@ -172,6 +193,28 @@ func _ready() -> void:
 	_potions()
 	_interaction()
 	_rift()
+	_run_results()
+
+func _skill_tooltip(index: int) -> String:
+	var hint := str(_class_skill_hints[index]).get_slice("Recarga:", 0).strip_edges()
+	return "%d · %s\n%s\nRecarga: %ss.\nSegure e arraste para baixo: automático. Para cima: manual." % [index + 1, _class_skill_names[index], hint, str(_class_cooldowns[index])]
+
+func set_player_class(definition: Dictionary) -> void:
+	_class_name = str(definition.get("name", "Guerreiro")).to_upper()
+	var class_id := str(definition.get("id", "tank"))
+	_class_id = class_id
+	var names: Array = definition.get("skill_names", SKILL_NAMES)
+	var hints: Array = definition.get("skill_hints", SKILL_HINTS)
+	var cooldowns: Array = definition.get("cooldowns", [6.0, 8.0, 12.0, 7.0])
+	for index in range(4):
+		_class_skill_names[index] = str(names[index]) if index < names.size() else SKILL_NAMES[index]
+		_class_skill_hints[index] = str(hints[index]) if index < hints.size() else SKILL_HINTS[index]
+		_class_cooldowns[index] = maxf(0.01, float(cooldowns[index])) if index < cooldowns.size() else [6.0, 8.0, 12.0, 7.0][index]
+		if index < slot_buttons.size():
+			slot_buttons[index].set("class_id", _class_id)
+			slot_buttons[index].tooltip_text = _skill_tooltip(index)
+	if is_instance_valid(status):
+		status.add_theme_color_override("font_color", definition.get("color", Color("e7d8af")))
 
 func _instance() -> void:
 	instance_panel = _panel(root)
@@ -215,11 +258,16 @@ func sync_instance(phase: String, preparation_left: float, time_left: float, wav
 			instance_timer.text = "TEMPO " + _clock_text(clampf(time_left, 0.0, 600.0))
 			instance_timer.add_theme_color_override("font_color", Color("ee8c7f") if time_left <= 60 else Color("eee4ce"))
 			instance_detail.text = "DERROTADOS %d/30" % clampi(kills, 0, 30)
+		"boss":
+			instance_heading.text = "CHEFE DA FENDA"
+			instance_timer.text = "TEMPO " + _clock_text(clampf(time_left, 0.0, 600.0))
+			instance_timer.add_theme_color_override("font_color", Color("ee8c7f") if time_left <= 60 else Color("eee4ce"))
+			instance_detail.text = "Derrote o chefe e conquiste o baú"
 		"victory", "completed":
 			instance_heading.text = "CONCLUÍDO"
 			instance_timer.text = "Abra o baú"
 			instance_timer.add_theme_color_override("font_color", Color("d9c08a"))
-			instance_detail.text = "As 6 ondas foram vencidas"
+			instance_detail.text = "Ondas e chefe derrotados"
 		"failed", "defeat", "timeout":
 			instance_heading.text = "TEMPO ENCERRADO" if time_left <= 0 or phase == "timeout" else "DERROTA"
 			instance_timer.text = "R · Voltar à vila"
@@ -227,6 +275,131 @@ func sync_instance(phase: String, preparation_left: float, time_left: float, wav
 			instance_detail.text = "DERROTADOS %d/30" % clampi(kills, 0, 30)
 		_:
 			instance_panel.hide()
+
+func _run_results() -> void:
+	run_backdrop = ColorRect.new()
+	root.add_child(run_backdrop)
+	run_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	run_backdrop.color = Color(0.01, 0.02, 0.03, 0.82)
+	run_backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
+	run_backdrop.z_index = 20
+	run_backdrop.hide()
+	run_result_panel = _panel(root)
+	run_result_panel.z_index = 24
+	run_result_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	run_result_panel.offset_left = -320
+	run_result_panel.offset_right = 320
+	run_result_panel.offset_top = -180
+	run_result_panel.offset_bottom = 180
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 22)
+	run_result_panel.add_child(column)
+	column.add_spacer(false)
+	run_result_title = _label("", 30)
+	run_result_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(run_result_title)
+	run_result_description = _label("", 17)
+	run_result_description.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	run_result_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	run_result_description.add_theme_color_override("font_color", Color("ddd9c9"))
+	column.add_child(run_result_description)
+	column.add_spacer(false)
+	next_world_button = _button("")
+	next_world_button.custom_minimum_size.y = 48
+	next_world_button.add_theme_font_size_override("font_size", 18)
+	next_world_button.add_theme_stylebox_override("normal", _style(Color("594324"), Color("d9b568")))
+	next_world_button.pressed.connect(func() -> void: next_world_requested.emit())
+	column.add_child(next_world_button)
+	return_button = _button("Voltar à vila")
+	return_button.custom_minimum_size.y = 46
+	return_button.add_theme_font_size_override("font_size", 18)
+	return_button.pressed.connect(func() -> void: return_requested.emit())
+	column.add_child(return_button)
+	run_result_panel.visibility_changed.connect(_sync_run_backdrop)
+	run_result_panel.hide()
+	victory_banner = _panel(root)
+	victory_banner.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	victory_banner.offset_left = -250
+	victory_banner.offset_right = 250
+	victory_banner.offset_top = 206
+	victory_banner.offset_bottom = 308
+	victory_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var banner_row := HBoxContainer.new()
+	banner_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	banner_row.add_theme_constant_override("separation", 20)
+	victory_banner.add_child(banner_row)
+	victory_banner_label = _label("", 17)
+	victory_banner_label.add_theme_color_override("font_color", Color("ecd28f"))
+	victory_banner_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	victory_banner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	banner_row.add_child(victory_banner_label)
+	collect_button = _button("Coletar baú")
+	collect_button.custom_minimum_size = Vector2(156, 48)
+	collect_button.pressed.connect(func() -> void: chest_requested.emit())
+	banner_row.add_child(collect_button)
+	victory_banner.hide()
+	chest_rewards_panel = ChestRewardsPanel.new()
+	root.add_child(chest_rewards_panel)
+	chest_rewards_panel.visibility_changed.connect(_sync_run_backdrop)
+	chest_rewards_panel.closed.connect(func() -> void:
+		hide_chest_rewards()
+		rewards_closed.emit()
+	)
+	chest_rewards_panel.hide()
+
+func run_modal_open() -> bool:
+	return (is_instance_valid(run_result_panel) and run_result_panel.visible) or (is_instance_valid(chest_rewards_panel) and chest_rewards_panel.visible)
+
+func _sync_run_backdrop() -> void:
+	run_backdrop.visible = run_modal_open()
+	interaction_prompt.visible = not run_modal_open() and not rift_panel.visible and not interaction_label.text.is_empty()
+
+func show_run_result(victory: bool, world_number: int, reason: String = "", reward_pending: bool = true) -> void:
+	hide_chest_rewards()
+	rift_panel.hide()
+	inventory_panel.hide()
+	potion_popup.hide()
+	reward_panel.hide()
+	if victory and reward_pending:
+		run_result_panel.hide()
+		victory_banner_label.text = "MUNDO %d CONCLUÍDO\nChefe vencido · Baú liberado" % clampi(world_number, 1, 10)
+		victory_banner.show()
+		return
+	victory_banner.hide()
+	var world := clampi(world_number, 1, 10)
+	if victory:
+		run_result_title.text = "MUNDO %d CONCLUÍDO" % world
+		run_result_title.add_theme_color_override("font_color", Color("ecd28f"))
+		run_result_description.text = "Sua recompensa foi guardada na mochila.\nEscolha seu próximo destino." if world < 10 else "Você venceu os dez mundos da fenda.\nSua recompensa foi guardada na mochila."
+	else:
+		var timed_out := "tempo" in reason.to_lower() or "timeout" in reason.to_lower()
+		run_result_title.text = "TEMPO ENCERRADO" if timed_out else "DERROTA"
+		run_result_title.add_theme_color_override("font_color", Color("ee9a8b"))
+		var description := reason
+		if reason.to_lower() in ["death", "dead", "defeat"]:
+			description = "Seu personagem foi derrotado."
+		elif reason.to_lower() == "timeout":
+			description = "O limite de dez minutos foi atingido."
+		run_result_description.text = (description + "\n" if not description.is_empty() else "") + "Volte à vila para se preparar e tentar novamente."
+	next_world_button.visible = victory and world < 10
+	next_world_button.text = "Seguir para o mundo %d" % (world + 1)
+	run_result_panel.show()
+
+func hide_run_result() -> void:
+	run_result_panel.hide()
+	victory_banner.hide()
+
+func show_chest_rewards(items: Array) -> void:
+	hide_run_result()
+	rift_panel.hide()
+	inventory_panel.hide()
+	potion_popup.hide()
+	reward_panel.hide()
+	chest_rewards_panel.show_items(items)
+
+func hide_chest_rewards() -> void:
+	if is_instance_valid(chest_rewards_panel):
+		chest_rewards_panel.hide_panel()
 
 func _reward() -> void:
 	reward_panel = _panel(root)
@@ -311,7 +484,7 @@ func _rift() -> void:
 	)
 	rift_panel.visibility_changed.connect(func() -> void:
 		rift_backdrop.visible = rift_panel.visible
-		interaction_prompt.visible = not rift_panel.visible and not interaction_label.text.is_empty()
+		interaction_prompt.visible = not rift_panel.visible and not run_modal_open() and not interaction_label.text.is_empty()
 	)
 	rift_panel.hide()
 
@@ -322,9 +495,11 @@ func set_location(title: String, objective: String, safe: bool) -> void:
 
 func set_interaction_prompt(text: String) -> void:
 	interaction_label.text = text
-	interaction_prompt.visible = not text.is_empty() and not rift_panel.visible
+	interaction_prompt.visible = not text.is_empty() and not rift_panel.visible and not run_modal_open()
 
 func show_rift(unlocked: int, completed: Array[int]) -> void:
+	hide_run_result()
+	hide_chest_rewards()
 	potion_popup.hide()
 	rift_panel.show_worlds(unlocked, completed)
 
@@ -340,15 +515,16 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	health.max_value = maximum
 	health.value = hp
 	health_text.text = "%d / %d" % [ceili(hp), int(maximum)]
-	status.text = "Nv. %d  GUERREIRO%s" % [level, " · Defesa %.0fs" % guard if guard > 0 else ""]
+	status.text = "Nv. %d  %s%s" % [level, _class_name, " · Defesa %.0fs" % guard if guard > 0 else ""]
 	experience.value = xp
 	experience.tooltip_text = "Experiência: %d / 3" % xp
 	for i in range(4):
 		var remaining := float(cooldowns[i])
 		var has_weapon: bool = bool(inventory.get("equipped", false)) or inventory.get("equipped_loot", {}).has("sword")
-		var enabled: bool = combat_allowed and not (dead or inventory_panel.visible or rift_panel.visible or remaining > 0 or (i < 2 and not has_weapon))
+		var offensive_slots: Array = {"arqueiro": [0, 1, 3], "mago": [0, 1], "healer": [0, 3]}.get(_class_id, [0, 1])
+		var enabled: bool = combat_allowed and not (dead or inventory_panel.visible or rift_panel.visible or run_modal_open() or remaining > 0 or (i in offensive_slots and not has_weapon))
 		slot_buttons[i].automatic = automatic_skills[i]
-		slot_buttons[i].sync(remaining, [6.0, 8.0, 12.0, 7.0][i], enabled)
+		slot_buttons[i].sync(remaining, float(_class_cooldowns[i]), enabled)
 	potion_slot.automatic = potion_auto
 	potion_slot.sync_potion(inventory.potions, not dead and not inventory_panel.visible and inventory.potions > 0 and hp < maximum, potion_reuse)
 	auto_check.set_pressed_no_signal(potion_auto)
@@ -359,9 +535,13 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 	target_panel.visible = is_instance_valid(focus_enemy) and focus_enemy in enemies
 	if target_panel.visible:
-		target_name.text = "Grelim"
+		var is_boss := bool(focus_enemy.get_meta("is_boss", false))
+		target_name.text = str(focus_enemy.get_meta("display_name", "Guardião da Fenda" if is_boss else "Grelim"))
 		target_health.max_value = float(focus_enemy.get_meta("maximum_hp", 60.0))
 		target_health.value = float(focus_enemy.get_meta("hp"))
+		_style_enemy_bar(target_health, is_boss, true)
+		target_panel.offset_left = -140 if is_boss else -120
+		target_panel.offset_right = 140 if is_boss else 120
 	for foe in enemy_bars.keys():
 		if not is_instance_valid(foe) or not foe in enemies:
 			enemy_bars[foe].queue_free()
@@ -393,12 +573,31 @@ func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 			column.add_child(bar)
 			enemy_bars[foe] = column
 		var widget: Control = enemy_bars[foe]
-		widget.get_node("Life").max_value = float(foe.get_meta("maximum_hp", 60.0))
-		var at := foe.global_position + Vector3.UP * 2.05
+		var bar: ProgressBar = widget.get_node("Life")
+		bar.max_value = float(foe.get_meta("maximum_hp", 60.0))
+		var is_boss := bool(foe.get_meta("is_boss", false))
+		_style_enemy_bar(bar, is_boss)
+		var name_label: Label = widget.get_child(0)
+		name_label.text = str(foe.get_meta("display_name", "Guardião da Fenda" if is_boss else "Grelim"))
+		name_label.add_theme_color_override("font_color", Color("f4d28b") if is_boss else Color("eeeeee"))
+		var at := foe.global_position + Vector3.UP * float(foe.get_meta("bar_height", 2.05))
 		widget.visible = not camera.is_position_behind(at) and camera.global_position.distance_to(at) < 40
 		if widget.visible:
-			widget.position = camera.unproject_position(at) - Vector2(40, 26)
-			widget.get_node("Life").value = maxf(0, float(foe.get_meta("hp")))
+			widget.position = camera.unproject_position(at) - Vector2(60 if is_boss else 40, 26)
+			bar.value = maxf(0, float(foe.get_meta("hp")))
+
+func _style_enemy_bar(bar: ProgressBar, is_boss: bool, target: bool = false) -> void:
+	if bar.has_meta("boss_styled") and bool(bar.get_meta("boss_styled")) == is_boss:
+		return
+	bar.set_meta("boss_styled", is_boss)
+	bar.custom_minimum_size = Vector2(280 if is_boss else 240, 11 if is_boss else 9) if target else Vector2(120 if is_boss else 80, 10 if is_boss else 7)
+	var fill := _style(Color("c69a48") if is_boss else Color("ab3033"))
+	fill.set_corner_radius_all(0)
+	fill.content_margin_left = 0
+	fill.content_margin_right = 0
+	fill.content_margin_top = 0
+	fill.content_margin_bottom = 0
+	bar.add_theme_stylebox_override("fill", fill)
 
 func _life_bar(width: float, height: float, color: Color) -> ProgressBar:
 	var bar := ProgressBar.new()

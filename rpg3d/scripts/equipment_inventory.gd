@@ -27,6 +27,8 @@ var last_level := 0
 var gold_label: Label
 var capacity_label: Label
 var level_label: Label
+var class_title: Label
+var player_class_name := "Guerreiro humano"
 var life_label: Label
 var current_name: Label
 var current_description: Label
@@ -141,6 +143,7 @@ func _ready() -> void:
 
 func _character_panel(column: VBoxContainer) -> void:
 	var title := label_for("GUERREIRO HUMANO", 21, true)
+	class_title = title
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
 	level_label = label_for("Guerreiro · Nv. 1", 16)
@@ -301,6 +304,13 @@ func _details_panel(column: VBoxContainer) -> void:
 func set_character_source(model: Node3D) -> void:
 	source = model
 
+func set_player_class(definition: Dictionary) -> void:
+	player_class_name = str(definition.get("name", "Guerreiro humano"))
+	if class_title != null:
+		class_title.text = player_class_name.to_upper()
+	if level_label != null:
+		level_label.text = "%s · Nv. %d" % [player_class_name.trim_suffix(" humano"), maxi(last_level, 1)]
+
 func _visibility_changed() -> void:
 	if viewport == null:
 		return
@@ -369,7 +379,7 @@ func sync_items(inventory: Dictionary, dead: bool, level: int, hp: float, maximu
 	current_hp = hp
 	max_hp = maximum
 	gold_label.text = "●  %d ouro" % inventory.gold
-	level_label.text = "Guerreiro · Nv. %d" % level
+	level_label.text = "%s · Nv. %d" % [player_class_name.trim_suffix(" humano"), level]
 	life_label.text = "Vida  %d / %d" % [ceili(hp), int(maximum)]
 	if refresh:
 		_refresh_items()

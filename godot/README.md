@@ -15,13 +15,17 @@ Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar
 ## O que já funciona
 
 - Classes do conceito: Bounty Hunter (anã/tank), Bishop (humano/healer), Silver Ranger (elfa branca/arqueira), Spellhowler (elfa negra/maga) e Destroyer (orc/guerreiro), com uma habilidade ativa provisória cada. As cinco classes têm imagens próprias inspiradas nas referências visuais fornecidas pelo usuário.
+- Heróis cerca de 50% maiores e campo mais alto, com duas fileiras separadas.
+- Flechas e projéteis mágicos em voo: o dano acontece no impacto.
+- Aproximação, golpe e retorno dos personagens de combate físico; Grelims usam garras.
+- Tiro preciso reforçado, tempestade em área, impacto de machado, proteção e cura em grupo, com efeitos próprios.
 - Dano, cura, proteção, recargas, habilidades automáticas/manuais, derrota e nova tentativa.
 - Três ondas e um chefe por fase; fases seguintes com atributos maiores.
 - Cenário de entrada de vila medieval junto à floresta, com chão em perspectiva; os marcadores de formação aparecem somente na preparação.
 - Adena por vitória, treino até nível 50 e salvamento de níveis, formação, Adena e fase.
 - Arquivo de progresso local em `user://progress.json`, no diretório de dados do aplicativo que o Godot escolhe para seu sistema. O teste de fumaça não lê nem altera esse progresso.
 
-Os números são de teste. As classes seguem os nomes de referência do conceito; nomes pessoais e habilidades definitivas ainda não foram definidos. Os cinco heróis usam PNGs transparentes preparados com geração de imagem a partir das referências fornecidas pelo usuário, sem extração de arquivos de Lineage 2. Os Grelims usam uma adaptação em pixel art do modelo visual enviado pelo usuário; o chefe usa a mesma imagem em tamanho maior. Cada herói e inimigo tem uma pose: repouso com movimento sutil, avanço/inclinação ao atacar, indicação de dano e compressão ao cair são movimentos procedurais. Ainda não são animações desenhadas quadro a quadro; corrida, ataques completos e habilidades animadas por sprite sheet continuam pendentes de produção e aprovação visual.
+Os números são de teste. As classes seguem os nomes de referência do conceito; nomes pessoais e habilidades definitivas ainda não foram definidos. Os cinco heróis usam PNGs transparentes preparados com geração de imagem a partir das referências fornecidas pelo usuário, sem extração de arquivos de Lineage 2. Os Grelims usam uma adaptação em pixel art do modelo visual enviado pelo usuário; o chefe usa a mesma imagem em tamanho maior. Cada herói e inimigo ainda usa uma pose-base: repouso, aproximação, inclinação ao golpear, retorno, indicação de dano e estado caído são movimentos procedurais. Flechas, magia, golpes, cura e proteção têm efeitos desenhados sobre o campo. Ataques são agendados e só aplicam dano ou cura no instante de impacto; uma ação pendente é cancelada se o personagem cair. A pausa interrompe ações e efeitos; as velocidades 1×/2× afetam ambos. Ao terminar a batalha, ações pendentes são canceladas e os efeitos já disparados desaparecem normalmente. Ainda não são animações desenhadas quadro a quadro; corrida, ataques completos e habilidades animadas por sprite sheet continuam pendentes de produção e aprovação visual.
 
 ## Escopo ainda por implementar
 
@@ -41,7 +45,7 @@ godot --headless --path . --editor --import --quit
 godot --headless --path . -- --smoke-test
 ```
 
-O teste executa a simulação real no Godot: formação, troca, treino, dano, cura, recargas, batalha completa, recompensas, derrota e reinício. Retorna código diferente de zero em caso de falha.
+O teste executa a simulação real no Godot: formação, troca, treino, impactos de projéteis e golpes físicos, cura sincronizada, tempestade em área, redução de dano, cancelamento ao cair, pausa de projéteis, recargas, batalha completa, recompensas, limpeza de efeitos após vitória, derrota e reinício. Retorna código diferente de zero em caso de falha.
 
 Se o ambiente de execução bloquear as pastas padrão de configuração, use diretórios graváveis:
 
@@ -51,3 +55,5 @@ XDG_DATA_HOME=/tmp/reload-godot/data XDG_CONFIG_HOME=/tmp/reload-godot/config XD
 ```
 
 `scripts/main.gd` contém as regras e a interface. As definições de heróis estão em `HEROES`, incluindo raça e gênero. Cada herói instancia `scenes/hero_visual.tscn`, com um `Sprite2D` controlado por `scripts/hero_visual.gd`. Os PNGs separados estão em `art/heroes/`; os recursos `.tres` recortam apenas a margem transparente, sem modificar o PNG. `HERO_HEIGHTS` define a escala de apresentação. O próximo passo visual é substituir as poses estáticas por `AnimatedSprite2D` e sprite sheets, preservando as regras de batalha. O progresso existente continua usando os mesmos IDs e formato de salvamento.
+
+`battle_effects.gd` desenha os efeitos em uma camada acima dos personagens e abaixo da interface. O relógio e a aplicação dos impactos ficam em `main.gd`; os efeitos não alteram o arquivo de progresso.

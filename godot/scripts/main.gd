@@ -1,13 +1,13 @@
 extends Node2D
 ## Regras e interface do protótipo. Personagens visuais em scenes/hero_visual.tscn.
 
+const BattleEffects := preload("res://scripts/battle_effects.gd")
 const BATTLE_BACKGROUND := preload("res://art/backgrounds/village_edge.png")
 const SAVE_PATH := "user://progress.json"
 const SkillCircle := preload("res://scripts/skill_circle.gd")
 const GRELIM_TEXTURE := preload("res://art/enemies/grelim.tres")
 const HERO_VISUAL := preload("res://scenes/hero_visual.tscn")
-const HERO_HEIGHTS := [78.0, 92.0, 96.0, 96.0, 100.0]
-const SKILL_OFFSET := Vector2(46, -148)
+const HERO_HEIGHTS := [120.0, 142.0, 148.0, 148.0, 156.0]
 const HERO_TEXTURES := [
 	preload("res://art/heroes/bounty_hunter.tres"),
 	preload("res://art/heroes/bishop.tres"),
@@ -22,10 +22,12 @@ const HEROES := [
 	{"name": "Spellhowler", "race": "Elfa negra", "gender": "Mulher", "role": "Maga", "kind": "mage", "color": Color("b89ce5"), "hp": 125.0, "atk": 27.0, "rate": 1.65, "skill": "Tempestade", "description": "Atinge todos os inimigos vivos."},
 	{"name": "Destroyer", "race": "Orc", "gender": "Homem", "role": "Guerreiro", "kind": "warrior", "color": Color("db9277"), "hp": 200.0, "atk": 22.0, "rate": 1.4, "skill": "Impacto", "description": "Golpe poderoso no inimigo da frente."},
 ]
-const SLOT_POSITIONS := [Vector2(456, 360), Vector2(456, 500), Vector2(303, 360), Vector2(303, 500), Vector2(150, 360), Vector2(150, 500)]
-const FOE_POSITIONS := [Vector2(825, 360), Vector2(825, 500), Vector2(985, 360), Vector2(985, 500), Vector2(1135, 360), Vector2(1135, 500)]
+const SLOT_POSITIONS := [Vector2(456, 390), Vector2(456, 600), Vector2(303, 390), Vector2(303, 600), Vector2(150, 390), Vector2(150, 600)]
+const FOE_POSITIONS := [Vector2(825, 390), Vector2(825, 600), Vector2(985, 390), Vector2(985, 600), Vector2(1135, 390), Vector2(1135, 600)]
 const WAVE_NAMES := ["Primeira onda", "Segunda onda", "Terceira onda", "Chefe da região"]
 
+var effect_layer: Node2D
+var drag_offset := Vector2.ZERO
 var enemy_visuals: Array[Node2D] = []
 var hero_visuals: Array[Node2D] = []
 var hero_visual_root: Node2D
@@ -70,6 +72,11 @@ func _ready() -> void:
 	_build_ui()
 	_prepare_heroes()
 	_create_hero_visuals()
+	effect_layer = BattleEffects.new()
+	effect_layer.name = "BattleEffects"
+	effect_layer.items = effects
+	add_child(effect_layer)
+	move_child(effect_layer, 1)
 	_preview_foes()
 	_message("Arraste os heróis entre os círculos. A frente recebe os ataques primeiro.")
 	_refresh_ui()
@@ -101,7 +108,7 @@ func _rebuild_enemy_visuals() -> void:
 		var visual := HERO_VISUAL.instantiate()
 		visual.name = "ChefeGrelim" if foe.kind == "boss" else "Grelim" + str(foe.id)
 		visual.artwork = GRELIM_TEXTURE
-		visual.character_height = 136.0 if foe.kind == "boss" else 90.0
+		visual.character_height = 188.0 if foe.kind == "boss" else 116.0
 		visual.attack_direction = -1.0
 		visual.phase = foe.id * 0.7
 		hero_visual_root.add_child(visual)
@@ -109,10 +116,10 @@ func _rebuild_enemy_visuals() -> void:
 
 func _sync_hero_visuals(delta: float) -> void:
 	for i in range(hero_visuals.size()):
-		hero_visuals[i].position = drag_position if dragging == i else _unit_position(heroes[i], false)
+		hero_visuals[i].position = drag_position if dragging == i else _visual_position(heroes[i], false)
 		hero_visuals[i].sync_visual(heroes[i], delta, paused)
 	for i in range(enemy_visuals.size()):
-		enemy_visuals[i].position = _unit_position(foes[i], true)
+		enemy_visuals[i].position = _visual_position(foes[i], true)
 		enemy_visuals[i].sync_visual(foes[i], delta, paused)
 
 func _label(text: String, position: Vector2, size: Vector2, font_size: int, color := Color("e6ecea")) -> Label:
@@ -160,27 +167,27 @@ func _build_ui() -> void:
 	title_label = _label("", Vector2(38, 109), Vector2(810, 36), 23)
 	status_label = _label("", Vector2(38, 150), Vector2(1190, 28), 16, Color("9fb8b8"))
 	start_button = _button("Iniciar batalha", Vector2(1020, 109), Vector2(220, 44), _start_battle)
-	_label("SUA EQUIPE", Vector2(55, 195), Vector2(530, 30), 16, Color("9fd0bc"))
-	_label("INIMIGOS", Vector2(795, 195), Vector2(400, 30), 16, Color("dfa29b"))
-	_label("COLEÇÃO  ·  Selecione um herói para treinar", Vector2(38, 558), Vector2(780, 28), 15, Color("9fb8b8"))
+	_label("COLEÇÃO  ·  Selecione um herói para treinar", Vector2(38, 627), Vector2(780, 28), 15, Color("9fb8b8"))
 	for i in range(HEROES.size()):
 		var id := i
-		cards.append(_button("", Vector2(38 + i * 177, 598), Vector2(167, 70), func() -> void: _select_hero(id)))
+		cards.append(_button("", Vector2(38 + i * 177, 661), Vector2(167, 54), func() -> void: _select_hero(id)))
 		var circle := SkillCircle.new()
 		circle.kind = HEROES[i].kind
 		circle.accent = HEROES[i].color
 		circle.activated.connect(func() -> void: _manual_skill(id))
 		interface.add_child(circle)
 		skill_circles.append(circle)
-	_label("Habilidades: clique no círculo acima do herói. Vermelho = recarga em segundos.", Vector2(38, 685), Vector2(880, 28), 14, Color("9fb8b8"))
-	detail_label = _label("", Vector2(38, 736), Vector2(890, 48), 14, Color("b7cac8"))
-	train_button = _button("Treinar", Vector2(942, 599), Vector2(298, 42), _train_selected)
-	pause_button = _button("Pausar", Vector2(942, 652), Vector2(140, 34), _toggle_pause)
-	auto_button = _button("Auto: sim", Vector2(1094, 652), Vector2(146, 34), _toggle_auto)
-	speed_button = _button("Velocidade: 1×", Vector2(942, 699), Vector2(298, 34), _toggle_speed)
-	log_label = _label("", Vector2(650, 550), Vector2(590, 44), 12, Color("b8c5ba"))
+	_label("Habilidades: clique no círculo acima do herói. Vermelho = recarga em segundos.", Vector2(38, 718), Vector2(880, 28), 14, Color("9fb8b8"))
+	detail_label = _label("", Vector2(38, 746), Vector2(890, 48), 14, Color("b7cac8"))
+	train_button = _button("Treinar", Vector2(942, 661), Vector2(298, 38), _train_selected)
+	pause_button = _button("Pausar", Vector2(942, 708), Vector2(140, 34), _toggle_pause)
+	auto_button = _button("Auto: sim", Vector2(1094, 708), Vector2(146, 34), _toggle_auto)
+	speed_button = _button("Velocidade: 1×", Vector2(942, 752), Vector2(298, 34), _toggle_speed)
+	log_label = _label("", Vector2(700, 624), Vector2(540, 30), 12, Color("b8c5ba"))
+	log_label.clip_text = true
+	log_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	log_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	log_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_label("Progresso salvo automaticamente neste dispositivo", Vector2(942, 751), Vector2(300, 35), 11, Color("7e9598"))
 
 func _prepare_heroes() -> void:
 	heroes.clear()
@@ -240,17 +247,116 @@ func _front_hero() -> Dictionary:
 
 func _unit_position(unit: Dictionary, enemy: bool) -> Vector2:
 	if enemy:
-		return Vector2(965, 400) if unit.kind == "boss" else FOE_POSITIONS[unit.id]
+		return Vector2(965, 520) if unit.kind == "boss" else FOE_POSITIONS[unit.id]
 	return SLOT_POSITIONS[slots.find(int(unit.id))]
 
-func _damage(source: Dictionary, target: Dictionary, amount: float, target_is_enemy: bool) -> void:
+func _unit_height(unit: Dictionary, enemy: bool) -> float:
+	return (188.0 if unit.kind == "boss" else 116.0) if enemy else HERO_HEIGHTS[unit.id]
+
+func _skill_position(id: int, foot: Vector2) -> Vector2:
+	return foot + Vector2(46, -HERO_HEIGHTS[id] - 53)
+
+func _visual_position(unit: Dictionary, enemy: bool) -> Vector2:
+	var foot := _unit_position(unit, enemy)
+	var clock := float(unit.get("action_clock", 0))
+	if unit.hp > 0 and clock > 0 and unit.has("move_to"):
+		var progress := 1.0 - clock / maxf(0.01, unit.get("action_length", 0.65))
+		foot = foot.lerp(unit.move_to, sin(clampf(progress, 0, 1) * PI))
+	return foot
+
+func _effect(kind: String, origin: Vector2, target: Vector2, color: Color, duration: float, hit_time: float, impact := Callable(), actor: Dictionary = {}) -> Dictionary:
+	var item := {"kind": kind, "from": origin, "to": target, "color": color, "duration": duration, "age": 0.0, "hit_time": hit_time, "hit": false, "impact": impact, "actor": actor}
+	effects.append(item)
+	return item
+
+func _number(pos: Vector2, text: String, color: Color) -> void:
+	var item := _effect("number", pos, pos, color, 0.85, 0)
+	item["text"] = text
+
+func _step_effects(dt: float) -> void:
+	for i in range(effects.size() - 1, -1, -1):
+		var item := effects[i]
+		item.age += dt
+		if not item.hit and item.age >= item.hit_time:
+			item.hit = true
+			var actor: Dictionary = item.actor
+			if item.impact.is_valid() and (actor.is_empty() or actor.hp > 0):
+				item.impact.call()
+		if item.age >= item.duration:
+			effects.remove_at(i)
+
+func _decay_visuals(dt: float) -> void:
+	for unit in heroes + foes:
+		unit["hurt"] = maxf(0, float(unit.get("hurt", 0)) - dt)
+		unit["pulse"] = maxf(0, float(unit.get("pulse", 0)) - dt)
+		unit["action_clock"] = maxf(0, float(unit.get("action_clock", 0)) - dt)
+
+func _finish_actions() -> void:
+	for i in range(effects.size() - 1, -1, -1):
+		if not effects[i].hit and effects[i].impact.is_valid():
+			effects.remove_at(i)
+	for unit in heroes + foes:
+		unit["action_clock"] = 0.0
+		unit["pulse"] = 0.0
+		unit["guard"] = 0.0
+
+func _queue_attack(source: Dictionary, target: Dictionary, amount: float, target_is_enemy: bool, special := false) -> bool:
+	if target.is_empty() or source.hp <= 0 or target.hp <= 0:
+		return false
+	var kind := "claw"
+	var color := Color("edb18a")
+	match source.kind:
+		"archer":
+			kind = "charged_arrow" if special else "arrow"
+			color = Color("ffe19b")
+		"mage":
+			kind = "storm" if special else "orb"
+			color = Color("c1a0ff")
+		"healer":
+			kind = "spark"
+			color = Color("edebbd")
+		"tank":
+			kind = "hammer"
+			color = Color("a8dcff")
+		"warrior":
+			kind = "cleave" if special else "axe"
+			color = Color("ffb773")
+	var melee := kind in ["hammer", "axe", "cleave", "claw"]
+	var delay := 0.32 if melee else 0.44
+	var duration := 0.68 if melee else 0.82
+	if kind == "storm":
+		delay = 0.5
+		duration = 1.0
+	source["action_clock"] = duration
+	source["action_length"] = duration
+	source["action_style"] = kind
+	source["pulse"] = 0.3
+	var source_foot := _unit_position(source, not target_is_enemy)
+	var target_foot := _unit_position(target, target_is_enemy)
+	if melee:
+		source["move_to"] = target_foot + Vector2(-75 if target_is_enemy else 75, 0)
+	else:
+		source.erase("move_to")
+	var origin := source_foot + Vector2(0, -_unit_height(source, not target_is_enemy) * 0.65)
+	var destination := target_foot + Vector2(0, -_unit_height(target, target_is_enemy) * 0.55)
+	_effect(kind, origin, destination, color, duration, delay, func() -> void: _apply_damage(source, target, amount, target_is_enemy), source)
+	return true
+
+func _queue_heal(source: Dictionary, target: Dictionary, amount: float) -> void:
+	source["action_clock"] = 0.65
+	source["action_length"] = 0.65
+	source["action_style"] = "heal"
+	source.erase("move_to")
+	var destination := _unit_position(target, false) + Vector2(0, -45)
+	_effect("heal", _unit_position(source, false), destination, Color("a1f4ac"), 1.0, 0.45, func() -> void: _heal(target, amount), source)
+
+func _apply_damage(source: Dictionary, target: Dictionary, amount: float, target_is_enemy: bool) -> void:
 	if target.is_empty() or target.hp <= 0.0:
 		return
 	var actual := amount * (0.35 if target.guard > 0.0 else 1.0)
 	target.hp = maxf(0.0, target.hp - actual)
 	target["hurt"] = 0.18
-	source.pulse = 0.18
-	effects.append({"from": _unit_position(source, not target_is_enemy) + Vector2(0, -40), "to": _unit_position(target, target_is_enemy) + Vector2(0, -40), "text": "−" + str(roundi(actual)), "color": Color("efd398") if target_is_enemy else Color("ee9891"), "life": 0.7})
+	_number(_unit_position(target, target_is_enemy) + Vector2(0, -_unit_height(target, target_is_enemy) * 0.7), "−" + str(roundi(actual)), Color("efd398") if target_is_enemy else Color("ee9891"))
 
 func _heal(unit: Dictionary, amount: float) -> void:
 	if unit.hp <= 0.0:
@@ -258,8 +364,7 @@ func _heal(unit: Dictionary, amount: float) -> void:
 	var actual := minf(amount, unit.max_hp - unit.hp)
 	unit.hp += actual
 	if actual > 0.1:
-		var pos := _unit_position(unit, false) + Vector2(0, -40)
-		effects.append({"from": pos, "to": pos, "text": "+" + str(roundi(actual)), "color": Color("94dfab"), "life": 0.7})
+		_number(_unit_position(unit, false) + Vector2(0, -_unit_height(unit, false) * 0.7), "+" + str(roundi(actual)), Color("94dfab"))
 
 func _use_skill(id: int) -> bool:
 	var hero := heroes[id]
@@ -274,14 +379,15 @@ func _use_skill(id: int) -> bool:
 		if not injured:
 			return false
 		for ally in _living(heroes):
-			_heal(ally, hero.atk * 4.0)
+			_queue_heal(hero, ally, hero.atk * 4.0)
 	elif hero.kind == "tank":
 		hero.guard = 5.0
+		_effect("barrier", _unit_position(hero, false), _unit_position(hero, false) + Vector2(0, -HERO_HEIGHTS[id] * 0.5), Color("a4d9ff"), 0.9, 0.01)
 	elif hero.kind == "mage":
 		for enemy in enemies_alive:
-			_damage(hero, enemy, hero.atk * 2.0, true)
+			_queue_attack(hero, enemy, hero.atk * 2.0, true, true)
 	else:
-		_damage(hero, enemies_alive[0], hero.atk * (3.8 if hero.kind == "archer" else 3.0), true)
+		_queue_attack(hero, enemies_alive[0], hero.atk * (3.8 if hero.kind == "archer" else 3.0), true, true)
 	hero.cooldown = 9.0
 	hero.pulse = 0.3
 	_message(hero.name + ": " + HEROES[id].skill)
@@ -294,18 +400,26 @@ func _manual_skill(id: int) -> void:
 func _process(delta: float) -> void:
 	if smoke_test:
 		return
-	if mode == "battle" and not paused:
-		_tick(minf(delta, 0.1) * speed)
-	_sync_hero_visuals(delta)
+	_advance(delta)
+	_sync_hero_visuals(delta * speed)
+	effect_layer.queue_redraw()
 	_refresh_ui()
 	queue_redraw()
 
+func _advance(delta: float) -> void:
+	if paused:
+		return
+	var dt := minf(delta, 0.1) * speed
+	if mode == "battle":
+		_tick(dt)
+	else:
+		_step_effects(dt)
+		_decay_visuals(dt)
+
 func _tick(dt: float) -> void:
 	elapsed += dt
-	for i in range(effects.size() - 1, -1, -1):
-		effects[i].life -= dt
-		if effects[i].life <= 0.0:
-			effects.remove_at(i)
+	_step_effects(dt)
+	_decay_visuals(dt)
 	if transition > 0.0:
 		transition -= dt
 		if transition <= 0.0:
@@ -315,36 +429,33 @@ func _tick(dt: float) -> void:
 	for hero in heroes:
 		if hero.hp <= 0.0:
 			continue
-		hero["hurt"] = maxf(0.0, float(hero.get("hurt", 0)) - dt)
 		hero.guard = maxf(0.0, hero.guard - dt)
-		hero.pulse = maxf(0.0, hero.pulse - dt)
 		hero.cooldown = maxf(0.0, hero.cooldown - dt)
 		if automatic:
 			_use_skill(hero.id)
 		hero.attack_clock -= dt
 		var alive := _living(foes)
-		if hero.attack_clock <= 0.0 and not alive.is_empty():
+		if hero.attack_clock <= 0.0 and float(hero.get("action_clock", 0)) <= 0.0 and not alive.is_empty():
 			hero.attack_clock = hero.rate
 			var healed := false
 			if hero.kind == "healer":
 				var allies := _living(heroes)
 				allies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.hp / a.max_hp < b.hp / b.max_hp)
 				if allies[0].hp < allies[0].max_hp * 0.92:
-					_heal(allies[0], hero.atk * 2.2)
+					_queue_heal(hero, allies[0], hero.atk * 2.2)
 					healed = true
 			if not healed:
-				_damage(hero, alive[0], hero.atk, true)
+				_queue_attack(hero, alive[0], hero.atk, true)
 	for foe in foes:
 		if foe.hp <= 0.0:
 			continue
-		foe["hurt"] = maxf(0.0, float(foe.get("hurt", 0)) - dt)
-		foe.pulse = maxf(0.0, foe.pulse - dt)
 		foe.attack_clock -= dt
-		if foe.attack_clock <= 0.0:
+		if foe.attack_clock <= 0.0 and float(foe.get("action_clock", 0)) <= 0.0:
 			foe.attack_clock = foe.rate
-			_damage(foe, _front_hero(), foe.atk, false)
+			_queue_attack(foe, _front_hero(), foe.atk, false)
 	if _living(heroes).is_empty():
 		mode = "defeat"
+		_finish_actions()
 		_message("Equipe derrotada. Treine seus heróis ou ajuste a formação e tente novamente.")
 	elif _living(foes).is_empty():
 		if wave == 3:
@@ -352,6 +463,7 @@ func _tick(dt: float) -> void:
 			coins += reward
 			stage += 1
 			mode = "victory"
+			_finish_actions()
 			_message("Vitória! +" + str(reward) + " Adena. Próxima fase desbloqueada.")
 			_save_progress()
 		else:
@@ -394,7 +506,7 @@ func _message(text: String) -> void:
 	if messages.size() > 2:
 		messages.pop_front()
 	if is_instance_valid(log_label):
-		log_label.text = "\n".join(messages)
+		log_label.text = messages[-1]
 
 func _refresh_ui() -> void:
 	wallet_label.text = str(coins) + " ADENA   ·   FASE " + str(stage)
@@ -414,8 +526,8 @@ func _refresh_ui() -> void:
 		var hero := heroes[i] if heroes.size() > i else {}
 		if not hero.is_empty():
 			var circle = skill_circles[i]
-			var pos := drag_position if dragging == i else _unit_position(hero, false)
-			circle.position = pos + SKILL_OFFSET
+			var pos := drag_position if dragging == i else _visual_position(hero, false)
+			circle.position = _skill_position(i, pos)
 			circle.remaining = maxf(0, hero.cooldown)
 			circle.cooling = mode == "battle" and hero.cooldown > 0 and hero.hp > 0
 			circle.fallen = hero.hp <= 0
@@ -445,9 +557,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			for i in range(slots.size()):
-				if slots[i] >= 0 and Rect2(SLOT_POSITIONS[i] + Vector2(-55, -110), Vector2(110, 125)).has_point(event.position):
+				if slots[i] >= 0 and Rect2(SLOT_POSITIONS[i] + Vector2(-70, -HERO_HEIGHTS[slots[i]]), Vector2(140, HERO_HEIGHTS[slots[i]] + 15)).has_point(event.position):
 					dragging = slots[i]
-					drag_position = event.position + Vector2(0, 28)
+					drag_offset = SLOT_POSITIONS[i] - event.position
+					drag_position = event.position + drag_offset
 					_select_hero(dragging)
 					break
 		else:
@@ -458,16 +571,16 @@ func _unhandled_input(event: InputEvent) -> void:
 						break
 			dragging = -1
 	elif event is InputEventMouseMotion and dragging >= 0:
-		drag_position = event.position + Vector2(0, 28)
+		drag_position = event.position + drag_offset
 	queue_redraw()
 
 func _draw() -> void:
 	# O cenário ocupa o campo inteiro; cabeçalho e coleção têm fundos próprios.
-	draw_texture_rect(BATTLE_BACKGROUND, Rect2(0, 180, 1280, 370), false)
+	draw_texture_rect(BATTLE_BACKGROUND, Rect2(0, 180, 1280, 440), false)
 	draw_rect(Rect2(0, 97, 1280, 83), Color("101d24"))
 	draw_rect(Rect2(0, 180, 1280, 43), Color(0.025, 0.045, 0.05, 0.38))
-	draw_rect(Rect2(0, 548, 1280, 252), Color("0b141b"))
-	draw_line(Vector2(0, 548), Vector2(1280, 548), Color("7c7451"), 2)
+	draw_rect(Rect2(0, 620, 1280, 180), Color("0b141b"))
+	draw_line(Vector2(0, 620), Vector2(1280, 620), Color("7c7451"), 2)
 	if mode != "battle":
 		for i in range(SLOT_POSITIONS.size()):
 			var pos: Vector2 = SLOT_POSITIONS[i]
@@ -477,19 +590,12 @@ func _draw() -> void:
 			if slots[i] < 0:
 				draw_string(ThemeDB.fallback_font, pos + Vector2(-22, -16), "VAZIO", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("e4d9b4"))
 	for foe in foes:
-		_draw_unit(foe, _unit_position(foe, true), true)
+		_draw_unit(foe, _visual_position(foe, true), true)
 	for hero in heroes:
 		if int(hero.id) != dragging:
-			_draw_unit(hero, _unit_position(hero, false), false)
+			_draw_unit(hero, _visual_position(hero, false), false)
 	if dragging >= 0:
 		_draw_unit(heroes[dragging], drag_position, false)
-	for effect in effects:
-		var opacity: float = clampf(effect.life / 0.7, 0.0, 1.0)
-		var color: Color = effect.color
-		color.a = opacity
-		if effect.life > 0.48:
-			draw_line(effect.from, effect.to, color, 3)
-		draw_string(ThemeDB.fallback_font, effect.to + Vector2(-12, -30 - (0.7 - effect.life) * 45), effect.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, color)
 
 func _draw_unit(unit: Dictionary, pos: Vector2, enemy: bool) -> void:
 	var alive: bool = unit.hp > 0
@@ -498,9 +604,9 @@ func _draw_unit(unit: Dictionary, pos: Vector2, enemy: bool) -> void:
 	draw_circle(Vector2.ZERO, 25 * size_factor / 2.15, Color(0, 0, 0, 0.24))
 	draw_set_transform(Vector2.ZERO)
 	if unit.guard > 0:
-		draw_arc(pos + Vector2(0, -45), 57, 0, TAU, 36, Color("a6d5f0"), 3)
+		draw_arc(pos + Vector2(0, -_unit_height(unit, enemy) * 0.5), _unit_height(unit, enemy) * 0.6, 0, TAU, 48, Color("a6d5f0"), 3)
 	var bar_width := 100.0 if unit.kind == "boss" else 86.0
-	var bar_pos := pos + Vector2(-bar_width / 2, -57 * size_factor if enemy else -110.0)
+	var bar_pos := pos + Vector2(-bar_width / 2, -_unit_height(unit, enemy) - 14)
 	var name_width := maxf(bar_width, ThemeDB.fallback_font.get_string_size(unit.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 8)
 	draw_rect(Rect2(bar_pos + Vector2(-4, -21), Vector2(name_width, 20)), Color(0.025, 0.04, 0.045, 0.82))
 	draw_rect(Rect2(bar_pos, Vector2(bar_width, 6)), Color("293735"))
@@ -552,6 +658,58 @@ func _check(condition: bool, explanation: String) -> void:
 		return
 	print("PASS: " + explanation)
 
+func _test_combat_timing() -> void:
+	mode = "formation"
+	_start_battle()
+	automatic = false
+	var target := foes[0]
+	var initial_hp: float = target.hp
+	_queue_attack(heroes[2], target, 10, true)
+	_check(target.hp == initial_hp, "lançar flecha não causa dano instantâneo")
+	_step_effects(0.2)
+	_check(target.hp == initial_hp, "flecha em voo ainda não atingiu o alvo")
+	_step_effects(0.25)
+	_check(is_equal_approx(target.hp, initial_hp - 10), "flecha causa dano ao chegar")
+	effects.clear()
+	_queue_attack(heroes[0], target, 10, true)
+	_decay_visuals(0.34)
+	_check(_visual_position(heroes[0], false).distance_to(_unit_position(heroes[0], false)) > 100, "golpe físico aproxima o herói do alvo")
+	_step_effects(0.34)
+	_check(is_equal_approx(target.hp, initial_hp - 20), "golpe físico aplica dano no contato")
+	_decay_visuals(0.5)
+	_check(_visual_position(heroes[0], false) == _unit_position(heroes[0], false), "herói retorna à formação após o golpe")
+	effects.clear()
+	initial_hp = target.hp
+	_queue_attack(heroes[4], target, 10, true)
+	heroes[4].hp = 0.0
+	_step_effects(1)
+	_check(target.hp == initial_hp, "personagem derrotado não conclui ataque pendente")
+	mode = "formation"
+	_start_battle()
+	heroes[3].cooldown = 0.0
+	var original_hp: float = foes[0].hp
+	_use_skill(3)
+	_step_effects(0.51)
+	var all_hit := true
+	for foe in foes:
+		all_hit = all_hit and is_equal_approx(foe.hp, original_hp - heroes[3].atk * 2)
+	_check(all_hit, "tempestade atinge todos os inimigos vivos")
+	heroes[0].cooldown = 0.0
+	_use_skill(0)
+	var tank_hp: float = heroes[0].hp
+	_apply_damage(foes[0], heroes[0], 20, false)
+	_check(is_equal_approx(tank_hp - heroes[0].hp, 7), "proteção reduz o dano recebido")
+	effects.clear()
+	_queue_attack(heroes[2], foes[0], 10, true)
+	paused = true
+	_advance(0.1)
+	_check(effects[0].age == 0.0, "pausa interrompe o voo do projétil")
+	paused = false
+	_advance(0.1)
+	_check(effects[0].age > 0.0, "continuar retoma o projétil")
+	automatic = true
+	mode = "formation"
+
 func _run_smoke_test() -> void:
 	_check(heroes.size() == 5 and slots.size() == 6, "cinco heróis em seis posições")
 	_check(enemy_visuals.size() == 3 and enemy_visuals[0].body.texture == GRELIM_TEXTURE, "Grelims usam a arte adaptada")
@@ -577,19 +735,22 @@ func _run_smoke_test() -> void:
 	_move_hero(0, 3)
 	_check(slots[3] == 0 and slots[0] == -1, "mover para posição vazia")
 	_refresh_ui()
-	_check(skill_circles[0].position == SLOT_POSITIONS[3] + SKILL_OFFSET, "círculo acompanha o herói após mover a formação")
+	_check(skill_circles[0].position == _skill_position(0, SLOT_POSITIONS[3]), "círculo acompanha o herói após mover a formação")
 	_move_hero(0, 1)
 	_check(slots[1] == 0 and slots[3] == 4, "trocar dois heróis")
 	slots = [0, 4, 2, -1, 1, 3]
 	var before := coins
 	_train_selected()
 	_check(levels[0] == 2 and coins == before - 25, "treino cobra Adena e aumenta nível")
+	_test_combat_timing()
 	_start_battle()
 	var hp: float = heroes[0].hp
-	_damage(foes[0], heroes[0], 20, false)
+	_apply_damage(foes[0], heroes[0], 20, false)
 	_check(heroes[0].hp < hp, "dano altera vida")
 	heroes[1].cooldown = 0.0
-	_check(_use_skill(1) and heroes[0].hp > hp - 20, "healer recupera vida")
+	_check(_use_skill(1), "healer inicia habilidade de cura")
+	_step_effects(0.6)
+	_check(heroes[0].hp > hp - 20, "cura é aplicada no momento do efeito")
 	var level_before := levels[0]
 	_train_selected()
 	_check(levels[0] == level_before, "treino bloqueado durante batalha")
@@ -618,8 +779,11 @@ func _run_smoke_test() -> void:
 			break
 		_tick(0.05)
 	_check(mode == "victory" and stage == 2 and wave == 3, "batalha completa: três ondas, chefe e próxima fase")
-	_check(enemy_visuals.size() == 1 and enemy_visuals[0].character_height > 90, "chefe aparece sozinho e maior que o Grelim comum")
+	_check(enemy_visuals.size() == 1 and enemy_visuals[0].character_height > 116, "chefe aparece sozinho e maior que o Grelim comum")
 	_check(coins > before - 25, "vitória concede recompensa")
+	for i in range(20):
+		_advance(0.1)
+	_check(effects.is_empty(), "efeitos desaparecem após vitória sem congelar")
 	_start_battle()
 	for hero in heroes:
 		hero.hp = 0.0

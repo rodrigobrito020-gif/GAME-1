@@ -14,7 +14,8 @@ Protótipo de RPG em equipe no **Godot 4.6.3**, com personagens provisórios.
 
 - Cinco heróis em seis posições, com formação por arraste.
 - Primeiras artes de Bounty Hunter, Bishop, Silver Ranger, Spellhowler e Destroyer, adaptadas das referências do projeto.
-- Movimentos básicos de repouso, ataque e dano; animações quadro a quadro ainda pendentes.
+- Heróis cerca de 50% maiores; movimentos de aproximação, ataque e retorno.
+- Flechas, magia, cura e proteção com efeitos próprios e impactos sincronizados; animações quadro a quadro ainda pendentes.
 - Combate automático e habilidades manuais com recarga.
 - Três ondas de Grelims adaptados da referência visual e um chefe maior por fase.
 - Cenário de vila medieval junto à floresta, com chão em perspectiva.

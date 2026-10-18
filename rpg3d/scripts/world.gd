@@ -1,6 +1,7 @@
 extends Node3D
 
 const RPGHud := preload("res://scripts/rpg_hud.gd")
+const LONG_SWORD := preload("res://assets/long_sword.glb")
 const FIGHTER := preload("res://assets/human_fighter.glb")
 const GrelimVisual := preload("res://scripts/grelim_visual.gd")
 const OpenField := preload("res://scripts/open_field.gd")
@@ -140,14 +141,9 @@ func _equip_sword(model: Node3D) -> void:
 	sword.name = "Sword"
 	sword.scale = Vector3.ONE / 0.038
 	sword_attachment.add_child(sword)
-	for part in [[Vector3(0, 0.63, 0), Vector3(0.09, 0.95, 0.035), Color("bdccd4")], [Vector3(0, 0.13, 0), Vector3(0.32, 0.06, 0.08), Color("a78845")], [Vector3(0, 0.01, 0), Vector3(0.07, 0.2, 0.07), Color("493d31")]]:
-		var mesh := MeshInstance3D.new()
-		var box := BoxMesh.new()
-		box.size = part[1]
-		mesh.mesh = box
-		mesh.position = part[0]
-		mesh.material_override = _material(part[2])
-		sword.add_child(mesh)
+	var blade := LONG_SWORD.instantiate()
+	blade.name = "OriginalLongSword"
+	sword.add_child(blade)
 
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	var results: Array[MeshInstance3D] = []
@@ -506,6 +502,7 @@ func _test() -> void:
 		_check(animation.current_animation.ends_with(action), "animação Fighter: " + action)
 	_check(enemies[0].get_node("GrelimVisual").limbs.size() == 4, "Grelims têm corpo e membros 3D no lugar das esferas")
 	_check(sword_attachment.bone_name == "Weapon_R_Bone", "espada vinculada à mão pelo osso da arma")
+	_check(sword_attachment.has_node("Sword/OriginalLongSword"), "espada usa modelo original do cliente")
 	_check(OpenField.SIZE == 1000.0 and has_node("OpenField/FieldCollision"), "campo aberto de 1000 por 1000 metros com chão físico")
 	await get_tree().physics_frame
 	enemies[0].position = player.position + Vector3(0, 0, -2)
@@ -674,6 +671,9 @@ func _test_equipment() -> void:
 		_check(correct, "retirar equipamento restaura malha base: " + slot)
 		_use_item(slot)
 	for mesh in character_model.find_children("*", "MeshInstance3D", true, false):
+		if "_m000_f" in str(mesh.name).to_lower():
+			var face := mesh.get_active_material(0) as StandardMaterial3D
+			_check(face != null and face.albedo_texture != null, "rosto usa textura original do LineageFaceTex")
 		if "_m00_ah" in str(mesh.name).to_lower() or "_m00_bh" in str(mesh.name).to_lower():
 			var hair := mesh.get_active_material(0) as StandardMaterial3D
 			_check(hair.albedo_texture != null and hair.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR, "cabelo usa textura e recorte alpha")

@@ -1,0 +1,10 @@
+{
+  "model_package": "LineageWeapons.ukx",
+  "model_object": "long_sword_m00_wp",
+  "texture_package": "LineageWeaponsTex.utx",
+  "texture_object": "long_sword_t00_wp",
+  "texture_package_crc32": "cf4d1bf9",
+  "model_sha256": "c51e05104b8b24f86806ce3cc8b3c87f14f8e0d078acdf1b43e9faf85c25fe36",
+  "attachment_bone": "Weapon_R_Bone",
+  "original_units_to_meters": 0.038
+}

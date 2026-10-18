@@ -187,7 +187,7 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	threshold_slider.set_value_no_signal(potion_threshold)
 	threshold_label.text = "Usar ao atingir %d%% de vida ou menos" % int(potion_threshold)
 	inventory_info.text = "Ouro: %d · Espada %s" % [inventory.gold, "equipada" if inventory.equipped else "guardada"]
-	item_buttons[0].text = "Espada\n%s" % ("Equipada" if inventory.equipped else "Equipar")
+	item_buttons[0].text = "Long Sword\n%s" % ("Equipada" if inventory.equipped else "Equipar")
 	item_buttons[0].disabled = dead
 	item_buttons[1].text = "Poção ×%d\nUsar" % inventory.potions
 	item_buttons[1].disabled = dead or inventory.potions == 0 or hp >= maximum

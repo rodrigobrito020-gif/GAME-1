@@ -14,13 +14,13 @@ Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar
 
 ## O que já funciona
 
-- Tank, healer, arqueira, maga e guerreiro, com uma habilidade ativa provisória cada.
+- Classes do conceito: Bounty Hunter (anã/tank), Bishop (humano/healer), Silver Ranger (elfa branca/arqueira), Spellhowler (elfa negra/maga) e Destroyer (orc/guerreiro), com uma habilidade ativa provisória cada. A arte continua genérica.
 - Dano, cura, proteção, recargas, habilidades automáticas/manuais, derrota e nova tentativa.
 - Três ondas e um chefe por fase; fases seguintes com atributos maiores.
 - Adena por vitória, treino até nível 50 e salvamento de níveis, formação, Adena e fase.
 - Arquivo de progresso local em `user://progress.json`, no diretório de dados do aplicativo que o Godot escolhe para seu sistema. O teste de fumaça não lê nem altera esse progresso.
 
-Os números são de teste. Nomes de habilidades e heróis são provisórios. Os personagens são desenhos geométricos próprios feitos pelo código, sem assets de Lineage 2 ou de outros jogos. Um pequeno avanço e os efeitos de combate indicam os ataques; animações por sprite sheet e arte final ainda serão integradas.
+Os números são de teste. As classes seguem os nomes de referência do conceito; nomes pessoais e habilidades definitivas ainda não foram definidos. Os personagens são desenhos geométricos próprios feitos pelo código, sem assets de Lineage 2 ou de outros jogos. Um pequeno avanço e os efeitos de combate indicam os ataques; animações por sprite sheet e arte final ainda serão integradas.
 
 ## Escopo ainda por implementar
 

@@ -4,11 +4,11 @@ extends Node2D
 const SAVE_PATH := "user://progress.json"
 const SkillCircle := preload("res://scripts/skill_circle.gd")
 const HEROES := [
-	{"name": "Guardião", "role": "Tank", "kind": "tank", "color": Color("77b5d4"), "hp": 240.0, "atk": 15.0, "rate": 1.4, "skill": "Muralha", "description": "Protege a si mesmo por 5 segundos."},
-	{"name": "Restaurador", "role": "Healer", "kind": "healer", "color": Color("8ad3a2"), "hp": 140.0, "atk": 12.0, "rate": 1.7, "skill": "Renovar", "description": "Cura todos os aliados vivos."},
-	{"name": "Batedora", "role": "Arqueira", "kind": "archer", "color": Color("e3ba72"), "hp": 145.0, "atk": 23.0, "rate": 1.15, "skill": "Tiro preciso", "description": "Causa dano elevado em um alvo."},
-	{"name": "Elementalista", "role": "Maga", "kind": "mage", "color": Color("b89ce5"), "hp": 125.0, "atk": 27.0, "rate": 1.65, "skill": "Tempestade", "description": "Atinge todos os inimigos vivos."},
-	{"name": "Devastador", "role": "Guerreiro", "kind": "warrior", "color": Color("db9277"), "hp": 200.0, "atk": 22.0, "rate": 1.4, "skill": "Impacto", "description": "Golpe poderoso no inimigo da frente."},
+	{"name": "Bounty Hunter", "role": "Tank", "kind": "tank", "color": Color("77b5d4"), "hp": 240.0, "atk": 15.0, "rate": 1.4, "skill": "Muralha", "description": "Protege a si mesmo por 5 segundos."},
+	{"name": "Bishop", "role": "Healer", "kind": "healer", "color": Color("8ad3a2"), "hp": 140.0, "atk": 12.0, "rate": 1.7, "skill": "Renovar", "description": "Cura todos os aliados vivos."},
+	{"name": "Silver Ranger", "role": "Arqueira", "kind": "archer", "color": Color("e3ba72"), "hp": 145.0, "atk": 23.0, "rate": 1.15, "skill": "Tiro preciso", "description": "Causa dano elevado em um alvo."},
+	{"name": "Spellhowler", "role": "Maga", "kind": "mage", "color": Color("b89ce5"), "hp": 125.0, "atk": 27.0, "rate": 1.65, "skill": "Tempestade", "description": "Atinge todos os inimigos vivos."},
+	{"name": "Destroyer", "role": "Guerreiro", "kind": "warrior", "color": Color("db9277"), "hp": 200.0, "atk": 22.0, "rate": 1.4, "skill": "Impacto", "description": "Golpe poderoso no inimigo da frente."},
 ]
 const SLOT_POSITIONS := [Vector2(456, 360), Vector2(456, 500), Vector2(303, 360), Vector2(303, 500), Vector2(150, 360), Vector2(150, 500)]
 const FOE_POSITIONS := [Vector2(825, 360), Vector2(825, 500), Vector2(985, 360), Vector2(985, 500), Vector2(1135, 360), Vector2(1135, 500)]

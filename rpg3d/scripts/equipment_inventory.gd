@@ -10,6 +10,7 @@ const OrnateFrame := preload("res://scripts/ornate_frame.gd")
 const GOLD := Color("d1b680")
 const PAPER := Color("eee4ce")
 var item_buttons: Array[Button] = []
+var empty_buttons: Array[Button] = []
 var equipped_buttons: Dictionary = {}
 var filters: Dictionary = {}
 var selected := 0
@@ -214,7 +215,7 @@ func _equipment_slot(parent: Node, title: String, index: int) -> void:
 	parent.add_child(button)
 
 func _bag_panel(column: VBoxContainer) -> void:
-	capacity_label = label_for("MOCHILA  7 / 20", 21, true)
+	capacity_label = label_for("MOCHILA  0 / 20", 21, true)
 	column.add_child(capacity_label)
 	var filter_row := HBoxContainer.new()
 	filter_row.add_theme_constant_override("separation", 4)
@@ -237,7 +238,9 @@ func _bag_panel(column: VBoxContainer) -> void:
 	grid.add_theme_constant_override("v_separation", 6)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
-	for index in range(20):
+	# Keep item_buttons[0..6] tied to the item IDs. Hidden equipped items
+	# must not leave holes, so a separate pool fills the 20 visible bag cells.
+	for index in range(IDS.size() + 20):
 		var button := button_for("")
 		button.custom_minimum_size = Vector2(62, 76)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -250,9 +253,11 @@ func _bag_panel(column: VBoxContainer) -> void:
 			button.tooltip_text = NAMES[index]
 		else:
 			button.disabled = true
+			empty_buttons.append(button)
 		grid.add_child(button)
-		item_buttons.append(button)
-	var hint := label_for("Itens equipados permanecem nesta coleção.\nTAB / I / Esc volta ao campo.", 12)
+		if index < 20:
+			item_buttons.append(button)
+	var hint := label_for("Equipar move o item para o slot do personagem.\nRetirar devolve à mochila. TAB / I / Esc volta.", 12)
 	hint.add_theme_color_override("font_color", Color("9ca8ac"))
 	column.add_child(hint)
 
@@ -351,20 +356,31 @@ func _matches(index: int) -> bool:
 		"Materiais": return index == 2
 	return true
 
+func _bag_count(index: int) -> int:
+	if index in [1, 2]:
+		return int(data[KEYS[index]])
+	# Each gear entry represents one owned piece: worn or stored in the bag.
+	return 0 if bool(data[KEYS[index]]) else 1
+
 func _refresh_items() -> void:
 	if data.is_empty():
 		return
 	var occupied := 0
+	var shown := 0
 	for index in range(IDS.size()):
-		var count := int(data[KEYS[index]]) if index in [1, 2] else 1
+		var count := _bag_count(index)
 		if count > 0:
 			occupied += 1
 		var button := item_buttons[index]
-		button.visible = _matches(index) and (count > 0 or category == "Todos")
+		button.visible = count > 0 and _matches(index)
+		if button.visible:
+			shown += 1
 		button.icon = icon_for(index) if count > 0 else null
 		button.disabled = count == 0
-		button.text = "" if count == 0 else "×%d" % count if index in [1, 2] else ("●" if data[KEYS[index]] else "")
-		button.add_theme_stylebox_override("normal", style(Color("2b2b23") if selected == index else Color("172027"), GOLD if selected == index else (Color("6e9875") if index not in [1, 2] and data[KEYS[index]] else Color("576168")), 2))
+		button.text = "×%d" % count if count > 0 and index in [1, 2] else ""
+		button.add_theme_stylebox_override("normal", style(Color("2b2b23") if selected == index else Color("172027"), GOLD if selected == index else Color("576168"), 2))
+	for index in range(empty_buttons.size()):
+		empty_buttons[index].visible = index < 20 - shown
 	for filter_name in filters:
 		filters[filter_name].add_theme_stylebox_override("normal", style(Color("4a3a23") if filter_name == category else Color("172027"), GOLD if filter_name == category else Color("576168")))
 	capacity_label.text = "MOCHILA  %d / 20" % occupied
@@ -372,6 +388,7 @@ func _refresh_items() -> void:
 		var equipped: bool = bool(data[KEYS[index]])
 		equipped_buttons[index].icon = icon_for(index) if equipped else null
 		equipped_buttons[index].text = "" if equipped else "◇"
+		equipped_buttons[index].tooltip_text = NAMES[index] if equipped else "Slot vazio"
 	selected_name.text = NAMES[selected]
 	selected_type.text = TYPES[selected]
 	selected_icon.texture = icon_for(selected)

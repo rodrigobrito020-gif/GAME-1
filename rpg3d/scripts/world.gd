@@ -146,9 +146,11 @@ func _equip_sword(model: Node3D) -> void:
 	sword_attachment.add_child(sword)
 	var blade := LONG_SWORD.instantiate()
 	blade.name = "OriginalLongSword"
-	# A empunhadura atravessa a palma no eixo +Z do osso, não no eixo dos dedos.
-	blade.basis = Basis(Vector3.UP, -PI / 2) * Basis(Vector3.RIGHT, PI / 2)
-	blade.position = Vector3(-0.029, 0.042, 0.154)
+	# A malha está em eixos glTF; o socket conserva os eixos locais originais.
+	# Cancelar a conversão (x,y,z) -> (x,z,-y), sem mudar a direção nativa da lâmina.
+	blade.basis = Basis(Vector3.RIGHT, PI / 2)
+	# Centro do cabo original em X=-1.85 unidades, convertido para metros.
+	blade.position.x = 1.85 * 0.038
 	sword.add_child(blade)
 	shield_attachment = BoneAttachment3D.new()
 	shield_attachment.name = "ShieldAttachment"
@@ -156,8 +158,7 @@ func _equip_sword(model: Node3D) -> void:
 	skeleton.add_child(shield_attachment)
 	var shield := SMALL_SHIELD.instantiate()
 	shield.name = "OriginalSmallShield"
-	shield.rotation.y = -PI / 2
-	shield.position.x = -0.08
+	shield.basis = Basis(Vector3.UP, -PI / 2) * Basis(Vector3.RIGHT, PI / 2)
 	# Compensar somente a escala do guerreiro; preservar o tamanho original do escudo.
 	var holder := Node3D.new()
 	holder.scale = Vector3.ONE / 0.038
@@ -563,10 +564,11 @@ func _test() -> void:
 	_check(sword_attachment.bone_name == "Weapon_R_Bone", "espada vinculada à mão pelo osso da arma")
 	_check(sword_attachment.has_node("Sword/OriginalLongSword"), "espada usa modelo original do cliente")
 	var blade: Node3D = sword_attachment.get_node("Sword/OriginalLongSword")
-	_check(blade.basis.x.normalized().dot(Vector3.BACK) > 0.99, "lâmina alinhada para fora da palma, sem apontar pelo eixo dos dedos")
+	_check(blade.basis.x.normalized().dot(Vector3.RIGHT) > 0.99, "lâmina preserva eixo nativo do socket")
 	var rig: Skeleton3D = character_model.find_children("*", "Skeleton3D", true, false)[0]
 	_check(rig.find_bone("neutral_bone") == -1, "equipamentos não contêm influência sem osso que deforma a luva")
 	_check(OpenField.SIZE == 1000.0 and has_node("OpenField/FieldCollision"), "campo aberto de 1000 por 1000 metros com chão físico")
+	await _test_weapon_alignment()
 	await get_tree().physics_frame
 	enemies[0].position = player.position + Vector3(0, 0, -2)
 	enemies[1].position = player.position + Vector3(0, 0, 2)
@@ -606,9 +608,30 @@ func _test() -> void:
 	await _test_interface()
 	_test_potion_settings()
 	_test_equipment()
+	_test_inventory_transfers()
 	_test_slot_gestures()
 	print("SMOKE COMPLETE: %d falhas" % failures)
 	get_tree().quit(0 if failures == 0 else 1)
+
+func _test_weapon_alignment() -> void:
+	var blade: Node3D = sword_attachment.get_node("Sword/OriginalLongSword")
+	var shield: Node3D = shield_attachment.find_child("OriginalSmallShield", true, false)
+	var rig: Skeleton3D = character_model.find_children("*", "Skeleton3D", true, false)[0]
+	# Measured center of the original narrow handle, expressed in static GLB coordinates.
+	var native_grip := Vector3(-1.85 * 0.038, 0, 0)
+	for action in ["idle", "walk", "run", "attack", "skill", "death"]:
+		for animation_name in animation.get_animation_list():
+			if animation_name.ends_with(action):
+				animation.play(animation_name, 0)
+		animation.advance(0.4)
+		animation.pause()
+		await get_tree().process_frame
+		var hand := rig.global_transform * rig.get_bone_global_pose(rig.find_bone("Bip01_R_Hand"))
+		_check(blade.to_global(native_grip).distance_to(sword_attachment.global_position) < 0.001, "cabo centrado no socket: " + action)
+		_check(blade.global_basis.x.normalized().dot(hand.basis.z.normalized()) > 0.98, "lâmina alinhada ao eixo da empunhadura: " + action)
+		var shield_front := (shield.global_basis * Vector3.FORWARD).normalized()
+		_check(shield_front.dot(shield_attachment.global_basis.y.normalized()) > 0.99 and shield.global_position.distance_to(shield_attachment.global_position) < 0.001, "face do escudo para fora do braço: " + action)
+	_play("idle")
 
 func _test_interface() -> void:
 	_restart()
@@ -746,7 +769,7 @@ func _test_equipment() -> void:
 		if "_m00_ah" in str(mesh.name).to_lower() or "_m00_bh" in str(mesh.name).to_lower():
 			hair_parts += 1
 	_check(hair_parts == 2, "cabeça inclui as duas partes de cabelo")
-	hud.item_buttons[3].pressed.emit()
+	hud.inventory_panel.equipped_buttons[3].pressed.emit()
 	_check(inventory.armor, "selecionar traje exibe detalhes sem alterar equipamento")
 	hud.inventory_panel.action_button.pressed.emit()
 	_check(not inventory.armor and inventory.gloves and inventory.boots, "slot do traje altera somente o traje selecionado")
@@ -756,6 +779,47 @@ func _test_equipment() -> void:
 	hud.inventory_panel.set_category("Todos")
 	_attack()
 	_check(not _use_item("armor"), "troca de roupa é bloqueada durante golpe")
+
+func _test_inventory_transfers() -> void:
+	_restart()
+	if hud.inventory_panel.visible:
+		_toggle_inventory()
+	hud.inventory_panel.set_category("Todos")
+	_toggle_inventory()
+	_check(hud.inventory_panel.capacity_label.text == "MOCHILA  1 / 20", "somente poções ocupam a mochila quando todas as peças estão equipadas")
+	for index in [0, 3, 4, 5, 6]:
+		var key: String = hud.inventory_panel.KEYS[index]
+		var item_name: String = hud.inventory_panel.NAMES[index]
+		var bag_button: Button = hud.item_buttons[index]
+		var equipment_button: Button = hud.inventory_panel.equipped_buttons[index]
+		_check(not bag_button.visible and equipment_button.icon != null, "peça equipada aparece somente no slot correto: " + item_name)
+		equipment_button.pressed.emit()
+		_check(hud.inventory_panel.selected == index and hud.inventory_panel.action_button.text == "Retirar", "clique no slot inspeciona equipamento para retirar: " + item_name)
+		hud.inventory_panel.action_button.pressed.emit()
+		_check(not inventory[key] and equipment_button.icon == null, "Retirar esvazia o slot do personagem: " + item_name)
+		_check(bag_button.visible and not bag_button.disabled and bag_button.icon != null and hud.inventory_panel.capacity_label.text == "MOCHILA  2 / 20", "Retirar devolve a peça e ocupa um espaço da mochila: " + item_name)
+		bag_button.pressed.emit()
+		_check(hud.inventory_panel.action_button.text == "Equipar", "peça guardada oferece Equipar: " + item_name)
+		hud.inventory_panel.action_button.pressed.emit()
+		_check(inventory[key] and equipment_button.icon != null and not bag_button.visible, "Equipar move a peça da mochila ao slot correto: " + item_name)
+		_check(hud.inventory_panel.capacity_label.text == "MOCHILA  1 / 20", "Equipar libera o espaço da mochila: " + item_name)
+	for filter_name in ["Todos", "Armas", "Trajes", "Poções", "Materiais"]:
+		hud.inventory_panel.set_category(filter_name)
+		var visible_cells := 0
+		for child in hud.item_buttons[0].get_parent().get_children():
+			if child.visible:
+				visible_cells += 1
+		_check(visible_cells == 20, "grade compacta mantém vinte espaços no filtro: " + filter_name)
+	hud.inventory_panel.set_category("Todos")
+	inventory.fangs = 6
+	_refresh_hud()
+	_check(hud.item_buttons[2].visible and hud.inventory_panel.capacity_label.text == "MOCHILA  2 / 20", "pilha de presas ocupa somente um espaço da mochila")
+	inventory.potions = 0
+	_refresh_hud()
+	_check(not hud.item_buttons[1].visible and hud.inventory_panel.capacity_label.text == "MOCHILA  1 / 20", "consumir a última poção libera seu espaço da mochila")
+	_toggle_inventory()
+	_restart()
+	_refresh_hud()
 
 func _slot_gesture(control: Control, travel: Vector2) -> void:
 	var origin := control.get_global_rect().get_center()
@@ -811,8 +875,10 @@ func _test_slot_gestures() -> void:
 	_input(tab)
 	_check(not hud.inventory_panel.visible, "TAB fecha inventário")
 	for i in range(7):
-		if i == 2 and inventory.fangs == 0:
-			_check(hud.item_buttons[i].icon == null and hud.item_buttons[i].disabled, "material sem estoque aparece como espaço vazio")
+		if i in [0, 3, 4, 5, 6]:
+			_check(not hud.item_buttons[i].visible and hud.inventory_panel.equipped_buttons[i].icon != null, "equipamento possui ícone somente no slot do personagem: " + str(i))
+		elif i == 2 and inventory.fangs == 0:
+			_check(not hud.item_buttons[i].visible and hud.item_buttons[i].icon == null and hud.item_buttons[i].disabled, "material sem estoque não ocupa espaço da mochila")
 		else:
 			_check(hud.item_buttons[i].icon != null, "item possui ícone: " + str(i))
 	_restart()

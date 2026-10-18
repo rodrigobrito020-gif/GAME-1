@@ -12,4 +12,4 @@ Se o projeto antigo ainda aparecer no gerenciador do Godot, remova apenas a entr
 
 Veja [o manual](rpg3d/README.md) para todos os controles e detalhes.
 
-Na mochila, selecione um item no centro e use o botão do painel direito para equipar, retirar ou usar. Os slots à esquerda mostram o equipamento atual, ao lado da prévia 3D do personagem.
+Na mochila, selecione um item no centro e use o botão do painel direito para equipar ou usar. Ao equipar, a peça sai da mochila e aparece somente no slot correspondente à esquerda, ao lado da prévia 3D do personagem. Clique nesse slot e em **Retirar** para devolver a peça à mochila. Equipamentos vestidos não ocupam os 20 espaços da mochila.

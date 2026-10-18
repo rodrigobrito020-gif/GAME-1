@@ -8,12 +8,13 @@
   "attachment_bone": "Weapon_R_Bone",
   "original_units_to_meters": 0.038,
   "grip_alignment": {
-    "rotation_order": "Y(-90 degrees) * X(90 degrees)",
+    "rotation_x_degrees": 90,
     "offset_meters": [
-      -0.029,
-      0.042,
-      0.154
+      0.0703,
+      0,
+      0
     ],
-    "description": "Blade +X aligned with weapon bone +Z, perpendicular to palm; handle moved from finger tip to palm center."
+    "native_grip_center_x_units": -1.85,
+    "description": "Cancel static GLB axis conversion (x,y,z)->(x,z,-y); preserve blade along Weapon_R_Bone +X and center the handle on the socket."
   }
 }

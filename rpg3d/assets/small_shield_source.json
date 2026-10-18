@@ -6,6 +6,11 @@
   "attachment_bone": "Shield_L_Bone",
   "original_units_to_meters": 0.038,
   "model_sha256": "f8a1c5b2c942d3df4cac1e7337623f76cb20e9e4df986cc392c6f7737fe9262c",
-  "rotation_y_degrees": -90,
-  "offset_x_meters": -0.08
+  "rotation_order": "Y(-90 degrees) * X(90 degrees)",
+  "offset_meters": [
+    0,
+    0,
+    0
+  ],
+  "description": "Cancel static GLB axis conversion; raw long axis +X becomes Shield_L_Bone +Z (down); convex face raw +Y faces bone +Y (outward). Socket already lies outside wrist."
 }

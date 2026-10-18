@@ -15,7 +15,11 @@ O jogo começa na **Vila da Fenda**, uma área rural segura e inteiramente cerca
 
 O Tanque combate de perto com espada e escudo; Defesa reduz o dano em 65% por quatro segundos. Arqueiro, Mago e Curandeiro têm ataques comuns à distância e habilidades próprias. Flechas e magias viajam como projéteis, colidem com obstáculos e causam dano ao atingir. A seleção de alvos e o dano em área respeitam linha de visão. Passo evasivo e Teleporte respeitam colisões. Cura recupera até 40 de vida; Santuário cura ao longo de quatro segundos. Estas ações funcionam em combate, com alcance e recarga; escolher uma classe muda a jogabilidade.
 
-**Limitação visual atual:** as quatro classes usam o mesmo corpo humano Fighter, suas texturas e seus clipes originais de uma mão. Arco e cajados são modelos procedurais provisórios. As animações de ataque reutilizadas ainda são as do Fighter; não são animações originais de arco ou de mago. O arquivo `assets/human_mage.glb` continua reservado para uso futuro e ainda não tem suas texturas integradas.
+**Modelos por classe:** o Tanque preserva o Fighter e a pose aprovada de espada/escudo. O Arqueiro usa `human_archer.glb`, com as mesmas malhas texturizadas do Fighter e os clipes nativos `atkWait_Bow`, `walk_Bow`, `run_Bow`, `Atk01_Bow` e `SpAtk01_Bow`. Mago e Curandeiro usam `human_mage.glb`, as malhas MMagic_M000 de `Magic.ukx`, postura, caminhada, corrida, conjuração e morte do Mage. A troca no Instrutor também troca o modelo da prévia do inventário. O ataque preserva a duração do clipe, sem retornar ao repouso após apenas 0,7 s.
+
+**Texturas pendentes:** o rosto do Mage já usa `MMagic_m000_t00_f`, de `LineageFaceTex.utx`. As texturas originais de roupa e cabelo dependem de **MMagic.utx**, que não está nos arquivos enviados. Essas partes usam materiais simples por enquanto; texturas do Fighter não são aplicadas aos UVs do Mage. Os modelos, armas e animações já funcionam sem esse pacote.
+
+[Arqueiro disparando](../docs/archer-native-attack.png) · [Humano Mage](../docs/mage-native-model.png) · [Curandeiro](../docs/healer-native-model.png)
 
 - **WASD:** mover em relação à câmera; **mouse:** girar a câmera.
 - **Roda do mouse:** aproximar/afastar, com zoom suave de 2 a 14 metros e SpringArm para obstáculos.
@@ -68,7 +72,7 @@ Cada baú concede **um equipamento**, uma única vez por tentativa. O item pode 
 
 Na mochila, selecione um item e use **Equipar** no painel direito. Ele sai da grade e ocupa somente seu slot no personagem; a peça anterior volta à bolsa. Clique no slot e em **Retirar** para devolvê-lo à mochila. Equipamentos vestidos não ocupam espaços da grade. A mochila começa com vinte espaços, tem filtros e ganha rolagem quando necessário. A prévia 3D acompanha classe e equipamento; as molduras e os detalhes mostram a raridade e a comparação de atributos. A organização livre da grade ainda não foi implementada.
 
-Peças de saque equipadas aumentam o dano ou reduzem o dano recebido. Elas reutilizam as malhas disponíveis, sem criar aparências inéditas para cada raridade. O conjunto inicial mantém os atributos base. O Tanque usa a Long Sword e o Small Shield originais; o escudo mantém a inclinação aprovada de **45°**, mão atrás da madeira e encaixe igual no campo e na prévia. As demais classes usam o arco ou cajado provisório correspondente.
+Peças de saque equipadas aumentam o dano ou reduzem o dano recebido. Elas reutilizam as malhas disponíveis, sem criar aparências inéditas para cada raridade. O conjunto inicial mantém os atributos base. O Tanque usa a Long Sword e o Small Shield originais; o escudo mantém a inclinação aprovada de **45°**, mão atrás da madeira e encaixe igual no campo e na prévia. O Arqueiro usa o Short Bow original em `Weapon_L_Bone`, em vez do osso de escudo. Mago e Curandeiro usam a varinha Apprentice's Rod em `Weapon_R_Bone`. Os encaixes seguem as animações nativas das respectivas classes; o inventário identifica as armas iniciais por nome e ícone.
 
 Retirar a arma oculta a espada, o arco ou o cajado da classe e bloqueia ataques comuns e habilidades ofensivas. Cura, defesa e habilidades de movimento continuam disponíveis sem arma, respeitando suas demais condições.
 
@@ -78,7 +82,7 @@ Cada Grelim derrotado concede uma presa e cinco de ouro; o chefe concede três p
 
 Classe escolhida (`player_class`), nível, experiência, inventário, itens de saque equipados, configurações e mundos liberados são salvos em `user://adventure_save.cfg`. Perfis antigos ou com classe inválida usam **Tanque** como padrão. Ao abrir o jogo novamente, você reaparece na vila. A tentativa em andamento e um baú ainda não coletado não são retomados. Testes usam estado isolado.
 
-As instâncias são locais; ainda não há servidor ou multiplayer. Casas e bancas são cenografia com colisão; o Instrutor tem interação de classe, mas lojas ainda não estão implementadas. Grelims e Guardião usam geometria e animações procedurais provisórias; não são modelos de monstros extraídos do cliente. As classes mudam ações e equipamentos, mas compartilham o Fighter. Valores e cenários continuam em fase de protótipo.
+As instâncias são locais; ainda não há servidor ou multiplayer. Casas e bancas são cenografia com colisão; o Instrutor tem interação de classe, mas lojas ainda não estão implementadas. Grelims e Guardião usam geometria e animações procedurais provisórias; não são modelos de monstros extraídos do cliente. Tanque e Arqueiro compartilham as malhas Fighter com animações diferentes; Mago e Curandeiro compartilham o modelo Mage. As texturas originais de roupa/cabelo do Mage aguardam MMagic.utx; não há malhas alternativas de armadura Mage integradas nesta versão, então suas roupas mantêm a malha inicial ao trocar bônus de equipamento. Valores e cenários continuam em fase de protótipo.
 
 O campo usa textura de grama em escala de 1,8 metro, variação de cor e relevo fino. Tufos 3D perto do personagem se movem com o vento e acompanham a exploração em blocos MultiMesh. À distância, os tufos diminuem e o solo texturizado permanece visível. A textura foi gerada para o projeto; a origem está em `assets/environment/meadow_grass_source.json`.
 
@@ -93,6 +97,7 @@ godot --headless --path . --script res://tests/progression_test.gd
 godot --headless --path . --script res://tests/instance_run_test.gd
 godot --headless --path . --script res://tests/loot_items_test.gd
 godot --headless --path . --script res://tests/player_classes_test.gd
+godot --headless --path . --script res://tests/class_models_test.gd
 godot --headless --path . --script res://tests/instance_classes_flow_test.gd
 ```
 
@@ -104,4 +109,4 @@ A validação cobre controles e câmera, animações importadas e pose de morte,
 
 Corpo, cabelo, traje, luvas e botas usam texturas de `MFighter.utx`; o rosto vem de `LineageFaceTex.utx`. O cabelo conserva as duas partes originais e recorte alpha; nas texturas corporais, o alpha representa especularidade. A normalização dos nomes de ossos preserva as influências da luva. Origem e arquivos estão registrados em `assets/human_fighter_textures.json`.
 
-Espada e escudo originais foram convertidos para `assets/long_sword.glb` e `assets/small_shield.glb`, com registros de origem próprios. O encaixe acompanha os ossos do Fighter e as animações originais. Arco e cajados estão em `scripts/class_weapon.gd`; seus visuais são provisórios. O mago de `assets/human_mage.glb` não é usado pelas classes ativas e continua sem texturas integradas. Arquivos UKX/UTX completos não são necessários para jogar.
+Espada e escudo originais foram convertidos para `assets/long_sword.glb` e `assets/small_shield.glb`, com registros de origem próprios. O encaixe acompanha os ossos do Fighter e as animações originais. O arco e a varinha originais estão em `assets/short_bow.glb` e `assets/apprentices_rod.glb`, extraídos de LineageWeapons.ukx com as texturas de LineageWeaponsTex.utx. `scripts/class_weapon.gd` cancela a conversão de eixos da malha, como na espada original, sem rotações arbitrárias entre classes. `assets/class_models_source.json` registra origens, clipes, texturas pendentes e hashes SHA-256. O Mage está ativo para Mago e Curandeiro, com rosto original e materiais simples nas partes sem MMagic.utx. Arquivos UKX/UTX completos não são necessários para jogar.

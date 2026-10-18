@@ -6,6 +6,8 @@ const ShieldCarryPose := preload("res://scripts/shield_carry_pose.gd")
 const ShieldMount := preload("res://scripts/shield_mount.gd")
 const LONG_SWORD := preload("res://assets/long_sword.glb")
 const FIGHTER := preload("res://assets/human_fighter.glb")
+const ARCHER := preload("res://assets/human_archer.glb")
+const MAGE := preload("res://assets/human_mage.glb")
 const GrelimVisual := preload("res://scripts/grelim_visual.gd")
 const OpenField := preload("res://scripts/open_field.gd")
 const Village := preload("res://scripts/village.gd")
@@ -40,6 +42,7 @@ var portal_position := Vector3.ZERO
 var save_error_reported := false
 var player: CharacterBody3D
 var character_model: Node3D
+var character_model_kind := ""
 var facing: Node3D
 var animation: AnimationPlayer
 var boom: SpringArm3D
@@ -148,14 +151,7 @@ func _player() -> void:
 	player.add_child(collision)
 	facing = Node3D.new()
 	player.add_child(facing)
-	var model := FIGHTER.instantiate()
-	character_model = model
-	model.rotation.y = PI
-	facing.add_child(model)
-	animation = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
-	for name in animation.get_animation_list():
-		if name.ends_with("idle") or name.ends_with("run") or name.ends_with("walk"):
-			animation.get_animation(name).loop_mode = Animation.LOOP_LINEAR
+	_set_character_model()
 	boom = SpringArm3D.new()
 	boom.spring_length = 5.0
 	boom.position.y = 1.5
@@ -166,9 +162,28 @@ func _player() -> void:
 	camera.fov = 65
 	camera.far = 1800
 	boom.add_child(camera)
-	_equip_sword(model)
+
+func _set_character_model() -> void:
+	var kind := "mage" if player_class in ["mago", "healer"] else ("archer" if player_class == "arqueiro" else "fighter")
+	if character_model_kind == kind and is_instance_valid(character_model):
+		return
+	if is_instance_valid(character_model):
+		facing.remove_child(character_model)
+		character_model.queue_free()
+	character_model_kind = kind
+	var scene: PackedScene = MAGE if kind == "mage" else (ARCHER if kind == "archer" else FIGHTER)
+	character_model = scene.instantiate()
+	character_model.rotation.y = PI
+	character_model.set_meta("class_model_kind", kind)
+	facing.add_child(character_model)
+	animation = character_model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+	for clip in animation.get_animation_list():
+		animation.get_animation(clip).loop_mode = Animation.LOOP_LINEAR if clip.ends_with("idle") or clip.ends_with("run") or clip.ends_with("walk") else Animation.LOOP_NONE
+	_equip_sword(character_model)
 	_apply_equipment()
 	_play("idle")
+	if is_instance_valid(hud):
+		hud.inventory_panel.set_character_source(character_model)
 
 func _equip_sword(model: Node3D) -> void:
 	var skeleton: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
@@ -210,7 +225,7 @@ func _equip_sword(model: Node3D) -> void:
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	var results: Array[MeshInstance3D] = []
 	var suffixes: Array = {"armor": ["_u", "_l"], "gloves": ["_g"], "boots": ["_b"]}[slot]
-	var prefix := "mfighter_m001" if alternate else "mfighter_m000"
+	var prefix := ("mmagic_m001" if alternate else "mmagic_m000") if character_model_kind == "mage" else ("mfighter_m001" if alternate else "mfighter_m000")
 	for node in character_model.find_children("*", "MeshInstance3D", true, false):
 		for suffix in suffixes:
 			if str(node.name).to_lower().begins_with(prefix + suffix):
@@ -223,11 +238,13 @@ func _apply_equipment() -> void:
 	shield_carry_pose.shield_equipped = shield_attachment.visible
 	if is_instance_valid(ranged_attachment):
 		ranged_attachment.visible = player_class != "tanque" and LootItems.is_equipped(inventory, "sword")
-		ranged_attachment.bone_name = "Shield_L_Bone" if player_class == "arqueiro" else "Weapon_R_Bone"
+		ranged_attachment.bone_name = "Weapon_L_Bone" if player_class == "arqueiro" else "Weapon_R_Bone"
 		if ranged_weapon.class_id != player_class:
 			ranged_weapon.configure(player_class)
-		ranged_weapon.rotation.z = 0.0 if player_class == "arqueiro" else PI
+		ranged_weapon.rotation = Vector3.ZERO
 	for slot in ["armor", "gloves", "boots"]:
+		if _gear_nodes(slot, true).is_empty():
+			continue
 		for mesh in _gear_nodes(slot, false):
 			mesh.visible = not LootItems.is_equipped(inventory, slot)
 		for mesh in _gear_nodes(slot, true):
@@ -273,6 +290,7 @@ func _maximum_hp() -> float:
 	return float(PlayerClasses.get_definition(player_class).max_hp) + (level - 1) * 20.0
 
 func _sync_class() -> void:
+	_set_character_model()
 	var definition := PlayerClasses.get_definition(player_class)
 	hud.set_player_class(definition)
 	hud.inventory_panel.set_player_class(definition)

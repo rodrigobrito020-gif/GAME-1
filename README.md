@@ -14,7 +14,7 @@ Cada arena tem **54 × 54 metros**, **30 segundos de preparação** e **10 minut
 
 Ao vencer o chefe, aproxime-se do baú e pressione **E**, ou use **Coletar baú** no aviso de vitória. A abertura revela **um equipamento real**, já adicionado à mochila. **Continuar** mostra as opções de seguir ao próximo mundo ou voltar à vila. O Mundo 10 encerra a sequência. Chances por baú: **65% Comum, 27% Incomum, 7,5% Raro, 0,45% Épico e 0,05% Lendário**.
 
-As quatro classes têm ataques e habilidades próprios, incluindo projéteis, cura e movimento. Nesta versão, todas reutilizam o modelo humano Fighter e seus clipes originais; arco e cajados são visuais procedurais provisórios. A classe escolhida, nível, inventário, configurações e mundos liberados ficam salvos neste computador. A mochila pausa a simulação.
+As quatro classes têm ataques e habilidades próprios, incluindo projéteis, cura e movimento. Tanque usa o Fighter; Arqueiro usa o Fighter com animações originais de arco; Mago e Curandeiro usam o humano Mage e suas conjurações. Short Bow e Apprentice's Rod são armas originais do cliente, presas aos sockets de mão. O rosto do Mage tem textura original, mas roupa e cabelo ainda usam materiais simples porque o pacote MMagic.utx não foi enviado. A classe escolhida, nível, inventário, configurações e mundos liberados ficam salvos neste computador. A mochila pausa a simulação.
 
 ## Controles
 
@@ -28,3 +28,5 @@ As quatro classes têm ataques e habilidades próprios, incluindo projéteis, cu
 [Veja as classes](docs/classes-humanas.png), [o chefe](docs/chefe-da-fenda.png), [a revelação do baú](docs/revelacao-do-bau.png) e [o resultado da instância](docs/resultado-da-instancia.png).
 
 Consulte [o manual do RPG 3D](rpg3d/README.md) para habilidades, equipamentos, limitações visuais e testes.
+
+[Arqueiro com arco original](docs/archer-native-attack.png) · [Humano Mage](docs/mage-native-model.png) · [Curandeiro com Mage](docs/healer-native-model.png)

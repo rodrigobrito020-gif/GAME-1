@@ -1,0 +1,31 @@
+{
+  "mage_model": "Magic.ukx / MMagic_M000, original human Mage",
+  "mage_animations": [
+    "atkWait_1HS_MMagic",
+    "walk_1HS_MMagic",
+    "run_1HS_MMagic",
+    "MagicShot_MMagic",
+    "CastShort_MMagic",
+    "Death_MMagic"
+  ],
+  "archer_animations": [
+    "atkWait_Bow_MFighter",
+    "walk_Bow_MFighter",
+    "run_Bow_MFighter",
+    "Atk01_Bow_MFighter",
+    "SpAtk01_Bow_MFighter",
+    "Death_MFighter"
+  ],
+  "weapons": {
+    "short_bow.glb": "LineageWeapons.ukx / Short_bow_m00_wp; LineageWeaponsTex.utx / short_bow_t00_wp",
+    "apprentices_rod.glb": "LineageWeapons.ukx / apprentices_rod_m00_wp; LineageWeaponsTex.utx / apprentices_rod_t00_wp"
+  },
+  "mage_face": "LineageFaceTex.utx / MMagic_m000_t00_f",
+  "missing": "MMagic.utx original Mage body/hair textures; solid materials used pending that upload",
+  "sha256": {
+    "human_mage.glb": "09dd59793462aa9c799c1b33ac5a34793223fc120b0711e7d3824d4d85ad5712",
+    "human_archer.glb": "d4586f3511f528f0ba700ff13614bcde5fb32b090ee1478b11cb5861bd96b360",
+    "short_bow.glb": "921b337ba69b4f8e0623baa27de545c1c6361ea0c45bfefb85ab98316f6b28b9",
+    "apprentices_rod.glb": "e8eef37d5197c5a57aa544df46786ea534b1e0740f046839732511e88c7d87bd"
+  }
+}

@@ -6,7 +6,7 @@ Este é o único projeto Godot desta versão.
 2. No Godot **4.6.3 padrão**, importe **rpg3d/project.godot**.
 3. Pressione **F5** para jogar.
 
-Você começa na **Vila da Fenda**, pequena, cercada e segura. Perto do **Instrutor**, pressione **E** para escolher **Tanque, Arqueiro, Mago ou Curandeiro**. As habilidades mudam com a classe; os modelos e clipes de animação ainda reutilizam o humano Fighter, com arco e cajados provisórios. Sem escolha anterior salva, a classe inicial é Tanque.
+Você começa na **Vila da Fenda**, pequena, cercada e segura. Perto do **Instrutor**, pressione **E** para escolher **Tanque, Arqueiro, Mago ou Curandeiro**. As habilidades mudam com a classe; Tanque e Arqueiro usam o Fighter (com animações próprias de arco para o Arqueiro), enquanto Mago e Curandeiro usam o humano Mage com conjurações nativas. O arco Short Bow e a varinha Apprentice's Rod são originais. Para completar as texturas da roupa e do cabelo do Mage ainda falta o arquivo MMagic.utx; o rosto já usa a textura correta. Sem escolha anterior salva, a classe inicial é Tanque.
 
 Siga até a **fenda dimensional**, pressione **E** e escolha o **Mundo 1**. Aguarde os **30 segundos de preparação**. Depois, vença **seis ondas de cinco monstros e o Guardião da Fenda**, tudo dentro de **10 minutos de combate**. A próxima onda só aparece quando a anterior acaba. Quando o chefe marcar uma área vermelha, saia dela antes do impacto.
 

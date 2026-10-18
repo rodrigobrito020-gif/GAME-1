@@ -199,11 +199,12 @@ func _context_valid(game, effect: Dictionary) -> bool:
 	return is_instance_valid(game) and not game.dead and is_instance_valid(effect.zone) and game.active_zone == effect.zone and game.arena_run == effect.run and game.current_world > 0 and game.arena_run != null and game.arena_run.phase in [InstanceRun.Phase.PREPARATION, InstanceRun.Phase.COMBAT, InstanceRun.Phase.BOSS]
 
 func _begin_action(game, action: String, reuse: float) -> void:
-	game.cooldown = maxf(game.cooldown, reuse)
-	game.attack_clock = 0.7
 	game.attack_pending = false
 	game.facing.rotation.y = game.yaw
 	game._play(action)
+	# Preserve the original draw/cast motion instead of returning to idle at .7s.
+	game.attack_clock = maxf(0.7, game.animation.current_animation_length)
+	game.cooldown = maxf(game.cooldown, maxf(reuse, game.attack_clock))
 
 func _forward(game) -> Vector3:
 	return Vector3.FORWARD.rotated(Vector3.UP, game.yaw)

@@ -29,6 +29,7 @@ var capacity_label: Label
 var level_label: Label
 var class_title: Label
 var player_class_name := "Guerreiro humano"
+var player_class_id := "tanque"
 var life_label: Label
 var current_name: Label
 var current_description: Label
@@ -91,7 +92,14 @@ func panel_column(parent: Node, ratio: float) -> VBoxContainer:
 	return column
 
 func icon_for(index: int) -> Texture2D:
+	if index == 0 and player_class_id != "tanque":
+		return load("res://assets/icons/bow.svg" if player_class_id == "arqueiro" else "res://assets/icons/rod.svg")
 	return load("res://assets/icons/%s.svg" % IDS[index])
+
+func base_name(index: int) -> String:
+	if index == 0 and player_class_id != "tanque":
+		return "Short Bow" if player_class_id == "arqueiro" else "Apprentice's Rod"
+	return NAMES[index]
 
 func picture(parent: Node, pixels: int) -> TextureRect:
 	var icon := TextureRect.new()
@@ -218,7 +226,7 @@ func _equipment_slot(parent: Node, title: String, index: int) -> void:
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.pressed.connect(_select_equipment.bind(index))
 		equipped_buttons[index] = button
-	button.tooltip_text = "Slot vazio" if index < 0 else NAMES[index]
+	button.tooltip_text = "Slot vazio" if index < 0 else base_name(index)
 	parent.add_child(button)
 
 func _bag_panel(column: VBoxContainer) -> void:
@@ -258,7 +266,7 @@ func _bag_panel(column: VBoxContainer) -> void:
 			button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			button.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 			button.pressed.connect(func() -> void: select_item(index))
-			button.tooltip_text = NAMES[index]
+			button.tooltip_text = base_name(index)
 		else:
 			button.disabled = true
 			empty_buttons.append(button)
@@ -306,10 +314,12 @@ func set_character_source(model: Node3D) -> void:
 
 func set_player_class(definition: Dictionary) -> void:
 	player_class_name = str(definition.get("name", "Guerreiro humano"))
+	player_class_id = str(definition.get("id", "tanque"))
 	if class_title != null:
 		class_title.text = player_class_name.to_upper()
 	if level_label != null:
 		level_label.text = "%s · Nv. %d" % [player_class_name.trim_suffix(" humano"), maxi(last_level, 1)]
+	_refresh_items()
 
 func _visibility_changed() -> void:
 	if viewport == null:
@@ -465,7 +475,7 @@ func _current_slot_item(index: int) -> Dictionary:
 	if not loot.is_empty():
 		return loot
 	if bool(data[KEYS[index]]):
-		return {"name": NAMES[index], "rarity": "Inicial", "attack_bonus": 0, "defense_bonus": 0}
+		return {"name": base_name(index), "rarity": "Inicial", "attack_bonus": 0, "defense_bonus": 0}
 	return {}
 
 func _show_current_equipment(index: int) -> Dictionary:
@@ -507,6 +517,7 @@ func _refresh_items() -> void:
 		if count > 0:
 			occupied += 1
 		var button := item_buttons[index]
+		button.tooltip_text = base_name(index)
 		button.visible = count > 0 and _matches(index)
 		if button.visible:
 			shown += 1
@@ -528,25 +539,27 @@ func _refresh_items() -> void:
 		var loot: Dictionary = data.get("equipped_loot", {}).get(IDS[index], {})
 		equipped_buttons[index].icon = icon_for(index) if equipped else null
 		equipped_buttons[index].text = "" if equipped else "◇"
-		equipped_buttons[index].tooltip_text = "%s · %s" % [loot.name, loot.rarity] if not loot.is_empty() else NAMES[index] if equipped else "Slot vazio"
+		equipped_buttons[index].tooltip_text = "%s · %s" % [loot.name, loot.rarity] if not loot.is_empty() else base_name(index) if equipped else "Slot vazio"
 		equipped_buttons[index].add_theme_stylebox_override("normal", style(Color("172027"), rarity_color(loot.rarity) if not loot.is_empty() else Color("6a5d47"), 2 if not loot.is_empty() else 1))
 	var selected_loot := _find_loot(selected_loot_id)
 	if not selected_loot.is_empty():
 		_refresh_loot_details(selected_loot)
 		return
 	selected_loot_id = ""
-	selected_name.text = NAMES[selected]
+	selected_name.text = base_name(selected)
 	selected_name.add_theme_color_override("font_color", GOLD)
-	selected_type.text = TYPES[selected]
+	selected_type.text = ("Arma · Arco" if player_class_id == "arqueiro" else "Arma · Varinha") if selected == 0 and player_class_id != "tanque" else TYPES[selected]
 	selected_icon.texture = icon_for(selected)
 	var equipped: bool = selected not in [1, 2] and bool(data[KEYS[selected]])
 	current_icon.texture = icon_for(selected) if equipped else null
-	current_name.text = NAMES[selected] if equipped else "Nenhum equipamento" if selected not in [1, 2] else "Consumível" if selected == 1 else "Material"
+	current_name.text = base_name(selected) if equipped else "Nenhum equipamento" if selected not in [1, 2] else "Consumível" if selected == 1 else "Material"
 	current_name.add_theme_color_override("font_color", GOLD)
 	current_description.text = "Neste slot · Equipado" if equipped else "Slot disponível" if selected not in [1, 2] else "Uso pela mochila ou tecla Q" if selected == 1 else "Obtido ao derrotar Grelims"
 	if selected not in [1, 2] and data.get("equipped_loot", {}).has(IDS[selected]):
 		_show_current_equipment(selected)
 	var descriptions := ["Espada de uma mão.\n\nEmpunhadura: mão direita\nEstado: %s" % ("equipada" if equipped else "guardada"), "Recupera 40 de vida.\n\nEstoque: %d\nIntervalo entre usos: 2 segundos" % data.potions, "Presa coletada de um Grelim.\n\nQuantidade: %d" % data.fangs, "Traje inicial do guerreiro.\n\nInclui peitoral e pernas.\nSem bônus de atributos nesta etapa.", "Luvas do conjunto inicial.\n\nSem bônus de atributos nesta etapa.", "Botas do conjunto inicial.\n\nSem bônus de atributos nesta etapa.", "Escudo de uma mão.\n\nEmpunhadura: mão esquerda\nSem bônus passivo nesta etapa."]
 	selected_description.text = descriptions[selected]
+	if selected == 0 and player_class_id != "tanque":
+		selected_description.text = ("Arco original · Mão esquerda.\n\nAnimações nativas de arco do Fighter." if player_class_id == "arqueiro" else "Varinha original · Mão direita.\n\nModelo e conjuração nativos do humano Mage.") + "\nEstado: " + ("equipada" if equipped else "guardada")
 	action_button.text = "Usar poção" if selected == 1 else "Material de saque" if selected == 2 else "Retirar" if equipped else "Equipar"
 	action_button.disabled = is_dead or selected == 2 or (selected == 1 and (data.potions <= 0 or current_hp >= max_hp))

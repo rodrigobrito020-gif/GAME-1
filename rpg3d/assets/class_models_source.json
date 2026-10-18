@@ -21,11 +21,25 @@
     "apprentices_rod.glb": "LineageWeapons.ukx / apprentices_rod_m00_wp; LineageWeaponsTex.utx / apprentices_rod_t00_wp"
   },
   "mage_face": "LineageFaceTex.utx / MMagic_m000_t00_f",
-  "missing": "MMagic.utx original Mage body/hair textures; solid materials used pending that upload",
   "sha256": {
-    "human_mage.glb": "09dd59793462aa9c799c1b33ac5a34793223fc120b0711e7d3824d4d85ad5712",
+    "human_mage.glb": "69defe99c08f5b8ffa262251072e53ff82f937d117fd954828af6a263ba97726",
     "human_archer.glb": "d4586f3511f528f0ba700ff13614bcde5fb32b090ee1478b11cb5861bd96b360",
     "short_bow.glb": "921b337ba69b4f8e0623baa27de545c1c6361ea0c45bfefb85ab98316f6b28b9",
     "apprentices_rod.glb": "e8eef37d5197c5a57aa544df46786ea534b1e0740f046839732511e88c7d87bd"
+  },
+  "mage_textures": {
+    "package": "MMagic.utx",
+    "textures": [
+      "MMagic_m000_t1000_b.png",
+      "MMagic_m000_t1000_g.png",
+      "MMagic_m000_t1000_l.png",
+      "MMagic_m000_t1000_u.png",
+      "MMagic_m000_t00_m00_ah_ori.png",
+      "MMagic_m000_t00_m00_bh.png"
+    ],
+    "source_sha256": "ce6cff4ec6ab2176dade8f8d2df655005e70eec5c21730e85be1f50e8f140ccf",
+    "archive_crc32": "fd1e1a82",
+    "hair": "Both original ah and bh meshes, with alpha cutout",
+    "bone_name_repairs": []
   }
 }

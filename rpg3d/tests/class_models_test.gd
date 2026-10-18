@@ -42,6 +42,22 @@ func _run() -> void:
 		var has_mage_body: bool = meshes.any(func(node: Node) -> bool: return str(node.name).to_lower().begins_with("mmagic_m000_u"))
 		var has_fighter_body: bool = meshes.any(func(node: Node) -> bool: return str(node.name).to_lower().begins_with("mfighter_m000_u"))
 		check(has_mage_body and not has_fighter_body if expected == "mage" else has_fighter_body and not has_mage_body, "Mage body is not a renamed Fighter: " + id)
+		if expected == "mage":
+			var textured_parts := 0
+			var hair_parts := 0
+			for node in meshes:
+				var part_name := str(node.name).to_lower()
+				if not part_name.begins_with("mmagic_"):
+					continue
+				var material: StandardMaterial3D = node.get_active_material(0)
+				check(material != null and material.albedo_texture != null, "Mage part uses an original texture: %s/%s" % [id, part_name])
+				textured_parts += 1
+				if "_m00_ah" in part_name or "_m00_bh" in part_name:
+					hair_parts += 1
+					check(material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR, "Mage hair uses alpha cutout instead of an opaque block: " + part_name)
+				else:
+					check(material.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED, "Mage body alpha is not treated as transparency: " + part_name)
+			check(textured_parts == 7 and hair_parts == 2, "Mage contains four body parts, face and both original hair parts: " + id)
 		var rig: Skeleton3D = game.character_model.find_children("*", "Skeleton3D", true, false)[0]
 		await _pose("idle", 0.4)
 		var hand := rig.find_bone("Bip01_L_Hand" if id == "arqueiro" else "Bip01_R_Hand")

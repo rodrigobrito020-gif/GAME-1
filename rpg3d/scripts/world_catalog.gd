@@ -16,24 +16,20 @@ const TINTS := [
 
 static func get_world(number: int) -> Dictionary:
 	var index := clampi(number, 1, COUNT) - 1
-	var enemy_count := mini(6, 3 + int(index / 3.0))
-	var spawns: Array[Vector3] = [Vector3(-4, 0, -16), Vector3(5, 0, -22), Vector3(0, 0, -30)]
-	if enemy_count >= 4:
-		spawns.append(Vector3(-9, 0, -36))
-	if enemy_count >= 5:
-		spawns.append(Vector3(9, 0, -42))
-	if enemy_count >= 6:
-		spawns.append(Vector3(0, 0, -50))
+	var spawns: Array[Vector3] = [
+		Vector3(-9, 0, -8), Vector3(-4, 0, -13), Vector3(4, 0, -13),
+		Vector3(9, 0, -8), Vector3(0, 0, -4),
+	]
 	return {
 		"number": index + 1,
 		"title": "Mundo %d" % (index + 1),
 		"subtitle": NAMES[index],
 		"enemy_hp": 60 + index * 10,
 		"enemy_damage": 12 + index * 2,
-		"enemy_count": enemy_count,
+		"enemy_count": 5,
 		"seed": 2741 + index * 7919,
 		"tint": TINTS[index],
 		"enemy_spawns": spawns,
-		"rock_count": 0 if index == 0 else 10 + index * 3,
-		"ruin_count": 0 if index < 2 else 1 + int(index / 3.0),
+		"rock_count": 0 if index == 0 else 4 + index,
+		"ruin_count": 0 if index < 2 else 1 + int(index / 4.0),
 	}

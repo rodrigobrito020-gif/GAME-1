@@ -1,6 +1,8 @@
 extends Node3D
-## Campo de um quilômetro, com solo texturizado e relva 3D em blocos reciclados.
-const SIZE := 1000.0
+## Arena fechada com a mesma área caminhável da vila e relva 3D texturizada.
+const Village := preload("res://scripts/village.gd")
+const ARENA_BOUNDARY := Village.BOUNDARY
+const SIZE := ARENA_BOUNDARY * 2.0
 const GRASS_TEXTURE := preload("res://assets/environment/meadow_grass_albedo.png")
 const GROUND_SHADER := preload("res://shaders/meadow_ground.gdshader")
 const BLADE_SHADER := preload("res://shaders/meadow_blades.gdshader")
@@ -62,6 +64,7 @@ func _ready() -> void:
 	_vegetation()
 	_hills()
 	_landmarks()
+	_enclosure()
 
 func _process(delta: float) -> void:
 	grass_update_clock += delta
@@ -121,7 +124,10 @@ func _update_grass(at: Vector3) -> void:
 		for z in range(-GRASS_CHUNK_RADIUS, GRASS_CHUNK_RADIUS + 1):
 			# Omit corner chunks entirely outside the 43m grass draw distance.
 			if Vector2(x, z).length() <= 4.5:
-				active[center + Vector2i(x, z)] = true
+				var key := center + Vector2i(x, z)
+				var chunk_min := Vector2(key.x, key.y) * GRASS_CHUNK_SIZE
+				if chunk_min.x < ARENA_BOUNDARY and chunk_min.y < ARENA_BOUNDARY and chunk_min.x + GRASS_CHUNK_SIZE > -ARENA_BOUNDARY and chunk_min.y + GRASS_CHUNK_SIZE > -ARENA_BOUNDARY:
+					active[key] = true
 	for key in grass_chunks.keys():
 		if not active.has(key):
 			recycled.append(grass_chunks[key])
@@ -192,10 +198,18 @@ func _vegetation() -> void:
 	rng.seed = world_seed + 715
 	var trunks: Array[Transform3D] = []
 	var crowns: Array[Transform3D] = []
-	for i in range(190):
-		var angle := rng.randf_range(0, TAU)
-		var radius := rng.randf_range(85, 475)
-		var at := Vector3(cos(angle) * radius, 0, sin(angle) * radius)
+	for i in range(100):
+		# As árvores ficam além do muro; a área das ondas permanece aberta.
+		var side := i % 4
+		var along := rng.randf_range(-56.0, 56.0)
+		var outside := rng.randf_range(32.0, 62.0)
+		var at := Vector3(along, 0, outside)
+		if side == 1:
+			at = Vector3(along, 0, -outside)
+		elif side == 2:
+			at = Vector3(outside, 0, along)
+		elif side == 3:
+			at = Vector3(-outside, 0, along)
 		var scale := rng.randf_range(0.8, 1.8)
 		trunks.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale), at + Vector3.UP * 1.5 * scale))
 		crowns.append(Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale), at + Vector3.UP * 4.2 * scale))
@@ -226,12 +240,12 @@ func _hills() -> void:
 		var angle := TAU * i / 18.0
 		var hill := MeshInstance3D.new()
 		var mesh := SphereMesh.new()
-		mesh.radius = 110
-		mesh.height = 150 + (i % 4) * 35
+		mesh.radius = 28
+		mesh.height = 40 + (i % 4) * 9
 		mesh.radial_segments = 24
 		mesh.rings = 12
 		hill.mesh = mesh
-		hill.position = Vector3(cos(angle) * 660, -25, sin(angle) * 660)
+		hill.position = Vector3(cos(angle) * 106, -12, sin(angle) * 106)
 		hill.material_override = _material(Color("607a68"))
 		add_child(hill)
 
@@ -245,13 +259,10 @@ func _landmarks() -> void:
 	rng.seed = world_seed + 20947
 	var stone := _material(Color("76786c"))
 	for i in range(rock_count):
-		var angle := rng.randf_range(0, TAU)
-		var radius := rng.randf_range(23.0, 100.0)
-		var at := Vector3(cos(angle) * radius, 0, sin(angle) * radius)
-		# Deixa livre o percurso inicial e as posições reservadas aos monstros.
-		if absf(at.x) < 14.0 and at.z < 12.0:
-			at.x += 22.0 if at.x >= 0 else -22.0
-		var size := Vector3(rng.randf_range(1.2, 3.2), rng.randf_range(0.8, 2.5), rng.randf_range(1.0, 2.8))
+		# A faixa lateral deixa livres os cinco spawns, o baú e a fenda de volta.
+		var side := -1.0 if i % 2 == 0 else 1.0
+		var at := Vector3(side * rng.randf_range(19.0, 23.5), 0, rng.randf_range(-22.0, 20.0))
+		var size := Vector3(rng.randf_range(1.0, 2.2), rng.randf_range(0.6, 1.8), rng.randf_range(0.8, 1.8))
 		var rock := StaticBody3D.new()
 		rock.name = "Boulder%d" % i
 		rock.position = at + Vector3.UP * size.y * 0.32
@@ -276,13 +287,32 @@ func _landmarks() -> void:
 		var side := -1.0 if i % 2 == 0 else 1.0
 		var ruin := Node3D.new()
 		ruin.name = "AncientArch%d" % i
-		ruin.position = Vector3(side * (20.0 + i * 9.0), 0, -22.0 - i * 16.0)
+		ruin.position = Vector3(side * 20.0, 0, -13.0 + i * 15.0)
 		ruin.rotation.y = side * 0.35
 		landmarks.add_child(ruin)
 		_stone_block(ruin, Vector3(-2.2, 2.4, 0), Vector3(1.0, 4.8, 1.1), stone)
 		_stone_block(ruin, Vector3(2.2, 2.0, 0), Vector3(1.0, 4.0, 1.1), stone)
 		_stone_block(ruin, Vector3(-0.25, 4.65, 0), Vector3(4.9, 0.7, 1.2), stone)
 		_stone_block(ruin, Vector3(4.0, 0.4, -1.5), Vector3(1.5, 0.8, 1.0), stone)
+
+func _enclosure() -> void:
+	var boundary := Node3D.new()
+	boundary.name = "ArenaBoundary"
+	add_child(boundary)
+	var stone := _material(Color("6c7262"))
+	var top := _material(Color("858a77"))
+	# Faces internas em ±BOUNDARY; os quatro corpos se sobrepõem nos cantos.
+	for side in range(4):
+		var wall := Node3D.new()
+		wall.name = "Wall%d" % side
+		wall.rotation.y = side * PI * 0.5
+		boundary.add_child(wall)
+		_stone_block(wall, Vector3(0, 1.35, ARENA_BOUNDARY + 0.45), Vector3(SIZE + 1.8, 2.7, 0.9), stone)
+		_stone_block(wall, Vector3(0, 2.76, ARENA_BOUNDARY + 0.45), Vector3(SIZE + 1.9, 0.16, 1.05), top)
+		# Contrafortes dão relevo ao fechamento sem invadir a arena jogável.
+		for i in range(10):
+			var along := -ARENA_BOUNDARY + i * SIZE / 9.0
+			_stone_block(wall, Vector3(along, 1.58, ARENA_BOUNDARY + 0.48), Vector3(0.85, 3.16, 1.0), top)
 
 func _stone_block(parent: Node3D, at: Vector3, size: Vector3, material: Material) -> void:
 	var block := StaticBody3D.new()

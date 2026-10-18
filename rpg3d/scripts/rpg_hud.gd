@@ -36,6 +36,15 @@ var interaction_prompt: PanelContainer
 var interaction_label: Label
 var rift_panel: PanelContainer
 var rift_backdrop: ColorRect
+var instance_panel: PanelContainer
+var instance_heading: Label
+var instance_detail: Label
+var instance_timer: Label
+var reward_panel: PanelContainer
+var reward_icon: TextureRect
+var reward_name: Label
+var reward_detail: Label
+var _reward_tween: Tween
 var _combat_allowed := true
 const SKILL_NAMES := ["Golpe potente", "Corte giratório", "Defesa", "Investida"]
 const SKILL_HINTS := ["Golpe frontal reforçado. Recarga: 6s.", "Atinge inimigos ao redor. Recarga: 8s.", "Reduz dano recebido em 65% por 4s. Recarga: 12s.", "Avança na direção da câmera. Recarga: 7s."]
@@ -157,10 +166,120 @@ func _ready() -> void:
 	aim.offset_right = 17
 	aim.offset_top = -17
 	aim.offset_bottom = 17
+	_instance()
+	_reward()
 	_inventory()
 	_potions()
 	_interaction()
 	_rift()
+
+func _instance() -> void:
+	instance_panel = _panel(root)
+	instance_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	instance_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	instance_panel.offset_left = -344
+	instance_panel.offset_right = -30
+	instance_panel.offset_top = 84
+	instance_panel.offset_bottom = 198
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_theme_constant_override("separation", 6)
+	instance_panel.add_child(column)
+	instance_heading = _label("", 16)
+	instance_heading.add_theme_color_override("font_color", Color("e7d8af"))
+	instance_heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(instance_heading)
+	instance_timer = _label("", 23)
+	instance_timer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(instance_timer)
+	instance_detail = _label("", 14)
+	instance_detail.add_theme_color_override("font_color", Color("d3ded6"))
+	instance_detail.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(instance_detail)
+	instance_panel.hide()
+
+func _clock_text(seconds: float) -> String:
+	var whole := maxi(0, ceili(seconds))
+	return "%02d:%02d" % [whole / 60, whole % 60]
+
+func sync_instance(phase: String, preparation_left: float, time_left: float, wave: int, kills: int, alive: int) -> void:
+	instance_panel.visible = not phase.is_empty()
+	instance_timer.add_theme_color_override("font_color", Color("eee4ce"))
+	match phase:
+		"preparation", "preparing":
+			instance_heading.text = "PREPARAÇÃO"
+			instance_timer.text = _clock_text(clampf(preparation_left, 0.0, 30.0))
+			instance_detail.text = "Prepare suas habilidades e equipamentos"
+		"combat", "battle":
+			instance_heading.text = "ONDA %d/6 · VIVOS %d/5" % [clampi(wave, 0, 6), clampi(alive, 0, 5)]
+			instance_timer.text = "TEMPO " + _clock_text(clampf(time_left, 0.0, 600.0))
+			instance_timer.add_theme_color_override("font_color", Color("ee8c7f") if time_left <= 60 else Color("eee4ce"))
+			instance_detail.text = "DERROTADOS %d/30" % clampi(kills, 0, 30)
+		"victory", "completed":
+			instance_heading.text = "CONCLUÍDO"
+			instance_timer.text = "Abra o baú"
+			instance_timer.add_theme_color_override("font_color", Color("d9c08a"))
+			instance_detail.text = "As 6 ondas foram vencidas"
+		"failed", "defeat", "timeout":
+			instance_heading.text = "TEMPO ENCERRADO" if time_left <= 0 or phase == "timeout" else "DERROTA"
+			instance_timer.text = "R · Voltar à vila"
+			instance_timer.add_theme_color_override("font_color", Color("ee8c7f"))
+			instance_detail.text = "DERROTADOS %d/30" % clampi(kills, 0, 30)
+		_:
+			instance_panel.hide()
+
+func _reward() -> void:
+	reward_panel = _panel(root)
+	reward_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	reward_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	reward_panel.offset_left = -250
+	reward_panel.offset_right = 250
+	reward_panel.offset_top = -250
+	reward_panel.offset_bottom = -174
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_theme_constant_override("separation", 14)
+	reward_panel.add_child(row)
+	reward_icon = TextureRect.new()
+	reward_icon.custom_minimum_size = Vector2(52, 52)
+	reward_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	reward_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	reward_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(reward_icon)
+	var column := VBoxContainer.new()
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(column)
+	reward_name = _label("", 19)
+	reward_name.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	column.add_child(reward_name)
+	reward_detail = _label("", 14)
+	column.add_child(reward_detail)
+	reward_panel.hide()
+
+func show_reward(item: Dictionary) -> void:
+	if item.is_empty():
+		return
+	var rarity := str(item.get("rarity", item.get("raridade", "Comum")))
+	var colors := {"comum": Color("b9bfc2"), "incomum": Color("80cf85"), "raro": Color("77b4f5"), "épico": Color("c692ee"), "epico": Color("c692ee"), "lendário": Color("f0c766"), "lendario": Color("f0c766")}
+	var color: Color = colors.get(rarity.to_lower(), Color("b9bfc2"))
+	reward_name.text = str(item.get("name", item.get("nome", "Equipamento obtido")))
+	reward_name.add_theme_color_override("font_color", color)
+	reward_detail.text = "%s · Adicionado à mochila" % rarity
+	reward_detail.add_theme_color_override("font_color", color.lightened(0.2))
+	var icon_id := str(item.get("slot", "armor"))
+	if icon_id not in ["sword", "shield", "armor", "gloves", "boots", "potion", "fang"]:
+		icon_id = "armor"
+	reward_icon.texture = load("res://assets/icons/%s.svg" % icon_id)
+	reward_panel.add_theme_stylebox_override("panel", _style(Color(0.04, 0.07, 0.08, 0.97), color))
+	if is_instance_valid(_reward_tween):
+		_reward_tween.kill()
+	reward_panel.modulate.a = 1.0
+	reward_panel.show()
+	_reward_tween = create_tween()
+	_reward_tween.tween_interval(4.2)
+	_reward_tween.tween_property(reward_panel, "modulate:a", 0.0, 0.8)
+	_reward_tween.tween_callback(reward_panel.hide)
 
 func _interaction() -> void:
 	interaction_prompt = _panel(root)
@@ -226,7 +345,8 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	experience.tooltip_text = "Experiência: %d / 3" % xp
 	for i in range(4):
 		var remaining := float(cooldowns[i])
-		var enabled: bool = combat_allowed and not (dead or inventory_panel.visible or rift_panel.visible or remaining > 0 or (i < 2 and not inventory.equipped))
+		var has_weapon: bool = bool(inventory.get("equipped", false)) or inventory.get("equipped_loot", {}).has("sword")
+		var enabled: bool = combat_allowed and not (dead or inventory_panel.visible or rift_panel.visible or remaining > 0 or (i < 2 and not has_weapon))
 		slot_buttons[i].automatic = automatic_skills[i]
 		slot_buttons[i].sync(remaining, [6.0, 8.0, 12.0, 7.0][i], enabled)
 	potion_slot.automatic = potion_auto

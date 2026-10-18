@@ -14,7 +14,13 @@ const COMBAT_SCENE := preload("res://levels/combat_world.tscn")
 const WorldCatalog := preload("res://scripts/world_catalog.gd")
 const PlayerProgress := preload("res://scripts/player_progress.gd")
 const TravelGate := preload("res://scripts/travel_gate.gd")
+const InstanceRun := preload("res://scripts/instance_run.gd")
+const RewardChest := preload("res://scripts/reward_chest.gd")
+const LootItems := preload("res://scripts/loot_items.gd")
 var progress := PlayerProgress.new()
+var arena_run: RefCounted
+var reward_chest: Node3D
+var loot_rng := RandomNumberGenerator.new()
 var active_zone: Node3D
 var current_world := 0
 var instance_kills := 0
@@ -64,6 +70,7 @@ var failures := 0
 
 func _ready() -> void:
 	smoke = "--smoke-test" in OS.get_cmdline_user_args()
+	loot_rng.randomize()
 	_actions()
 	_world()
 	_player()
@@ -192,11 +199,14 @@ func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	return results
 
 func _apply_equipment() -> void:
+	sword_attachment.visible = LootItems.is_equipped(inventory, "sword")
+	shield_attachment.visible = LootItems.is_equipped(inventory, "shield")
+	shield_carry_pose.shield_equipped = shield_attachment.visible
 	for slot in ["armor", "gloves", "boots"]:
 		for mesh in _gear_nodes(slot, false):
-			mesh.visible = not bool(inventory[slot])
+			mesh.visible = not LootItems.is_equipped(inventory, slot)
 		for mesh in _gear_nodes(slot, true):
-			mesh.visible = bool(inventory[slot])
+			mesh.visible = LootItems.is_equipped(inventory, slot)
 
 func _play(action: String) -> void:
 	for name in animation.get_animation_list():
@@ -223,12 +233,40 @@ func _maximum_hp() -> float:
 	return 100.0 + (level - 1) * 20.0
 
 func _refresh_hud() -> void:
-	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock, auto_potion, potion_threshold, potion_clock, automatic_skills, current_world > 0 and not hud.rift_panel.visible)
+	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock, auto_potion, potion_threshold, potion_clock, automatic_skills, current_world > 0 and not _instance_failed() and not hud.rift_panel.visible)
 	hud.sync_enemies(enemies, camera)
+	if arena_run != null and not _modal_open():
+		hud.sync_instance(String(InstanceRun.Phase.keys()[arena_run.phase]).to_lower(), arena_run.preparation_left, arena_run.time_left, arena_run.wave, arena_run.kills, arena_run.alive)
+	else:
+		hud.sync_instance("", 0, 0, 0, 0, 0)
 	var prompt := ""
-	if not dead and not _modal_open() and _near_portal():
-		prompt = "[E] Acessar a fenda dimensional" if current_world == 0 else "[E] Voltar à vila"
+	if not dead and not _modal_open():
+		if _near_chest():
+			prompt = "[E] Abrir baú de recompensa"
+		elif _near_portal():
+			prompt = "[E] Acessar a fenda dimensional" if current_world == 0 else "[E] Voltar à vila"
 	hud.set_interaction_prompt(prompt)
+
+func _instance_failed() -> bool:
+	return arena_run != null and arena_run.phase == InstanceRun.Phase.FAILED
+
+func _near_chest() -> bool:
+	return is_instance_valid(reward_chest) and not reward_chest.opened and player.position.distance_to(reward_chest.position) <= 3.0
+
+func _open_chest() -> bool:
+	if dead or _modal_open() or arena_run == null or arena_run.phase != InstanceRun.Phase.VICTORY or not _near_chest():
+		return false
+	if not reward_chest.open():
+		return false
+	var reward := LootItems.create_reward(loot_rng, current_world)
+	if not inventory.has("loot_items"):
+		inventory.loot_items = []
+	inventory.loot_items.append(reward)
+	hud.show_reward(reward)
+	notice.text = "Baú: %s (%s) · Item recebido na mochila." % [reward.name, reward.rarity]
+	_save_profile()
+	_refresh_hud()
+	return true
 
 func _modal_open() -> bool:
 	return hud.inventory_panel.visible or hud.rift_panel.visible
@@ -237,7 +275,11 @@ func _near_portal() -> bool:
 	return Vector2(player.position.x - portal_position.x, player.position.z - portal_position.z).length() <= 4.0
 
 func _interact() -> bool:
-	if dead or attack_clock > 0 or _modal_open() or not _near_portal():
+	if dead or attack_clock > 0 or _modal_open():
+		return false
+	if _near_chest():
+		return _open_chest()
+	if not _near_portal():
 		return false
 	if current_world == 0:
 		hud.show_rift(progress.unlocked_world(), progress.completed_worlds)
@@ -270,6 +312,10 @@ func _change_zone(number: int) -> void:
 	animation.speed_scale = 1.0
 	hud.focus_enemy = null
 	enemies.clear()
+	if arena_run != null:
+		arena_run.stop()
+	arena_run = null
+	reward_chest = null
 	if is_instance_valid(active_zone):
 		remove_child(active_zone)
 		active_zone.queue_free()
@@ -301,8 +347,8 @@ func _change_zone(number: int) -> void:
 		active_zone = COMBAT_SCENE.instantiate()
 		active_zone.name = "OpenField"
 		active_zone.configure(WorldCatalog.get_world(number))
-		player.position = Vector3(0, 0.05, 5)
-		portal_position = Vector3(0, 0, 11)
+		player.position = Vector3(0, 0.05, 17)
+		portal_position = Vector3(0, 0, 22)
 	add_child(active_zone)
 	if number > 0:
 		var gate := TravelGate.new()
@@ -310,26 +356,53 @@ func _change_zone(number: int) -> void:
 		gate.title = "Retorno à vila"
 		gate.position = portal_position
 		active_zone.add_child(gate)
-		_spawn_enemies()
+		instance_goal = InstanceRun.TOTAL_MONSTERS
+		arena_run = InstanceRun.new()
+		arena_run.wave_requested.connect(_spawn_enemies)
+		arena_run.completed.connect(_complete_instance)
+		arena_run.failed.connect(_fail_instance)
+		arena_run.begin()
 	_play("idle")
 	_update_location()
-	notice.text = ""
+	notice.text = "Prepare-se: os monstros chegam em 30 segundos." if number > 0 else ""
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if not smoke else Input.MOUSE_MODE_VISIBLE
 	_refresh_hud()
 
 func _update_location() -> void:
 	if current_world == 0:
-		hud.set_location("VILA DA FENDA", "Área segura · Acesse a fenda dimensional com E", true)
+		hud.set_location("VILA DA FENDA", "Acesse a fenda dimensional com E", true)
 	else:
 		var definition := WorldCatalog.get_world(current_world)
-		var objective := "Grelims derrotados: %d / %d" % [instance_kills, instance_goal]
-		if instance_kills >= instance_goal:
-			objective = "Mundo concluído · Volte à vila pela fenda de retorno"
+		var objective := "Derrote as seis ondas para receber o baú."
+		if arena_run != null and arena_run.phase == InstanceRun.Phase.PREPARATION:
+			objective = "Prepare seus equipamentos antes da primeira onda."
+		elif _instance_failed():
+			objective = "Instância encerrada · R para voltar à vila."
+		elif arena_run != null and arena_run.phase == InstanceRun.Phase.VICTORY:
+			objective = "Mundo concluído · Abra o baú no centro da arena com E."
 		hud.set_location("MUNDO %d · %s" % [current_world, definition.subtitle], objective, false)
+
+func _complete_instance() -> void:
+	var unlocked := progress.complete_world(current_world)
+	reward_chest = RewardChest.new()
+	reward_chest.name = "RewardChest"
+	reward_chest.position = Vector3(0, 0, -1)
+	active_zone.add_child(reward_chest)
+	notice.text = "30 monstros derrotados! Abra o baú no centro da arena."
+	if unlocked and current_world < WorldCatalog.COUNT:
+		notice.text += " Mundo %d liberado." % (current_world + 1)
+	_update_location()
+	_save_profile()
+
+func _fail_instance(reason: String) -> void:
+	attack_pending = false
+	attack_clock = 0.0
+	notice.text = "Tempo esgotado! R para retornar à vila." if reason == "timeout" else "Você caiu. R para retornar à vila."
+	_update_location()
 
 func _load_profile() -> void:
 	var state: Dictionary = progress.load_profile()
-	level = clampi(int(state.get("level", 1)), 1, 100)
+	level = maxi(1, int(state.get("level", 1)))
 	xp = clampi(int(state.get("xp", 0)), 0, 2)
 	kills = maxi(0, int(state.get("kills", 0)))
 	var saved_inventory: Variant = state.get("inventory", {})
@@ -338,21 +411,19 @@ func _load_profile() -> void:
 			inventory[key] = bool(saved_inventory.get(key, true))
 		for key in ["potions", "fangs", "gold"]:
 			inventory[key] = clampi(int(saved_inventory.get(key, inventory[key])), 0, 999999)
+		LootItems.restore_items(inventory, saved_inventory)
 	auto_potion = bool(state.get("auto_potion", false))
 	potion_threshold = clampf(float(state.get("potion_threshold", 40)), 10, 90)
 	var saved_skills: Variant = state.get("automatic_skills", [])
 	if saved_skills is Array:
 		for index in mini(saved_skills.size(), 4):
 			automatic_skills[index] = bool(saved_skills[index])
-	sword_attachment.visible = inventory.equipped
-	shield_attachment.visible = inventory.shield
-	shield_carry_pose.shield_equipped = inventory.shield
 	_apply_equipment()
 
 func _save_profile() -> void:
 	if smoke:
 		return
-	var result := progress.save_profile({"level": level, "xp": xp, "kills": kills, "inventory": inventory.duplicate(), "auto_potion": auto_potion, "potion_threshold": potion_threshold, "automatic_skills": automatic_skills.duplicate()})
+	var result := progress.save_profile({"level": level, "xp": xp, "kills": kills, "inventory": inventory.duplicate(true), "auto_potion": auto_potion, "potion_threshold": potion_threshold, "automatic_skills": automatic_skills.duplicate()})
 	if result != OK and not save_error_reported:
 		save_error_reported = true
 		push_warning("Não foi possível salvar o progresso: " + error_string(result))
@@ -365,6 +436,8 @@ func _toggle_inventory() -> void:
 	if hud.rift_panel.visible:
 		return
 	hud.inventory_panel.visible = not hud.inventory_panel.visible
+	if hud.inventory_panel.visible:
+		hud.reward_panel.hide()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if hud.inventory_panel.visible else Input.MOUSE_MODE_CAPTURED
 	animation.speed_scale = 0.0 if hud.inventory_panel.visible else 1.0
 	_refresh_hud()
@@ -372,21 +445,23 @@ func _toggle_inventory() -> void:
 func _use_item(item: String) -> bool:
 	if dead or hud.rift_panel.visible:
 		return false
-	if item == "sword":
-		if attack_clock > 0:
+	if attack_clock > 0 and item != "potion":
+		return false
+	if item.begins_with("loot_equip:"):
+		if not LootItems.equip_item(inventory, item.trim_prefix("loot_equip:")):
 			return false
-		inventory.equipped = not inventory.equipped
-		sword_attachment.visible = inventory.equipped
-	elif item == "shield":
-		if attack_clock > 0:
+		_apply_equipment()
+	elif item.begins_with("loot_remove:"):
+		if not LootItems.unequip_slot(inventory, item.trim_prefix("loot_remove:")):
 			return false
-		inventory.shield = not inventory.shield
-		shield_attachment.visible = inventory.shield
-		shield_carry_pose.shield_equipped = inventory.shield
-	elif item in ["armor", "gloves", "boots"]:
-		if attack_clock > 0:
-			return false
-		inventory[item] = not bool(inventory[item])
+		_apply_equipment()
+	elif item in LootItems.SLOTS:
+		var key: String = LootItems.BASE_KEYS[item]
+		if inventory.get("equipped_loot", {}).has(item):
+			LootItems.unequip_slot(inventory, item)
+			inventory[key] = true
+		else:
+			inventory[key] = not bool(inventory[key])
 		_apply_equipment()
 	elif item == "potion":
 		if inventory.potions <= 0 or hp >= _maximum_hp() or potion_clock > 0:
@@ -412,7 +487,7 @@ func _auto_potion_step(delta: float) -> void:
 		_use_item("potion")
 
 func _activate_skill(slot: int) -> bool:
-	if current_world == 0 or dead or _modal_open():
+	if current_world == 0 or _instance_failed() or dead or _modal_open():
 		return false
 	match slot:
 		0:
@@ -462,14 +537,15 @@ func _automatic_skills_step() -> void:
 		if automatic_skills[slot] and ready[slot] and _activate_skill(slot):
 			break
 
-func _spawn_enemies() -> void:
-	if current_world == 0:
+func _spawn_enemies(wave_number: int = 1) -> void:
+	if current_world == 0 or not enemies.is_empty():
 		return
 	var definition := WorldCatalog.get_world(current_world)
-	instance_goal = definition.enemy_count
-	var combatants := Node3D.new()
-	combatants.name = "Combatants"
-	active_zone.add_child(combatants)
+	var combatants := active_zone.get_node_or_null("Combatants")
+	if combatants == null:
+		combatants = Node3D.new()
+		combatants.name = "Combatants"
+		active_zone.add_child(combatants)
 	for point in definition.enemy_spawns:
 		var foe := CharacterBody3D.new()
 		foe.position = point
@@ -488,6 +564,8 @@ func _spawn_enemies() -> void:
 		foe.add_child(visual)
 		combatants.add_child(foe)
 		enemies.append(foe)
+	notice.text = "Onda %d / 6 · Derrote os cinco monstros." % wave_number
+	_update_location()
 
 func _input(event: InputEvent) -> void:
 	# TAB também funciona quando um controle da interface está com foco.
@@ -516,7 +594,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _modal_open():
 			return
 		if event.keycode == KEY_R:
-			if dead:
+			if dead or _instance_failed():
 				_return_to_village()
 		elif event.keycode == KEY_E:
 			_interact()
@@ -544,6 +622,8 @@ func _physics_process(delta: float) -> void:
 	if _modal_open():
 		_refresh_hud()
 		return
+	if arena_run != null:
+		arena_run.tick(delta)
 	boom.rotation = Vector3(pitch, yaw, 0)
 	boom.spring_length = lerpf(boom.spring_length, zoom_distance, 1.0 - exp(-10.0 * delta))
 	spin_cooldown = maxf(0, spin_cooldown - delta)
@@ -567,7 +647,7 @@ func _physics_process(delta: float) -> void:
 		elif Input.is_action_just_pressed("jump"):
 			player.velocity.y = 7
 		player.move_and_slide()
-		var boundary := Village.BOUNDARY - 1.0 if current_world == 0 else 490.0
+		var boundary := Village.BOUNDARY - 1.0 if current_world == 0 else OpenField.ARENA_BOUNDARY - 0.5
 		player.position.x = clampf(player.position.x, -boundary, boundary)
 		player.position.z = clampf(player.position.z, -boundary, boundary)
 		if attack_clock > 0:
@@ -590,7 +670,7 @@ func _physics_process(delta: float) -> void:
 	_refresh_hud()
 
 func _attack(powered := false) -> bool:
-	if current_world == 0 or dead or _modal_open() or not inventory.equipped or cooldown > 0 or (powered and skill_cooldown > 0):
+	if current_world == 0 or _instance_failed() or dead or _modal_open() or not LootItems.is_equipped(inventory, "sword") or cooldown > 0 or (powered and skill_cooldown > 0):
 		return false
 	powered_attack = powered
 	attack_kind = 1 if powered else 0
@@ -620,7 +700,7 @@ func _melee_hit() -> void:
 		query.exclude = [player.get_rid()]
 		var hit := get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty() and hit.collider == foe:
-			_damage_enemy(foe, (40.0 if attack_kind == 2 else (60.0 if powered_attack else 25.0)) + (level - 1) * 5)
+			_damage_enemy(foe, (40.0 if attack_kind == 2 else (60.0 if powered_attack else 25.0)) + (level - 1) * 5 + LootItems.bonuses(inventory).attack)
 
 func _skill_arc() -> void:
 	var visual := MeshInstance3D.new()
@@ -647,7 +727,7 @@ func _skill_arc() -> void:
 	tween.tween_callback(visual.queue_free)
 
 func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
-	if current_world == 0 or not is_instance_valid(foe) or foe not in enemies:
+	if current_world == 0 or arena_run == null or arena_run.phase != InstanceRun.Phase.COMBAT or not is_instance_valid(foe) or foe not in enemies:
 		return
 	hud.focus_enemy = foe
 	var health := float(foe.get_meta("hp")) - amount
@@ -668,32 +748,25 @@ func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 			xp = 0
 			level += 1
 			hp = 100 + (level - 1) * 20
-		if enemies.is_empty():
-			var unlocked := progress.complete_world(current_world)
-			if unlocked and current_world < WorldCatalog.COUNT:
-				notice.text = "Mundo %d concluído! Mundo %d liberado na fenda." % [current_world, current_world + 1]
-			elif current_world == WorldCatalog.COUNT:
-				notice.text = "Os dez mundos foram concluídos! Volte à vila pela fenda."
-			else:
-				notice.text = "Mundo concluído! Volte à vila pela fenda de retorno."
+		arena_run.monster_defeated()
 		_update_location()
 		_save_profile()
 
 func _enemies_step(delta: float) -> void:
-	if current_world == 0:
+	if current_world == 0 or arena_run == null or arena_run.phase != InstanceRun.Phase.COMBAT:
 		return
 	for foe in enemies:
 		var direction := player.position - foe.position
 		direction.y = 0
 		var distance := direction.length()
-		var desired := direction.normalized() * 1.8 if distance < 11 and distance > 1.3 and not dead else Vector3.ZERO
+		var desired := direction.normalized() * 1.8 if distance > 1.3 and not dead else Vector3.ZERO
 		foe.velocity.x = move_toward(foe.velocity.x, desired.x, delta * 5.0)
 		foe.velocity.z = move_toward(foe.velocity.z, desired.z, delta * 5.0)
 		foe.velocity.y = -5
 		foe.move_and_slide()
 		var timer := maxf(0, float(foe.get_meta("attack")) - delta)
 		if distance < 1.6 and timer <= 0 and not dead:
-			var damage := float(foe.get_meta("damage", 12.0))
+			var damage := maxf(1.0, float(foe.get_meta("damage", 12.0)) - LootItems.bonuses(inventory).defense)
 			hp = maxf(0, hp - damage * (0.35 if guard_clock > 0 else 1.0))
 			timer = 1.2
 			if hp <= 0:
@@ -701,7 +774,7 @@ func _enemies_step(delta: float) -> void:
 				attack_pending = false
 				player.velocity = Vector3.ZERO
 				_play("death")
-				notice.text = "Você caiu. Pressione R para retornar à vila."
+				arena_run.fail("death")
 		foe.set_meta("attack", timer)
 		if direction.length() > 0.1:
 			foe.rotation.y = lerp_angle(foe.rotation.y, atan2(-direction.x, -direction.z), 1.0 - exp(-7.0 * delta))
@@ -721,6 +794,7 @@ func _reset_test_combat() -> void:
 	_apply_equipment()
 	powered_attack = false
 	_change_zone(1)
+	arena_run.tick(InstanceRun.PREPARATION_TIME)
 
 func _check(ok: bool, description: String) -> void:
 	if not ok:
@@ -747,7 +821,7 @@ func _test() -> void:
 	_check(blade.basis.x.normalized().dot(Vector3.RIGHT) > 0.99, "lâmina preserva eixo nativo do socket")
 	var rig: Skeleton3D = character_model.find_children("*", "Skeleton3D", true, false)[0]
 	_check(rig.find_bone("neutral_bone") == -1, "equipamentos não contêm influência sem osso que deforma a luva")
-	_check(OpenField.SIZE == 1000.0 and has_node("OpenField/FieldCollision"), "campo aberto de 1000 por 1000 metros com chão físico")
+	_check(OpenField.SIZE == Village.BOUNDARY * 2.0 and has_node("OpenField/FieldCollision"), "arena tem o mesmo tamanho da vila e chão físico")
 	await _test_weapon_alignment()
 	await get_tree().physics_frame
 	enemies[0].position = player.position + Vector3(0, 0, -2)
@@ -762,14 +836,14 @@ func _test() -> void:
 	cooldown = 0.0
 	_check(_attack(true) and skill_cooldown == 6.0, "habilidade manual inicia ataque forte e recarga")
 	_melee_hit()
-	_check(enemies.size() == 2, "skill causa dano reforçado no inimigo à frente")
+	_check(enemies.size() == 4, "skill causa dano reforçado no inimigo à frente")
 	cooldown = 0.0
 	_check(not _attack(true), "recarga da skill bloqueia repetição")
 	for foe in enemies.duplicate():
 		_damage_enemy(foe, 100)
-	_check(enemies.is_empty() and level == 2 and kills == 3, "combate concede experiência e nível")
+	_check(enemies.size() == 5 and level == 2 and kills == 5 and arena_run.wave == 2, "combate concede experiência e inicia a onda seguinte após cinco derrotas")
 	_reset_test_combat()
-	_check(enemies.size() == 3 and hp == 100, "reinício restaura combate")
+	_check(enemies.size() == 5 and hp == 100, "reinício restaura combate")
 	await get_tree().physics_frame
 	hp = 1
 	enemies[0].position = player.position + Vector3(0, 0, -1)
@@ -777,14 +851,14 @@ func _test() -> void:
 	_check(dead and animation.current_animation.ends_with("death"), "derrota reproduz morte do Fighter")
 	_check(not _attack(), "morte impede ataque")
 	_reset_test_combat()
-	player.position = Vector3(150, 0.05, 150)
+	player.position = Vector3(20, 0.05, 20)
 	var before := player.position
 	Input.action_press("forward")
 	for i in range(30):
 		_physics_process(1.0 / 60.0)
 		await get_tree().physics_frame
 	Input.action_release("forward")
-	_check(player.position.z < before.z - 1 and player.position.y > -0.1, "campo permite caminhar longe do centro sem cair")
+	_check(player.position.z < before.z - 1 and player.position.y > -0.1, "arena permite caminhar perto do limite sem cair")
 	await _test_interface()
 	_test_potion_settings()
 	_test_equipment()
@@ -1110,6 +1184,13 @@ func _test_slot_gestures() -> void:
 	_automatic_skills_step()
 	_check(skill_cooldown == 0, "desativar automático interrompe novos disparos")
 
+func _finish_test_run() -> void:
+	if arena_run.phase == InstanceRun.Phase.PREPARATION:
+		arena_run.tick(InstanceRun.PREPARATION_TIME)
+	while arena_run.phase == InstanceRun.Phase.COMBAT:
+		for foe in enemies.duplicate():
+			_damage_enemy(foe, 100000)
+
 func _test_instance_flow() -> void:
 	progress = PlayerProgress.new()
 	_change_zone(0)
@@ -1127,53 +1208,100 @@ func _test_instance_flow() -> void:
 	_check(player.position == position_before and not _activate_skill(3), "seleção da fenda pausa movimento e habilidades")
 	_check(not _enter_world(2) and current_world == 0, "controlador também impede pular o Mundo 1")
 	_check(not _enter_world(0) and not _enter_world(11), "fenda rejeita números fora dos dez mundos")
-	_check(_enter_world(1) and current_world == 1 and enemies.size() == 3, "entrar carrega uma instância de combate independente")
-	_damage_enemy(enemies[0], 1000)
+	_check(_enter_world(1) and enemies.is_empty() and arena_run.preparation_left == 30, "arena começa com trinta segundos de preparação sem monstros")
+	_check(hud.instance_panel.visible and hud.instance_timer.text == "00:30", "HUD mostra a preparação da instância")
+	arena_run.tick(29)
+	_check(enemies.is_empty() and arena_run.wave == 0 and arena_run.time_left == 600, "nenhum monstro aparece antes dos trinta segundos")
+	arena_run.tick(1)
+	_check(enemies.size() == 5 and arena_run.wave == 1 and arena_run.time_left == 600, "primeira onda de cinco começa depois da preparação")
+	_refresh_hud()
+	_check(hud.instance_panel.visible and "ONDA 1/6" in hud.instance_heading.text, "HUD mostra a onda e o prazo de combate")
+	for index in range(4):
+		_damage_enemy(enemies[0], 1000)
+	_check(enemies.size() == 1 and arena_run.wave == 1 and not is_instance_valid(reward_chest), "onda seguinte e baú aguardam o último monstro")
 	var loot_before := int(inventory.fangs)
 	var gold_before := int(inventory.gold)
 	player.position = portal_position + Vector3(0, 0.05, -2.5)
-	_check(_interact() and current_world == 0, "fenda de retorno leva à vila mesmo sem concluir o mundo")
+	_check(_interact() and current_world == 0, "fenda de retorno permite abandonar uma instância")
 	_check(progress.unlocked_world() == 1, "abandonar uma instância incompleta não libera o próximo mundo")
 	_check(int(inventory.fangs) == loot_before and int(inventory.gold) == gold_before, "troca de cenário preserva itens e ouro obtidos")
 	_check(hp == _maximum_hp() and not dead, "vila recupera a vida sem consumir poções")
 	player.position = portal_position + Vector3(0, 0.05, 2.5)
 	_interact()
 	_enter_world(1)
-	_check(enemies.size() == 3 and instance_kills == 0, "nova entrada cria inimigos e objetivo novos")
-	for foe in enemies.duplicate():
-		_damage_enemy(foe, 1000)
-	_check(progress.unlocked_world() == 2 and progress.completed_worlds == [1], "concluir Mundo 1 libera somente Mundo 2")
+	_check(enemies.is_empty() and instance_kills == 0, "nova entrada reinicia a preparação e o objetivo")
+	_finish_test_run()
+	_check(instance_kills == 30 and arena_run.wave == 6 and enemies.is_empty(), "seis ondas de cinco encerram a instância com trinta derrotas")
+	_check(progress.unlocked_world() == 2 and progress.completed_worlds == [1], "concluir as seis ondas libera somente o próximo mundo")
+	_check(is_instance_valid(reward_chest) and not reward_chest.opened, "vitória faz aparecer um baú fechado")
+	_check(not _open_chest(), "recompensa exige chegar perto do baú")
+	var rewards_before: int = inventory.get("loot_items", []).size()
+	player.position = reward_chest.position + Vector3(0, 0.05, 2)
+	_check(_interact() and reward_chest.opened, "E abre o baú e concede o item")
+	_check(inventory.loot_items.size() == rewards_before + 1, "recompensa vai para a mochila")
+	_check(not _open_chest() and inventory.loot_items.size() == rewards_before + 1, "baú não concede um segundo item ao clicar novamente")
+	var reward: Dictionary = inventory.loot_items.back().duplicate(true)
+	_check(reward.rarity in LootItems.RARITIES, "item do baú possui uma raridade válida")
+	_check(_use_item("loot_equip:" + reward.id), "item do baú pode ser equipado")
+	_check(inventory.equipped_loot[reward.slot].id == reward.id and LootItems.is_equipped(inventory, reward.slot), "equipamento de saque ocupa seu slot e aparece no personagem")
+	_check(_use_item("loot_remove:" + reward.slot), "retirar equipamento devolve o saque à mochila")
+	_check(_use_item(reward.slot), "equipamento básico pode ser usado novamente")
 	var earned_level := level
-	var earned_items := inventory.duplicate()
+	var earned_items := inventory.duplicate(true)
 	_return_to_village()
 	_check(level == earned_level and inventory == earned_items, "retorno preserva nível e todo o inventário")
 	player.position = portal_position + Vector3(0, 0.05, 2.5)
 	_interact()
 	_check(not hud.rift_panel.world_buttons[1].disabled and hud.rift_panel.world_buttons[2].disabled, "menu atualiza o próximo desbloqueio sem liberar os demais")
 	_enter_world(1)
-	for foe in enemies.duplicate():
-		_damage_enemy(foe, 1000)
+	_finish_test_run()
 	_check(progress.unlocked_world() == 2, "repetir mundo concluído não pula a progressão")
 	for number in range(2, WorldCatalog.COUNT + 1):
 		_return_to_village()
 		player.position = portal_position + Vector3(0, 0.05, 2.5)
 		_interact()
 		_check(_enter_world(number), "mundo seguinte liberado pode ser acessado: " + str(number))
-		_check(enemies.size() == WorldCatalog.get_world(number).enemy_count, "instância carrega o seu conjunto de monstros: " + str(number))
+		_check(enemies.is_empty() and arena_run.preparation_left == 30, "cada mundo começa com preparação: " + str(number))
+		arena_run.tick(30)
+		_check(enemies.size() == 5, "cada onda tem cinco monstros: " + str(number))
 		if number == 2:
 			_check(float(enemies[0].get_meta("maximum_hp")) == 70.0, "novo mundo aplica vida própria aos inimigos")
 			_damage_enemy(enemies[0], 1)
 			_refresh_hud()
 			_check(hud.target_health.max_value == 70 and hud.target_health.value == 69, "barras de inimigos respeitam a vida do mundo atual")
-		for foe in enemies.duplicate():
-			_damage_enemy(foe, 1000)
-		_check(progress.completed_worlds.size() == number, "conclusão é registrada na ordem correta: " + str(number))
+		_finish_test_run()
+		_check(progress.completed_worlds.size() == number and instance_kills == 30, "conclusão das trinta derrotas é registrada em ordem: " + str(number))
+		await get_tree().process_frame
 	_check(progress.unlocked_world() == 10 and not progress.can_enter(11), "concluir Mundo 10 encerra a sequência sem criar Mundo 11")
-	dead = true
-	hp = 0
+	_reset_test_combat()
+	var completed_before := progress.completed_worlds.duplicate()
+	arena_run.tick(600)
+	_check(_instance_failed() and not is_instance_valid(reward_chest), "dez minutos sem concluir encerram a tentativa sem baú")
+	_damage_enemy(enemies[0], 1000)
+	_check(instance_kills == 0 and progress.completed_worlds == completed_before and not _attack(), "tentativa encerrada não aceita dano, conclusão ou recompensa")
 	var rescue := InputEventKey.new()
 	rescue.keycode = KEY_R
 	rescue.pressed = true
+	_unhandled_input(rescue)
+	_check(current_world == 0 and hp == _maximum_hp(), "R após expirar o tempo retorna à vila")
+	_reset_test_combat()
+	inventory.loot_items = [{"id": "smoke-sword", "slot": "sword", "name": "Espada de teste", "rarity": "Raro", "attack_bonus": 17, "defense_bonus": 0}]
+	_check(_use_item("loot_equip:smoke-sword") and sword_attachment.visible, "espada de saque funciona mesmo com a básica guardada")
+	enemies[0].position = player.position + Vector3(0, 0, -2)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	_check(_attack(), "espada de saque permite ataques")
+	_melee_hit()
+	_check(float(enemies[0].get_meta("hp")) == 18, "bônus do item equipado aumenta o dano real")
+	_reset_test_combat()
+	inventory.loot_items = [{"id": "smoke-armor", "slot": "armor", "name": "Armadura de teste", "rarity": "Raro", "attack_bonus": 0, "defense_bonus": 7}]
+	_use_item("loot_equip:smoke-armor")
+	enemies[0].position = player.position + Vector3(0, 0, -1)
+	_enemies_step(0.01)
+	_check(hp == 95, "bônus de defesa do item equipado reduz o dano real")
+	dead = true
+	hp = 0
+	arena_run.fail("death")
 	_unhandled_input(rescue)
 	_check(current_world == 0 and not dead and hp == _maximum_hp(), "R após morrer resgata o personagem na vila")
 	await get_tree().process_frame

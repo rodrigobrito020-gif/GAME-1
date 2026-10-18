@@ -50,7 +50,7 @@ func _ready() -> void:
 	close_button.add_theme_stylebox_override("hover", _style(Color("39352a"), Color("dfc68d")))
 	close_button.pressed.connect(func() -> void: closed.emit())
 	heading.add_child(close_button)
-	column.add_child(_label("Conclua o mundo anterior para liberar o próximo. Os concluídos podem ser revisitados.", 16, Color("cfdbde")))
+	column.add_child(_label("30s para se preparar · 6 ondas de 5 monstros · 10 minutos de combate · Baú ao vencer", 16, Color("cfdbde")))
 	progress_label = _label("", 15, Color("b8d5b5"))
 	column.add_child(progress_label)
 	var grid := GridContainer.new()
@@ -78,7 +78,7 @@ func _ready() -> void:
 		)
 		grid.add_child(button)
 		world_buttons.append(button)
-	column.add_child(_label("Escolha um mundo liberado para entrar.", 15, Color("d3cbb5")))
+	column.add_child(_label("Conclua o mundo anterior para liberar o próximo. Os concluídos podem ser revisitados.", 15, Color("d3cbb5")))
 	hide()
 
 func show_worlds(unlocked: int, completed: Array[int]) -> void:
@@ -94,7 +94,7 @@ func show_worlds(unlocked: int, completed: Array[int]) -> void:
 			button.text = "MUNDO %02d\nCONCLUÍDO\nRevisitar" % number
 			button.add_theme_stylebox_override("normal", _style(Color("20352f"), Color("6d9b78")))
 			button.add_theme_color_override("font_color", Color("cce5c6"))
-			button.tooltip_text = "Mundo concluído. Entre novamente quando quiser."
+			button.tooltip_text = "Mundo concluído. Entre novamente quando quiser.\n30s de preparação · 6 ondas de 5 · 10 minutos para vencer e abrir o baú."
 		elif button.disabled:
 			button.text = "MUNDO %02d\nBLOQUEADO\n—" % number
 			button.tooltip_text = "Conclua o Mundo %d para liberar." % (number - 1)
@@ -102,6 +102,6 @@ func show_worlds(unlocked: int, completed: Array[int]) -> void:
 			button.text = "MUNDO %02d\nLIBERADO\nEntrar" % number
 			button.add_theme_stylebox_override("normal", _style(Color("3b3428"), Color("c6a963")))
 			button.add_theme_color_override("font_color", Color("f1dfb5"))
-			button.tooltip_text = "Entre e conclua este mundo para avançar."
+			button.tooltip_text = "30s de preparação · 6 ondas de 5 monstros · Limite de 10 minutos.\nVença as ondas para abrir o baú e liberar o próximo mundo."
 	progress_label.text = "%d / 10 mundos concluídos · %d / 10 liberados" % [finished_count, last_unlocked]
 	show()

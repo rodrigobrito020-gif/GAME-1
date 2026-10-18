@@ -3,14 +3,14 @@ signal closed
 signal trade_requested(mode: String, id: String, quantity: int)
 signal sell_selected_requested(selection: Dictionary)
 const Stock := preload("res://scripts/merchant_stock.gd")
-const Icons := preload("res://scripts/item_icons.gd")
+const SlotGrid := preload("res://scripts/item_slot_grid.gd")
 var status_label: Label
 var gold_label: Label
 var choice_label: Label
 var quantity: SpinBox
 var action_button: Button
-var sell_list: VBoxContainer
-var buy_list: VBoxContainer
+var sell_grid: GridContainer
+var buy_grid: GridContainer
 var selected_mode := "buy"
 var selected_id := "potion"
 var _inventory: Dictionary = {}
@@ -78,12 +78,15 @@ func _ready() -> void:
 		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 		section.add_child(scroll)
-		var list := VBoxContainer.new()
-		list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		list.add_theme_constant_override("separation", 6)
-		scroll.add_child(list)
-		if heading == "COMPRAR": buy_list = list
-		else: sell_list = list
+		var grid := SlotGrid.new()
+		scroll.add_child(grid)
+		if heading == "COMPRAR":
+			buy_grid = grid
+			grid.item_pressed.connect(func(id: String) -> void: select_entry("buy", id))
+		else:
+			sell_grid = grid
+			grid.item_pressed.connect(func(id: String) -> void: select_entry("sell", id))
+			grid.item_toggled.connect(toggle_sale)
 	column.add_child(HSeparator.new())
 	choice_label = _label("Selecione um item.", 17)
 	choice_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -115,41 +118,10 @@ func _ready() -> void:
 		sync_inventory(_inventory, _class_id)
 	)
 	bulk.add_child(clear_button)
-	status_label = _label("Marque as caixas para vender vários itens. Marcar consumíveis seleciona a pilha inteira.", 14)
+	status_label = _label("Clique nos slots para marcar/desmarcar a venda. Consumíveis: seleciona a pilha inteira.", 14)
 	status_label.custom_minimum_size.y = 22
 	column.add_child(status_label)
 	hide()
-
-func _row(list: VBoxContainer, mode: String, item: Dictionary, price: int) -> void:
-	var suffix := " ×%d" % item.get("count", 1) if mode == "sell" and int(item.get("count", 1)) > 1 else ""
-	var button := _button("%s%s\n%d ouro %s" % [item.name, suffix, price, "cada" if mode == "sell" else "por compra"])
-	button.custom_minimum_size.y = 72
-	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	button.icon = Icons.for_display(item, _class_id)
-	button.expand_icon = true
-	button.add_theme_constant_override("icon_max_width", 48)
-	button.add_theme_constant_override("h_separation", 12)
-	button.tooltip_text = str(item.get("description", item.name))
-	button.pressed.connect(select_entry.bind(mode, str(item.id)))
-	if mode == "sell":
-		var row := HBoxContainer.new()
-		list.add_child(row)
-		var check := CheckBox.new()
-		check.custom_minimum_size.x = 36
-		check.focus_mode = Control.FOCUS_NONE
-		for state: String in ["checked", "checked_disabled"]:
-			check.add_theme_icon_override(state, preload("res://assets/icons/sale_checked.svg"))
-		for state: String in ["unchecked", "unchecked_disabled"]:
-			check.add_theme_icon_override(state, preload("res://assets/icons/sale_unchecked.svg"))
-		check.button_pressed = sale_selection.has(item.id)
-		check.tooltip_text = "Selecionar para vender a pilha inteira (×%d)." % int(item.get("count", 1))
-		check.toggled.connect(toggle_sale.bind(str(item.id)))
-		row.add_child(check)
-		sale_checks[item.id] = check
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(button)
-	else:
-		list.add_child(button)
 
 func toggle_sale(enabled: bool, id: String) -> void:
 	if not enabled:
@@ -176,19 +148,19 @@ func sync_inventory(inv: Dictionary, class_id: String) -> void:
 		else: sale_selection[id] = mini(sale_selection[id], valid_ids[id])
 	sale_checks.clear()
 	gold_label.text = "%d ouro" % int(inv.get("gold", 0))
-	for list: VBoxContainer in [buy_list, sell_list]:
-		for child in list.get_children():
-			list.remove_child(child)
-			child.queue_free()
+	var offers: Array[Dictionary] = []
 	for id: String in Stock.OFFERS:
 		var item: Dictionary = Stock.OFFERS[id].duplicate(true)
 		item["id"] = id
 		item["rarity"] = "Comum"
-		_row(buy_list, "buy", item, int(item.price))
+		item["price_text"] = "%d ouro por compra" % int(item.price)
+		offers.append(item)
+	buy_grid.sync_items(offers, _class_id)
 	var entries := Stock.selling_entries(inv)
 	for item: Dictionary in entries:
-		_row(sell_list, "sell", item, Stock.sale_price(item))
-	if entries.is_empty(): sell_list.add_child(_label("Nenhum item guardado para vender.", 15))
+		item["price_text"] = "%d ouro cada" % Stock.sale_price(item)
+	sell_grid.sync_items(entries, _class_id, sale_selection, true)
+	sale_checks = sell_grid.buttons
 	_update_choice()
 	_update_bulk()
 
@@ -199,12 +171,14 @@ func select_entry(mode: String, id: String) -> void:
 	_update_choice()
 
 func _update_choice() -> void:
+	buy_grid.highlight({selected_id:true} if selected_mode == "buy" else {})
 	var item: Dictionary = Stock.OFFERS.get(selected_id, {}) if selected_mode == "buy" else {}
 	if selected_mode == "sell":
 		for value: Dictionary in Stock.selling_entries(_inventory):
 			if value.id == selected_id: item = value
 	if item.is_empty():
 		choice_label.text = "Selecione outro item."
+		action_button.text = "Selecione um item"
 		action_button.disabled = true
 		return
 	quantity.max_value = 99 if selected_mode == "buy" else mini(99, int(item.count))

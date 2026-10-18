@@ -35,10 +35,10 @@ func _run() -> void:
 	game.player.position = game.Village.STORAGE_POSITION + Vector3(0, 0.05, 1.8)
 	check(game._interact() and game.storage_menu.visible and game._modal_open(), "E opens the real chest interface and pauses gameplay")
 	game.smoke = false
-	game.storage_menu.select_entry("deposit", ring.id)
+	game.storage_menu.bag_grid.buttons[ring.id].pressed.emit()
 	game.storage_menu.transfer_button.pressed.emit()
 	check(game.inventory.storage_items == [ring] and not Loot._contains_id(game.inventory.loot_items, ring.id), "deposit moves the exact original item out of the bag")
-	game.storage_menu.select_entry("deposit", "potion")
+	game.storage_menu.bag_grid.buttons["potion"].pressed.emit()
 	game.storage_menu.quantity.value = 8
 	game.storage_menu.transfer_button.pressed.emit()
 	check(game.inventory.potions == 4 and game.inventory.storage_potions == 8, "chest supports a chosen quantity of consumables")
@@ -50,7 +50,7 @@ func _run() -> void:
 	snapshot = game.inventory.duplicate(true)
 	check(not Storage.transfer(game.inventory, "deposit", "potion", 1).ok and game.inventory == snapshot, "storage stack limit cannot lose or create items")
 	game.inventory.storage_potions = 8
-	game.storage_menu.select_entry("withdraw", ring.id)
+	game.storage_menu.chest_grid.buttons[ring.id].pressed.emit()
 	game.storage_menu.transfer_button.pressed.emit()
 	check(game.inventory.storage_items.is_empty() and game.inventory.loot_items.back() == ring, "withdraw returns the same identity, rarity and attributes")
 	game._close_storage()
@@ -84,7 +84,7 @@ func _run() -> void:
 	game.merchant_menu.sale_checks[ring.id].button_pressed = true
 	game.merchant_menu.sale_checks["fang"].button_pressed = true
 	var expected_gold := 100 + Stock.sale_price(ring) + 28
-	check(game.merchant_menu.sale_selection.size() == 2 and not game.merchant_menu.sell_selected_button.disabled, "checkboxes select multiple items and enable the bulk button")
+	check(game.merchant_menu.sale_selection.size() == 2 and not game.merchant_menu.sell_selected_button.disabled, "slot selection marks multiple items and enables the bulk button")
 	game.merchant_menu.sell_selected_button.pressed.emit()
 	check(game.inventory.gold == expected_gold and game.inventory.fangs == 0 and game.inventory.potions == 4 and not Loot._contains_id(game.inventory.loot_items, ring.id), "bulk button sells only selected items, including whole selected stacks")
 	check(game.merchant_menu.sale_selection.is_empty() and progress.load_profile().inventory.gold == expected_gold, "bulk sale clears selection and persists once completed")

@@ -583,7 +583,7 @@ func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 		var at := foe.global_position + Vector3.UP * float(foe.get_meta("bar_height", 2.05))
 		widget.visible = not camera.is_position_behind(at) and camera.global_position.distance_to(at) < 40
 		if widget.visible:
-			widget.position = camera.unproject_position(at) - Vector2(60 if is_boss else 40, 26)
+			widget.position = camera.unproject_position(at) - Vector2(widget.get_combined_minimum_size().x * 0.5, 26)
 			bar.value = maxf(0, float(foe.get_meta("hp")))
 
 func _style_enemy_bar(bar: ProgressBar, is_boss: bool, target: bool = false) -> void:

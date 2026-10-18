@@ -2,9 +2,9 @@ extends PanelContainer
 signal closed
 signal transfer_requested(direction: String, id: String, quantity: int)
 const Storage := preload("res://scripts/storage_items.gd")
-const Icons := preload("res://scripts/item_icons.gd")
-var bag_list: VBoxContainer
-var chest_list: VBoxContainer
+const SlotGrid := preload("res://scripts/item_slot_grid.gd")
+var bag_grid: GridContainer
+var chest_grid: GridContainer
 var status_label: Label
 var selected_label: Label
 var transfer_button: Button
@@ -68,12 +68,13 @@ func _ready() -> void:
 		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		side.add_child(scroll)
-		var rows := VBoxContainer.new()
-		rows.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		rows.add_theme_constant_override("separation", 6)
-		scroll.add_child(rows)
-		if heading.begins_with("MOCHILA"): bag_list = rows
-		else: chest_list = rows
+		var grid := SlotGrid.new()
+		scroll.add_child(grid)
+		grid.item_pressed.connect(func(id: String) -> void:
+			select_entry("deposit" if heading.begins_with("MOCHILA") else "withdraw", id)
+		)
+		if heading.begins_with("MOCHILA"): bag_grid = grid
+		else: chest_grid = grid
 	selected_label = _label("Selecione um item de um dos lados.", 18)
 	column.add_child(selected_label)
 	var footer := HBoxContainer.new()
@@ -96,23 +97,8 @@ func _ready() -> void:
 func sync_inventory(inv: Dictionary, class_id: String) -> void:
 	_inventory = inv
 	_class_id = class_id
-	for stored: bool in [false, true]:
-		var list := chest_list if stored else bag_list
-		for child in list.get_children():
-			list.remove_child(child)
-			child.queue_free()
-		var items := Storage.entries(inv, stored)
-		for item: Dictionary in items:
-			var button := _button("%s%s\n%s" % [item.name, " ×%d" % int(item.count) if item.count > 1 else "", item.rarity])
-			button.custom_minimum_size.y = 72
-			button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			button.icon = Icons.for_display(item, _class_id)
-			button.expand_icon = true
-			button.add_theme_constant_override("icon_max_width", 52)
-			button.add_theme_constant_override("h_separation", 12)
-			button.pressed.connect(select_entry.bind("withdraw" if stored else "deposit", str(item.id)))
-			list.add_child(button)
-		if items.is_empty(): list.add_child(_label("Baú vazio." if stored else "Mochila vazia.", 15))
+	bag_grid.sync_items(Storage.entries(inv, false), _class_id)
+	chest_grid.sync_items(Storage.entries(inv, true), _class_id)
 	_refresh_selected()
 
 func select_entry(mode: String, id: String) -> void:
@@ -130,3 +116,5 @@ func _refresh_selected() -> void:
 	selected_label.text = "Selecione um item de um dos lados." if selected.is_empty() else str(selected.name)
 	quantity.max_value = int(selected.get("count", 1))
 	quantity.editable = quantity.max_value > 1
+	bag_grid.highlight({selected_id:true} if direction == "deposit" else {})
+	chest_grid.highlight({selected_id:true} if direction == "withdraw" else {})

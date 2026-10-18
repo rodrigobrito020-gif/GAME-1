@@ -9,6 +9,9 @@ const FIGHTER := preload("res://assets/human_fighter.glb")
 const ARCHER := preload("res://assets/human_archer.glb")
 const MAGE := preload("res://assets/human_mage.glb")
 const GrelimVisual := preload("res://scripts/grelim_visual.gd")
+const RangedMonsterVisual := preload("res://scripts/ranged_monster_visual.gd")
+const EnemyRangedCombat := preload("res://scripts/enemy_ranged_combat.gd")
+var enemy_ranged_combat := EnemyRangedCombat.new()
 const OpenField := preload("res://scripts/open_field.gd")
 const Village := preload("res://scripts/village.gd")
 const VILLAGE_SCENE := preload("res://levels/village.tscn")
@@ -553,6 +556,7 @@ func _change_zone(number: int) -> void:
 	merchant_menu.hide()
 	storage_menu.hide()
 	class_combat.cancel(self)
+	enemy_ranged_combat.cancel()
 	animation.speed_scale = 1.0
 	hud.focus_enemy = null
 	enemies.clear()
@@ -625,6 +629,7 @@ func _update_location() -> void:
 		hud.set_location("MUNDO %d · %s" % [current_world, definition.subtitle], objective, false)
 
 func _complete_instance() -> void:
+	enemy_ranged_combat.cancel()
 	var unlocked := progress.complete_world(current_world)
 	reward_chest = RewardChest.new()
 	reward_chest.name = "RewardChest"
@@ -639,6 +644,7 @@ func _complete_instance() -> void:
 	_save_profile()
 
 func _fail_instance(reason: String) -> void:
+	enemy_ranged_combat.cancel()
 	attack_pending = false
 	attack_clock = 0.0
 	notice.text = "Tempo esgotado! Retorne à vila para tentar novamente." if reason == "timeout" else "Você caiu. Retorne à vila para tentar novamente."
@@ -815,21 +821,28 @@ func _spawn_enemies(wave_number: int = 1) -> void:
 		combatants = Node3D.new()
 		combatants.name = "Combatants"
 		active_zone.add_child(combatants)
-	for point in definition.enemy_spawns:
+	for index in definition.enemy_spawns.size():
+		var point: Vector3 = definition.enemy_spawns[index]
+		var role := EnemyRangedCombat.role_for(current_world, wave_number, index)
 		var foe := CharacterBody3D.new()
 		foe.position = point
-		foe.set_meta("hp", float(stats.hp))
-		foe.set_meta("maximum_hp", float(stats.hp))
-		foe.set_meta("damage", float(stats.damage))
+		var health_scale := 0.8 if role == "archer" else 0.9 if role == "caster" else 1.0
+		foe.set_meta("role", role)
+		foe.set_meta("display_name", "Esqueleto arqueiro" if role == "archer" else "Xamã da Fenda" if role == "caster" else "Grelim")
+		foe.set_meta("bar_height", 2.5 if role == "caster" else 2.2 if role == "archer" else 2.05)
+		foe.set_meta("hp", float(stats.hp) * health_scale)
+		foe.set_meta("maximum_hp", float(stats.hp) * health_scale)
+		foe.set_meta("damage", float(stats.damage) * (0.7 if role == "archer" else 0.8 if role == "caster" else 1.0))
 		foe.set_meta("speed", float(stats.speed))
-		foe.set_meta("attack", 0.0)
+		foe.set_meta("attack", 0.0 if role == "melee" else 1.2 + index * 0.35)
 		var collision := CollisionShape3D.new()
 		var shape := SphereShape3D.new()
 		shape.radius = 0.65
 		collision.shape = shape
 		collision.position.y = 0.7
 		foe.add_child(collision)
-		var visual := GrelimVisual.new()
+		var visual = GrelimVisual.new() if role == "melee" else RangedMonsterVisual.new()
+		if role != "melee": visual.kind = role
 		visual.name = "GrelimVisual"
 		foe.add_child(visual)
 		combatants.add_child(foe)
@@ -1180,9 +1193,13 @@ func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
 func _enemies_step(delta: float) -> void:
 	if current_world == 0 or arena_run == null or arena_run.phase not in [InstanceRun.Phase.COMBAT, InstanceRun.Phase.BOSS]:
 		return
+	enemy_ranged_combat.tick(self, delta)
 	for foe in enemies:
 		if bool(foe.get_meta("is_boss", false)):
 			_boss_step(foe, delta)
+			continue
+		if str(foe.get_meta("role", "melee")) != "melee":
+			enemy_ranged_combat.step(self, foe, delta)
 			continue
 		var direction := player.position - foe.position
 		direction.y = 0

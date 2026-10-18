@@ -88,7 +88,7 @@ func _run() -> void:
 	check(game._interact() and game.merchant_menu.visible and game._modal_open(), "merchant NPC opens the real buy/sell screen and pauses gameplay")
 	var count: int = game.inventory.potions
 	game.smoke = false
-	game.merchant_menu.select_entry("buy", "potion_bundle")
+	game.merchant_menu.buy_grid.buttons["potion_bundle"].pressed.emit()
 	game.merchant_menu.quantity.value = 2
 	game.merchant_menu.action_button.pressed.emit()
 	check(game.inventory.gold == 20 and game.inventory.potions == count + 10, "buy button charges 100 gold for two five-potion bundles")

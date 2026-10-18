@@ -10,7 +10,7 @@ Primeira base jogável do conceito: RPG em equipe para cinco heróis, com seis p
 4. Arraste os personagens no campo para ajustar a formação; soltar sobre outro troca as posições.
 5. Clique em **Iniciar batalha**. São três ondas e um chefe, com vida e recargas preservadas entre ondas.
 
-Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar o nível. Os personagens da frente recebem os ataques primeiro. O healer prioriza aliados feridos. Desligue **Auto** para acionar as habilidades pelos botões; elas também podem ser usadas manualmente enquanto Auto está ligado. **Pausar** ou **Esc** interrompe a batalha; a velocidade pode ser 1× ou 2×.
+Selecione um cartão na coleção e use **Treinar** para gastar Adena e aumentar o nível. Os personagens da frente recebem os ataques primeiro. O healer prioriza aliados feridos. Cada herói tem um **círculo pequeno de habilidade acima dele**: quando pronto, mostra um símbolo; durante a recarga, fica vermelho e mostra os segundos restantes, com um anel de progresso. Passe o mouse para ler a descrição e clique no círculo para ativar. Desligue **Auto** para controlar somente de forma manual; também pode clicar com Auto ligado. **Pausar** ou **Esc** interrompe a batalha; a velocidade pode ser 1× ou 2×.
 
 ## O que já funciona
 

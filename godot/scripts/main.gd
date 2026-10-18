@@ -2,6 +2,7 @@ extends Node2D
 ## Protótipo independente: a arte provisória é desenhada aqui, sem assets externos.
 
 const SAVE_PATH := "user://progress.json"
+const SkillCircle := preload("res://scripts/skill_circle.gd")
 const HEROES := [
 	{"name": "Guardião", "role": "Tank", "kind": "tank", "color": Color("77b5d4"), "hp": 240.0, "atk": 15.0, "rate": 1.4, "skill": "Muralha", "description": "Protege a si mesmo por 5 segundos."},
 	{"name": "Restaurador", "role": "Healer", "kind": "healer", "color": Color("8ad3a2"), "hp": 140.0, "atk": 12.0, "rate": 1.7, "skill": "Renovar", "description": "Cura todos os aliados vivos."},
@@ -45,7 +46,7 @@ var pause_button: Button
 var auto_button: Button
 var speed_button: Button
 var cards: Array[Button] = []
-var skill_buttons: Array[Button] = []
+var skill_circles: Array[Control] = []
 
 func _ready() -> void:
 	smoke_test = "--smoke-test" in OS.get_cmdline_user_args()
@@ -106,12 +107,17 @@ func _build_ui() -> void:
 	start_button = _button("Iniciar batalha", Vector2(1020, 109), Vector2(220, 44), _start_battle)
 	_label("SUA EQUIPE", Vector2(55, 195), Vector2(530, 30), 16, Color("9fd0bc"))
 	_label("INIMIGOS", Vector2(795, 195), Vector2(400, 30), 16, Color("dfa29b"))
-	_label("RETAGUARDA           MEIO                FRENTE", Vector2(98, 223), Vector2(490, 22), 12, Color("849c9d"))
 	_label("COLEÇÃO  ·  Selecione um herói para treinar", Vector2(38, 558), Vector2(780, 28), 15, Color("9fb8b8"))
 	for i in range(HEROES.size()):
 		var id := i
 		cards.append(_button("", Vector2(38 + i * 177, 598), Vector2(167, 70), func() -> void: _select_hero(id)))
-		skill_buttons.append(_button("", Vector2(38 + i * 177, 681), Vector2(167, 42), func() -> void: _manual_skill(id)))
+		var circle := SkillCircle.new()
+		circle.kind = HEROES[i].kind
+		circle.accent = HEROES[i].color
+		circle.activated.connect(func() -> void: _manual_skill(id))
+		interface.add_child(circle)
+		skill_circles.append(circle)
+	_label("Habilidades: clique no círculo acima do herói. Vermelho = recarga em segundos.", Vector2(38, 685), Vector2(880, 28), 14, Color("9fb8b8"))
 	detail_label = _label("", Vector2(38, 736), Vector2(890, 48), 14, Color("b7cac8"))
 	train_button = _button("Treinar", Vector2(942, 599), Vector2(298, 42), _train_selected)
 	pause_button = _button("Pausar", Vector2(942, 652), Vector2(140, 34), _toggle_pause)
@@ -150,7 +156,7 @@ func _start_battle() -> void:
 	mode = "battle"
 	effects.clear()
 	_spawn_wave()
-	_message("A batalha começou. Habilidades disponíveis nos botões abaixo.")
+	_message("A batalha começou. Use os círculos acima dos heróis para ativar as habilidades.")
 	_refresh_ui()
 
 func _spawn_wave() -> void:
@@ -345,10 +351,15 @@ func _refresh_ui() -> void:
 		cards[i].modulate = HEROES[i].color if i == selected else Color.WHITE
 		var hero := heroes[i] if heroes.size() > i else {}
 		if not hero.is_empty():
-			var remaining := float(hero.cooldown)
-			skill_buttons[i].text = HEROES[i].skill + (" · " + str(ceili(remaining)) + "s" if mode == "battle" and remaining > 0 else "")
-			skill_buttons[i].disabled = mode != "battle" or paused or hero.hp <= 0 or remaining > 0 or transition > 0
-			skill_buttons[i].tooltip_text = HEROES[i].description
+			var circle = skill_circles[i]
+			var pos := drag_position if dragging == i else _unit_position(hero, false)
+			circle.position = pos + Vector2(12, -148)
+			circle.remaining = maxf(0, hero.cooldown)
+			circle.cooling = mode == "battle" and hero.cooldown > 0 and hero.hp > 0
+			circle.fallen = hero.hp <= 0
+			circle.available = mode == "battle" and not paused and hero.hp > 0 and hero.cooldown <= 0 and transition <= 0
+			circle.tooltip_text = HEROES[i].skill + " — " + HEROES[i].description + ("\nRecarga: " + str(ceili(hero.cooldown)) + " segundos" if circle.cooling else "")
+			circle.queue_redraw()
 	train_button.text = "Treinar: " + str(_train_cost()) + " Adena" if levels[selected] < 50 else "Nível máximo: 50"
 	train_button.disabled = mode == "battle" or levels[selected] >= 50 or coins < _train_cost()
 	detail_label.text = HEROES[selected].name + " · Comum · " + HEROES[selected].description + "\nTreino: +12% dos atributos base por nível. Raridades e demais sistemas virão depois."
@@ -518,6 +529,8 @@ func _run_smoke_test() -> void:
 	_check(sorted_slots == [-1, 0, 1, 2, 3, 4], "cada herói aparece uma vez e há uma posição vazia")
 	_move_hero(0, 3)
 	_check(slots[3] == 0 and slots[0] == -1, "mover para posição vazia")
+	_refresh_ui()
+	_check(skill_circles[0].position == SLOT_POSITIONS[3] + Vector2(12, -148), "círculo acompanha o herói após mover a formação")
 	_move_hero(0, 1)
 	_check(slots[1] == 0 and slots[3] == 4, "trocar dois heróis")
 	slots = [0, 4, 2, -1, 1, 3]
@@ -535,8 +548,23 @@ func _run_smoke_test() -> void:
 	_check(levels[0] == level_before, "treino bloqueado durante batalha")
 	automatic = false
 	heroes[2].cooldown = 0.0
-	_check(_use_skill(2), "habilidade manual disponível")
+	_refresh_ui()
+	_check(skill_circles[2].available and not skill_circles[2].cooling, "círculo pronto para ativação manual")
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	skill_circles[2]._gui_input(click)
+	_check(heroes[2].cooldown == 9.0, "clique no círculo ativa a habilidade")
+	_refresh_ui()
+	_check(skill_circles[2].cooling and not skill_circles[2].available and skill_circles[2].remaining == 9.0, "círculo mostra recarga e bloqueia reuso")
 	_check(not _use_skill(2), "recarga impede uso duplicado")
+	heroes[2].cooldown = 0.0
+	paused = true
+	_refresh_ui()
+	skill_circles[2]._gui_input(click)
+	_check(heroes[2].cooldown == 0.0 and not skill_circles[2].available, "pausa bloqueia ativação pelo círculo")
+	paused = false
+	heroes[2].cooldown = 9.0
 	automatic = true
 	for i in range(12000):
 		if mode != "battle":

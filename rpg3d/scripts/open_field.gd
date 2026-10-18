@@ -13,6 +13,20 @@ var grass_material: ShaderMaterial
 var grass_density := FastNoiseLite.new()
 var grass_center := Vector2i(99999, 99999)
 var grass_update_clock := 0.0
+var world_number := 1
+var world_seed := 2741
+var biome_tint := Color.WHITE
+var rock_count := 0
+var ruin_count := 0
+
+func configure(definition: Dictionary) -> void:
+	# A instância recebe sua definição antes de entrar na árvore e gerar o terreno.
+	assert(not is_inside_tree(), "Configure o mundo antes de add_child().")
+	world_number = clampi(int(definition.get("number", 1)), 1, 10)
+	world_seed = int(definition.get("seed", 2741))
+	biome_tint = definition.get("tint", Color.WHITE)
+	rock_count = maxi(0, int(definition.get("rock_count", 0)))
+	ruin_count = maxi(0, int(definition.get("ruin_count", 0)))
 
 func _ready() -> void:
 	var ground := MeshInstance3D.new()
@@ -21,7 +35,7 @@ func _ready() -> void:
 	plane.size = Vector2(SIZE, SIZE)
 	ground.mesh = plane
 	var noise := FastNoiseLite.new()
-	noise.seed = 2741
+	noise.seed = world_seed
 	noise.frequency = 0.025
 	var texture := NoiseTexture2D.new()
 	texture.width = 512
@@ -32,6 +46,7 @@ func _ready() -> void:
 	material.shader = GROUND_SHADER
 	material.set_shader_parameter("grass_albedo", GRASS_TEXTURE)
 	material.set_shader_parameter("meadow_noise", texture)
+	material.set_shader_parameter("biome_tint", Vector3(biome_tint.r, biome_tint.g, biome_tint.b))
 	ground.material_override = material
 	add_child(ground)
 	var floor_body := StaticBody3D.new()
@@ -46,23 +61,27 @@ func _ready() -> void:
 	_grass()
 	_vegetation()
 	_hills()
+	_landmarks()
 
 func _process(delta: float) -> void:
 	grass_update_clock += delta
 	if grass_update_clock < 0.2:
 		return
 	grass_update_clock = 0.0
-	var player := get_parent().get_node_or_null("Player") as Node3D
+	var player := get_tree().get_first_node_in_group("rpg_player") as Node3D
+	if player == null and get_parent() != null:
+		player = get_parent().get_node_or_null("Player") as Node3D
 	if player != null:
 		_update_grass(player.global_position)
 
 func _grass() -> void:
-	grass_density.seed = 8627
+	grass_density.seed = world_seed + 5886
 	grass_density.frequency = 0.075
 	grass_mesh = _grass_tuft_mesh()
 	grass_material = ShaderMaterial.new()
 	grass_material.shader = BLADE_SHADER
 	grass_material.set_shader_parameter("grass_albedo", GRASS_TEXTURE)
+	grass_material.set_shader_parameter("biome_tint", Vector3(biome_tint.r, biome_tint.g, biome_tint.b))
 	_update_grass(Vector3.ZERO)
 
 func _grass_tuft_mesh() -> ArrayMesh:
@@ -71,7 +90,7 @@ func _grass_tuft_mesh() -> ArrayMesh:
 	var mesh := SurfaceTool.new()
 	mesh.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 1638
+	rng.seed = 1638 + world_seed - 2741
 	for blade in range(5):
 		var angle := TAU * blade / 5.0 + rng.randf_range(-0.35, 0.35)
 		var outward := Vector3(cos(angle), 0.0, sin(angle))
@@ -134,7 +153,7 @@ func _fill_grass_chunk(batch: MultiMeshInstance3D, key: Vector2i) -> void:
 	var origin := Vector3(key.x * GRASS_CHUNK_SIZE, 0.003, key.y * GRASS_CHUNK_SIZE)
 	batch.position = origin
 	var rng := RandomNumberGenerator.new()
-	rng.seed = hash(key) ^ 52791
+	rng.seed = hash(key) ^ (world_seed + 50050)
 	var count := 0
 	for i in range(GRASS_TUFTS_PER_CHUNK):
 		var position := Vector3(rng.randf() * GRASS_CHUNK_SIZE, 0.0, rng.randf() * GRASS_CHUNK_SIZE)
@@ -153,7 +172,7 @@ func _fill_grass_chunk(batch: MultiMeshInstance3D, key: Vector2i) -> void:
 
 func _material(color: Color) -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = color
+	mat.albedo_color = color * biome_tint
 	mat.roughness = 1
 	return mat
 
@@ -170,7 +189,7 @@ func _instances(mesh: Mesh, transforms: Array[Transform3D], material: Material) 
 
 func _vegetation() -> void:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = 3456
+	rng.seed = world_seed + 715
 	var trunks: Array[Transform3D] = []
 	var crowns: Array[Transform3D] = []
 	for i in range(190):
@@ -215,3 +234,68 @@ func _hills() -> void:
 		hill.position = Vector3(cos(angle) * 660, -25, sin(angle) * 660)
 		hill.material_override = _material(Color("607a68"))
 		add_child(hill)
+
+func _landmarks() -> void:
+	if rock_count == 0 and ruin_count == 0:
+		return
+	var landmarks := Node3D.new()
+	landmarks.name = "Landmarks"
+	add_child(landmarks)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = world_seed + 20947
+	var stone := _material(Color("76786c"))
+	for i in range(rock_count):
+		var angle := rng.randf_range(0, TAU)
+		var radius := rng.randf_range(23.0, 100.0)
+		var at := Vector3(cos(angle) * radius, 0, sin(angle) * radius)
+		# Deixa livre o percurso inicial e as posições reservadas aos monstros.
+		if absf(at.x) < 14.0 and at.z < 12.0:
+			at.x += 22.0 if at.x >= 0 else -22.0
+		var size := Vector3(rng.randf_range(1.2, 3.2), rng.randf_range(0.8, 2.5), rng.randf_range(1.0, 2.8))
+		var rock := StaticBody3D.new()
+		rock.name = "Boulder%d" % i
+		rock.position = at + Vector3.UP * size.y * 0.32
+		rock.rotation.y = rng.randf_range(0, TAU)
+		landmarks.add_child(rock)
+		var mesh := SphereMesh.new()
+		mesh.radius = 0.5
+		mesh.height = 1.0
+		mesh.radial_segments = 7
+		mesh.rings = 3
+		var visual := MeshInstance3D.new()
+		visual.mesh = mesh
+		visual.scale = size
+		visual.material_override = stone
+		rock.add_child(visual)
+		var collision := CollisionShape3D.new()
+		var shape := SphereShape3D.new()
+		shape.radius = maxf(size.x, size.z) * 0.44
+		collision.shape = shape
+		rock.add_child(collision)
+	for i in range(ruin_count):
+		var side := -1.0 if i % 2 == 0 else 1.0
+		var ruin := Node3D.new()
+		ruin.name = "AncientArch%d" % i
+		ruin.position = Vector3(side * (20.0 + i * 9.0), 0, -22.0 - i * 16.0)
+		ruin.rotation.y = side * 0.35
+		landmarks.add_child(ruin)
+		_stone_block(ruin, Vector3(-2.2, 2.4, 0), Vector3(1.0, 4.8, 1.1), stone)
+		_stone_block(ruin, Vector3(2.2, 2.0, 0), Vector3(1.0, 4.0, 1.1), stone)
+		_stone_block(ruin, Vector3(-0.25, 4.65, 0), Vector3(4.9, 0.7, 1.2), stone)
+		_stone_block(ruin, Vector3(4.0, 0.4, -1.5), Vector3(1.5, 0.8, 1.0), stone)
+
+func _stone_block(parent: Node3D, at: Vector3, size: Vector3, material: Material) -> void:
+	var block := StaticBody3D.new()
+	block.position = at
+	parent.add_child(block)
+	var visual := MeshInstance3D.new()
+	var mesh := BoxMesh.new()
+	mesh.size = size
+	visual.mesh = mesh
+	visual.material_override = material
+	block.add_child(visual)
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = size
+	collision.shape = shape
+	block.add_child(collision)

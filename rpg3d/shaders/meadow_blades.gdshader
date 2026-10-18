@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode cull_disabled, specular_disabled;
 
 uniform sampler2D grass_albedo : source_color, repeat_enable, filter_linear_mipmap;
+uniform vec3 biome_tint : source_color = vec3(1.0);
 varying vec3 world_position;
 
 void vertex() {
@@ -19,7 +20,7 @@ void vertex() {
 void fragment() {
 	vec3 turf = texture(grass_albedo, world_position.xz / 1.8).rgb;
 	vec3 grass = mix(vec3(0.20, 0.31, 0.12), vec3(0.31, 0.43, 0.20), UV.y);
-	ALBEDO = mix(grass, turf, 0.18) * COLOR.rgb;
+	ALBEDO = mix(grass, turf, 0.18) * COLOR.rgb * biome_tint;
 	// Both faces share a soft upward foliage normal; the back of a leaf must not
 	// become a black silhouette when Compatibility flips its geometric normal.
 	NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);

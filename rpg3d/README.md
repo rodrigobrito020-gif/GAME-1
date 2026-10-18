@@ -1,24 +1,33 @@
-# Reload Adventure — RPG 3D em campo aberto
+# Reload Adventure — RPG 3D por instâncias
 
 Abra **rpg3d/project.godot** no Godot **4.6.3 padrão** e pressione **F5**. Este é o único projeto Godot do repositório.
 
-Você controla o **humano guerreiro (Fighter)** em terceira pessoa, num campo de **1000 × 1000 metros**, com uma clareira central ampla, vegetação afastada e colinas no horizonte. O terreno jogável é plano; as colinas são cenário distante. Há limite de deslocamento a 490 metros do centro, sem muros fechando a vista.
+Você controla o **humano guerreiro (Fighter)** em terceira pessoa. O jogo inicia na **Vila da Fenda**, uma área segura e inteiramente murada, com casas, fonte, caminhos, jardins e a fenda dimensional. Ataques e habilidades ficam desativados na vila. As casas e bancas são cenografia, com colisão; NPCs e lojas ainda não foram implementados.
+
+Aproxime-se da fenda e pressione **E** para abrir os **Mundos 1 a 10**. Apenas o Mundo 1 começa disponível. Derrotar todos os Grelims de uma instância conclui aquele mundo e libera somente o seguinte. É possível revisitar mundos concluídos, sem pular etapas. Uma fenda de retorno fica perto da chegada em cada mundo; aproxime-se e pressione E para voltar à vila, recuperar a vida e manter nível, itens e ouro. Sair antes de concluir não libera o próximo mundo. Uma nova entrada reinicia os monstros e o objetivo da instância.
+
+Cada mundo carrega uma instância separada de campo com **1000 × 1000 metros**. A vila é descarregada ao entrar no combate e o mundo é descarregado ao retornar. Os dez mundos usam uma base de cenário comum, com sementes, paletas, pedras, ruínas e dificuldade crescente; são cenários iniciais para testar a progressão. O terreno jogável é plano, as colinas são cenário distante e há limite de deslocamento a 490 metros do centro.
+
+Desbloqueios, nível, experiência, inventário e configurações de habilidades e poções são salvos automaticamente em `user://adventure_save.cfg`. Ao abrir o jogo novamente, o personagem reaparece na vila com esses dados restaurados. A execução dos testes usa estado isolado e não altera o perfil normal. As instâncias são locais; ainda não há servidor ou multiplayer.
+
+[Veja a vila](../docs/village-gameplay.png) e [a seleção de mundos](../docs/dimensional-rift-worlds.png).
 
 O campo tem **textura de grama** em escala de 1,8 metro, com variação natural de cor e relevo fino. Perto do jogador há tufos de grama em geometria 3D, curvados e movidos suavemente pelo vento. Os blocos de vegetação acompanham a exploração por todo o campo; à distância, os tufos diminuem gradualmente e o solo texturizado continua visível. São instâncias MultiMesh opacas, sem cartões transparentes nem milhares de colisores. A textura foi gerada para o projeto; a origem está em `assets/environment/meadow_grass_source.json`.
 
 - **WASD:** caminhar em relação à câmera; **mouse:** girar a câmera.
 - **Roda do mouse:** para cima aproxima, para baixo afasta. Zoom suave entre 2 e 14 metros, encurtado pelo SpringArm quando houver obstáculos.
 - **Shift:** correr; **Espaço:** pular.
+- **E:** acessar a fenda na vila e escolher um mundo; perto da fenda de retorno, voltar à vila.
 - **Clique esquerdo:** ataque comum com espada, manual, até 2,6 metros à frente. O dano acontece no momento do golpe.
 - **1 — Golpe potente:** outra animação de ataque, com efeito de arco azul, dano reforçado e alcance de 3,6 metros. Recarga de 6 segundos, além do intervalo do golpe comum. Acerte de perto e de frente; obstáculos bloqueiam o golpe.
 - **2 — Corte giratório:** atinge os inimigos ao redor, até 3,2 metros; recarga de 8 segundos. Usa a animação de ataque especial como base provisória.
 - **3 — Defesa:** reduz o dano recebido em 65% por 4 segundos; recarga de 12 segundos.
 - **4 — Investida:** avanço curto na direção da câmera, com colisão; recarga de 7 segundos.
 - **Q — Poção manual:** recupera 40 de vida, com intervalo de 2 segundos e consumo de uma unidade.
-- **Configuração da poção:** libere o cursor com Esc e clique diretamente no ícone da poção, alinhado com as habilidades. O clique abre a janela e não consome o item. Ative “Usar automaticamente” e ajuste o limite entre 10% e 90% de vida, em passos de 5%. Exemplo: em 40%, a poção só é usada quando a vida chega a 40% ou menos. A opção começa desligada; só consome se houver poção no estoque, o personagem estiver vivo e o intervalo de dois segundos tiver terminado. O uso automático também pausa com a mochila aberta. A configuração permanece durante reinícios com R, mas ainda não é salva entre sessões.
-- **I / TAB — Inventário:** abre/fecha a mochila e pausa a simulação. Espada pode ser equipada/guardada selecionando o item e clicando no botão do painel de detalhes; três poções iniciais recuperam 40 de vida cada. Vida cheia não consome poção. Cada Grelim derrotado adiciona uma presa e 5 de ouro automaticamente. Tela de equipamentos com personagem 3D, slots do corpo, mochila de 20 espaços e filtros Todos/Armas/Trajes/Poções/Materiais. Clique em um item para inspecionar e use Equipar ou Usar poção no painel direito. Ao equipar, a peça sai da grade e da contagem da mochila e aparece somente no slot correspondente do personagem. Clique nesse slot e em Retirar para devolver a peça à mochila. Espada, escudo, traje, luvas e botas aparecem no personagem da prévia; slots sem equipamento ficam vazios. Organização livre e persistência ainda não implementadas. R reinicia também os itens e o saque.
+- **Configuração da poção:** libere o cursor com Esc e clique diretamente no ícone da poção, alinhado com as habilidades. O clique abre a janela e não consome o item. Ative “Usar automaticamente” e ajuste o limite entre 10% e 90% de vida, em passos de 5%. Exemplo: em 40%, a poção só é usada quando a vida chega a 40% ou menos. A opção começa desligada; só consome se houver poção no estoque, o personagem estiver vivo e o intervalo de dois segundos tiver terminado. O uso automático também pausa com os menus abertos e fica desativado na vila. A configuração é salva entre sessões.
+- **I / TAB — Inventário:** abre/fecha a mochila e pausa a simulação. Espada pode ser equipada/guardada selecionando o item e clicando no botão do painel de detalhes; três poções iniciais recuperam 40 de vida cada. Vida cheia não consome poção. Cada Grelim derrotado adiciona uma presa e 5 de ouro automaticamente. Tela de equipamentos com personagem 3D, slots do corpo, mochila de 20 espaços e filtros Todos/Armas/Trajes/Poções/Materiais. Clique em um item para inspecionar e use Equipar ou Usar poção no painel direito. Ao equipar, a peça sai da grade e da contagem da mochila e aparece somente no slot correspondente do personagem. Clique nesse slot e em Retirar para devolver a peça à mochila. Espada, escudo, traje, luvas e botas aparecem no personagem da prévia; slots sem equipamento ficam vazios. A seleção da fenda também pausa a simulação; TAB ou Esc fecha esse menu. A organização livre da mochila ainda não foi implementada.
 - **Esc:** fecha a mochila ou libera o cursor; clique na janela para capturá-lo novamente.
-- **R:** reiniciar campo, vida, nível e inimigos.
+- **R:** após morrer, retornar à vila com vida recuperada, preservando itens e progresso.
 
 O guerreiro usa o modelo 3D original enviado pelo usuário, com esqueleto e animações de repouso, caminhada, corrida, ataque comum, ataque especial e morte. A espada agora é a Long Sword original (`long_sword_m00_wp`), extraída de LineageWeapons.ukx, com a textura correspondente de LineageWeaponsTex.utx e presa ao osso Weapon_R_Bone. Ela substitui a espada geométrica provisória e acompanha as animações de repouso, movimento e ataque. O modelo agora inclui o traje inicial, as luvas e as botas M001 do próprio Fighter. Na mochila [I / TAB], selecione a peça e clique em Equipar/Retirar; retirar restaura a malha básica M000, mantendo rosto/cabelo e animações. As peças começam equipadas e a troca fica bloqueada durante um golpe. Nesta etapa, são equipamentos visuais, sem bônus de atributos. Corpo, traje inicial, cabelo, luvas e botas agora usam texturas originais do MFighter.utx enviado pelo usuário. Foram mantidos os UVs do modelo e o recorte alpha do cabelo. O rosto também recebeu a textura original MFighter_m000_t00_f, do pacote compartilhado LineageFaceTex.utx enviado pelo usuário. O salto ainda não tem animação própria.
 
@@ -28,16 +37,19 @@ A interface mantém vida, nível e experiência no canto superior esquerdo. A ba
 
 Os Grelims aceleram e viram gradualmente. A caminhada considera apenas a velocidade no chão; braços e pernas alternam lados com transições suaves entre repouso, caminhada e ataque. Há reação ao dano e queda ao morrer. São animações procedurais provisórias, não animações do cliente.
 
-Derrote os três para ganhar nível. O ataque comum continua manual. Cada habilidade pode ser colocada em automático individualmente pelo gesto no ícone: as ofensivas usam seu alcance, Defesa reage a inimigos próximos e Investida só avança se houver inimigo à frente entre 4,5 e 8 metros. São respeitados recarga, morte, espada equipada e pausa da mochila; a configuração permanece ao reiniciar com R. Câmera com limite vertical e SpringArm; colisão com chão e troncos. Ao morrer, o guerreiro mantém o último quadro da animação até reiniciar. Esta versão ainda não contém missões, salvamento, multiplayer ou mapa definitivo. Habilidades, itens e números desta versão são provisórios para testar a jogabilidade.
+Cada três Grelims derrotados concedem um nível. O ataque comum continua manual. Cada habilidade pode ser colocada em automático individualmente pelo gesto no ícone: as ofensivas usam seu alcance, Defesa reage a inimigos próximos e Investida só avança se houver inimigo à frente entre 4,5 e 8 metros. São respeitados recarga, morte, espada equipada, vila segura e pausa dos menus. Câmera com limite vertical e SpringArm; colisão com chão, casas, muralhas e troncos. Ao morrer, o guerreiro mantém o último quadro da animação até retornar à vila. Habilidades, itens, números e a arte dos mundos são provisórios para testar a jogabilidade.
 
 ## Validação
 
 ```sh
 godot --headless --path . --editor --import --quit
 godot --headless --path . -- --smoke-test
+godot --headless --path . --script res://tests/progression_test.gd
 ```
 
 O teste executa as animações importadas, golpe manual, acerto frontal, dano e recargas das habilidades, defesa, investida, barras de vida, poções, equipamento, pausa da mochila, saque, zoom e limites de câmera, transições dos Grelims, experiência, morte, reinício e deslocamento longe do centro com chão físico. Também verifica o limite de vida para poções automáticas, desativação, estoque, morte, pausa e intervalo entre usos.
+
+O fluxo por instâncias verifica início na vila, interação próxima da fenda, dez escolhas, bloqueio de mundos, pausa do menu, entrada e retorno, preservação de inventário, abandono sem desbloqueio, repetição sem pular etapas e conclusões sequenciais até o Mundo 10. O teste separado cobre gravação e restauração de perfil, limites e validação dos desbloqueios carregados.
 
 ## Modelo e arquivos
 

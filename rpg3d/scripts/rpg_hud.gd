@@ -2,11 +2,14 @@ extends CanvasLayer
 ## Interface do RPG: vida, atalhos, inventário e barras projetadas dos inimigos.
 const EquipmentInventory := preload("res://scripts/equipment_inventory.gd")
 const SkillSlot := preload("res://scripts/skill_slot.gd")
+const RiftMenu := preload("res://scripts/rift_menu.gd")
 signal skill_requested(slot: int)
 signal skill_automatic_changed(slot: int, enabled: bool)
 signal inventory_requested
 signal item_requested(item: String)
 signal potion_settings_changed(enabled: bool, threshold: float)
+signal world_requested(world_number: int)
+signal rift_closed
 var health: ProgressBar
 var health_text: Label
 var status: Label
@@ -27,6 +30,13 @@ var focus_enemy: CharacterBody3D
 var target_panel: PanelContainer
 var target_health: ProgressBar
 var target_name: Label
+var location_label: Label
+var objective_label: Label
+var interaction_prompt: PanelContainer
+var interaction_label: Label
+var rift_panel: PanelContainer
+var rift_backdrop: ColorRect
+var _combat_allowed := true
 const SKILL_NAMES := ["Golpe potente", "Corte giratório", "Defesa", "Investida"]
 const SKILL_HINTS := ["Golpe frontal reforçado. Recarga: 6s.", "Atinge inimigos ao redor. Recarga: 8s.", "Reduz dano recebido em 65% por 4s. Recarga: 12s.", "Avança na direção da câmera. Recarga: 7s."]
 
@@ -93,8 +103,16 @@ func _ready() -> void:
 	experience.max_value = 3
 	info.add_child(experience)
 	_target()
-	notice = _label("Campo aberto · Explore e enfrente os Grelims", 16)
-	notice.position = Vector2(24, 115)
+	location_label = _label("", 17)
+	location_label.position = Vector2(24, 114)
+	location_label.add_theme_color_override("font_color", Color("e7d8af"))
+	root.add_child(location_label)
+	objective_label = _label("", 14)
+	objective_label.position = Vector2(24, 140)
+	objective_label.add_theme_color_override("font_color", Color("d3ded6"))
+	root.add_child(objective_label)
+	notice = _label("", 16)
+	notice.position = Vector2(24, 166)
 	notice.add_theme_font_size_override("font_size", 14)
 	notice.add_theme_color_override("font_color", Color("e1d6b7"))
 	root.add_child(notice)
@@ -118,15 +136,18 @@ func _ready() -> void:
 		var slot := SkillSlot.new()
 		slot.slot = i
 		slot.tooltip_text = "%d · %s\n%s\nSegure e arraste para baixo: automático. Para cima: manual." % [i + 1, SKILL_NAMES[i], SKILL_HINTS[i]]
-		slot.activated.connect(func() -> void: skill_requested.emit(i))
+		slot.activated.connect(func() -> void:
+			if _combat_allowed and not rift_panel.visible:
+				skill_requested.emit(i)
+		)
 		slot.automatic_changed.connect(func(enabled: bool) -> void: skill_automatic_changed.emit(i, enabled))
 		bar.add_child(slot)
 		slot_buttons.append(slot)
-	var help := _label("WASD mover · Mouse câmera · Scroll zoom · Clique atacar · 1–4 habilidades · Q poção · I / TAB mochila · Esc cursor", 14)
+	var help := _label("WASD mover · Mouse câmera · Scroll zoom · E interagir · Clique atacar · 1–4 habilidades · Q poção · I / TAB mochila · Esc cursor", 13)
 	root.add_child(help)
 	help.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-	help.offset_left = -530
-	help.offset_right = 600
+	help.offset_left = -610
+	help.offset_right = 610
 	help.offset_top = -25
 	help.offset_bottom = -4
 	var aim := _label("+", 24)
@@ -138,6 +159,55 @@ func _ready() -> void:
 	aim.offset_bottom = 17
 	_inventory()
 	_potions()
+	_interaction()
+	_rift()
+
+func _interaction() -> void:
+	interaction_prompt = _panel(root)
+	interaction_prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	interaction_prompt.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	interaction_prompt.offset_left = -290
+	interaction_prompt.offset_right = 290
+	interaction_prompt.offset_top = -156
+	interaction_prompt.offset_bottom = -112
+	interaction_label = _label("", 17)
+	interaction_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	interaction_label.add_theme_color_override("font_color", Color("f0d99e"))
+	interaction_prompt.add_child(interaction_label)
+	interaction_prompt.hide()
+
+func _rift() -> void:
+	rift_backdrop = ColorRect.new()
+	root.add_child(rift_backdrop)
+	rift_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	rift_backdrop.color = Color(0.01, 0.02, 0.03, 0.78)
+	rift_backdrop.mouse_filter = Control.MOUSE_FILTER_STOP
+	rift_backdrop.hide()
+	rift_panel = RiftMenu.new()
+	root.add_child(rift_panel)
+	rift_panel.world_requested.connect(func(world_number: int) -> void: world_requested.emit(world_number))
+	rift_panel.closed.connect(func() -> void:
+		rift_panel.hide()
+		rift_closed.emit()
+	)
+	rift_panel.visibility_changed.connect(func() -> void:
+		rift_backdrop.visible = rift_panel.visible
+		interaction_prompt.visible = not rift_panel.visible and not interaction_label.text.is_empty()
+	)
+	rift_panel.hide()
+
+func set_location(title: String, objective: String, safe: bool) -> void:
+	location_label.text = title + (" · Área segura" if safe else "")
+	location_label.add_theme_color_override("font_color", Color("b9dfb7") if safe else Color("e7d8af"))
+	objective_label.text = objective
+
+func set_interaction_prompt(text: String) -> void:
+	interaction_label.text = text
+	interaction_prompt.visible = not text.is_empty() and not rift_panel.visible
+
+func show_rift(unlocked: int, completed: Array[int]) -> void:
+	potion_popup.hide()
+	rift_panel.show_worlds(unlocked, completed)
 
 func _inventory() -> void:
 	inventory_panel = EquipmentInventory.new()
@@ -146,7 +216,8 @@ func _inventory() -> void:
 	inventory_panel.item_requested.connect(func(item: String) -> void: item_requested.emit(item))
 	inventory_panel.closed.connect(func() -> void: inventory_requested.emit())
 
-func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead: bool, inventory: Dictionary, guard: float, potion_auto: bool, potion_threshold: float, potion_reuse: float, automatic_skills: Array[bool]) -> void:
+func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead: bool, inventory: Dictionary, guard: float, potion_auto: bool, potion_threshold: float, potion_reuse: float, automatic_skills: Array[bool], combat_allowed: bool = true) -> void:
+	_combat_allowed = combat_allowed
 	health.max_value = maximum
 	health.value = hp
 	health_text.text = "%d / %d" % [ceili(hp), int(maximum)]
@@ -155,7 +226,7 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 	experience.tooltip_text = "Experiência: %d / 3" % xp
 	for i in range(4):
 		var remaining := float(cooldowns[i])
-		var enabled: bool = not (dead or inventory_panel.visible or remaining > 0 or (i < 2 and not inventory.equipped))
+		var enabled: bool = combat_allowed and not (dead or inventory_panel.visible or rift_panel.visible or remaining > 0 or (i < 2 and not inventory.equipped))
 		slot_buttons[i].automatic = automatic_skills[i]
 		slot_buttons[i].sync(remaining, [6.0, 8.0, 12.0, 7.0][i], enabled)
 	potion_slot.automatic = potion_auto
@@ -169,6 +240,7 @@ func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 	target_panel.visible = is_instance_valid(focus_enemy) and focus_enemy in enemies
 	if target_panel.visible:
 		target_name.text = "Grelim"
+		target_health.max_value = float(focus_enemy.get_meta("maximum_hp", 60.0))
 		target_health.value = float(focus_enemy.get_meta("hp"))
 	for foe in enemy_bars.keys():
 		if not is_instance_valid(foe) or not foe in enemies:
@@ -185,7 +257,7 @@ func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 			var bar := ProgressBar.new()
 			bar.name = "Life"
 			bar.custom_minimum_size = Vector2(80, 7)
-			bar.max_value = 60
+			bar.max_value = float(foe.get_meta("maximum_hp", 60.0))
 			bar.show_percentage = false
 			bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			var back := _style(Color("182023"))
@@ -201,6 +273,7 @@ func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 			column.add_child(bar)
 			enemy_bars[foe] = column
 		var widget: Control = enemy_bars[foe]
+		widget.get_node("Life").max_value = float(foe.get_meta("maximum_hp", 60.0))
 		var at := foe.global_position + Vector3.UP * 2.05
 		widget.visible = not camera.is_position_behind(at) and camera.global_position.distance_to(at) < 40
 		if widget.visible:

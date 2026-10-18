@@ -3,6 +3,7 @@ extends Node2D
 
 const SAVE_PATH := "user://progress.json"
 const SkillCircle := preload("res://scripts/skill_circle.gd")
+const GRELIM_TEXTURE := preload("res://art/enemies/grelim.tres")
 const HERO_VISUAL := preload("res://scenes/hero_visual.tscn")
 const HERO_HEIGHTS := [78.0, 92.0, 96.0, 96.0, 100.0]
 const SKILL_OFFSET := Vector2(46, -148)
@@ -24,6 +25,7 @@ const SLOT_POSITIONS := [Vector2(456, 360), Vector2(456, 500), Vector2(303, 360)
 const FOE_POSITIONS := [Vector2(825, 360), Vector2(825, 500), Vector2(985, 360), Vector2(985, 500), Vector2(1135, 360), Vector2(1135, 500)]
 const WAVE_NAMES := ["Primeira onda", "Segunda onda", "Terceira onda", "Chefe da região"]
 
+var enemy_visuals: Array[Node2D] = []
 var hero_visuals: Array[Node2D] = []
 var hero_visual_root: Node2D
 var heroes: Array[Dictionary] = []
@@ -89,10 +91,28 @@ func _create_hero_visuals() -> void:
 		hero_visuals.append(visual)
 	_sync_hero_visuals(0)
 
+func _rebuild_enemy_visuals() -> void:
+	for visual in enemy_visuals:
+		hero_visual_root.remove_child(visual)
+		visual.queue_free()
+	enemy_visuals.clear()
+	for foe in foes:
+		var visual := HERO_VISUAL.instantiate()
+		visual.name = "ChefeGrelim" if foe.kind == "boss" else "Grelim" + str(foe.id)
+		visual.artwork = GRELIM_TEXTURE
+		visual.character_height = 136.0 if foe.kind == "boss" else 90.0
+		visual.attack_direction = -1.0
+		visual.phase = foe.id * 0.7
+		hero_visual_root.add_child(visual)
+		enemy_visuals.append(visual)
+
 func _sync_hero_visuals(delta: float) -> void:
 	for i in range(hero_visuals.size()):
 		hero_visuals[i].position = drag_position if dragging == i else _unit_position(heroes[i], false)
 		hero_visuals[i].sync_visual(heroes[i], delta, paused)
+	for i in range(enemy_visuals.size()):
+		enemy_visuals[i].position = _unit_position(foes[i], true)
+		enemy_visuals[i].sync_visual(foes[i], delta, paused)
 
 func _label(text: String, position: Vector2, size: Vector2, font_size: int, color := Color("e6ecea")) -> Label:
 	var node := Label.new()
@@ -177,6 +197,7 @@ func _preview_foes() -> void:
 	foes.clear()
 	for i in range(3):
 		foes.append(_make_foe(i))
+	_rebuild_enemy_visuals()
 
 func _start_battle() -> void:
 	if mode == "battle":
@@ -200,6 +221,7 @@ func _spawn_wave() -> void:
 	else:
 		for i in range(3 + wave):
 			foes.append(_make_foe(i))
+	_rebuild_enemy_visuals()
 	_message(WAVE_NAMES[wave] + "!")
 
 func _living(units: Array[Dictionary]) -> Array[Dictionary]:
@@ -314,6 +336,7 @@ func _tick(dt: float) -> void:
 	for foe in foes:
 		if foe.hp <= 0.0:
 			continue
+		foe["hurt"] = maxf(0.0, float(foe.get("hurt", 0)) - dt)
 		foe.pulse = maxf(0.0, foe.pulse - dt)
 		foe.attack_clock -= dt
 		if foe.attack_clock <= 0.0:
@@ -470,22 +493,12 @@ func _draw() -> void:
 			draw_line(effect.from, effect.to, color, 3)
 		draw_string(ThemeDB.fallback_font, effect.to + Vector2(-12, -30 - (0.7 - effect.life) * 45), effect.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, color)
 
-func _pixel_rect(pos: Vector2, rect: Rect2, color: Color, flip: bool, scale_factor: float) -> void:
-	var x := -rect.position.x - rect.size.x if flip else rect.position.x
-	draw_rect(Rect2(pos + Vector2(x, rect.position.y) * scale_factor, rect.size * scale_factor), color)
-
 func _draw_unit(unit: Dictionary, pos: Vector2, enemy: bool) -> void:
 	var alive: bool = unit.hp > 0
-	var color: Color = unit.color if alive else Color("536263")
 	var size_factor := 2.5 if unit.kind == "boss" else 1.8
-	var outline := Color("15232b")
-	if enemy and alive and unit.pulse > 0:
-		pos.x += (-7 if enemy else 7) * sin(unit.pulse * 16)
 	draw_set_transform(pos + Vector2(0, 9), 0, Vector2(1, 0.28))
 	draw_circle(Vector2.ZERO, 25 * size_factor / 2.15, Color(0, 0, 0, 0.24))
 	draw_set_transform(Vector2.ZERO)
-	if enemy:
-		_draw_placeholder(unit, pos, enemy, size_factor, color, outline)
 	if unit.guard > 0:
 		draw_arc(pos + Vector2(0, -45), 57, 0, TAU, 36, Color("a6d5f0"), 3)
 	var bar_width := 100.0 if unit.kind == "boss" else 86.0
@@ -498,33 +511,6 @@ func _draw_unit(unit: Dictionary, pos: Vector2, enemy: bool) -> void:
 	if not alive:
 		draw_line(pos + Vector2(-17, -80), pos + Vector2(17, -45), Color("d69a90"), 4)
 		draw_line(pos + Vector2(17, -80), pos + Vector2(-17, -45), Color("d69a90"), 4)
-
-func _draw_placeholder(unit: Dictionary, pos: Vector2, enemy: bool, size_factor: float, color: Color, outline: Color) -> void:
-	var parts := [
-		[Rect2(-10, -29, 20, 25), outline], [Rect2(-9, -28, 18, 20), color.darkened(0.2)],
-		[Rect2(-10, -33, 7, 9), color.lightened(0.15)], [Rect2(4, -33, 7, 9), color.lightened(0.15)],
-		[Rect2(-7, -47, 14, 16), outline], [Rect2(-6, -44, 12, 12), Color("b5c782") if enemy else Color("dfb488")],
-		[Rect2(-7, -48, 14, 6), Color("5b4c48") if not enemy else color.darkened(0.35)],
-		[Rect2(2, -39, 3, 2), outline], [Rect2(-8, -10, 6, 11), outline], [Rect2(3, -10, 6, 11), outline],
-		[Rect2(-10, -3, 8, 5), Color("34414a")], [Rect2(3, -3, 9, 5), Color("34414a")],
-		[Rect2(-9, -13, 18, 3), Color("ad9561")], [Rect2(-13, -25, 5, 13), color], [Rect2(9, -25, 5, 13), color]
-	]
-	for part in parts:
-		_pixel_rect(pos, part[0], part[1], enemy, size_factor)
-	if unit.kind == "tank":
-		_pixel_rect(pos, Rect2(11, -28, 11, 20), Color("c4b78c"), enemy, size_factor)
-		_pixel_rect(pos, Rect2(13, -26, 7, 15), color.darkened(0.1), enemy, size_factor)
-	elif unit.kind == "archer":
-		for j in range(5):
-			_pixel_rect(pos, Rect2(16 + (2 - absi(2 - j)) * 2, -38 + j * 6, 2, 7), Color("c79d63"), enemy, size_factor)
-		_pixel_rect(pos, Rect2(16, -37, 1, 30), Color("e2d7b0"), enemy, size_factor)
-	elif unit.kind in ["healer", "mage"]:
-		_pixel_rect(pos, Rect2(16, -42, 2, 43), Color("987954"), enemy, size_factor)
-		_pixel_rect(pos, Rect2(13, -47, 8, 8), color.lightened(0.3), enemy, size_factor)
-		_pixel_rect(pos, Rect2(-8, -17, 17, 15), color.darkened(0.2), enemy, size_factor)
-	else:
-		_pixel_rect(pos, Rect2(16, -40, 4, 31), Color("c3cace"), enemy, size_factor)
-		_pixel_rect(pos, Rect2(12, -13, 12, 3), Color("b59660"), enemy, size_factor)
 
 func _save_progress() -> void:
 	if smoke_test:
@@ -566,6 +552,8 @@ func _check(condition: bool, explanation: String) -> void:
 
 func _run_smoke_test() -> void:
 	_check(heroes.size() == 5 and slots.size() == 6, "cinco heróis em seis posições")
+	_check(enemy_visuals.size() == 3 and enemy_visuals[0].body.texture == GRELIM_TEXTURE, "Grelims usam a arte adaptada")
+	_check(enemy_visuals[0].attack_direction == -1.0, "Grelims atacam na direção dos heróis")
 	_check(hero_visuals.size() == 5, "cinco cenas visuais de personagens instanciadas")
 	for i in range(hero_visuals.size()):
 		_check(hero_visuals[i].body.texture == HERO_TEXTURES[i] and HERO_TEXTURES[i].get_height() > 0, "arte carregada: " + HEROES[i].name)
@@ -628,6 +616,7 @@ func _run_smoke_test() -> void:
 			break
 		_tick(0.05)
 	_check(mode == "victory" and stage == 2 and wave == 3, "batalha completa: três ondas, chefe e próxima fase")
+	_check(enemy_visuals.size() == 1 and enemy_visuals[0].character_height > 90, "chefe aparece sozinho e maior que o Grelim comum")
 	_check(coins > before - 25, "vitória concede recompensa")
 	_start_battle()
 	for hero in heroes:

@@ -15,3 +15,7 @@ Cada PNG tem fundo transparente e contém **uma única pose**, com o personagem 
 A cena `scenes/hero_visual.tscn` é reutilizada pelos cinco heróis. Os movimentos iniciais são procedurais: repouso, impulso de ataque, indicação de dano e estado caído. **Não há sequência de quadros de animação nesta entrega.**
 
 Estes visuais ainda precisam da avaliação do usuário, especialmente silhueta, arma, proporções e legibilidade no tamanho da batalha. Classes, raridades e habilidades definitivas continuam seguindo o documento de conceito.
+
+## Grelim
+
+`enemies/grelim.png` adapta o modelo visual enviado pelo usuário para pixel art: cabeça rochosa ocre, dois chifres, orelhas pontudas, olhos âmbar e garras longas. A imagem já está voltada à esquerda, na direção dos heróis. O Grelim comum e o chefe reutilizam a mesma pose, em tamanhos diferentes. Repouso, impulso ao atacar, dano e estado caído usam os mesmos movimentos procedurais dos heróis. Animações quadro a quadro ainda não estão presentes.

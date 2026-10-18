@@ -17,7 +17,7 @@ O Tanque combate de perto com espada e escudo; Defesa reduz o dano em 65% por qu
 
 **Modelos por classe:** o Tanque preserva o Fighter e a pose aprovada de espada/escudo. O Arqueiro usa `human_archer.glb`, com as mesmas malhas texturizadas do Fighter e os clipes nativos `wait_Bow`, `walk_Bow`, `run_Bow`, `Atk01_Bow` e `SpAtk01_Bow`. Mago e Curandeiro usam `human_mage.glb`, as malhas MMagic_M000 de `Magic.ukx`, postura, caminhada, corrida, conjuração e morte do Mage. A troca no Instrutor também troca o modelo da prévia do inventário. As posturas de repouso usam `wait_Bow_MFighter` e `wait_1HS_MMagic`, sem a postura de prontidão `atkWait`. O Arqueiro usa a animação de disparo nativa em 0,9 s para ataque comum e 0,65 s para habilidades, ajustando a velocidade do clipe. A longa animação especial de quatro segundos não bloqueia mais o ataque comum; recargas individuais continuam independentes. A velocidade normal é restaurada ao voltar ao repouso, andar, correr ou morrer.
 
-**Texturas originais do Mage:** Mago e Curandeiro usam `MMagic_m000_t1000_u/l/g/b` no corpo/roupa, mãos e botas, e `MMagic_m000_t00_m00_ah_ori` mais `MMagic_m000_t00_m00_bh` nas duas malhas de cabelo. Foram extraídas do MMagic.utx enviado em duas partes, com CRC32 do arquivo verificado (`fd1e1a82`). O rosto mantém `MMagic_m000_t00_f`, de LineageFaceTex.utx. O alpha do corpo não produz transparência; apenas o cabelo usa recorte alpha com limite de 0,05. As texturas seguem os UVs do Mage, sem reutilizar atlas do Fighter.
+**Texturas do corpo base do Mage:** sem equipamento, Mago e Curandeiro usam `MMagic_m000_t1000_u/l/g/b` no corpo/roupa, mãos e botas, e `MMagic_m000_t00_m00_ah_ori` mais `MMagic_m000_t00_m00_bh` nas duas malhas de cabelo. Foram extraídas do MMagic.utx enviado em duas partes, com CRC32 do arquivo verificado (`fd1e1a82`). O rosto mantém `MMagic_m000_t00_f`, de LineageFaceTex.utx. O alpha do corpo não produz transparência; apenas o cabelo usa recorte alpha com limite de 0,05. As texturas seguem os UVs do Mage, sem reutilizar atlas do Fighter.
 
 [Arqueiro disparando](../docs/archer-native-attack.png) · [Humano Mage](../docs/mage-native-model.png) · [Curandeiro](../docs/healer-native-model.png) · [Texturas no inventário do Mago](../docs/mage-original-textures.png) · [Curandeiro no inventário](../docs/healer-original-textures.png)
 
@@ -72,7 +72,7 @@ Cada baú concede **um equipamento**, uma única vez por tentativa. O item pode 
 
 Na mochila, selecione um item e use **Equipar** no painel direito. Ele sai da grade e ocupa somente seu slot no personagem; a peça anterior volta à bolsa. Clique no slot e em **Retirar** para devolvê-lo à mochila. Equipamentos vestidos não ocupam espaços da grade. A mochila começa com vinte espaços, tem filtros e ganha rolagem quando necessário. A prévia 3D acompanha classe e equipamento; as molduras e os detalhes mostram a raridade e a comparação de atributos. A organização livre da grade ainda não foi implementada.
 
-Peças de saque equipadas aumentam o dano ou reduzem o dano recebido. Elas reutilizam as malhas disponíveis, sem criar aparências inéditas para cada raridade. O conjunto inicial mantém os atributos base. O Tanque usa a Long Sword e o Small Shield originais; o escudo mantém a inclinação aprovada de **45°**, mão atrás da madeira e encaixe igual no campo e na prévia. O Arqueiro usa o Short Bow original em `Weapon_L_Bone`, em vez do osso de escudo. Mago e Curandeiro usam a varinha Apprentice's Rod em `Weapon_R_Bone`. Os encaixes seguem as animações nativas das respectivas classes; o inventário identifica as armas iniciais por nome e ícone.
+Peças de saque equipadas aumentam o dano ou reduzem o dano recebido. As roupas usam as malhas e texturas originais correspondentes ao grau e ao tipo de armadura da classe. O conjunto inicial é No Grade e mantém os atributos base. O Tanque usa a Long Sword e o Small Shield originais; o escudo mantém a inclinação aprovada de **45°**, mão atrás da madeira e encaixe igual no campo e na prévia. As manoplas maiores dos graus D–A recebem folga adicional atrás do painel, mantendo a alça no punho e a inclinação aprovada. O Arqueiro usa o Short Bow original em `Weapon_L_Bone`, em vez do osso de escudo. Mago e Curandeiro usam a varinha Apprentice's Rod em `Weapon_R_Bone`. Os encaixes seguem as animações nativas das respectivas classes; o inventário identifica as armas iniciais por nome e ícone.
 
 Retirar a arma oculta a espada, o arco ou o cajado da classe e bloqueia ataques comuns e habilidades ofensivas. Cura, defesa e habilidades de movimento continuam disponíveis sem arma, respeitando suas demais condições.
 
@@ -82,7 +82,7 @@ Cada Grelim derrotado concede uma presa e cinco de ouro; o chefe concede três p
 
 Classe escolhida (`player_class`), nível, experiência, inventário, itens de saque equipados, configurações e mundos liberados são salvos em `user://adventure_save.cfg`. Perfis antigos ou com classe inválida usam **Tanque** como padrão. Ao abrir o jogo novamente, você reaparece na vila. A tentativa em andamento e um baú ainda não coletado não são retomados. Testes usam estado isolado.
 
-As instâncias são locais; ainda não há servidor ou multiplayer. Casas e bancas são cenografia com colisão; o Instrutor tem interação de classe, mas lojas ainda não estão implementadas. Grelims e Guardião usam geometria e animações procedurais provisórias; não são modelos de monstros extraídos do cliente. Tanque e Arqueiro compartilham as malhas Fighter com animações diferentes; Mago e Curandeiro compartilham o modelo Mage. O Mage já tem as texturas originais do conjunto inicial. Ainda não há malhas alternativas de armadura Mage integradas nesta versão, então suas roupas mantêm a malha inicial ao trocar bônus de equipamento. Valores e cenários continuam em fase de protótipo.
+As instâncias são locais; ainda não há servidor ou multiplayer. Casas e bancas são cenografia com colisão; o Instrutor tem interação de classe, mas lojas ainda não estão implementadas. Grelims e Guardião usam geometria e animações procedurais provisórias; não são modelos de monstros extraídos do cliente. Tanque e Arqueiro compartilham as malhas Fighter com animações diferentes; Mago e Curandeiro compartilham o modelo Mage. As três famílias de roupa já têm variantes originais No Grade, D, C, B e A, incluindo as túnicas do Mage. Valores e cenários continuam em fase de protótipo.
 
 O campo usa textura de grama em escala de 1,8 metro, variação de cor e relevo fino. Tufos 3D perto do personagem se movem com o vento e acompanham a exploração em blocos MultiMesh. À distância, os tufos diminuem e o solo texturizado permanece visível. A textura foi gerada para o projeto; a origem está em `assets/environment/meadow_grass_source.json`.
 
@@ -98,6 +98,7 @@ godot --headless --path . --script res://tests/instance_run_test.gd
 godot --headless --path . --script res://tests/loot_items_test.gd
 godot --headless --path . --script res://tests/player_classes_test.gd
 godot --headless --path . --script res://tests/class_models_test.gd
+godot --headless --path . --script res://tests/wardrobe_test.gd
 godot --headless --path . --script res://tests/instance_classes_flow_test.gd
 ```
 
@@ -123,6 +124,22 @@ Espada e escudo originais foram convertidos para `assets/long_sword.glb` e `asse
 
 O baú e o inventário mostram o grau. Itens antigos sem esse campo continuam válidos e recebem a indicação pelo valor da raridade. Itens novos gravam o grau, e o carregamento valida a correspondência. As probabilidades não mudaram.
 
-**Pendente:** vincular cada peça à malha/textura do conjunto autêntico do respectivo grau. Os pacotes MFighter/MMagic usam nomes técnicos que não identificam sozinhos o nome e o grau do equipamento. Essa associação depende de `armorgrp.dat` e `itemname-e.dat` (ou o arquivo equivalente traduzido), na pasta `system` do cliente do usuário. Até a integração dessa tabela, os itens usam as roupas originais já importadas; o novo grau não representa uma troca visual de conjunto.
+As roupas foram vinculadas aos registros de `Armorgrp_Classic.dat`, `L2GameDataName.dat` e `ItemName_Classic-eu.dat` do cliente enviado. São 45 peças de equipamento (15 conjuntos × traje/luvas/botas), com nomes, IDs, malhas por raça e texturas difusas originais registrados em `assets/wardrobe_source.json`. Peitoral e calças continuam juntos no slot Traje; a Dark Crystal Robe original usa uma única malha completa.
+
+| Grau | Tanque | Arqueiro | Mago / Curandeiro |
+| --- | --- | --- | --- |
+| No Grade | Wooden Breastplate + Wooden Gaiters | Leather Shirt + Leather Pants | Tunic / Stockings of Devotion |
+| D | Brigandine | Reinforced Leather | Knowledge |
+| C | Dwarven Chain | Theca Leather | Karmian |
+| B | Blue Wolf pesado | Blue Wolf leve | Blue Wolf túnica |
+| A | Dark Crystal pesado | Dark Crystal leve | Dark Crystal Robe |
+
+Luvas e botas acompanham as variantes originais pesada, leve e túnica; as peças No Grade usam acessórios iniciais existentes no cliente. Cada slot troca somente suas próprias malhas. As roupas compartilham o esqueleto animado do corpo, inclusive na prévia, sem um segundo controlador de animação. A conversão mantém as texturas difusas, sem reproduzir os antigos reflexos de ambiente dos shaders do Unreal.
+
+Novos saques de roupas recebem a família da classe que abriu o baú. Tanque usa pesada, Arqueiro usa leve, e Mago/Curandeiro compartilham túnicas. O inventário mostra a restrição; mudar de família devolve as roupas incompatíveis à mochila e veste o conjunto inicial. Os itens e seus bônus permanecem salvos. Itens antigos sem identificação de conjunto mantêm nome e atributos e usam a aparência do grau na classe atual. Espadas e escudos de saque ainda usam os modelos de arma disponíveis; esta atualização aplica os conjuntos por grau às roupas.
+
+[Dark Crystal no Tanque](../docs/roupa-dark-crystal-tanque.png) · [Dark Crystal no Arqueiro](../docs/roupa-dark-crystal-arqueiro.png) · [Túnica no inventário](../docs/roupa-dark-crystal-mago-inventario.png)
+
+Teste da integração de roupas: `godot --headless --path . --script res://tests/wardrobe_test.gd`. Ele verifica os conjuntos nas quatro classes, vínculos de pele em repouso/movimento/ataque/conjuração/morte, troca por slot, remoção sem duplicação, compatibilidade de classe, prévia, restauração de dados e recompensas.
 
 Teste da recuperação do Arqueiro: `godot --headless --path . --script res://tests/archer_recovery_test.gd`.

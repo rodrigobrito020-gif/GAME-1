@@ -1,5 +1,6 @@
 extends RefCounted
 ## Equipment rewards and the transfer of unique items between bag and equipment.
+const Catalog := preload("res://scripts/equipment_catalog.gd")
 
 const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots"]
 const BASE_KEYS := {"sword": "equipped", "shield": "shield", "armor": "armor", "gloves": "gloves", "boots": "boots"}
@@ -29,7 +30,7 @@ static func rarity_for_roll(roll: float) -> String:
 			return RARITIES[index]
 	return RARITIES.back()
 
-static func create_reward(rng: RandomNumberGenerator, world_number: int) -> Dictionary:
+static func create_reward(rng: RandomNumberGenerator, world_number: int, class_id: String = "tanque") -> Dictionary:
 	var rarity := rarity_for_roll(rng.randf() * 100.0)
 	var slot := SLOTS[rng.randi_range(0, SLOTS.size() - 1)]
 	var world := clampi(world_number, 1, WORLD_NAMES.size())
@@ -49,7 +50,12 @@ static func create_reward(rng: RandomNumberGenerator, world_number: int) -> Dict
 	# Crypto IDs remain unique across process restarts and save/load. They do not
 	# consume the seeded reward RNG, so seeding still reproduces loot attributes.
 	var id := Crypto.new().generate_random_bytes(16).hex_encode()
-	return {"id": id, "slot": slot, "name": "%s %s" % [ITEM_NAMES[slot], WORLD_NAMES[world - 1]], "rarity": rarity, "grade": grade_for_rarity(rarity), "attack_bonus": attack, "defense_bonus": defense}
+	var reward := {"id": id, "slot": slot, "name": "%s %s" % [ITEM_NAMES[slot], WORLD_NAMES[world - 1]], "rarity": rarity, "grade": grade_for_rarity(rarity), "attack_bonus": attack, "defense_bonus": defense}
+	if slot in Catalog.CLOTHING_SLOTS:
+		var key := Catalog.key_for(class_id, reward.grade, slot)
+		reward["lineage_key"] = key
+		reward["name"] = Catalog.get_entry(key).name
+	return reward
 
 static func is_equipped(inv: Dictionary, slot: String) -> bool:
 	if slot not in SLOTS:
@@ -57,7 +63,7 @@ static func is_equipped(inv: Dictionary, slot: String) -> bool:
 	var equipped: Variant = inv.get("equipped_loot", {})
 	return bool(inv.get(BASE_KEYS[slot], false)) or (equipped is Dictionary and equipped.has(slot))
 
-static func equip_item(inv: Dictionary, id: String) -> bool:
+static func equip_item(inv: Dictionary, id: String, class_id: String = "") -> bool:
 	var bag_value: Variant = inv.get("loot_items", [])
 	var equipped_value: Variant = inv.get("equipped_loot", {})
 	if not bag_value is Array or not equipped_value is Dictionary:
@@ -75,6 +81,8 @@ static func equip_item(inv: Dictionary, id: String) -> bool:
 			selected = item
 			break
 	if selected.is_empty():
+		return false
+	if not class_id.is_empty() and not Catalog.compatible(selected, class_id):
 		return false
 	var slot: String = selected.slot
 	var previous := _validated_item(equipped.get(slot, {}))
@@ -177,4 +185,19 @@ static func _validated_item(value: Variant) -> Dictionary:
 	var result := {"id": value.id, "slot": value.slot, "name": value.name, "rarity": value.rarity, "attack_bonus": value.attack_bonus, "defense_bonus": value.defense_bonus}
 	if value.has("grade"):
 		result["grade"] = grade_for_rarity(value.rarity)
+	if value.has("lineage_key"):
+		if not value.lineage_key is String:
+			return {}
+		var entry := Catalog.get_entry(value.lineage_key)
+		if entry.is_empty() or entry.slot != value.slot or entry.grade != grade_for_rarity(value.rarity):
+			return {}
+		result["lineage_key"] = value.lineage_key
+		result["name"] = entry.name
 	return result
+
+static func store_incompatible_clothing(inv: Dictionary, class_id: String) -> void:
+	for slot: String in Catalog.CLOTHING_SLOTS:
+		var item: Dictionary = inv.get("equipped_loot", {}).get(slot, {})
+		if not Catalog.compatible(item, class_id):
+			unequip_slot(inv, slot)
+			inv[BASE_KEYS[slot]] = true

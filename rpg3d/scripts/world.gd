@@ -24,6 +24,7 @@ const ClassMenu := preload("res://scripts/class_menu.gd")
 const ClassCombat := preload("res://scripts/class_combat.gd")
 const ArenaBossVisual := preload("res://scripts/arena_boss_visual.gd")
 const ClassWeapon := preload("res://scripts/class_weapon.gd")
+const Wardrobe := preload("res://scripts/wardrobe.gd")
 var player_class := "tanque"
 var class_menu: PanelContainer
 var class_backdrop: ColorRect
@@ -180,6 +181,7 @@ func _set_character_model() -> void:
 	for clip in animation.get_animation_list():
 		animation.get_animation(clip).loop_mode = Animation.LOOP_LINEAR if clip.ends_with("idle") or clip.ends_with("run") or clip.ends_with("walk") else Animation.LOOP_NONE
 	_equip_sword(character_model)
+	Wardrobe.install(character_model, player_class)
 	_apply_equipment()
 	_play("idle")
 	if is_instance_valid(hud):
@@ -224,8 +226,15 @@ func _equip_sword(model: Node3D) -> void:
 
 func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	var results: Array[MeshInstance3D] = []
+	if alternate:
+		var item: Dictionary = inventory.get("equipped_loot", {}).get(slot, {})
+		var key: String = item.get("lineage_key", Wardrobe.Catalog.key_for(player_class, LootItems.grade_for_rarity(str(item.get("rarity", "Comum"))), slot))
+		for mesh: MeshInstance3D in character_model.find_children("*", "MeshInstance3D", true, false):
+			if mesh.get_meta("wardrobe_key", "") == key:
+				results.append(mesh)
+		return results
 	var suffixes: Array = {"armor": ["_u", "_l"], "gloves": ["_g"], "boots": ["_b"]}[slot]
-	var prefix := ("mmagic_m001" if alternate else "mmagic_m000") if character_model_kind == "mage" else ("mfighter_m001" if alternate else "mfighter_m000")
+	var prefix := "mmagic_m000" if character_model_kind == "mage" else "mfighter_m000"
 	for node in character_model.find_children("*", "MeshInstance3D", true, false):
 		for suffix in suffixes:
 			if str(node.name).to_lower().begins_with(prefix + suffix):
@@ -242,13 +251,10 @@ func _apply_equipment() -> void:
 		if ranged_weapon.class_id != player_class:
 			ranged_weapon.configure(player_class)
 		ranged_weapon.rotation = Vector3.ZERO
-	for slot in ["armor", "gloves", "boots"]:
-		if _gear_nodes(slot, true).is_empty():
-			continue
-		for mesh in _gear_nodes(slot, false):
-			mesh.visible = not LootItems.is_equipped(inventory, slot)
-		for mesh in _gear_nodes(slot, true):
-			mesh.visible = LootItems.is_equipped(inventory, slot)
+	Wardrobe.apply(character_model, inventory, player_class)
+	var glove: Dictionary = inventory.get("equipped_loot", {}).get("gloves", {})
+	var glove_key: String = glove.get("lineage_key", Wardrobe.Catalog.key_for(player_class, LootItems.grade_for_rarity(str(glove.get("rarity", "Comum"))), "gloves"))
+	shield_attachment.get_node("ShieldMount").garment_clearance = float(Wardrobe.Catalog.get_entry(glove_key).get("shield_clearance", 0.0)) if LootItems.is_equipped(inventory, "gloves") else 0.0
 
 func _play(action: String) -> void:
 	if action in ["idle", "walk", "run", "death"]:
@@ -292,6 +298,7 @@ func _maximum_hp() -> float:
 	return float(PlayerClasses.get_definition(player_class).max_hp) + (level - 1) * 20.0
 
 func _sync_class() -> void:
+	LootItems.store_incompatible_clothing(inventory, player_class)
 	_set_character_model()
 	var definition := PlayerClasses.get_definition(player_class)
 	hud.set_player_class(definition)
@@ -305,6 +312,7 @@ func _choose_class(id: String) -> bool:
 	if current_world != 0 or dead or not class_menu.visible or not _near_trainer() or id not in PlayerClasses.IDS:
 		return false
 	player_class = PlayerClasses.normalize(id)
+	var worn_clothing_before: int = inventory.get("equipped_loot", {}).size()
 	automatic_skills.fill(false)
 	skill_cooldown = 0.0
 	spin_cooldown = 0.0
@@ -316,6 +324,8 @@ func _choose_class(id: String) -> bool:
 	_sync_class()
 	_close_classes()
 	notice.text = "Classe escolhida: %s. As quatro habilidades foram atualizadas." % PlayerClasses.get_definition(player_class).name
+	if inventory.get("equipped_loot", {}).size() < worn_clothing_before:
+		notice.text += " Roupas da classe anterior voltaram à mochila."
 	_save_profile()
 	return true
 
@@ -353,7 +363,7 @@ func _open_chest() -> bool:
 		return false
 	if not reward_chest.open():
 		return false
-	var reward := LootItems.create_reward(loot_rng, current_world)
+	var reward := LootItems.create_reward(loot_rng, current_world, player_class)
 	if not inventory.has("loot_items"):
 		inventory.loot_items = []
 	inventory.loot_items.append(reward)
@@ -579,7 +589,7 @@ func _use_item(item: String) -> bool:
 	if attack_clock > 0 and item != "potion":
 		return false
 	if item.begins_with("loot_equip:"):
-		if not LootItems.equip_item(inventory, item.trim_prefix("loot_equip:")):
+		if not LootItems.equip_item(inventory, item.trim_prefix("loot_equip:"), player_class):
 			return false
 		_apply_equipment()
 	elif item.begins_with("loot_remove:"):

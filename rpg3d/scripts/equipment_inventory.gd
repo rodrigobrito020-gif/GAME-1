@@ -99,6 +99,8 @@ func icon_for(index: int) -> Texture2D:
 func base_name(index: int) -> String:
 	if index == 0 and player_class_id != "tanque":
 		return "Short Bow" if player_class_id == "arqueiro" else "Apprentice's Rod"
+	if IDS[index] in LootItems.Catalog.CLOTHING_SLOTS:
+		return LootItems.Catalog.get_entry(LootItems.Catalog.key_for(player_class_id, "No Grade", IDS[index])).name
 	return NAMES[index]
 
 func picture(parent: Node, pixels: int) -> TextureRect:
@@ -496,6 +498,9 @@ func _refresh_loot_details(item: Dictionary) -> void:
 	selected_type.text = "%s · %s · %s" % [TYPES[index], item.rarity, LootItems.grade_text(item)]
 	selected_icon.texture = icon_for(index)
 	selected_description.text = _bonus_text(item)
+	var class_description := LootItems.Catalog.class_text(item)
+	if not class_description.is_empty():
+		selected_description.text += "\n" + class_description
 	if not equipped:
 		var attack_change := int(item.attack_bonus) - int(current.get("attack_bonus", 0))
 		var defense_change := int(item.defense_bonus) - int(current.get("defense_bonus", 0))
@@ -503,7 +508,9 @@ func _refresh_loot_details(item: Dictionary) -> void:
 	else:
 		selected_description.text += "\n\nEquipado no personagem."
 	action_button.text = "Retirar" if equipped else "Equipar"
-	action_button.disabled = is_dead
+	action_button.disabled = is_dead or (not equipped and not LootItems.Catalog.compatible(item, player_class_id))
+	if not equipped and not LootItems.Catalog.compatible(item, player_class_id):
+		action_button.text = "Outra classe"
 
 func _signed(number: int) -> String:
 	return ("+" if number >= 0 else "") + str(number)
@@ -562,5 +569,8 @@ func _refresh_items() -> void:
 	selected_description.text = descriptions[selected]
 	if selected == 0 and player_class_id != "tanque":
 		selected_description.text = ("Arco original · Mão esquerda.\n\nAnimações nativas de arco do Fighter." if player_class_id == "arqueiro" else "Varinha original · Mão direita.\n\nModelo e conjuração nativos do humano Mage.") + "\nEstado: " + ("equipada" if equipped else "guardada")
+	if IDS[selected] in LootItems.Catalog.CLOTHING_SLOTS:
+		selected_type.text += " · No Grade"
+		selected_description.text = "Roupa original do conjunto inicial.\n\n" + ("Inclui peitoral e pernas.\n\n" if selected == 3 else "") + "Sem bônus de atributos."
 	action_button.text = "Usar poção" if selected == 1 else "Material de saque" if selected == 2 else "Retirar" if equipped else "Equipar"
 	action_button.disabled = is_dead or selected == 2 or (selected == 1 and (data.potions <= 0 or current_hp >= max_hp))

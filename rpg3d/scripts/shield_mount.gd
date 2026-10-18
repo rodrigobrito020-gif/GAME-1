@@ -8,6 +8,12 @@ const PANEL_TURN := -PI / 4
 const PANEL_CENTER_BELOW_WRIST := 0.025
 const PANEL_OUTSIDE_ARM := 0.083
 const PANEL_GEOMETRY_CENTER := 0.10310
+## Larger original gauntlets need more space behind the same diagonal panel.
+@export_range(0.0, 0.1) var garment_clearance := 0.0:
+	set(value):
+		garment_clearance = clampf(value, 0.0, 0.1)
+		if is_node_ready():
+			_update_strap()
 var _skeleton: Skeleton3D
 var _shell: Node3D
 var _shell_mesh: MeshInstance3D
@@ -125,7 +131,7 @@ func _update_strap() -> void:
 	var long_axis := down * cos(PANEL_TURN) + side * sin(PANEL_TURN)
 	var panel_basis := Basis(long_axis, long_axis.cross(front).normalized(), -front)
 	# Tilt the panel diagonally away from the forearm, around the grip center.
-	_shell.global_transform = Transform3D(panel_basis, wrist + down * PANEL_CENTER_BELOW_WRIST - long_axis * PANEL_GEOMETRY_CENTER + front * PANEL_OUTSIDE_ARM)
+	_shell.global_transform = Transform3D(panel_basis, wrist + down * PANEL_CENTER_BELOW_WRIST - long_axis * PANEL_GEOMETRY_CENTER + front * (PANEL_OUTSIDE_ARM + garment_clearance))
 	var half_grip := Vector3.RIGHT * GRIP_LENGTH / 2
 	var left := to_global(GRIP_CENTER - half_grip)
 	var right := to_global(GRIP_CENTER + half_grip)

@@ -196,7 +196,7 @@ func sync(hp: float, maximum: float, level: int, xp: int, cooldowns: Array, dead
 		var button: Button = item_buttons[pair[0]]
 		button.text = "%s\n%s" % [pair[2], "Equipado" if inventory[pair[1]] else "Equipar"]
 		button.disabled = dead
-		button.tooltip_text = "Peça original do conjunto M001; texturas ainda pendentes. Troca visual, sem bônus de atributos nesta etapa."
+		button.tooltip_text = "Peça original do conjunto M001, com textura do MFighter.utx. Troca visual, sem bônus de atributos nesta etapa."
 
 func sync_enemies(enemies: Array[CharacterBody3D], camera: Camera3D) -> void:
 	target_panel.visible = is_instance_valid(focus_enemy) and focus_enemy in enemies

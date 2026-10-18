@@ -1,0 +1,18 @@
+{
+  "source_package": "MFighter.utx",
+  "source_crc32": "78f9f072",
+  "texture_files": [
+    "MFighter_m000_t1000_b",
+    "MFighter_m000_t1000_g",
+    "MFighter_m000_t1000_l",
+    "MFighter_m000_t00_m00_ah_ori",
+    "MFighter_m000_t1000_u",
+    "MFighter_m001_t01_b_sp",
+    "MFighter_m001_t01_g_sp",
+    "MFighter_m001_t01_l_sp",
+    "MFighter_m001_t01_u_sp"
+  ],
+  "face_status": "Material provisório sem textura. O pacote Fighter referencia LineageFaceTex para o rosto.",
+  "hair_alpha_mode": "MASK",
+  "body_alpha_usage": "RGB como cor; alpha especular não é transparência."
+}

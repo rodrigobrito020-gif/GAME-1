@@ -654,6 +654,11 @@ func _test_equipment() -> void:
 		var base := _gear_nodes(slot, false)
 		var equipped := _gear_nodes(slot, true)
 		_check(not base.is_empty() and not equipped.is_empty(), "malhas originais carregadas: " + slot)
+		var textured := true
+		for mesh in base + equipped:
+			var material := mesh.get_active_material(0) as StandardMaterial3D
+			textured = textured and material != null and material.albedo_texture != null
+		_check(textured, "texturas originais aplicadas às duas versões: " + slot)
 		var correct := true
 		for mesh in base:
 			correct = correct and not mesh.visible
@@ -668,6 +673,10 @@ func _test_equipment() -> void:
 			correct = correct and not mesh.visible
 		_check(correct, "retirar equipamento restaura malha base: " + slot)
 		_use_item(slot)
+	for mesh in character_model.find_children("*", "MeshInstance3D", true, false):
+		if "_m00_ah" in str(mesh.name).to_lower():
+			var hair := mesh.get_active_material(0) as StandardMaterial3D
+			_check(hair.albedo_texture != null and hair.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR, "cabelo usa textura e recorte alpha")
 	hud.item_buttons[3].pressed.emit()
 	_check(not inventory.armor and inventory.gloves and inventory.boots, "slot do traje altera somente o traje selecionado")
 	hud.item_buttons[3].pressed.emit()

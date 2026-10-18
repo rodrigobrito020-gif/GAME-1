@@ -52,7 +52,7 @@ func _run() -> void:
 		game._toggle_inventory()
 		var panel = game.hud.inventory_panel
 		panel.select_loot(piece.id)
-		var expected := Icons.for_item(piece, class_id)
+		var expected := Icons.for_display(piece, class_id)
 		check(panel.loot_buttons[piece.id].icon == expected and panel.selected_icon.texture == expected, "bag and selected details use original item texture: " + class_id)
 		check(game._use_item("loot_equip:" + piece.id), "equip original-icon pants: " + class_id)
 		check(not panel.loot_buttons.has(piece.id) and panel.equipped_buttons[7].icon == expected, "original icon transfers from bag into the pants slot: " + class_id)
@@ -61,8 +61,10 @@ func _run() -> void:
 		game._toggle_inventory()
 		game.hud.show_chest_rewards([piece, {"slot":"sword", "name":"Arma", "rarity":"Comum"}])
 		var cards: Array = game.hud.chest_rewards_panel.item_cards
-		check(textures(cards[0]).has(expected) and textures(cards[1]).has(Icons.for_item({"slot":"sword"}, class_id)), "chest reveal uses the clothing and class weapon original icons: " + class_id)
+		check(textures(cards[0]).has(expected) and textures(cards[1]).has(Icons.for_display({"slot":"sword"}, class_id)), "chest reveal uses the clothing and class weapon original icons: " + class_id)
 		game.hud.chest_rewards_panel.closed.emit()
+		game.hud.show_reward(piece)
+		check(game.hud.reward_icon.texture == expected, "loot notification preserves the same rarity background: " + class_id)
 	check(Icons.for_item({"slot":"shield"}).resource_path.ends_with("shield_small_shield_i00.png"), "shield icon matches the original Small Shield")
 	game.queue_free()
 	await process_frame

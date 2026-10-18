@@ -153,7 +153,7 @@ func _make_card(item: Dictionary) -> PanelContainer:
 	glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_glows.append(glow)
 	var icon := TextureRect.new()
-	icon.texture = ItemIcons.for_item(item, player_class_id)
+	icon.texture = ItemIcons.for_display(item, player_class_id)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE

@@ -94,7 +94,7 @@ func panel_column(parent: Node, ratio: float) -> VBoxContainer:
 	return column
 
 func icon_for(index: int, item: Dictionary = {}) -> Texture2D:
-	return ItemIcons.for_item({"slot": IDS[index], "rarity": "Comum"} if item.is_empty() else item, player_class_id)
+	return ItemIcons.for_display({"slot": IDS[index], "rarity": "Comum"} if item.is_empty() else item, player_class_id)
 
 func base_name(index: int) -> String:
 	if index == 0 and player_class_id != "tanque":

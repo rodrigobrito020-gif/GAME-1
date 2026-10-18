@@ -2,6 +2,13 @@ extends RefCounted
 ## Original client equipment icons shared by inventory, paper doll and rewards.
 const Catalog := preload("res://scripts/equipment_catalog.gd")
 const Client := preload("res://scripts/client_item_icons.gd")
+const BackgroundMasks := preload("res://scripts/icon_background_masks.gd")
+const RARITY_COLORS := {
+	"Comum": Color("b1b4b9"), "Incomum": Color("71bb72"),
+	"Raro": Color("60a7df"), "Épico": Color("ba84df"),
+	"Lendário": Color("f0b84f"),
+}
+static var _display_cache: Dictionary = {}
 const FALLBACK := {
 	"potion": preload("res://assets/icons/potion.svg"),
 	"fang": preload("res://assets/icons/fang.svg"),
@@ -20,3 +27,33 @@ static func for_item(item: Dictionary, class_id: String = "tanque") -> Texture2D
 	if Client.WEAPONS.has(slot):
 		return Client.ICONS[Client.WEAPONS[slot]]
 	return FALLBACK.get(slot, FALLBACK.potion)
+
+static func for_display(item: Dictionary, class_id: String = "tanque") -> Texture2D:
+	var original := for_item(item, class_id)
+	var ref := "icon." + original.resource_path.get_file().get_basename()
+	if not BackgroundMasks.ROWS.has(ref):
+		return original
+	var rarity := str(item.get("rarity", "Comum"))
+	if not RARITY_COLORS.has(rarity):
+		rarity = "Comum"
+	var cache_key := ref + ":" + rarity
+	if _display_cache.has(cache_key):
+		return _display_cache[cache_key]
+	# Only the baked background is replaced. Equipment pixels and the original
+	# imported resource remain unchanged; cache display variants once per rarity.
+	var image := original.get_image().duplicate() as Image
+	image.convert(Image.FORMAT_RGBA8)
+	var rows: Array = BackgroundMasks.ROWS[ref]
+	var tint: Color = RARITY_COLORS[rarity]
+	for y in image.get_height():
+		for x in image.get_width():
+			if rows[y] & (1 << x):
+				var highlight := (float(x) / 31.0 + 1.0 - float(y) / 31.0) * 0.5
+				var background := tint * lerpf(0.13, 0.52, highlight)
+				background.a = 1.0
+				image.set_pixel(x, y, background)
+	var texture := ImageTexture.create_from_image(image)
+	texture.set_meta("client_icon_path", original.resource_path)
+	texture.set_meta("rarity", rarity)
+	_display_cache[cache_key] = texture
+	return texture

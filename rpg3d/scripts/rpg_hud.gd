@@ -442,7 +442,7 @@ func show_reward(item: Dictionary) -> void:
 	reward_name.add_theme_color_override("font_color", color)
 	reward_detail.text = "%s · %s · Adicionado à mochila" % [rarity, LootItems.grade_text(item)]
 	reward_detail.add_theme_color_override("font_color", color.lightened(0.2))
-	reward_icon.texture = preload("res://scripts/item_icons.gd").for_item(item, _class_id)
+	reward_icon.texture = preload("res://scripts/item_icons.gd").for_display(item, _class_id)
 	reward_panel.add_theme_stylebox_override("panel", _style(Color(0.04, 0.07, 0.08, 0.97), color))
 	if is_instance_valid(_reward_tween):
 		_reward_tween.kill()

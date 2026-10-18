@@ -27,6 +27,9 @@ var guard_clock := 0.0
 var dash_clock := 0.0
 var dash_direction := Vector3.FORWARD
 var attack_kind := 0
+var auto_potion := false
+var potion_threshold := 40.0
+var potion_clock := 0.0
 var zoom_distance := 5.0
 var inventory := {"equipped": true, "potions": 3, "fangs": 0, "gold": 0}
 var powered_attack := false
@@ -158,13 +161,14 @@ func _ui() -> void:
 	hud.skill_requested.connect(_activate_skill)
 	hud.inventory_requested.connect(_toggle_inventory)
 	hud.item_requested.connect(_use_item)
+	hud.potion_settings_changed.connect(_configure_potions)
 	_refresh_hud()
 
 func _maximum_hp() -> float:
 	return 100.0 + (level - 1) * 20.0
 
 func _refresh_hud() -> void:
-	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock)
+	hud.sync(hp, _maximum_hp(), level, xp, [skill_cooldown, spin_cooldown, guard_cooldown, dash_cooldown], dead, inventory, guard_clock, auto_potion, potion_threshold, potion_clock)
 	hud.sync_enemies(enemies, camera)
 
 func _toggle_inventory() -> void:
@@ -182,14 +186,25 @@ func _use_item(item: String) -> bool:
 		inventory.equipped = not inventory.equipped
 		sword_attachment.visible = inventory.equipped
 	elif item == "potion":
-		if inventory.potions <= 0 or hp >= _maximum_hp():
+		if inventory.potions <= 0 or hp >= _maximum_hp() or potion_clock > 0:
 			return false
+		potion_clock = 2.0
 		inventory.potions -= 1
 		hp = minf(_maximum_hp(), hp + 40.0)
 	else:
 		return false
 	_refresh_hud()
 	return true
+
+func _configure_potions(enabled: bool, threshold: float) -> void:
+	auto_potion = enabled
+	potion_threshold = clampf(threshold, 10, 90)
+	_refresh_hud()
+
+func _auto_potion_step(delta: float) -> void:
+	potion_clock = maxf(0, potion_clock - delta)
+	if auto_potion and not dead and hp > 0 and hp / _maximum_hp() * 100.0 <= potion_threshold:
+		_use_item("potion")
 
 func _activate_skill(slot: int) -> bool:
 	if dead or hud.inventory_panel.visible:
@@ -243,7 +258,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_toggle_inventory()
 			return
 		if event.keycode == KEY_ESCAPE:
-			if hud.inventory_panel.visible:
+			if hud.potion_popup.visible:
+				hud.potion_popup.hide()
+			elif hud.inventory_panel.visible:
 				_toggle_inventory()
 			else:
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -252,6 +269,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			return
 		if event.keycode == KEY_R:
 			_restart()
+		elif event.keycode == KEY_Q:
+			_use_item("potion")
 		elif event.keycode >= KEY_1 and event.keycode <= KEY_4:
 			_activate_skill(event.keycode - KEY_1)
 	if hud.inventory_panel.visible:
@@ -314,6 +333,7 @@ func _physics_process(delta: float) -> void:
 		player.velocity.y -= 20 * delta
 		player.move_and_slide()
 	_enemies_step(delta)
+	_auto_potion_step(delta)
 	_refresh_hud()
 
 func _attack(powered := false) -> bool:
@@ -372,6 +392,7 @@ func _skill_arc() -> void:
 	tween.tween_callback(visual.queue_free)
 
 func _damage_enemy(foe: CharacterBody3D, amount: float) -> void:
+	hud.focus_enemy = foe
 	var health := float(foe.get_meta("hp")) - amount
 	foe.set_meta("hp", health)
 	foe.get_node("GrelimVisual").hurt()
@@ -421,6 +442,7 @@ func _restart() -> void:
 	player.position = Vector3(0, 0.05, 5)
 	player.velocity = Vector3.ZERO
 	hp = 100
+	potion_clock = 0
 	level = 1
 	xp = 0
 	kills = 0
@@ -497,6 +519,7 @@ func _test() -> void:
 	Input.action_release("forward")
 	_check(player.position.z < before.z - 1 and player.position.y > -0.1, "campo permite caminhar longe do centro sem cair")
 	await _test_interface()
+	_test_potion_settings()
 	print("SMOKE COMPLETE: %d falhas" % failures)
 	get_tree().quit(0 if failures == 0 else 1)
 
@@ -508,6 +531,7 @@ func _test_interface() -> void:
 	_refresh_hud()
 	_check(hud.health.value == 50 and hud.health.max_value == 100, "barra de vida acompanha HP do jogador")
 	_check(_use_item("potion") and hp == 90 and inventory.potions == 2, "poção recupera vida e consome uma unidade")
+	potion_clock = 0
 	_check(_use_item("potion") and hp == 100 and not _use_item("potion"), "cura respeita vida máxima e não desperdiça poção")
 	_use_item("sword")
 	_check(not sword_attachment.visible and not _attack(), "guardar espada remove arma e bloqueia golpes")
@@ -560,3 +584,40 @@ func _test_interface() -> void:
 	var angle: float = visual.limbs[0].rotation.x
 	visual.sync(1.0 / 60.0, true, true)
 	_check(absf(visual.limbs[0].rotation.x - angle) < 0.2, "ataque do Grelim entra por transição suave")
+
+func _test_potion_settings() -> void:
+	_restart()
+	_check(not auto_potion, "poção automática começa desativada")
+	_configure_potions(true, 40)
+	hp = 41
+	_auto_potion_step(0.1)
+	_check(hp == 41 and inventory.potions == 3, "poção automática não gasta acima do limite configurado")
+	hp = 40
+	_auto_potion_step(0.1)
+	_check(hp == 80 and inventory.potions == 2, "poção automática cura ao atingir 40 por cento")
+	hp = 20
+	_auto_potion_step(0.1)
+	_check(hp == 20 and inventory.potions == 2, "intervalo impede consumir várias poções seguidas")
+	_auto_potion_step(2.0)
+	_check(hp == 60 and inventory.potions == 1, "poção volta a funcionar após dois segundos")
+	_configure_potions(false, 80)
+	hp = 20
+	_auto_potion_step(3.0)
+	_check(hp == 20 and inventory.potions == 1, "desativar AUTO interrompe uso automático")
+	_configure_potions(true, 50)
+	hp = 30
+	_toggle_inventory()
+	_physics_process(3.0)
+	_check(hp == 30 and inventory.potions == 1, "mochila pausada não consome poções")
+	_toggle_inventory()
+	dead = true
+	hp = 0
+	_auto_potion_step(3.0)
+	_check(hp == 0 and inventory.potions == 1, "poção automática não revive personagem morto")
+	dead = false
+	hp = 10
+	inventory.potions = 0
+	_auto_potion_step(3.0)
+	_check(hp == 10 and inventory.potions == 0, "poção automática respeita estoque vazio")
+	_refresh_hud()
+	_check(hud.potion_slot.slot == 4 and hud.slot_buttons.size() == 4, "poção fica separada dos quatro slots de habilidade")

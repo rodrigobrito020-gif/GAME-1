@@ -12,6 +12,8 @@ Você controla o **humano guerreiro (Fighter)** em terceira pessoa, num campo de
 - **2 — Corte giratório:** atinge os inimigos ao redor, até 3,2 metros; recarga de 8 segundos. Usa a animação de ataque especial como base provisória.
 - **3 — Defesa:** reduz o dano recebido em 65% por 4 segundos; recarga de 12 segundos.
 - **4 — Investida:** avanço curto na direção da câmera, com colisão; recarga de 7 segundos.
+- **Q — Poção manual:** recupera 40 de vida, com intervalo de 2 segundos e consumo de uma unidade.
+- **AUTO (abaixo da poção):** libere o cursor com Esc e clique no botão. Ative “Usar automaticamente” e ajuste o limite entre 10% e 90% de vida, em passos de 5%. Exemplo: em 40%, a poção só é usada quando a vida chega a 40% ou menos. A opção começa desligada; só consome se houver poção no estoque, o personagem estiver vivo e o intervalo de dois segundos tiver terminado. O uso automático também pausa com a mochila aberta. A configuração permanece durante reinícios com R, mas ainda não é salva entre sessões.
 - **I — Inventário:** abre/fecha a mochila e pausa a simulação. Espada pode ser equipada/guardada clicando no item; três poções iniciais recuperam 40 de vida cada. Vida cheia não consome poção. Cada Grelim derrotado adiciona uma presa e 5 de ouro automaticamente. Mochila de 12 espaços fixos; organização livre e persistência ainda não implementadas. R reinicia também os itens e o saque.
 - **Esc:** fecha a mochila ou libera o cursor; clique na janela para capturá-lo novamente.
 - **R:** reiniciar campo, vida, nível e inimigos.
@@ -20,7 +22,7 @@ O guerreiro usa o modelo 3D original enviado pelo usuário, com esqueleto e anim
 
 Os três **Grelims provisórios em 3D** substituem as esferas de treino: corpo, rosto, olhos, chifres, orelhas, braços e garras. Foram montados com geometria simples inspirada na referência enviada pelo usuário, sem extrair modelos de monstros do cliente. Movimentam braços e pernas proceduralmente, aproximam-se e atacam. Os modelos e animações definitivos dos monstros ainda precisam ser importados.
 
-A interface mostra a barra de vida do jogador com valores, nível, experiência e uma barra inferior com quatro habilidades (teclas 1–4), nomes e recargas. Os Grelims têm pequenas barras de vida sobre a cabeça, acompanhando sua posição, ocultas quando distantes ou atrás da câmera.
+A interface mantém vida, nível e experiência no canto superior esquerdo. A barra inferior tem quatro ícones quadrados, molduras escuras/douradas, teclas 1–4 e recarga sobre o ícone. Nome e descrição aparecem ao passar o mouse. A poção tem slot próprio à esquerda das habilidades. O último Grelim atingido também tem uma barra fina no topo central; ela desaparece quando ele é derrotado. Os Grelims têm pequenas barras de vida sobre a cabeça, acompanhando sua posição, ocultas quando distantes ou atrás da câmera.
 
 Os Grelims aceleram e viram gradualmente. A caminhada considera apenas a velocidade no chão; braços e pernas alternam lados com transições suaves entre repouso, caminhada e ataque. Há reação ao dano e queda ao morrer. São animações procedurais provisórias, não animações do cliente.
 
@@ -33,7 +35,7 @@ godot --headless --path . --editor --import --quit
 godot --headless --path . -- --smoke-test
 ```
 
-O teste executa as animações importadas, golpe manual, acerto frontal, dano e recargas das habilidades, defesa, investida, barras de vida, poções, equipamento, pausa da mochila, saque, zoom e limites de câmera, transições dos Grelims, experiência, morte, reinício e deslocamento longe do centro com chão físico.
+O teste executa as animações importadas, golpe manual, acerto frontal, dano e recargas das habilidades, defesa, investida, barras de vida, poções, equipamento, pausa da mochila, saque, zoom e limites de câmera, transições dos Grelims, experiência, morte, reinício e deslocamento longe do centro com chão físico. Também verifica o limite de vida para poções automáticas, desativação, estoque, morte, pausa e intervalo entre usos.
 
 ## Modelo e arquivos
 

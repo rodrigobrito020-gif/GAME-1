@@ -2,8 +2,9 @@ extends RefCounted
 ## Selected original client items, resolved through the user's matching DAT files.
 const GRADES := ["No Grade", "D", "C", "B", "A"]
 const CLOTHING_SLOTS := ["armor", "pants", "gloves", "boots"]
-static var entries: Dictionary = preload("res://scripts/equipment_catalog_data.gd").ITEMS
-static var collections: Dictionary = preload("res://scripts/equipment_catalog_data.gd").COLLECTIONS
+const Expanded := preload("res://scripts/client_equipment_data.gd")
+static var entries: Dictionary = preload("res://scripts/equipment_catalog_data.gd").ITEMS.merged(Expanded.CLOTHING).merged(Expanded.HELMETS)
+static var collections: Dictionary = preload("res://scripts/equipment_catalog_data.gd").COLLECTIONS.merged(Expanded.COLLECTIONS)
 
 static func profile_for_class(class_id: String) -> String:
 	return "robe" if class_id in ["mago", "healer"] else ("light" if class_id == "arqueiro" else "heavy")
@@ -29,14 +30,14 @@ static func compatible(item: Dictionary, class_id: String) -> bool:
 	if item.get("slot", "") == "shield":
 		return class_id != "arqueiro"
 	var entry := get_entry(str(item.get("lineage_key", "")))
-	return entry.is_empty() or entry.profile == profile_for_class(class_id)
+	return entry.is_empty() or entry.profile == "any" or entry.profile == profile_for_class(class_id)
 
 static func class_text(item: Dictionary) -> String:
 	if item.get("slot", "") == "shield":
 		return "Tanque / Mago / Healer · Escudo"
 	if item.get("slot", "") == "sword" and item.has("weapon_type"):
-		return {"sword":"Tanque · Espada", "bow":"Arqueiro · Arco", "rod":"Mago / Healer · Cajado"}.get(item.weapon_type, "")
+		return {"sword":"Tanque · Espada", "bow":"Arqueiro · Arco", "rod":"Mago / Curandeiro · Arma mágica"}.get(item.weapon_type, "")
 	var entry := get_entry(str(item.get("lineage_key", "")))
 	if entry.is_empty():
 		return ""
-	return {"heavy": "Tanque · Roupa pesada", "light": "Arqueiro · Roupa leve", "robe": "Mago / Healer · Túnica"}[entry.profile]
+	return {"heavy": "Tanque · Roupa pesada", "light": "Arqueiro · Roupa leve", "robe": "Mago / Healer · Túnica", "any":"Todas as classes · Cabeça"}[entry.profile]

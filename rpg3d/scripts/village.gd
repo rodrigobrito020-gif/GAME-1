@@ -4,6 +4,8 @@ const SPAWN := Vector3(0, 0.05, 10)
 const PORTAL_POSITION := Vector3(0, 0, -15)
 const CLASS_TRAINER_POSITION := Vector3(-3.0, 0.035, 7.7)
 const MERCHANT_POSITION := Vector3(5.2, 0.035, 3.0)
+const ARMOR_MERCHANT_POSITION := Vector3(-4.3, 0.035, -6.5)
+const WEAPON_MERCHANT_POSITION := Vector3(4.4, 0.035, -7.5)
 const STORAGE_POSITION := Vector3(-4.5, 0.035, 0.6)
 const BOUNDARY := 27.0
 const TravelGate := preload("res://scripts/travel_gate.gd")
@@ -41,6 +43,15 @@ func _ready() -> void:
 	merchant.position = MERCHANT_POSITION
 	merchant.rotation.y = -0.65
 	add_child(merchant)
+	for entry: Array in [["ArmorJewelryMerchant", "Dara · Armaduras e Joias", ARMOR_MERCHANT_POSITION, "armor_merchant"], ["WeaponMerchant", "Orin · Armas e Escudos", WEAPON_MERCHANT_POSITION, "weapon_merchant"]]:
+		var specialist := ClassTrainer.new()
+		specialist.name = entry[0]
+		specialist.display_title = entry[1]
+		specialist.position = entry[2]
+		specialist.interaction_text = "E · Catálogo / Comprar"
+		specialist.npc_group = entry[3]
+		specialist.rotation.y = atan2(SPAWN.x - specialist.position.x, SPAWN.z - specialist.position.z)
+		add_child(specialist)
 	var storage := StaticBody3D.new()
 	storage.name = "PersonalStorage"
 	storage.position = STORAGE_POSITION

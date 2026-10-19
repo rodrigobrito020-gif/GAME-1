@@ -1,6 +1,8 @@
 extends Node3D
 ## Forearm-mounted shield, with short hidden grip and continuous leather bands.
 const SHELL := preload("res://assets/small_shield.glb")
+const Data := preload("res://scripts/client_equipment_data.gd")
+@export var weapon_key := ""
 const GRIP_CENTER := Vector3(-0.010, -0.105, 0.117)
 const GRIP_LENGTH := 0.065
 const FOREARM_ROLL := PI / 12
@@ -63,6 +65,21 @@ func _ready() -> void:
 	_grip = get_node("HandGrip/LeatherGrip")
 	_grip_band = get_node("HandGrip/LeatherLoop")
 	_strap = get_node("ForearmStrap")
+	_cache_back_surface()
+	_update_strap()
+	if not weapon_key.is_empty(): set_equipment(weapon_key, true)
+
+func set_equipment(key: String, force := false) -> void:
+	if weapon_key == key and not force: return
+	weapon_key = key
+	var scene: PackedScene = load(Data.WEAPONS[key].scene) if Data.WEAPONS.has(key) and key != "weapon_19" else SHELL
+	var previous := _shell
+	remove_child(previous)
+	previous.queue_free()
+	_shell = scene.instantiate() as Node3D
+	_shell.name = "OriginalSmallShield"
+	add_child(_shell)
+	_shell_mesh = _shell.find_children("*", "MeshInstance3D", true, false)[0]
 	_cache_back_surface()
 	_update_strap()
 

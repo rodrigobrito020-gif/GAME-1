@@ -1,6 +1,7 @@
 extends RefCounted
 ## Native client jewelry; bonuses are prototype balance values.
-const ITEMS := {
+static var ITEMS: Dictionary = ORIGINAL_ITEMS.merged(preload("res://scripts/client_equipment_data.gd").JEWELRY)
+const ORIGINAL_ITEMS := {
   "ring_0": {
     "kind": "ring",
     "grade": "No Grade",

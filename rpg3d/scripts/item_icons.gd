@@ -20,13 +20,15 @@ static func for_item(item: Dictionary, class_id: String = "tanque") -> Texture2D
 		var key: String = item.get("jewelry_key", Jewelry.key_for(slot, str(item.get("rarity", "Comum"))))
 		var jewel: Dictionary = Jewelry.ITEMS.get(key, Jewelry.ITEMS[Jewelry.key_for(slot, "Comum")])
 		return Client.ICONS[jewel.icon_ref]
-	if slot in Catalog.CLOTHING_SLOTS:
+	if slot in Catalog.CLOTHING_SLOTS or slot == "helmet":
 		var grade: String = {"Incomum":"D","Raro":"C","Épico":"B","Lendário":"A"}.get(str(item.get("rarity", "Comum")), "No Grade")
 		var key: String = item.get("lineage_key", Catalog.key_for(class_id, grade, slot))
 		var entry: Dictionary = Catalog.get_entry(key)
 		if entry.is_empty():
-			entry = Catalog.get_entry(Catalog.key_for(class_id, "No Grade", slot))
+			entry = Catalog.get_entry("helmet_43" if slot == "helmet" else Catalog.key_for(class_id, "No Grade", slot))
 		return Client.ICONS[entry.icon_ref]
+	if item.has("weapon_key") and Catalog.Expanded.WEAPONS.has(item.weapon_key):
+		return Client.ICONS[Catalog.Expanded.WEAPONS[item.weapon_key].icon_ref]
 	if slot == "sword":
 		slot = str(item.get("weapon_type", "bow" if class_id == "arqueiro" else "rod" if class_id in ["mago", "healer"] else "sword"))
 	if Client.WEAPONS.has(slot):

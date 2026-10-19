@@ -904,6 +904,2901 @@
       "object": "accessary_inferno_necklace_i00",
       "path": "res://assets/client_icons/accessary_inferno_necklace_i00.png",
       "sha256": "a4b97ff04d3bd6c6a9aa4efd32d3f9f3d0e615294afc589f02cd1c549202bf2e"
+    },
+    "icon.accessary_adamantite_earing_i00": {
+      "object": "accessary_adamantite_earing_i00",
+      "path": "res://assets/client_icons/accessary_adamantite_earing_i00.png",
+      "sha256": "ae30f7547c635e667a7a85384c697e24610072f70d1f7f1491011851327c277f"
+    },
+    "icon.accessary_adamantite_necklace_i00": {
+      "object": "accessary_adamantite_necklace_i00",
+      "path": "res://assets/client_icons/accessary_adamantite_necklace_i00.png",
+      "sha256": "1b0cf65be3a13269711c2ae1df9266eb99d5b9353e9129c8c0cbcb6127776bcb"
+    },
+    "icon.accessary_adamantite_ring_i00": {
+      "object": "accessary_adamantite_ring_i00",
+      "path": "res://assets/client_icons/accessary_adamantite_ring_i00.png",
+      "sha256": "aa445826a6bfc4777200a36791dcba0b5214a299927eb2cde858db686b3eb11f"
+    },
+    "icon.accessary_another_worlds_earing_i00": {
+      "object": "accessary_another_worlds_earing_i00",
+      "path": "res://assets/client_icons/accessary_another_worlds_earing_i00.png",
+      "sha256": "017b25ee58ee39a91da966a8571898b4d52b1a0935bcdc7557c3185cb25f2d73"
+    },
+    "icon.accessary_another_worlds_necklace_i00": {
+      "object": "accessary_another_worlds_necklace_i00",
+      "path": "res://assets/client_icons/accessary_another_worlds_necklace_i00.png",
+      "sha256": "bd0ab355cedfbf8fc239ff2c8af8ae07d954ff9904c88a02181f82d25141f725"
+    },
+    "icon.accessary_another_worlds_ring_i00": {
+      "object": "accessary_another_worlds_ring_i00",
+      "path": "res://assets/client_icons/accessary_another_worlds_ring_i00.png",
+      "sha256": "72d5ea35d3bc6657195082ee75381f7398bee2d1cee222e91c54768e92f1ab34"
+    },
+    "icon.accessary_apprentices_earing_i00": {
+      "object": "accessary_apprentices_earing_i00",
+      "path": "res://assets/client_icons/accessary_apprentices_earing_i00.png",
+      "sha256": "c53060bfeb4f1a21873231a3ffabc4be10ebdb0818d40108a6b1966d717897fa"
+    },
+    "icon.accessary_aquastone_necklace_i00": {
+      "object": "accessary_aquastone_necklace_i00",
+      "path": "res://assets/client_icons/accessary_aquastone_necklace_i00.png",
+      "sha256": "d08f1a671c36e0b502b9e4acafed0d3f7111d749d7251d8485a51cd00f36d3dd"
+    },
+    "icon.accessary_aquastone_ring_i00": {
+      "object": "accessary_aquastone_ring_i00",
+      "path": "res://assets/client_icons/accessary_aquastone_ring_i00.png",
+      "sha256": "e065fd3b376c6bd6d9033ecc868b82a110a5aa625283b79fb156958bcbb3e670"
+    },
+    "icon.accessary_black_pearl_ring_i00": {
+      "object": "accessary_black_pearl_ring_i00",
+      "path": "res://assets/client_icons/accessary_black_pearl_ring_i00.png",
+      "sha256": "c1bd66f3741687eda25469d43f5a9e4115f8c76aa8cbb506c3c7a1d80b54827c"
+    },
+    "icon.accessary_blessed_earing_i00": {
+      "object": "accessary_blessed_earing_i00",
+      "path": "res://assets/client_icons/accessary_blessed_earing_i00.png",
+      "sha256": "8b80c7f2cb1f50410a52abe87f6013a17b206650f17f1bb216a623848f805973"
+    },
+    "icon.accessary_blessed_necklace_i00": {
+      "object": "accessary_blessed_necklace_i00",
+      "path": "res://assets/client_icons/accessary_blessed_necklace_i00.png",
+      "sha256": "8ff04a1265cff8e58130001f5616770d938a6972cc1aa8fa5419d617e8653832"
+    },
+    "icon.accessary_blessed_ring_i00": {
+      "object": "accessary_blessed_ring_i00",
+      "path": "res://assets/client_icons/accessary_blessed_ring_i00.png",
+      "sha256": "cfd96a57fe748a305ccc8f7b54782e166e28e5f3703dc9ce7dc93d4d216fbf09"
+    },
+    "icon.accessary_blue_coral_ring_i00": {
+      "object": "accessary_blue_coral_ring_i00",
+      "path": "res://assets/client_icons/accessary_blue_coral_ring_i00.png",
+      "sha256": "583d9113ec710dffafe85f63c8c0509ae92ab82fee25b7fe03a064ff0c321190"
+    },
+    "icon.accessary_blue_diamond_necklace_i00": {
+      "object": "accessary_blue_diamond_necklace_i00",
+      "path": "res://assets/client_icons/accessary_blue_diamond_necklace_i00.png",
+      "sha256": "8d590654acee88664369e798ea3842c1804a355f177ae674acb0767032ec4dca"
+    },
+    "icon.accessary_cerberuss_earing_i00": {
+      "object": "accessary_cerberuss_earing_i00",
+      "path": "res://assets/client_icons/accessary_cerberuss_earing_i00.png",
+      "sha256": "f7108e95d78594fb2b7fac66d5785c88592a62b7d6353b744354e16cf1189b79"
+    },
+    "icon.accessary_cerberuss_necklace_i00": {
+      "object": "accessary_cerberuss_necklace_i00",
+      "path": "res://assets/client_icons/accessary_cerberuss_necklace_i00.png",
+      "sha256": "d0e00c1368095044ec1772d92b5101f240e6ec29cd0001900920f434c77df014"
+    },
+    "icon.accessary_cerberuss_ring_i00": {
+      "object": "accessary_cerberuss_ring_i00",
+      "path": "res://assets/client_icons/accessary_cerberuss_ring_i00.png",
+      "sha256": "2fa11da272ef704fc7c0117706d58b3124417e4f914d1d44968c2c1b331af668"
+    },
+    "icon.accessary_coral_earing_i00": {
+      "object": "accessary_coral_earing_i00",
+      "path": "res://assets/client_icons/accessary_coral_earing_i00.png",
+      "sha256": "e2c2db5214e5ba8b3a9627660b08c8d7bb59c8a68db3a4242ef8f23104c595cf"
+    },
+    "icon.accessary_earing_of_assistance_i00": {
+      "object": "accessary_earing_of_assistance_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_assistance_i00.png",
+      "sha256": "259546a1fb4ec277e8901821f62d3a687ab2f85c3a5bfa7210ee267790199c90"
+    },
+    "icon.accessary_earing_of_binding_i00": {
+      "object": "accessary_earing_of_binding_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_binding_i00.png",
+      "sha256": "c4451345a64f2c809f6ddae818efec15a07a45f69ccda41cf7bce90a483c22a8"
+    },
+    "icon.accessary_earing_of_blessing_i00": {
+      "object": "accessary_earing_of_blessing_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_blessing_i00.png",
+      "sha256": "2d64dd34942360d4b9437b642bf1f0528ad329fbf79d6c93e291b8d21a5bd2bf"
+    },
+    "icon.accessary_earing_of_grace_i00": {
+      "object": "accessary_earing_of_grace_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_grace_i00.png",
+      "sha256": "314132f71bfe82c8aa60d381b9d3361cccc2a586dd7d8cbe86bfb5a69d3cfff4"
+    },
+    "icon.accessary_earing_of_holy_spirit_i00": {
+      "object": "accessary_earing_of_holy_spirit_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_holy_spirit_i00.png",
+      "sha256": "71d0ef2f466ac49ed942d4bcca648a8c487fbbfa3df5b67962b7f5721e204d50"
+    },
+    "icon.accessary_earing_of_mana_i00": {
+      "object": "accessary_earing_of_mana_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_mana_i00.png",
+      "sha256": "093543cd7229251f0693ca41c096fa70cadbd3a32d84888c115b0c70eea9df8b"
+    },
+    "icon.accessary_earing_of_phantom_i00": {
+      "object": "accessary_earing_of_phantom_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_phantom_i00.png",
+      "sha256": "6551e64b2106769c07e1f55793eaf840874dfa7f19966f23041574e57afb938a"
+    },
+    "icon.accessary_earing_of_sola_eclipse_i00": {
+      "object": "accessary_earing_of_sola_eclipse_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_sola_eclipse_i00.png",
+      "sha256": "43ab2358763fd9b8be79b6a8ddb32225d0a66553565763afbf77458f9106a0f4"
+    },
+    "icon.accessary_earing_of_strength_i00": {
+      "object": "accessary_earing_of_strength_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_strength_i00.png",
+      "sha256": "f1fca9ca613cd6ac63a8780e7d2b9d8a1e9d40ee1cd468018eed6537abdc515d"
+    },
+    "icon.accessary_earing_of_summons_i00": {
+      "object": "accessary_earing_of_summons_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_summons_i00.png",
+      "sha256": "cb4cdb8fe68f31ccd04658538e1a9e77e94d8891e24de3bb486f45a46e2f3513"
+    },
+    "icon.accessary_earing_of_wisdom_i00": {
+      "object": "accessary_earing_of_wisdom_i00",
+      "path": "res://assets/client_icons/accessary_earing_of_wisdom_i00.png",
+      "sha256": "d78baef66e030aa12fb431e2aa4384e8e79775ed63bcc1b5b167b021aa74e0f0"
+    },
+    "icon.accessary_elemental_earing_i00": {
+      "object": "accessary_elemental_earing_i00",
+      "path": "res://assets/client_icons/accessary_elemental_earing_i00.png",
+      "sha256": "9de80d9ca4e882b97bbc63a34d3cc3d99b13bb56ccc114a3d9dedeb6f99af613"
+    },
+    "icon.accessary_elemental_necklace_i00": {
+      "object": "accessary_elemental_necklace_i00",
+      "path": "res://assets/client_icons/accessary_elemental_necklace_i00.png",
+      "sha256": "ed89e93b5478b4c31594d6efa5bb1ee20533d1c804ca5ca897968f24bcf5c64d"
+    },
+    "icon.accessary_elemental_ring_i00": {
+      "object": "accessary_elemental_ring_i00",
+      "path": "res://assets/client_icons/accessary_elemental_ring_i00.png",
+      "sha256": "ba3e71a6ca03fa8b064c8b06eb59c5b53194490731e6ed7208d70ab141d813e5"
+    },
+    "icon.accessary_enchanted_earing_i00": {
+      "object": "accessary_enchanted_earing_i00",
+      "path": "res://assets/client_icons/accessary_enchanted_earing_i00.png",
+      "sha256": "9bcd8980774724857bebd902a6cfd06251b6cc3084e40aab49954b32a538f30a"
+    },
+    "icon.accessary_enchanted_necklace_i00": {
+      "object": "accessary_enchanted_necklace_i00",
+      "path": "res://assets/client_icons/accessary_enchanted_necklace_i00.png",
+      "sha256": "fc7db1b6db2f2d58507e896fb75c6d0c31bd39f9b7754e3ee8bdd421da2618ba"
+    },
+    "icon.accessary_enchanted_ring_i00": {
+      "object": "accessary_enchanted_ring_i00",
+      "path": "res://assets/client_icons/accessary_enchanted_ring_i00.png",
+      "sha256": "d9ff95fe8416d50028034cb29577fd47d0dc4bfec0a270842c03661020b07497"
+    },
+    "icon.accessary_inferno_earing_i02": {
+      "object": "accessary_inferno_earing_i02",
+      "path": "res://assets/client_icons/accessary_inferno_earing_i02.png",
+      "sha256": "a97c5ab15983250431db09fae18ab6900b56c287cff2a94bb22508f11e6e944d"
+    },
+    "icon.accessary_inferno_necklace_i02": {
+      "object": "accessary_inferno_necklace_i02",
+      "path": "res://assets/client_icons/accessary_inferno_necklace_i02.png",
+      "sha256": "ef90de854031cfecf82545dc73b4339e348ef37e4077ff2f4163b01e3dd5562c"
+    },
+    "icon.accessary_inferno_ring_i02": {
+      "object": "accessary_inferno_ring_i02",
+      "path": "res://assets/client_icons/accessary_inferno_ring_i02.png",
+      "sha256": "bfca0b1c15eea6d2da64b1a2e4f7a4ec5f269f57209015cd31be8185f1ede0c3"
+    },
+    "icon.accessary_mage_earing_i00": {
+      "object": "accessary_mage_earing_i00",
+      "path": "res://assets/client_icons/accessary_mage_earing_i00.png",
+      "sha256": "524ad967f1d4cd2a36bc3d62bbbc28e4e1c323b701273e33dd31638b2c94c089"
+    },
+    "icon.accessary_magic_ring_i00": {
+      "object": "accessary_magic_ring_i00",
+      "path": "res://assets/client_icons/accessary_magic_ring_i00.png",
+      "sha256": "9ade0ddc4f87a1ede83c7fbffb0c36c94210629f5a5d1967c3daecc3ea884cd9"
+    },
+    "icon.accessary_mithril_ring_i00": {
+      "object": "accessary_mithril_ring_i00",
+      "path": "res://assets/client_icons/accessary_mithril_ring_i00.png",
+      "sha256": "282a07ecc2dbd413e76f647d469bab0b99699757667a4466ec2c5d27cd9721bb"
+    },
+    "icon.accessary_moonstone_earing_i00": {
+      "object": "accessary_moonstone_earing_i00",
+      "path": "res://assets/client_icons/accessary_moonstone_earing_i00.png",
+      "sha256": "f69bb737820681b6dd38973b64f5fb286022907ba5d7487f9ac6663f64a2ce63"
+    },
+    "icon.accessary_nassens_earing_i00": {
+      "object": "accessary_nassens_earing_i00",
+      "path": "res://assets/client_icons/accessary_nassens_earing_i00.png",
+      "sha256": "040a3940ed46f9fceafc279dbb5f02efdc2d454d17c7255a491b6ae674a0ec6e"
+    },
+    "icon.accessary_near_forest_necklace_i00": {
+      "object": "accessary_near_forest_necklace_i00",
+      "path": "res://assets/client_icons/accessary_near_forest_necklace_i00.png",
+      "sha256": "dea0b65a05b5f1dbe193d0397e0df6687fae3ab7e552e82ea6cea1f57fc482b5"
+    },
+    "icon.accessary_necklace_of_anguish_i00": {
+      "object": "accessary_necklace_of_anguish_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_anguish_i00.png",
+      "sha256": "76e7a2ef05e57c5b2febd6f0dfa695b542e96289449179744486996c848bcaba"
+    },
+    "icon.accessary_necklace_of_assistance_i00": {
+      "object": "accessary_necklace_of_assistance_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_assistance_i00.png",
+      "sha256": "69e6aa5cd87f72fdfdeff99944daf180d85a9c14f75875954f8dc3ab45ef723b"
+    },
+    "icon.accessary_necklace_of_binding_i00": {
+      "object": "accessary_necklace_of_binding_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_binding_i00.png",
+      "sha256": "81c6e26583ae18c334574ea3293183344ecd4ac85181225d95baed1206a29773"
+    },
+    "icon.accessary_necklace_of_blessing_i00": {
+      "object": "accessary_necklace_of_blessing_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_blessing_i00.png",
+      "sha256": "20a6fd52c8b4a6d467793019d43d1f05d2a4692ab14e5d001c737a88bbd60129"
+    },
+    "icon.accessary_necklace_of_courage_i00": {
+      "object": "accessary_necklace_of_courage_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_courage_i00.png",
+      "sha256": "966b485bc096bb12dbd138a1ccacb972a8ff4fbb8846cf5f8f5b5228656386b1"
+    },
+    "icon.accessary_necklace_of_darkness_i00": {
+      "object": "accessary_necklace_of_darkness_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_darkness_i00.png",
+      "sha256": "6c784441a86b5d5f5d44271237d56badfcd984f2dcc207cb2440d016419fd236"
+    },
+    "icon.accessary_necklace_of_devotion_i00": {
+      "object": "accessary_necklace_of_devotion_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_devotion_i00.png",
+      "sha256": "2215e24e6a53277815076b15703bcfc9a962beec672f6748e4387e609f276abd"
+    },
+    "icon.accessary_necklace_of_grace_i00": {
+      "object": "accessary_necklace_of_grace_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_grace_i00.png",
+      "sha256": "f8b325633794aa503a67cb3aac701c8d77fed07f2c714a38be46ef33094c0549"
+    },
+    "icon.accessary_necklace_of_holy_spirit_i00": {
+      "object": "accessary_necklace_of_holy_spirit_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_holy_spirit_i00.png",
+      "sha256": "52f89d9df8271f127792fa5fe234b8db20ab620eed66d946412dc4115cff96d8"
+    },
+    "icon.accessary_necklace_of_magic_i00": {
+      "object": "accessary_necklace_of_magic_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_magic_i00.png",
+      "sha256": "6856d9e1ad3035a17f723b3fee36282683c31eb82be13f391efd9f34bd92b41e"
+    },
+    "icon.accessary_necklace_of_mana_i00": {
+      "object": "accessary_necklace_of_mana_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_mana_i00.png",
+      "sha256": "50857edf1520c2936dd67ecd11e149c107fc1a72220115b3a45c9cb5b94e5956"
+    },
+    "icon.accessary_necklace_of_mermaid_i00": {
+      "object": "accessary_necklace_of_mermaid_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_mermaid_i00.png",
+      "sha256": "de3d1242289b1559fbed4d8ad99b06b77dc8a93a368ebf9d7593329e7d11abe7"
+    },
+    "icon.accessary_necklace_of_phantom_i00": {
+      "object": "accessary_necklace_of_phantom_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_phantom_i00.png",
+      "sha256": "6b287d61b6a0458fc1bd8917c2a7553104eb4b5f3170553a4bdcf0c8575bab9d"
+    },
+    "icon.accessary_necklace_of_sola_eclipse_i00": {
+      "object": "accessary_necklace_of_sola_eclipse_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_sola_eclipse_i00.png",
+      "sha256": "5dba1d1e6942e57ecfd8001985bd591accc4938806e8bbb19f007206d054f7a6"
+    },
+    "icon.accessary_necklace_of_summons_i00": {
+      "object": "accessary_necklace_of_summons_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_summons_i00.png",
+      "sha256": "03e69a428133f77ec4ce5304765ee979ed72e8fecbf7283a93c3ca52ffb37726"
+    },
+    "icon.accessary_necklace_of_valor_i00": {
+      "object": "accessary_necklace_of_valor_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_valor_i00.png",
+      "sha256": "4d0a109bdd0668583b9d9110079a69cd3e8303e03c53fd0fe172da23cc4f6518"
+    },
+    "icon.accessary_necklace_of_wisdom_i00": {
+      "object": "accessary_necklace_of_wisdom_i00",
+      "path": "res://assets/client_icons/accessary_necklace_of_wisdom_i00.png",
+      "sha256": "57497cf796abaf57e8751fc6da00ecfa04c68958d1b1bea26291aada8868cf51"
+    },
+    "icon.accessary_onyxbeastseye_earing_i00": {
+      "object": "accessary_onyxbeastseye_earing_i00",
+      "path": "res://assets/client_icons/accessary_onyxbeastseye_earing_i00.png",
+      "sha256": "adc43de4c1f9267a1d0482f79411cfe7af88e0983c4abde8cdbcb512c5ed0d77"
+    },
+    "icon.accessary_paradia_earing_i00": {
+      "object": "accessary_paradia_earing_i00",
+      "path": "res://assets/client_icons/accessary_paradia_earing_i00.png",
+      "sha256": "e94d09b7b23e356afcc4a7db1636e64c52aa2b5e1a5c4f5daec6933b5c7a9d92"
+    },
+    "icon.accessary_paradia_necklace_i00": {
+      "object": "accessary_paradia_necklace_i00",
+      "path": "res://assets/client_icons/accessary_paradia_necklace_i00.png",
+      "sha256": "13c3906326a3293dc299038a1cdc57b28a1e07d3b1fd53dde83d8d3f4dbda9f5"
+    },
+    "icon.accessary_paradia_ring_i00": {
+      "object": "accessary_paradia_ring_i00",
+      "path": "res://assets/client_icons/accessary_paradia_ring_i00.png",
+      "sha256": "8d834ed84a68dbabf0f3606a481cd228f79674778ea0c07d858ecc66a516cf89"
+    },
+    "icon.accessary_phoenixs_earing_i00": {
+      "object": "accessary_phoenixs_earing_i00",
+      "path": "res://assets/client_icons/accessary_phoenixs_earing_i00.png",
+      "sha256": "194ed836d5a63d858c5da9d825a0c6dc80d7d5f4ad41f148f0e6293c8c81f4c8"
+    },
+    "icon.accessary_phoenixs_earing_i02": {
+      "object": "accessary_phoenixs_earing_i02",
+      "path": "res://assets/client_icons/accessary_phoenixs_earing_i02.png",
+      "sha256": "96864fd431dc55f2e87b17daa410c6cdeee06db443dc77109eadea58805ae95d"
+    },
+    "icon.accessary_phoenixs_necklace_i00": {
+      "object": "accessary_phoenixs_necklace_i00",
+      "path": "res://assets/client_icons/accessary_phoenixs_necklace_i00.png",
+      "sha256": "56d0efd20b10e50fbbd00b33a559b901a2c035f3050195423e908c6274c63ad7"
+    },
+    "icon.accessary_phoenixs_necklace_i02": {
+      "object": "accessary_phoenixs_necklace_i02",
+      "path": "res://assets/client_icons/accessary_phoenixs_necklace_i02.png",
+      "sha256": "f961926046b2b96b63d8d67c09967daf2d52aa61de1c1785d1a689152f999d5e"
+    },
+    "icon.accessary_phoenixs_ring_i00": {
+      "object": "accessary_phoenixs_ring_i00",
+      "path": "res://assets/client_icons/accessary_phoenixs_ring_i00.png",
+      "sha256": "16897ce29ddaca787b8fbca869d77674cf41ff60763ce9820119bb84e336ca5e"
+    },
+    "icon.accessary_phoenixs_ring_i02": {
+      "object": "accessary_phoenixs_ring_i02",
+      "path": "res://assets/client_icons/accessary_phoenixs_ring_i02.png",
+      "sha256": "14a97a3e5a59060c87411d08c5c0afa07cef0a07eb41a4f06db2be7f6fe00f9b"
+    },
+    "icon.accessary_red_cresent_earing_i00": {
+      "object": "accessary_red_cresent_earing_i00",
+      "path": "res://assets/client_icons/accessary_red_cresent_earing_i00.png",
+      "sha256": "7a76f79e5519edff8e8cd3acaf3ec72bdc45148dd2a533eb5c19dbfe13904938"
+    },
+    "icon.accessary_ring_of_ages_i00": {
+      "object": "accessary_ring_of_ages_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_ages_i00.png",
+      "sha256": "654473e35c733e4efecefcf0d9c7ecd3c2197d27fe24d47881bf1edf4985522e"
+    },
+    "icon.accessary_ring_of_anguish_i00": {
+      "object": "accessary_ring_of_anguish_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_anguish_i00.png",
+      "sha256": "32f6193698655545c9b30992cbe6298d599d4d8bb8aeb03b158ec01fc65ea31b"
+    },
+    "icon.accessary_ring_of_assistance_i00": {
+      "object": "accessary_ring_of_assistance_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_assistance_i00.png",
+      "sha256": "4a2ef921a291bccb15e729192fede394a9b9bc51c51a6e1e4b25fcfabec4c708"
+    },
+    "icon.accessary_ring_of_binding_i00": {
+      "object": "accessary_ring_of_binding_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_binding_i00.png",
+      "sha256": "626951127a132ce4edaf1b05b278c86185d73c452fcf8cd0b87723d15b46d15e"
+    },
+    "icon.accessary_ring_of_blessing_i00": {
+      "object": "accessary_ring_of_blessing_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_blessing_i00.png",
+      "sha256": "35d54470ec87de8980eeeefc07422f5923475997642d6e297911020dbb49797d"
+    },
+    "icon.accessary_ring_of_devotion_i00": {
+      "object": "accessary_ring_of_devotion_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_devotion_i00.png",
+      "sha256": "74708a23f73334ce19073bb02d7a3db34da649ce172ea84f36e5a109dae33b13"
+    },
+    "icon.accessary_ring_of_firefly_i00": {
+      "object": "accessary_ring_of_firefly_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_firefly_i00.png",
+      "sha256": "d5f0cf41c413589a620f31c1ce77b7b831134e53d49db49e4b55099835ece482"
+    },
+    "icon.accessary_ring_of_grace_i00": {
+      "object": "accessary_ring_of_grace_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_grace_i00.png",
+      "sha256": "250098819e1bd003c34c145b20e187a09ac970dcb2dc6fa85df9600ea16a2e4e"
+    },
+    "icon.accessary_ring_of_holy_spirit_i00": {
+      "object": "accessary_ring_of_holy_spirit_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_holy_spirit_i00.png",
+      "sha256": "1371b1f982a7a5d686d04122adfaccf479a4068568357da32dc2b5d084b23c3a"
+    },
+    "icon.accessary_ring_of_mana_i00": {
+      "object": "accessary_ring_of_mana_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_mana_i00.png",
+      "sha256": "c2f9c8995f39acbb69246c208dc5b153b96255003aa32ecf274d30a639a0ab06"
+    },
+    "icon.accessary_ring_of_phantom_i00": {
+      "object": "accessary_ring_of_phantom_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_phantom_i00.png",
+      "sha256": "6ec19d2da7866b91da788dc328a54362c0b44dfb3b4f6d7f6d3a23a35e8a8a82"
+    },
+    "icon.accessary_ring_of_raccoon_i00": {
+      "object": "accessary_ring_of_raccoon_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_raccoon_i00.png",
+      "sha256": "725b729906673b19eb6672c11a953494501ee01a3bc61eb05476ad2ace285ea9"
+    },
+    "icon.accessary_ring_of_sola_eclipse_i00": {
+      "object": "accessary_ring_of_sola_eclipse_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_sola_eclipse_i00.png",
+      "sha256": "cb4612148a4518762d35c2ec388a0f604fa79398725a7db1b2495d2355eeb78d"
+    },
+    "icon.accessary_ring_of_summons_i00": {
+      "object": "accessary_ring_of_summons_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_summons_i00.png",
+      "sha256": "07a717f301e7d6713f71f330dcb4a49846446d37ee563f01bc3c00c3966cd221"
+    },
+    "icon.accessary_ring_of_wisdom_i00": {
+      "object": "accessary_ring_of_wisdom_i00",
+      "path": "res://assets/client_icons/accessary_ring_of_wisdom_i00.png",
+      "sha256": "c2546cbc9508788733caeeedf6eb4cf7e07f7cee58447bdf2417c7ce5235f89f"
+    },
+    "icon.accessary_sages_earing_i00": {
+      "object": "accessary_sages_earing_i00",
+      "path": "res://assets/client_icons/accessary_sages_earing_i00.png",
+      "sha256": "a955ecb7071f7e50705480868edb1cc6f734f7d97fb03832182da9b9b447b51c"
+    },
+    "icon.accessary_sages_necklace_i00": {
+      "object": "accessary_sages_necklace_i00",
+      "path": "res://assets/client_icons/accessary_sages_necklace_i00.png",
+      "sha256": "e7b0dc125decd51d56115587d0fa2ebc4026c7ff2beb13a7fc741a8e98cacc18"
+    },
+    "icon.accessary_sages_ring_i00": {
+      "object": "accessary_sages_ring_i00",
+      "path": "res://assets/client_icons/accessary_sages_ring_i00.png",
+      "sha256": "d38f50df37cfc0ea64df8c4c37b757d3ddaa1015d175785547b333d02bdd6abf"
+    },
+    "icon.accessary_tigerseye_earing_i00": {
+      "object": "accessary_tigerseye_earing_i00",
+      "path": "res://assets/client_icons/accessary_tigerseye_earing_i00.png",
+      "sha256": "eaaa3a3f84727546a2b35edb72028cc6f20dabad6b24968a29903a9181d8f929"
+    },
+    "icon.accessory_earring_of_antaras_i00": {
+      "object": "accessory_earring_of_antaras_i00",
+      "path": "res://assets/client_icons/accessory_earring_of_antaras_i00.png",
+      "sha256": "7c0d0380ca9552592b11a7cfc7fa10b27d6f4e4298cd7e996d3149905fdcac06"
+    },
+    "icon.accessory_earring_of_antaras_i01": {
+      "object": "accessory_earring_of_antaras_i01",
+      "path": "res://assets/client_icons/accessory_earring_of_antaras_i01.png",
+      "sha256": "6deb4c61171a825e82b0f994798e59c24b4d719457c5314308d0cb914fd6c0fc"
+    },
+    "icon.accessory_earring_of_antaras_i02": {
+      "object": "accessory_earring_of_antaras_i02",
+      "path": "res://assets/client_icons/accessory_earring_of_antaras_i02.png",
+      "sha256": "8855e901b0993c11e0033d0dcd638419a029544fb984eb94b09a21abc0bd62dd"
+    },
+    "icon.accessory_earring_of_antaras_i04": {
+      "object": "accessory_earring_of_antaras_i04",
+      "path": "res://assets/client_icons/accessory_earring_of_antaras_i04.png",
+      "sha256": "fcd2cff82a3db3d2a88b727ad072bade5d03b41042230d4a68034bc0ac36fbd1"
+    },
+    "icon.accessory_earring_of_hero_i00": {
+      "object": "accessory_earring_of_hero_i00",
+      "path": "res://assets/client_icons/accessory_earring_of_hero_i00.png",
+      "sha256": "de136d4d791b8dea6b5c1fc513e94a905474b61b79ca52d72f681fbf3e41850a"
+    },
+    "icon.accessory_earring_of_orfen_i00": {
+      "object": "accessory_earring_of_orfen_i00",
+      "path": "res://assets/client_icons/accessory_earring_of_orfen_i00.png",
+      "sha256": "f651216297e48209bbd3efb59737d272d4d1345dcbb9958d5959a964540956a2"
+    },
+    "icon.accessory_earring_of_orfen_i02": {
+      "object": "accessory_earring_of_orfen_i02",
+      "path": "res://assets/client_icons/accessory_earring_of_orfen_i02.png",
+      "sha256": "8f9775358748345e9246d105e29102cbe94a3795dfe22099b70d9b269a0c0557"
+    },
+    "icon.accessory_earring_of_orfen_i03": {
+      "object": "accessory_earring_of_orfen_i03",
+      "path": "res://assets/client_icons/accessory_earring_of_orfen_i03.png",
+      "sha256": "9bcaf97c5bda902333b1ce73a664e6dd73badd0241145d4185da7638ee629503"
+    },
+    "icon.accessory_earring_of_orfen_i04": {
+      "object": "accessory_earring_of_orfen_i04",
+      "path": "res://assets/client_icons/accessory_earring_of_orfen_i04.png",
+      "sha256": "7fef8836f8a9153bfcda608dfe27f985174b823b3f60e31c6dac23e81de1ac60"
+    },
+    "icon.accessory_earring_of_zaken_i00": {
+      "object": "accessory_earring_of_zaken_i00",
+      "path": "res://assets/client_icons/accessory_earring_of_zaken_i00.png",
+      "sha256": "e39ff2d4cbf27204a6bbaa55e64be6e6559bf358b343d7d5da7f7a099190dd42"
+    },
+    "icon.accessory_earring_of_zaken_i02": {
+      "object": "accessory_earring_of_zaken_i02",
+      "path": "res://assets/client_icons/accessory_earring_of_zaken_i02.png",
+      "sha256": "1b2a7d15b2c5582a3112207f510d77d162aef056d42f4397de46cee80db21a3b"
+    },
+    "icon.accessory_earring_of_zaken_i03": {
+      "object": "accessory_earring_of_zaken_i03",
+      "path": "res://assets/client_icons/accessory_earring_of_zaken_i03.png",
+      "sha256": "2ecb05c812b0c50a4f46437e8ca7a45fc1374b8e68b97e865c003bca25931e30"
+    },
+    "icon.accessory_earring_of_zaken_i04": {
+      "object": "accessory_earring_of_zaken_i04",
+      "path": "res://assets/client_icons/accessory_earring_of_zaken_i04.png",
+      "sha256": "cadffd84d8c331929a337780e5d74af436941375273bd40cac1c16cb6e5195e6"
+    },
+    "icon.accessory_necklace_of_frintessa_i00": {
+      "object": "accessory_necklace_of_frintessa_i00",
+      "path": "res://assets/client_icons/accessory_necklace_of_frintessa_i00.png",
+      "sha256": "75cf9cc35684da7d46336a9ce20d6117436586feb90ba7510246c39f0377bb61"
+    },
+    "icon.accessory_necklace_of_frintessa_i03": {
+      "object": "accessory_necklace_of_frintessa_i03",
+      "path": "res://assets/client_icons/accessory_necklace_of_frintessa_i03.png",
+      "sha256": "536b915ec604ef03d1194e5bd564771136e49020cd3917ba908978299596ab38"
+    },
+    "icon.accessory_necklace_of_frintessa_i04": {
+      "object": "accessory_necklace_of_frintessa_i04",
+      "path": "res://assets/client_icons/accessory_necklace_of_frintessa_i04.png",
+      "sha256": "f429ac64f89234be3e7c6e92e4dc6bd45d3fcfc36e2de2f57ebe04aad4732254"
+    },
+    "icon.accessory_necklace_of_frintessa_i05": {
+      "object": "accessory_necklace_of_frintessa_i05",
+      "path": "res://assets/client_icons/accessory_necklace_of_frintessa_i05.png",
+      "sha256": "34ef7a1adac4bd4091804e4991d5b4c4a8bf1f3070342b5d8d2fc8b0866239f8"
+    },
+    "icon.accessory_necklace_of_hero_i00": {
+      "object": "accessory_necklace_of_hero_i00",
+      "path": "res://assets/client_icons/accessory_necklace_of_hero_i00.png",
+      "sha256": "1400e88fe5753c9aa6893a9cd722368bb6c2190f0fb437f7c57618fabe346d74"
+    },
+    "icon.accessory_ring_of_baium_i00": {
+      "object": "accessory_ring_of_baium_i00",
+      "path": "res://assets/client_icons/accessory_ring_of_baium_i00.png",
+      "sha256": "de8717422bd0470eb11779498eaca43a3720d7feea6570531b88ab34f1ac9cb6"
+    },
+    "icon.accessory_ring_of_baium_i02": {
+      "object": "accessory_ring_of_baium_i02",
+      "path": "res://assets/client_icons/accessory_ring_of_baium_i02.png",
+      "sha256": "03d9dd01fa8487a6718c88677d5dde5c8a93b6bb50e6eb4a4cb8960f093dd74e"
+    },
+    "icon.accessory_ring_of_baium_i03": {
+      "object": "accessory_ring_of_baium_i03",
+      "path": "res://assets/client_icons/accessory_ring_of_baium_i03.png",
+      "sha256": "f7341fe2e725eb2b84ee8667a5861f8fdc88c1e4f4edf244e0a6c60520e0bb6c"
+    },
+    "icon.accessory_ring_of_baium_i04": {
+      "object": "accessory_ring_of_baium_i04",
+      "path": "res://assets/client_icons/accessory_ring_of_baium_i04.png",
+      "sha256": "2fbae797feead5e9e49f65ef925971293ea0d4a6e5d060107ebc832f49dbffab"
+    },
+    "icon.accessory_ring_of_core_i00": {
+      "object": "accessory_ring_of_core_i00",
+      "path": "res://assets/client_icons/accessory_ring_of_core_i00.png",
+      "sha256": "a0bfa22f571191751d89911ea293ff6f49cc75fd98d5288449ac926af0279ce2"
+    },
+    "icon.accessory_ring_of_core_i02": {
+      "object": "accessory_ring_of_core_i02",
+      "path": "res://assets/client_icons/accessory_ring_of_core_i02.png",
+      "sha256": "42b9c717887029c6cf0d7fc021a8d49964f30baa171a7899ce755c109e4aaea5"
+    },
+    "icon.accessory_ring_of_core_i03": {
+      "object": "accessory_ring_of_core_i03",
+      "path": "res://assets/client_icons/accessory_ring_of_core_i03.png",
+      "sha256": "80d5ccb43443a4fa200ce34fcbe2e76f4cf97fbc7e76eb91bb11ebbf868c6b1c"
+    },
+    "icon.accessory_ring_of_core_i04": {
+      "object": "accessory_ring_of_core_i04",
+      "path": "res://assets/client_icons/accessory_ring_of_core_i04.png",
+      "sha256": "a96d048a362ef7579fa3737133f1500bc9eace56f38fc35329f3bc03d0706e9e"
+    },
+    "icon.accessory_ring_of_hero_i00": {
+      "object": "accessory_ring_of_hero_i00",
+      "path": "res://assets/client_icons/accessory_ring_of_hero_i00.png",
+      "sha256": "b29579e84e3e9db2e59ac21c249cc441bba97e48b8e91a5360d72fe4e79d90b5"
+    },
+    "icon.accessory_ring_of_queen_ant_i00": {
+      "object": "accessory_ring_of_queen_ant_i00",
+      "path": "res://assets/client_icons/accessory_ring_of_queen_ant_i00.png",
+      "sha256": "bb2ae461895723e0f79a68eaa4d129ae00aa50fc51c60a5f4520d9f0851d12da"
+    },
+    "icon.accessory_ring_of_queen_ant_i02": {
+      "object": "accessory_ring_of_queen_ant_i02",
+      "path": "res://assets/client_icons/accessory_ring_of_queen_ant_i02.png",
+      "sha256": "d62be4c2b41718dd839d9da8cb462ccad7a8d342660cd66ab5cbfec3899da4f6"
+    },
+    "icon.accessory_ring_of_queen_ant_i03": {
+      "object": "accessory_ring_of_queen_ant_i03",
+      "path": "res://assets/client_icons/accessory_ring_of_queen_ant_i03.png",
+      "sha256": "20b2048f146723ac9172262253c21e5075fa49fc2239cecbce289fb303df68f8"
+    },
+    "icon.accessory_ring_of_queen_ant_i04": {
+      "object": "accessory_ring_of_queen_ant_i04",
+      "path": "res://assets/client_icons/accessory_ring_of_queen_ant_i04.png",
+      "sha256": "bcd94514cf4434f1ca8c8cfaf1fc3333246c792d81d9152f59f51f07487783b0"
+    },
+    "icon.accessory_shiny_couple_ring": {
+      "object": "accessory_shiny_couple_ring",
+      "path": "res://assets/client_icons/accessory_shiny_couple_ring.png",
+      "sha256": "fa92a20282520f52aaca53497a65667db86dab6cd9001f0c871c8f76d0475a3c"
+    },
+    "icon.armor_blast_plate_i00": {
+      "object": "armor_blast_plate_i00",
+      "path": "res://assets/client_icons/armor_blast_plate_i00.png",
+      "sha256": "f18b57cc9bf7399572addb0357c66b5ba830e5385fa1a01da58e145d5255334a"
+    },
+    "icon.armor_chain_boots_i00": {
+      "object": "armor_chain_boots_i00",
+      "path": "res://assets/client_icons/armor_chain_boots_i00.png",
+      "sha256": "9bd8461b2b798d05e1587feb85b1609f55ad633af02922b77ad83e26c9cdf5cf"
+    },
+    "icon.armor_circlet_i00": {
+      "object": "armor_circlet_i00",
+      "path": "res://assets/client_icons/armor_circlet_i00.png",
+      "sha256": "062705e35c7d4fcffc4f60ea6890b2e9a1f720f74edd7c571a6ffe6097b1d220"
+    },
+    "icon.armor_cloth_helmet_i00": {
+      "object": "armor_cloth_helmet_i00",
+      "path": "res://assets/client_icons/armor_cloth_helmet_i00.png",
+      "sha256": "3023d39d9b2db43044d2e67c759721c44c87a0c1b26e7786ce27afaa066aabcf"
+    },
+    "icon.armor_compound_scale_gaiters_i00": {
+      "object": "armor_compound_scale_gaiters_i00",
+      "path": "res://assets/client_icons/armor_compound_scale_gaiters_i00.png",
+      "sha256": "bf5d123950efbba74c1c981f8fa975d60af629d1ad97c2b66d96913c66fff515"
+    },
+    "icon.armor_compound_scale_mail_i00": {
+      "object": "armor_compound_scale_mail_i00",
+      "path": "res://assets/client_icons/armor_compound_scale_mail_i00.png",
+      "sha256": "cf0b9e11224115700a7786196fd6c157a3500e2ac52bac65d9f767190af5c34b"
+    },
+    "icon.armor_dwarven_scale_mail_i00": {
+      "object": "armor_dwarven_scale_mail_i00",
+      "path": "res://assets/client_icons/armor_dwarven_scale_mail_i00.png",
+      "sha256": "0db5f360874a3879db5bdce4b058c5fc052fe23a9966751b2867411f321174c4"
+    },
+    "icon.armor_elven_hose_i00": {
+      "object": "armor_elven_hose_i00",
+      "path": "res://assets/client_icons/armor_elven_hose_i00.png",
+      "sha256": "61e06b2b412c0d6e49920b7036a27517210896a882fe872a12347a682620824f"
+    },
+    "icon.armor_elven_tunic_i00": {
+      "object": "armor_elven_tunic_i00",
+      "path": "res://assets/client_icons/armor_elven_tunic_i00.png",
+      "sha256": "0ea1ab8a0f75860ab120f1f5d6c9c3cc4b4730d51d45351116f6c210b4b0d0ea"
+    },
+    "icon.armor_feet99": {
+      "object": "Armor_Feet99",
+      "path": "res://assets/client_icons/armor_feet99.png",
+      "sha256": "6473388a18f0c6e398c1122bfe4e26da84f2eed2ccf057383dcf2637b2cd8175"
+    },
+    "icon.armor_gauntlet_i00": {
+      "object": "armor_gauntlet_i00",
+      "path": "res://assets/client_icons/armor_gauntlet_i00.png",
+      "sha256": "3008802892a60cccfda022eba3037ccf97d00462703e09f5be28e8c3cee7c107"
+    },
+    "icon.armor_helmet_i00": {
+      "object": "armor_helmet_i00",
+      "path": "res://assets/client_icons/armor_helmet_i00.png",
+      "sha256": "03294bc400b566fdbe88cccea0c7e66350f47493ee91f3b259898af47817a265"
+    },
+    "icon.armor_helmet_i02": {
+      "object": "armor_helmet_i02",
+      "path": "res://assets/client_icons/armor_helmet_i02.png",
+      "sha256": "c9c8b110c4e3ac181c132714a899ad9ad589105cc4754c440edd4ec3cebf9bc4"
+    },
+    "icon.armor_leather_helmet_i00": {
+      "object": "armor_leather_helmet_i00",
+      "path": "res://assets/client_icons/armor_leather_helmet_i00.png",
+      "sha256": "f8062c3f64082fbf4158c6dc8800519851972db913cd2932a158089f5104f420"
+    },
+    "icon.armor_leather_helmet_i02": {
+      "object": "armor_leather_helmet_i02",
+      "path": "res://assets/client_icons/armor_leather_helmet_i02.png",
+      "sha256": "26d46e7cd8ca35533129f5b8421cd1999bf564c7c66ec350df6fa89ef0c78589"
+    },
+    "icon.armor_leather_hose_i00": {
+      "object": "armor_leather_hose_i00",
+      "path": "res://assets/client_icons/armor_leather_hose_i00.png",
+      "sha256": "33ab9733ffec139e5402c03e624a8c2f19c5622255b50d2df2fd47d6072454f7"
+    },
+    "icon.armor_manticor_skin_gloves_i00": {
+      "object": "armor_manticor_skin_gloves_i00",
+      "path": "res://assets/client_icons/armor_manticor_skin_gloves_i00.png",
+      "sha256": "81cf0d685d1bbdb3a4aa0e2d3d836bd5941f3b07f3dfb10bf688117dcfd73092"
+    },
+    "icon.armor_mithril_banded_gaiters_i00": {
+      "object": "armor_mithril_banded_gaiters_i00",
+      "path": "res://assets/client_icons/armor_mithril_banded_gaiters_i00.png",
+      "sha256": "60495f0a72f1447b640c7c608f8716333f3be0f6ad9627deedf72cd0cf503280"
+    },
+    "icon.armor_mithril_banded_mail_i00": {
+      "object": "armor_mithril_banded_mail_i00",
+      "path": "res://assets/client_icons/armor_mithril_banded_mail_i00.png",
+      "sha256": "2fd6cc622dd683ce8b47ebbdcf9045469c7c8933616954767b2102f64bfe27b5"
+    },
+    "icon.armor_mithril_gaiters_i00": {
+      "object": "armor_mithril_gaiters_i00",
+      "path": "res://assets/client_icons/armor_mithril_gaiters_i00.png",
+      "sha256": "dc71c9b7be8820b4da797ce4840c5691c1b92b1967e21233323f92d71e05dbf1"
+    },
+    "icon.armor_plate_gaiters_i00": {
+      "object": "armor_plate_gaiters_i00",
+      "path": "res://assets/client_icons/armor_plate_gaiters_i00.png",
+      "sha256": "a639dec2f873e03b96779800710615b42ae1a3cbccf0a3e28b474a3f15523045"
+    },
+    "icon.armor_short_leather_gloves_i00": {
+      "object": "armor_short_leather_gloves_i00",
+      "path": "res://assets/client_icons/armor_short_leather_gloves_i00.png",
+      "sha256": "982313bf1f7b444d843fa2657023dd8db09de9a52576f3c396e5a06a2ebc10f9"
+    },
+    "icon.armor_t01_b_i00": {
+      "object": "armor_t01_b_i00",
+      "path": "res://assets/client_icons/armor_t01_b_i00.png",
+      "sha256": "478ab6e47661e997f378b94ad68ef52b5c248018eff71e0510bcebf4543996ba"
+    },
+    "icon.armor_t01_l_i00": {
+      "object": "armor_t01_l_i00",
+      "path": "res://assets/client_icons/armor_t01_l_i00.png",
+      "sha256": "ba78f9c64a9945aa4907cde0eff0969a7d1b72f5b7155e7f15b6d43fb2867c49"
+    },
+    "icon.armor_t01_u_i00": {
+      "object": "armor_t01_u_i00",
+      "path": "res://assets/client_icons/armor_t01_u_i00.png",
+      "sha256": "9760db6f6993591f789370c300e35b57314997bb5e78065868b9d3fcfe1ad5f8"
+    },
+    "icon.armor_t02_g_i00": {
+      "object": "armor_t02_g_i00",
+      "path": "res://assets/client_icons/armor_t02_g_i00.png",
+      "sha256": "fb0029d5c5fd8a7d2886e789f3956182eea1bb5345ab74d46333550cddaf46cb"
+    },
+    "icon.armor_t02_l_i00": {
+      "object": "armor_t02_l_i00",
+      "path": "res://assets/client_icons/armor_t02_l_i00.png",
+      "sha256": "30c792231bfd0248f12b240b2d494a790c619da02a2fb73ec07b642ec8e295e4"
+    },
+    "icon.armor_t02_u_i00": {
+      "object": "armor_t02_u_i00",
+      "path": "res://assets/client_icons/armor_t02_u_i00.png",
+      "sha256": "bfcbc0f65ddfb3ed4b6592e6d40efb36d124812d76e251165c8b812b832dd5e5"
+    },
+    "icon.armor_t03_b_i00": {
+      "object": "armor_t03_b_i00",
+      "path": "res://assets/client_icons/armor_t03_b_i00.png",
+      "sha256": "30e7fcd6bd7f77795c53f2e8900df2ee50c53f68fbb6551bbeb7f4bb1e0db449"
+    },
+    "icon.armor_t03_l_i00": {
+      "object": "armor_t03_l_i00",
+      "path": "res://assets/client_icons/armor_t03_l_i00.png",
+      "sha256": "67d0bf98b1c591f4a7788fb28ae68638bf02ddc91ec586d0a5d120a2f2dc63d0"
+    },
+    "icon.armor_t03_u_i00": {
+      "object": "armor_t03_u_i00",
+      "path": "res://assets/client_icons/armor_t03_u_i00.png",
+      "sha256": "d32e051317917d5395191c5c943c11add1c1cf40a765231fad9d95f280106836"
+    },
+    "icon.armor_t04_b_i00": {
+      "object": "armor_t04_b_i00",
+      "path": "res://assets/client_icons/armor_t04_b_i00.png",
+      "sha256": "3f5f4192aac8016491882f25479f8d202364d7a7d11485d87792d3f6f4a77f45"
+    },
+    "icon.armor_t05_b_i00": {
+      "object": "armor_t05_b_i00",
+      "path": "res://assets/client_icons/armor_t05_b_i00.png",
+      "sha256": "1dd0ea9555ece93b77327ef25fc9b33418355b3e0b4921bde075c6abf3aaf477"
+    },
+    "icon.armor_t05_l_i00": {
+      "object": "armor_t05_l_i00",
+      "path": "res://assets/client_icons/armor_t05_l_i00.png",
+      "sha256": "33ab9733ffec139e5402c03e624a8c2f19c5622255b50d2df2fd47d6072454f7"
+    },
+    "icon.armor_t05_u_i00": {
+      "object": "armor_t05_u_i00",
+      "path": "res://assets/client_icons/armor_t05_u_i00.png",
+      "sha256": "58c1af0517c209961c44a3ebcfbbbfb7b87730d0d8dcb55c3d82a77e8474a0e3"
+    },
+    "icon.armor_t06_g_i00": {
+      "object": "armor_t06_g_i00",
+      "path": "res://assets/client_icons/armor_t06_g_i00.png",
+      "sha256": "c03350b33554367442736eebc08ec813aa23f000c5ce265557805422dcfd7fd9"
+    },
+    "icon.armor_t07_l_i00": {
+      "object": "armor_t07_l_i00",
+      "path": "res://assets/client_icons/armor_t07_l_i00.png",
+      "sha256": "309aa61736f6b298fd996eec97a50cc4203c0ed3f21740a8826388d48c2978c1"
+    },
+    "icon.armor_t07_u_i00": {
+      "object": "armor_t07_u_i00",
+      "path": "res://assets/client_icons/armor_t07_u_i00.png",
+      "sha256": "c915a85d8a106fd15fe979d824eb53918b19110bf6aee8bfef94d4e381eb2944"
+    },
+    "icon.armor_t08_l_i00": {
+      "object": "armor_t08_l_i00",
+      "path": "res://assets/client_icons/armor_t08_l_i00.png",
+      "sha256": "f687e8f8d505d7b4964345185db8280a957be1798aa81192ad9fa7f4f91705dc"
+    },
+    "icon.armor_t08_u_i00": {
+      "object": "armor_t08_u_i00",
+      "path": "res://assets/client_icons/armor_t08_u_i00.png",
+      "sha256": "d8936ce5a609718d2b563f7f35effd0d0522216ce2050fb10b58b78b9440fb35"
+    },
+    "icon.armor_t09_b_i00": {
+      "object": "armor_t09_b_i00",
+      "path": "res://assets/client_icons/armor_t09_b_i00.png",
+      "sha256": "c94d4966b7f6a7312f198da058090e65fdda4de129cb28c8af5e0ed6d351eb91"
+    },
+    "icon.armor_t09_g_i00": {
+      "object": "armor_t09_g_i00",
+      "path": "res://assets/client_icons/armor_t09_g_i00.png",
+      "sha256": "9a2cfd70df3f4caf5bf0c250cc990f1e8fcd40f81c2c49f3d9e6b8a1b3de7012"
+    },
+    "icon.armor_t09_l_i00": {
+      "object": "armor_t09_l_i00",
+      "path": "res://assets/client_icons/armor_t09_l_i00.png",
+      "sha256": "617cfcc65fce819ae70e47dc06d2a8a8d53f771e664b7043847e26ee5577559d"
+    },
+    "icon.armor_t09_u_i00": {
+      "object": "armor_t09_u_i00",
+      "path": "res://assets/client_icons/armor_t09_u_i00.png",
+      "sha256": "425aa6a2cf9f8f254ade8d2bcf2433b49113f61e7be9ea2da6a4e1df33a0cbfd"
+    },
+    "icon.armor_t1001_b_i00": {
+      "object": "armor_t1001_b_i00",
+      "path": "res://assets/client_icons/armor_t1001_b_i00.png",
+      "sha256": "62aa5e6dff36eee313a18ef40601af857ba64f6aad66e3794c3e9572eea3156b"
+    },
+    "icon.armor_t1001_g_i00": {
+      "object": "armor_t1001_g_i00",
+      "path": "res://assets/client_icons/armor_t1001_g_i00.png",
+      "sha256": "ab9079abd9e1a50e39bcc3d531729d7e1a6b4ead547520e0a4a1a6185be5088c"
+    },
+    "icon.armor_t1002_b_i00": {
+      "object": "armor_t1002_b_i00",
+      "path": "res://assets/client_icons/armor_t1002_b_i00.png",
+      "sha256": "9860b6a3065cee3146d192a56606304f22d2f7155875ae24f5cf718f9be79b18"
+    },
+    "icon.armor_t1002_g_i00": {
+      "object": "armor_t1002_g_i00",
+      "path": "res://assets/client_icons/armor_t1002_g_i00.png",
+      "sha256": "1839bcf945d92cdacbadc0c2b22713e0d8715a809e975206797e1071268dd6bb"
+    },
+    "icon.armor_t1003_b_i00": {
+      "object": "armor_t1003_b_i00",
+      "path": "res://assets/client_icons/armor_t1003_b_i00.png",
+      "sha256": "33743df5b57e0e922ba0a71e9ed4936f595c22d542e893f55c51b4eddb231f6b"
+    },
+    "icon.armor_t1003_g_i00": {
+      "object": "armor_t1003_g_i00",
+      "path": "res://assets/client_icons/armor_t1003_g_i00.png",
+      "sha256": "c1cd8e91c4752522b2656e3fe2dbab0867759616bd972c693762b9288012a279"
+    },
+    "icon.armor_t1004_b_i00": {
+      "object": "armor_t1004_b_i00",
+      "path": "res://assets/client_icons/armor_t1004_b_i00.png",
+      "sha256": "9998eeb44469f58393552e5d11b7bd55afa86f004a51a52c1d7dfe73eb85d7aa"
+    },
+    "icon.armor_t1004_b_i02": {
+      "object": "armor_t1004_b_i02",
+      "path": "res://assets/client_icons/armor_t1004_b_i02.png",
+      "sha256": "3709d7caa6013f9f4e14ac22705a7442d20827dbb9a4675e60a3f9d2029cc61c"
+    },
+    "icon.armor_t1004_g_i00": {
+      "object": "armor_t1004_g_i00",
+      "path": "res://assets/client_icons/armor_t1004_g_i00.png",
+      "sha256": "66e948eed684cfbd3f7f9ff849314af29ba5276cdc7d33a27cd30ee7d9121fbd"
+    },
+    "icon.armor_t1004_g_i02": {
+      "object": "armor_t1004_g_i02",
+      "path": "res://assets/client_icons/armor_t1004_g_i02.png",
+      "sha256": "a2cd267c5629e324e3764deb7b1f82a92e849f18e808925e5abf4b2afb152660"
+    },
+    "icon.armor_t1005_b_i00": {
+      "object": "armor_t1005_b_i00",
+      "path": "res://assets/client_icons/armor_t1005_b_i00.png",
+      "sha256": "4eb85b9092ccacbe9c98eec563313915f845dcc5f05b90dca396c2f92db5bc84"
+    },
+    "icon.armor_t1005_b_i02": {
+      "object": "armor_t1005_b_i02",
+      "path": "res://assets/client_icons/armor_t1005_b_i02.png",
+      "sha256": "9d7a22e229c8fdccbd2ded6f51e7258f827338a48743f5ab7aed3fa874303e93"
+    },
+    "icon.armor_t1005_g_i00": {
+      "object": "armor_t1005_g_i00",
+      "path": "res://assets/client_icons/armor_t1005_g_i00.png",
+      "sha256": "5a89c801a49c8a640ce75f0aa6b06ba3c370c1b94fd4dae4b7320d4179191818"
+    },
+    "icon.armor_t1005_g_i02": {
+      "object": "armor_t1005_g_i02",
+      "path": "res://assets/client_icons/armor_t1005_g_i02.png",
+      "sha256": "3368726d606d9419c2829e668daab8ad737f82b3259350e1158578a938e381d3"
+    },
+    "icon.armor_t1006_b_i00": {
+      "object": "armor_t1006_b_i00",
+      "path": "res://assets/client_icons/armor_t1006_b_i00.png",
+      "sha256": "405a4a32a7e19740748b8e6542b982ccb67e659ea91ec7b10548b3288cc0ab0b"
+    },
+    "icon.armor_t1006_b_i02": {
+      "object": "armor_t1006_b_i02",
+      "path": "res://assets/client_icons/armor_t1006_b_i02.png",
+      "sha256": "9127980a99ce9db26636ee2c904371001a0d6ad3180c765d0e68e05e8cc7856c"
+    },
+    "icon.armor_t1006_g_i00": {
+      "object": "armor_t1006_g_i00",
+      "path": "res://assets/client_icons/armor_t1006_g_i00.png",
+      "sha256": "b010e7f0316955cca418a9e00910e647a6618a83ff605aa3a44cd7730047e0b0"
+    },
+    "icon.armor_t1006_g_i02": {
+      "object": "armor_t1006_g_i02",
+      "path": "res://assets/client_icons/armor_t1006_g_i02.png",
+      "sha256": "17deee644ac955f4891183e170e1f3c53b478eba21301adf7738a8510ba0aba2"
+    },
+    "icon.armor_t10_b_i00": {
+      "object": "armor_t10_b_i00",
+      "path": "res://assets/client_icons/armor_t10_b_i00.png",
+      "sha256": "1a90725e4e6890e1f341c14662e6ab8d8351711dc86920b39cf53aa13d6bbc23"
+    },
+    "icon.armor_t10_g_i00": {
+      "object": "armor_t10_g_i00",
+      "path": "res://assets/client_icons/armor_t10_g_i00.png",
+      "sha256": "b1462ee0c57877b9a0e3cd3b227d8320fbe75be486a4898fa46494733124acc0"
+    },
+    "icon.armor_t10_l_i00": {
+      "object": "armor_t10_l_i00",
+      "path": "res://assets/client_icons/armor_t10_l_i00.png",
+      "sha256": "60495f0a72f1447b640c7c608f8716333f3be0f6ad9627deedf72cd0cf503280"
+    },
+    "icon.armor_t10_u_i00": {
+      "object": "armor_t10_u_i00",
+      "path": "res://assets/client_icons/armor_t10_u_i00.png",
+      "sha256": "2fd6cc622dd683ce8b47ebbdcf9045469c7c8933616954767b2102f64bfe27b5"
+    },
+    "icon.armor_t11_l_i00": {
+      "object": "armor_t11_l_i00",
+      "path": "res://assets/client_icons/armor_t11_l_i00.png",
+      "sha256": "61e06b2b412c0d6e49920b7036a27517210896a882fe872a12347a682620824f"
+    },
+    "icon.armor_t11_u_i00": {
+      "object": "armor_t11_u_i00",
+      "path": "res://assets/client_icons/armor_t11_u_i00.png",
+      "sha256": "0ea1ab8a0f75860ab120f1f5d6c9c3cc4b4730d51d45351116f6c210b4b0d0ea"
+    },
+    "icon.armor_t12_l_i00": {
+      "object": "armor_t12_l_i00",
+      "path": "res://assets/client_icons/armor_t12_l_i00.png",
+      "sha256": "8f64da6c7bcf13eb0cb67f7040c543c389ee98988f8377fa59375483e335fac6"
+    },
+    "icon.armor_t12_u_i00": {
+      "object": "armor_t12_u_i00",
+      "path": "res://assets/client_icons/armor_t12_u_i00.png",
+      "sha256": "b9b6cba08f98c1376c6345bd069f5e39f45c9f53999a8e0da68efb1670a33ff6"
+    },
+    "icon.armor_t14_b_i00": {
+      "object": "armor_t14_b_i00",
+      "path": "res://assets/client_icons/armor_t14_b_i00.png",
+      "sha256": "8ea879c02ce74e597906adfb133c7303b5fc42d1c3a1c5d59b7d2bd683ea9a50"
+    },
+    "icon.armor_t14_g_i00": {
+      "object": "armor_t14_g_i00",
+      "path": "res://assets/client_icons/armor_t14_g_i00.png",
+      "sha256": "8973785a8faa432190db187447b6b335635424df434c02f0fcfcb3718fd87c41"
+    },
+    "icon.armor_t14_l_i00": {
+      "object": "armor_t14_l_i00",
+      "path": "res://assets/client_icons/armor_t14_l_i00.png",
+      "sha256": "8b0e3182ac4c8e0f8bf5f64686d99353a0ce6d29dcfb74b3a1a4f0fd2f1a66c8"
+    },
+    "icon.armor_t14_u_i00": {
+      "object": "armor_t14_u_i00",
+      "path": "res://assets/client_icons/armor_t14_u_i00.png",
+      "sha256": "3ca7732a72536c9c68a6fabfdc68cf52a1984368b8acbd575f11b9d5c2819313"
+    },
+    "icon.armor_t15_b_i00": {
+      "object": "armor_t15_b_i00",
+      "path": "res://assets/client_icons/armor_t15_b_i00.png",
+      "sha256": "b597ffd9b58bda01079acc22d5875a720f827aebf6b72c9ff2093ef776ab6070"
+    },
+    "icon.armor_t15_g_i00": {
+      "object": "armor_t15_g_i00",
+      "path": "res://assets/client_icons/armor_t15_g_i00.png",
+      "sha256": "f71474e860f7dd256a904de84f1878139510e3482916d57ad6ec3bff8f05e075"
+    },
+    "icon.armor_t15_l_i00": {
+      "object": "armor_t15_l_i00",
+      "path": "res://assets/client_icons/armor_t15_l_i00.png",
+      "sha256": "def3a433c87720fa830062ba1bb392848553896f913c6bfa53c73cb2872946ca"
+    },
+    "icon.armor_t15_u_i00": {
+      "object": "armor_t15_u_i00",
+      "path": "res://assets/client_icons/armor_t15_u_i00.png",
+      "sha256": "0db5f360874a3879db5bdce4b058c5fc052fe23a9966751b2867411f321174c4"
+    },
+    "icon.armor_t16_l_i00": {
+      "object": "armor_t16_l_i00",
+      "path": "res://assets/client_icons/armor_t16_l_i00.png",
+      "sha256": "b6a1a2764ca25cbaa1a77b7e01e476b1dc09c0dac4a56f333d513059722cce2c"
+    },
+    "icon.armor_t16_u_i00": {
+      "object": "armor_t16_u_i00",
+      "path": "res://assets/client_icons/armor_t16_u_i00.png",
+      "sha256": "41a7504191b54ac1a515b8ad723c6bae806d485c68eba42775b38a970d73f12f"
+    },
+    "icon.armor_t17_l_i00": {
+      "object": "armor_t17_l_i00",
+      "path": "res://assets/client_icons/armor_t17_l_i00.png",
+      "sha256": "a12e7f71bf40a73c3011803642f3c5367c5d60e813063ec7ab1190b754f2810d"
+    },
+    "icon.armor_t17_u_i00": {
+      "object": "armor_t17_u_i00",
+      "path": "res://assets/client_icons/armor_t17_u_i00.png",
+      "sha256": "385f5309bed5c7a2590a72482b2a5676fbe5db1a1c73ec88df6770e5c2c8239a"
+    },
+    "icon.armor_t18_b_i00": {
+      "object": "armor_t18_b_i00",
+      "path": "res://assets/client_icons/armor_t18_b_i00.png",
+      "sha256": "253410c3dc6c4f444c07e25d0f11958f1e4b6355d746a114a86ba91307a4185a"
+    },
+    "icon.armor_t18_g_i00": {
+      "object": "armor_t18_g_i00",
+      "path": "res://assets/client_icons/armor_t18_g_i00.png",
+      "sha256": "6569a6cef8448af53e6d21dfcc975c636e15c31cc6fb97a5a3c688de380c1d09"
+    },
+    "icon.armor_t18_l_i00": {
+      "object": "armor_t18_l_i00",
+      "path": "res://assets/client_icons/armor_t18_l_i00.png",
+      "sha256": "0d17a2387b920d74456b4055f46f26c65e8428b34083396af81db2ac0e46ac22"
+    },
+    "icon.armor_t18_u_i00": {
+      "object": "armor_t18_u_i00",
+      "path": "res://assets/client_icons/armor_t18_u_i00.png",
+      "sha256": "91286014f1cd8ca108f9e85394694868bbbf5cdab3839125c10335e482a3c7a0"
+    },
+    "icon.armor_t19_l_i00": {
+      "object": "armor_t19_l_i00",
+      "path": "res://assets/client_icons/armor_t19_l_i00.png",
+      "sha256": "dc71c9b7be8820b4da797ce4840c5691c1b92b1967e21233323f92d71e05dbf1"
+    },
+    "icon.armor_t19_u_i00": {
+      "object": "armor_t19_u_i00",
+      "path": "res://assets/client_icons/armor_t19_u_i00.png",
+      "sha256": "54d4955db2fb8714b506b5de65b34aa57eec75e1331f445c8d8d5ea1bf699a5e"
+    },
+    "icon.armor_t20_l_i00": {
+      "object": "armor_t20_l_i00",
+      "path": "res://assets/client_icons/armor_t20_l_i00.png",
+      "sha256": "bf5d123950efbba74c1c981f8fa975d60af629d1ad97c2b66d96913c66fff515"
+    },
+    "icon.armor_t20_u_i00": {
+      "object": "armor_t20_u_i00",
+      "path": "res://assets/client_icons/armor_t20_u_i00.png",
+      "sha256": "cf0b9e11224115700a7786196fd6c157a3500e2ac52bac65d9f767190af5c34b"
+    },
+    "icon.armor_t30_b_i00": {
+      "object": "armor_t30_b_i00",
+      "path": "res://assets/client_icons/armor_t30_b_i00.png",
+      "sha256": "c94d4966b7f6a7312f198da058090e65fdda4de129cb28c8af5e0ed6d351eb91"
+    },
+    "icon.armor_t30_g_i00": {
+      "object": "armor_t30_g_i00",
+      "path": "res://assets/client_icons/armor_t30_g_i00.png",
+      "sha256": "564d37ff7ee7c1d2de6a2798e222299ace4c09c9a57acc47e9f6a45d3596893d"
+    },
+    "icon.armor_t30_l_i00": {
+      "object": "armor_t30_l_i00",
+      "path": "res://assets/client_icons/armor_t30_l_i00.png",
+      "sha256": "58d4b5e7f0de79eec0ff315e0e5e0ab2a0c163d48ea539a5b7a971f995a26e7d"
+    },
+    "icon.armor_t30_u_i00": {
+      "object": "armor_t30_u_i00",
+      "path": "res://assets/client_icons/armor_t30_u_i00.png",
+      "sha256": "791f188e093293213acf1f25da106deb37af8dbe7fadd0a719df22811a8dc487"
+    },
+    "icon.armor_t32_b_i00": {
+      "object": "armor_t32_b_i00",
+      "path": "res://assets/client_icons/armor_t32_b_i00.png",
+      "sha256": "70f529048a46b8555d883d2fabdfac80ee54ae3060c316512d3afe7053985548"
+    },
+    "icon.armor_t32_g_i00": {
+      "object": "armor_t32_g_i00",
+      "path": "res://assets/client_icons/armor_t32_g_i00.png",
+      "sha256": "7b240425f7a4ebbbabe4112735648a04b5d1b5c38d6a6b84723b48ad1d7407ec"
+    },
+    "icon.armor_t32_l_i00": {
+      "object": "armor_t32_l_i00",
+      "path": "res://assets/client_icons/armor_t32_l_i00.png",
+      "sha256": "1ff97f494520dd6fa0286c5847153d9e1e71dbcc45a93e5d49b644359fc4cc16"
+    },
+    "icon.armor_t32_u_i00": {
+      "object": "armor_t32_u_i00",
+      "path": "res://assets/client_icons/armor_t32_u_i00.png",
+      "sha256": "8d7cad7c2774db4cb81ee1320d202cbe9fd6818cf40a56a923d11bea835b19b9"
+    },
+    "icon.armor_t33_l_i00": {
+      "object": "armor_t33_l_i00",
+      "path": "res://assets/client_icons/armor_t33_l_i00.png",
+      "sha256": "5ed32c201dfd35920ff96abe4b1d42530ac24e7873aeb4633e66eef72611fa23"
+    },
+    "icon.armor_t33_u_i00": {
+      "object": "armor_t33_u_i00",
+      "path": "res://assets/client_icons/armor_t33_u_i00.png",
+      "sha256": "70f1e724e8ce4b7867259c86a18a5616127c7b85a7962c71c3c1fe24787ff2c7"
+    },
+    "icon.armor_t34_l_i00": {
+      "object": "armor_t34_l_i00",
+      "path": "res://assets/client_icons/armor_t34_l_i00.png",
+      "sha256": "f5774f806c39a438a2eaefa8470f1f03dc330c8e3813800433079c9a8cbfa3b5"
+    },
+    "icon.armor_t34_u_i00": {
+      "object": "armor_t34_u_i00",
+      "path": "res://assets/client_icons/armor_t34_u_i00.png",
+      "sha256": "480de960ac01bf0743a45ea6ecb47bd96a080754a796b9d461402f038eb552bc"
+    },
+    "icon.armor_t40_b_i00": {
+      "object": "armor_t40_b_i00",
+      "path": "res://assets/client_icons/armor_t40_b_i00.png",
+      "sha256": "39894d93c83baafd26dca0c4c76433acde355ddcd2ca8ef609518def3da89e8a"
+    },
+    "icon.armor_t40_g_i00": {
+      "object": "armor_t40_g_i00",
+      "path": "res://assets/client_icons/armor_t40_g_i00.png",
+      "sha256": "3008802892a60cccfda022eba3037ccf97d00462703e09f5be28e8c3cee7c107"
+    },
+    "icon.armor_t40_l_i00": {
+      "object": "armor_t40_l_i00",
+      "path": "res://assets/client_icons/armor_t40_l_i00.png",
+      "sha256": "afad6572f4748fe783031ef730d3a4ae9690c2ad7f3a30b71b49ca95b6084369"
+    },
+    "icon.armor_t40_u_i00": {
+      "object": "armor_t40_u_i00",
+      "path": "res://assets/client_icons/armor_t40_u_i00.png",
+      "sha256": "f18b57cc9bf7399572addb0357c66b5ba830e5385fa1a01da58e145d5255334a"
+    },
+    "icon.armor_t42_b_i00": {
+      "object": "armor_t42_b_i00",
+      "path": "res://assets/client_icons/armor_t42_b_i00.png",
+      "sha256": "6666ef6cbb7067d63c0a1a88ff9487525954c3ad8d23cf88845f3ed51c2b56c3"
+    },
+    "icon.armor_t42_g_i00": {
+      "object": "armor_t42_g_i00",
+      "path": "res://assets/client_icons/armor_t42_g_i00.png",
+      "sha256": "81cf0d685d1bbdb3a4aa0e2d3d836bd5941f3b07f3dfb10bf688117dcfd73092"
+    },
+    "icon.armor_t42_l_i00": {
+      "object": "armor_t42_l_i00",
+      "path": "res://assets/client_icons/armor_t42_l_i00.png",
+      "sha256": "e8855231a86c5c6a8545eed092f53834760ada738ba2c36017894315286e0c3c"
+    },
+    "icon.armor_t42_u_i00": {
+      "object": "armor_t42_u_i00",
+      "path": "res://assets/client_icons/armor_t42_u_i00.png",
+      "sha256": "3b8f1c17a0bc481c8fe98e932b1ea547f5be2d0b0bb9c0824d8fb3c0f347707b"
+    },
+    "icon.armor_t44_b_i00": {
+      "object": "armor_t44_b_i00",
+      "path": "res://assets/client_icons/armor_t44_b_i00.png",
+      "sha256": "4a15499108b8c67150bbabba5c9c761eb7b4e7d414d0fddb267ba6ac30d1d26e"
+    },
+    "icon.armor_t44_g_i00": {
+      "object": "armor_t44_g_i00",
+      "path": "res://assets/client_icons/armor_t44_g_i00.png",
+      "sha256": "9e2c0944e3e9ba6d7aeb1974ac9084b385fe64b2f5bbc97f6067dc8b72be632a"
+    },
+    "icon.armor_t45_b_i00": {
+      "object": "armor_t45_b_i00",
+      "path": "res://assets/client_icons/armor_t45_b_i00.png",
+      "sha256": "2f9b01bf0028165539d5e147454f09b744db59b92517b473a03f35c38d02223a"
+    },
+    "icon.armor_t45_g_i00": {
+      "object": "armor_t45_g_i00",
+      "path": "res://assets/client_icons/armor_t45_g_i00.png",
+      "sha256": "18a607bd616e6cb93e13a7870ba85204ad9ca950d891c5fdc54911fca1402aa9"
+    },
+    "icon.armor_t46_b_i00": {
+      "object": "armor_t46_b_i00",
+      "path": "res://assets/client_icons/armor_t46_b_i00.png",
+      "sha256": "ccecc5b9c9e6d3cf32d31d36020557fcd50c05f2e514db33a1c97dec0cb0cd4a"
+    },
+    "icon.armor_t46_g_i00": {
+      "object": "armor_t46_g_i00",
+      "path": "res://assets/client_icons/armor_t46_g_i00.png",
+      "sha256": "574fb6cd9aa96d1a60c4963dfa9ce6544fd4de30817505999510253c30edc060"
+    },
+    "icon.armor_t46_l_i00": {
+      "object": "armor_t46_l_i00",
+      "path": "res://assets/client_icons/armor_t46_l_i00.png",
+      "sha256": "a639dec2f873e03b96779800710615b42ae1a3cbccf0a3e28b474a3f15523045"
+    },
+    "icon.armor_t46_u_i00": {
+      "object": "armor_t46_u_i00",
+      "path": "res://assets/client_icons/armor_t46_u_i00.png",
+      "sha256": "280878a47ae457c3ae31cf8823fa3aba0dfb5c2451e9323c027ca205fa9e998f"
+    },
+    "icon.armor_t47_b_i00": {
+      "object": "armor_t47_b_i00",
+      "path": "res://assets/client_icons/armor_t47_b_i00.png",
+      "sha256": "8c41accd153bda32dbbf7b1898a9d4eba5acead5a0a3eaecb91e37559c7ff90b"
+    },
+    "icon.armor_t47_g_i00": {
+      "object": "armor_t47_g_i00",
+      "path": "res://assets/client_icons/armor_t47_g_i00.png",
+      "sha256": "8a95dd9263d6b5bc4132a6257278adde9615504d435e0e16bc0217f92e5b530b"
+    },
+    "icon.armor_t47_l_i00": {
+      "object": "armor_t47_l_i00",
+      "path": "res://assets/client_icons/armor_t47_l_i00.png",
+      "sha256": "0865e8c3fc234b3c3d041eff4051404896b19174f5aa2c5d3536fadb9ed95498"
+    },
+    "icon.armor_t47_u_i00": {
+      "object": "armor_t47_u_i00",
+      "path": "res://assets/client_icons/armor_t47_u_i00.png",
+      "sha256": "a817f72c132715f300acffe83499f192fa2bc833634bb176874029cd2f3eae05"
+    },
+    "icon.armor_t48_b_i00": {
+      "object": "armor_t48_b_i00",
+      "path": "res://assets/client_icons/armor_t48_b_i00.png",
+      "sha256": "9bd8461b2b798d05e1587feb85b1609f55ad633af02922b77ad83e26c9cdf5cf"
+    },
+    "icon.armor_t48_g_i00": {
+      "object": "armor_t48_g_i00",
+      "path": "res://assets/client_icons/armor_t48_g_i00.png",
+      "sha256": "11233beef42fde1132a48c51500f706d396c43073ce752ea2a3fc0784ff45c41"
+    },
+    "icon.armor_t48_l_i00": {
+      "object": "armor_t48_l_i00",
+      "path": "res://assets/client_icons/armor_t48_l_i00.png",
+      "sha256": "c29a1fc1e7a7935658527f8efba0329554d69f49cb67c876c3576906e5943219"
+    },
+    "icon.armor_t48_u_i00": {
+      "object": "armor_t48_u_i00",
+      "path": "res://assets/client_icons/armor_t48_u_i00.png",
+      "sha256": "02b5668b1ec008b53d692d72768b3ea544113313cfcfba16d56dad02c224b14b"
+    },
+    "icon.armor_t49_b_i00": {
+      "object": "armor_t49_b_i00",
+      "path": "res://assets/client_icons/armor_t49_b_i00.png",
+      "sha256": "f14517963a6c4dcb9f991b278b98b438269e5361bce8e994e9f001ee61a5245b"
+    },
+    "icon.armor_t49_g_i00": {
+      "object": "armor_t49_g_i00",
+      "path": "res://assets/client_icons/armor_t49_g_i00.png",
+      "sha256": "c0edd32177f290bdfabcdcfd7f6b62c982066643919d84fe7993911f568aba52"
+    },
+    "icon.armor_t49_l_i00": {
+      "object": "armor_t49_l_i00",
+      "path": "res://assets/client_icons/armor_t49_l_i00.png",
+      "sha256": "097ef69821663c3aa1e126d71065e3bcbf5bee034de0ef89ee25983f976ad95b"
+    },
+    "icon.armor_t49_u_i00": {
+      "object": "armor_t49_u_i00",
+      "path": "res://assets/client_icons/armor_t49_u_i00.png",
+      "sha256": "e9b2e769b66d7b66806989035fbe21ea27b689c7ebc4fb8fe9de0234aa31b694"
+    },
+    "icon.armor_t50_b_i00": {
+      "object": "armor_t50_b_i00",
+      "path": "res://assets/client_icons/armor_t50_b_i00.png",
+      "sha256": "85e20d58f179858512a9fa1325d6e1830873d90c4800a0fa14003dd83f242ab1"
+    },
+    "icon.armor_t50_l_i00": {
+      "object": "armor_t50_l_i00",
+      "path": "res://assets/client_icons/armor_t50_l_i00.png",
+      "sha256": "e40bfdcb903faf55b00b0f74732344502d52986a9817e2d444fd134b9451bb2b"
+    },
+    "icon.armor_t50_u_i00": {
+      "object": "armor_t50_u_i00",
+      "path": "res://assets/client_icons/armor_t50_u_i00.png",
+      "sha256": "9f2b8395d737b18494d6f5c3d3bbc42e1fc37dbff068b1338bb7d48543a975c8"
+    },
+    "icon.armor_t51_b_i00": {
+      "object": "armor_t51_b_i00",
+      "path": "res://assets/client_icons/armor_t51_b_i00.png",
+      "sha256": "fe9f03f4ac48caad7964e32de59444f975b5400c21d7df806347355e4797051c"
+    },
+    "icon.armor_t51_g_i00": {
+      "object": "armor_t51_g_i00",
+      "path": "res://assets/client_icons/armor_t51_g_i00.png",
+      "sha256": "2dbc72e98724cc230442d8ce22b6f43e0e0a6c438db882fcbff4a7b2ff9c13fb"
+    },
+    "icon.armor_t51_l_i00": {
+      "object": "armor_t51_l_i00",
+      "path": "res://assets/client_icons/armor_t51_l_i00.png",
+      "sha256": "b0a752727a3780cd77057b9f1820ca8ebd9d5476e3c92dfe5028f462efdcb0ca"
+    },
+    "icon.armor_t51_u_i00": {
+      "object": "armor_t51_u_i00",
+      "path": "res://assets/client_icons/armor_t51_u_i00.png",
+      "sha256": "3d462c0e0cd7dcccf5f38649cf24507edc1acf38b39e09e64546ce1bd8bff027"
+    },
+    "icon.armor_t52_l_i00": {
+      "object": "armor_t52_l_i00",
+      "path": "res://assets/client_icons/armor_t52_l_i00.png",
+      "sha256": "7ec9c2fdcb401cad54b245a596712de0272c012a3b0b0a78e3e3a5f17d19774a"
+    },
+    "icon.armor_t52_u_i00": {
+      "object": "armor_t52_u_i00",
+      "path": "res://assets/client_icons/armor_t52_u_i00.png",
+      "sha256": "de1a7268ad7861cdd734cfe3937f786997f5a94136ea7ce0417a129de756da4d"
+    },
+    "icon.armor_t54_b_i00": {
+      "object": "armor_t54_b_i00",
+      "path": "res://assets/client_icons/armor_t54_b_i00.png",
+      "sha256": "e45f504df33032ca4cb1737d049e12111f41131cfde7ba404da1942aff3bc9b4"
+    },
+    "icon.armor_t54_g_i00": {
+      "object": "armor_t54_g_i00",
+      "path": "res://assets/client_icons/armor_t54_g_i00.png",
+      "sha256": "8458dfe73afeecd6f31cbee0c2d72b8662a47c04ea169b111351a8a355032b16"
+    },
+    "icon.armor_t54_l_i00": {
+      "object": "armor_t54_l_i00",
+      "path": "res://assets/client_icons/armor_t54_l_i00.png",
+      "sha256": "f9842c75f594604184fc321e3681119e10bec5657bd0ea2679df95e883df2836"
+    },
+    "icon.armor_t54_u_i00": {
+      "object": "armor_t54_u_i00",
+      "path": "res://assets/client_icons/armor_t54_u_i00.png",
+      "sha256": "fed1e548ec5dc1b2cb885b1b081115cad169e55a9d048f1b04cb2ec797b37a25"
+    },
+    "icon.armor_t56_b_i00": {
+      "object": "armor_t56_b_i00",
+      "path": "res://assets/client_icons/armor_t56_b_i00.png",
+      "sha256": "5d7f7b86921a3def6262b375c2a311b72cc934a2e0fb0434a83d1286c69c068a"
+    },
+    "icon.armor_t56_g_i00": {
+      "object": "armor_t56_g_i00",
+      "path": "res://assets/client_icons/armor_t56_g_i00.png",
+      "sha256": "a44ae661aa48e85903f86c6e8e9a5ebf9b06e6c2570228b5644752ef99f667d1"
+    },
+    "icon.armor_t56_l_i00": {
+      "object": "armor_t56_l_i00",
+      "path": "res://assets/client_icons/armor_t56_l_i00.png",
+      "sha256": "dd71450af39c51f41489da5636f7aa8c7b9c718fe44aa5de348d8afe9504151c"
+    },
+    "icon.armor_t56_u_i00": {
+      "object": "armor_t56_u_i00",
+      "path": "res://assets/client_icons/armor_t56_u_i00.png",
+      "sha256": "ebff6b511ec7254d833fa2b4b8b50fbfa7716da075276bf62f687e36d294dec8"
+    },
+    "icon.armor_t57_b_i00": {
+      "object": "armor_t57_b_i00",
+      "path": "res://assets/client_icons/armor_t57_b_i00.png",
+      "sha256": "274cd948f86bc3abbfb69408afcb7455c69182887d7910b01656d199e7da780e"
+    },
+    "icon.armor_t57_g_i00": {
+      "object": "armor_t57_g_i00",
+      "path": "res://assets/client_icons/armor_t57_g_i00.png",
+      "sha256": "ff3c877f2fa5ec165b47f81857e40213c517abbdc91ed024bc82774965d48d4d"
+    },
+    "icon.armor_t57_l_i00": {
+      "object": "armor_t57_l_i00",
+      "path": "res://assets/client_icons/armor_t57_l_i00.png",
+      "sha256": "94a37ec52b1df08e44b2a1274d7081f5acbb85c04311f4ca940cee8ec27b305f"
+    },
+    "icon.armor_t57_u_i00": {
+      "object": "armor_t57_u_i00",
+      "path": "res://assets/client_icons/armor_t57_u_i00.png",
+      "sha256": "938c7b1bc5eac7e85d6fba06559a72cdea131788bf7a04c5e9e2cdb92e9ec39d"
+    },
+    "icon.armor_t58_l_i00": {
+      "object": "armor_t58_l_i00",
+      "path": "res://assets/client_icons/armor_t58_l_i00.png",
+      "sha256": "75b39db29ccfe67766e27dc84c62100e2c60a51475274f571f07c4a55ce5d416"
+    },
+    "icon.armor_t58_u_i00": {
+      "object": "armor_t58_u_i00",
+      "path": "res://assets/client_icons/armor_t58_u_i00.png",
+      "sha256": "81d1177289c9ebd54e58b9674801a6d94cd07d504ea33b36fc0faf20f17925bc"
+    },
+    "icon.armor_t59_b_i00": {
+      "object": "armor_t59_b_i00",
+      "path": "res://assets/client_icons/armor_t59_b_i00.png",
+      "sha256": "aa783f0a9ca82c989eafa2ce42e9d0c11674b9369d2b2e5d23d26dd10ab23a3c"
+    },
+    "icon.armor_t59_g_i00": {
+      "object": "armor_t59_g_i00",
+      "path": "res://assets/client_icons/armor_t59_g_i00.png",
+      "sha256": "a2eb636a443998998b426852dab331442366961d561737ae8a9def09d27b8607"
+    },
+    "icon.armor_t61_b_i00": {
+      "object": "armor_t61_b_i00",
+      "path": "res://assets/client_icons/armor_t61_b_i00.png",
+      "sha256": "40db713c9b817bad7e6ed0fe105c5872257292c1585803ba228d08b381463cf5"
+    },
+    "icon.armor_t61_g_i00": {
+      "object": "armor_t61_g_i00",
+      "path": "res://assets/client_icons/armor_t61_g_i00.png",
+      "sha256": "5d6e1dcbfeec38f81d78d3c9063cad17ae105015638fb657ac1dbc1f5ca321ac"
+    },
+    "icon.armor_t62_b_i00": {
+      "object": "armor_t62_b_i00",
+      "path": "res://assets/client_icons/armor_t62_b_i00.png",
+      "sha256": "bb6c68607ff78a6f4b1b767a73d96f3e630bc1179e4729eb9bdd9fa4a55f5b9e"
+    },
+    "icon.armor_t62_g_i00": {
+      "object": "armor_t62_g_i00",
+      "path": "res://assets/client_icons/armor_t62_g_i00.png",
+      "sha256": "89b29ac2b46bab364a7877ef52161bcd469834ea07adb0f9faa9c7a1a77e3651"
+    },
+    "icon.armor_t64_b_i00": {
+      "object": "armor_t64_b_i00",
+      "path": "res://assets/client_icons/armor_t64_b_i00.png",
+      "sha256": "414d25c0f68d2e3311f12f1a5b2c0d4c8f7dc6ffebb3881752e71d1b07e67c24"
+    },
+    "icon.armor_t64_b_i02": {
+      "object": "armor_t64_b_i02",
+      "path": "res://assets/client_icons/armor_t64_b_i02.png",
+      "sha256": "ef19ba5694d611526632dd32998b2158256e8a6492856c94a438a06710a6c894"
+    },
+    "icon.armor_t64_g_i00": {
+      "object": "armor_t64_g_i00",
+      "path": "res://assets/client_icons/armor_t64_g_i00.png",
+      "sha256": "99b0fc0612f8cfdefe4ade900313640af37ae6ea56db076f41ea72851049a849"
+    },
+    "icon.armor_t64_g_i02": {
+      "object": "armor_t64_g_i02",
+      "path": "res://assets/client_icons/armor_t64_g_i02.png",
+      "sha256": "0955bb434afe1c264cf870e798fd05a3428d99eeae12f9033a384ca9ea4adae9"
+    },
+    "icon.armor_t64_l_i00": {
+      "object": "armor_t64_l_i00",
+      "path": "res://assets/client_icons/armor_t64_l_i00.png",
+      "sha256": "2f6032db5aead1db8b0de4afb5fa269cbdcdf4c2f70bbb3137e72b0cd1597b8a"
+    },
+    "icon.armor_t64_u_i00": {
+      "object": "armor_t64_u_i00",
+      "path": "res://assets/client_icons/armor_t64_u_i00.png",
+      "sha256": "6f7efb43d584609cfcb230202a87104b077bd2566ffa9bf483322909ea0c9eb1"
+    },
+    "icon.armor_t66_b_i00": {
+      "object": "armor_t66_b_i00",
+      "path": "res://assets/client_icons/armor_t66_b_i00.png",
+      "sha256": "d039329de125936105cfd116c627500db7b9e248bd1af003ce7dd9ab67222c7d"
+    },
+    "icon.armor_t66_b_i02": {
+      "object": "armor_t66_b_i02",
+      "path": "res://assets/client_icons/armor_t66_b_i02.png",
+      "sha256": "2284a84ba4e2d0dc1be6390a2889b33c382c7f83aca71b66751d5e116bef741e"
+    },
+    "icon.armor_t66_g_i00": {
+      "object": "armor_t66_g_i00",
+      "path": "res://assets/client_icons/armor_t66_g_i00.png",
+      "sha256": "ba05c0dad41e0069d982375ef38c01af9305ce8dd89236b24b15ac0883019404"
+    },
+    "icon.armor_t66_g_i02": {
+      "object": "armor_t66_g_i02",
+      "path": "res://assets/client_icons/armor_t66_g_i02.png",
+      "sha256": "74f04796f5560508cc9e139f6f6102b99a9d26a17ddf655b85bb8f20744f96be"
+    },
+    "icon.armor_t66_l_i00": {
+      "object": "armor_t66_l_i00",
+      "path": "res://assets/client_icons/armor_t66_l_i00.png",
+      "sha256": "d538bda546e40eed17bccbd7ba219d02b89e852ee0b79af1bf549f51a64e73f1"
+    },
+    "icon.armor_t66_u_i00": {
+      "object": "armor_t66_u_i00",
+      "path": "res://assets/client_icons/armor_t66_u_i00.png",
+      "sha256": "810e272384d1236a027e1190e1cc020d84deb68ba56bb20db0239f41f0c2457c"
+    },
+    "icon.armor_t67_b_i00": {
+      "object": "armor_t67_b_i00",
+      "path": "res://assets/client_icons/armor_t67_b_i00.png",
+      "sha256": "3ec51722b498032cb09a0a304d6b7e5b352c5bb5d47c62639acebcb39d932861"
+    },
+    "icon.armor_t67_g_i00": {
+      "object": "armor_t67_g_i00",
+      "path": "res://assets/client_icons/armor_t67_g_i00.png",
+      "sha256": "dae5b9c4d7d37cb1a91f2c2c758daa1606dedaa71ea9eecc189829221cf775e0"
+    },
+    "icon.armor_t68_b_i02": {
+      "object": "armor_t68_b_i02",
+      "path": "res://assets/client_icons/armor_t68_b_i02.png",
+      "sha256": "334b37c73642cc9ab0cbbc49f450ae56b89f05783534431d96278baf54e87f82"
+    },
+    "icon.armor_t68_g_i02": {
+      "object": "armor_t68_g_i02",
+      "path": "res://assets/client_icons/armor_t68_g_i02.png",
+      "sha256": "b4316ff5f17996cc832a7105e5f284610492bd8ceb49c71ce24b41607f09d17e"
+    },
+    "icon.armor_t71_b_i00": {
+      "object": "armor_t71_b_i00",
+      "path": "res://assets/client_icons/armor_t71_b_i00.png",
+      "sha256": "ec99a51b8c10815b1a301ad6108ee8198b4ae4df34466bf4bd6d1f2bd0295da9"
+    },
+    "icon.armor_t71_b_i02": {
+      "object": "armor_t71_b_i02",
+      "path": "res://assets/client_icons/armor_t71_b_i02.png",
+      "sha256": "b09991d795fcf45609cbab06a98d6575730ff7cc35052ae44bf0b0647e6de92e"
+    },
+    "icon.armor_t71_g_i00": {
+      "object": "armor_t71_g_i00",
+      "path": "res://assets/client_icons/armor_t71_g_i00.png",
+      "sha256": "ba9459c45dd7a504c084a25268cf2983d5fa5bc287aaa94d98d50ff44dfa9a28"
+    },
+    "icon.armor_t71_g_i02": {
+      "object": "armor_t71_g_i02",
+      "path": "res://assets/client_icons/armor_t71_g_i02.png",
+      "sha256": "a3d7af48b06d402754bf7df69a0a3811f2328b1847a239555dd9970127391b01"
+    },
+    "icon.armor_t72_b_i00": {
+      "object": "armor_t72_b_i00",
+      "path": "res://assets/client_icons/armor_t72_b_i00.png",
+      "sha256": "c7c2b47c31c02f47276d629ec55f943a139cb010a27c232042a5a210562b4de8"
+    },
+    "icon.armor_t72_g_i00": {
+      "object": "armor_t72_g_i00",
+      "path": "res://assets/client_icons/armor_t72_g_i00.png",
+      "sha256": "adaaca783aa41b2f074f0846af788cebee0802da8813dfa82801c9ddf1c7bf0b"
+    },
+    "icon.armor_t73_b_i00": {
+      "object": "armor_t73_b_i00",
+      "path": "res://assets/client_icons/armor_t73_b_i00.png",
+      "sha256": "d8ac8094245ad027bf8b719ceaa8ad9c2bf0aa4270708e3b89224daae3caf418"
+    },
+    "icon.armor_t73_g_i00": {
+      "object": "armor_t73_g_i00",
+      "path": "res://assets/client_icons/armor_t73_g_i00.png",
+      "sha256": "c2c81695dcc7eda014a3e988a47eb5cb50bc91cf96a18d053ce394c02e7cecce"
+    },
+    "icon.armor_t73_l_i00": {
+      "object": "armor_t73_l_i00",
+      "path": "res://assets/client_icons/armor_t73_l_i00.png",
+      "sha256": "30a801020c77be23c191d51449db60933ec307ba4eb4df319cab557f029465cf"
+    },
+    "icon.armor_t73_u_i00": {
+      "object": "armor_t73_u_i00",
+      "path": "res://assets/client_icons/armor_t73_u_i00.png",
+      "sha256": "59af8e28e26a5195e6eb60c8e6e835033f6f103be6788a5317835b14b7d4b8de"
+    },
+    "icon.armor_t74_b_i02": {
+      "object": "armor_t74_b_i02",
+      "path": "res://assets/client_icons/armor_t74_b_i02.png",
+      "sha256": "4b9136431db55502c78592ca3ced1860d96d7a9c40d94169872ee28fd2c8cd31"
+    },
+    "icon.armor_t74_g_i02": {
+      "object": "armor_t74_g_i02",
+      "path": "res://assets/client_icons/armor_t74_g_i02.png",
+      "sha256": "0eba19fa11a454dc85d427238664bbcec6a4959b771f1ed91c187d6fd2e3e166"
+    },
+    "icon.armor_t74_l_i02": {
+      "object": "armor_t74_l_i02",
+      "path": "res://assets/client_icons/armor_t74_l_i02.png",
+      "sha256": "deff208874552a2365c6ad3704433cd122718f0adde5eb2fe4c1aeeadc657644"
+    },
+    "icon.armor_t74_u_i02": {
+      "object": "armor_t74_u_i02",
+      "path": "res://assets/client_icons/armor_t74_u_i02.png",
+      "sha256": "074420a004118b20a24f0c66d9efb17f0bfa5b19943773a21b39cc7f0b88167c"
+    },
+    "icon.armor_t75_l_i02": {
+      "object": "armor_t75_l_i02",
+      "path": "res://assets/client_icons/armor_t75_l_i02.png",
+      "sha256": "88d23e2a4e470f173454953290acc0bf3675bdb555551724184fe8ff3e5a031e"
+    },
+    "icon.armor_t75_u_i02": {
+      "object": "armor_t75_u_i02",
+      "path": "res://assets/client_icons/armor_t75_u_i02.png",
+      "sha256": "952cebf3dce3b2b8e27409b07ca869ef901a1d66a79296e025a3a8be256aba4a"
+    },
+    "icon.armor_t77_b_i00": {
+      "object": "armor_t77_b_i00",
+      "path": "res://assets/client_icons/armor_t77_b_i00.png",
+      "sha256": "6b70ce39de1aa39e0aeaccdbd65ad4808c5f78640a8afb4d14e0130e2ca85a10"
+    },
+    "icon.armor_t77_b_i02": {
+      "object": "armor_t77_b_i02",
+      "path": "res://assets/client_icons/armor_t77_b_i02.png",
+      "sha256": "5dd66a58d2a37fc055c1b710de61487a909845cfb8496a9ca515587dea7dc348"
+    },
+    "icon.armor_t77_g_i00": {
+      "object": "armor_t77_g_i00",
+      "path": "res://assets/client_icons/armor_t77_g_i00.png",
+      "sha256": "1504148065de236323acab2b57cbfe4839165b15cf2fb415d8e21ee323e6db0d"
+    },
+    "icon.armor_t77_g_i02": {
+      "object": "armor_t77_g_i02",
+      "path": "res://assets/client_icons/armor_t77_g_i02.png",
+      "sha256": "22a045e123055439d8975c26d617ac86a8c124f162e61cd452b6d3355e9ed32e"
+    },
+    "icon.armor_t78_b_i00": {
+      "object": "armor_t78_b_i00",
+      "path": "res://assets/client_icons/armor_t78_b_i00.png",
+      "sha256": "dbd325b169283d1a48e942c363d78ab4010b369a88f36ce190bd45c98da750b1"
+    },
+    "icon.armor_t78_g_i00": {
+      "object": "armor_t78_g_i00",
+      "path": "res://assets/client_icons/armor_t78_g_i00.png",
+      "sha256": "3aaabe17ac87c4dce7b7321722a1ab6bf0fe5670fd613ca82f04668d6083334d"
+    },
+    "icon.armor_t79_l_i02": {
+      "object": "armor_t79_l_i02",
+      "path": "res://assets/client_icons/armor_t79_l_i02.png",
+      "sha256": "a5122ed53c3026c2031f98210cebd28ef533cdddcc1716c13be7306f0b6b8bfa"
+    },
+    "icon.armor_t79_u_i02": {
+      "object": "armor_t79_u_i02",
+      "path": "res://assets/client_icons/armor_t79_u_i02.png",
+      "sha256": "dec0d8c395450c3e6b125355886528f4dd4c7df256662944dcebabcf18d016cf"
+    },
+    "icon.armor_t80_b_i00": {
+      "object": "armor_t80_b_i00",
+      "path": "res://assets/client_icons/armor_t80_b_i00.png",
+      "sha256": "28d6a48145b8646541d2542ae2b583b59c8e6caa9772ed348164f611961f75f1"
+    },
+    "icon.armor_t80_b_i02": {
+      "object": "armor_t80_b_i02",
+      "path": "res://assets/client_icons/armor_t80_b_i02.png",
+      "sha256": "245a219b6650944763cb4a4efee65541b23e6823408e9eee67bce6dccba78d04"
+    },
+    "icon.armor_t80_g_i00": {
+      "object": "armor_t80_g_i00",
+      "path": "res://assets/client_icons/armor_t80_g_i00.png",
+      "sha256": "ba526231a6861ecf9344df6ee543f53780a0dd85c287a8ec21375008efced9e6"
+    },
+    "icon.armor_t80_g_i02": {
+      "object": "armor_t80_g_i02",
+      "path": "res://assets/client_icons/armor_t80_g_i02.png",
+      "sha256": "01b6a2c1fbdf098485d5411ee8bb6017ebb2ca6da4dd7803e1faecb1a1936d95"
+    },
+    "icon.armor_t81_b_i00": {
+      "object": "armor_t81_b_i00",
+      "path": "res://assets/client_icons/armor_t81_b_i00.png",
+      "sha256": "dbdc304d9e45c53edc0ebe2ceaa510d477ace9206785c59739dc59fbdd670262"
+    },
+    "icon.armor_t81_g_i00": {
+      "object": "armor_t81_g_i00",
+      "path": "res://assets/client_icons/armor_t81_g_i00.png",
+      "sha256": "7bdff042fbd807f50a06d87bc5aa6bf6a90d5a3843a4f0d24b7b31c47394fbb0"
+    },
+    "icon.armor_t82_b_i00": {
+      "object": "armor_t82_b_i00",
+      "path": "res://assets/client_icons/armor_t82_b_i00.png",
+      "sha256": "8e4c4d06acc3808493098c080643321e60461746b3e15c2e7e8a282176e8806e"
+    },
+    "icon.armor_t82_g_i00": {
+      "object": "armor_t82_g_i00",
+      "path": "res://assets/client_icons/armor_t82_g_i00.png",
+      "sha256": "b7db07a759993cedb443e434e2da914593165f1ee9566c94c2a56d7838f9fba7"
+    },
+    "icon.armor_t83_b_i00": {
+      "object": "armor_t83_b_i00",
+      "path": "res://assets/client_icons/armor_t83_b_i00.png",
+      "sha256": "0a7b80d8c83d975de42d48ca3236ad1749ce77e07bff59ca0ff829ed995b694f"
+    },
+    "icon.armor_t83_b_i02": {
+      "object": "armor_t83_b_i02",
+      "path": "res://assets/client_icons/armor_t83_b_i02.png",
+      "sha256": "6f69cbc6a34045eef4d1b3984f33da9e97105547f6678654caa132656cf763d5"
+    },
+    "icon.armor_t83_g_i00": {
+      "object": "armor_t83_g_i00",
+      "path": "res://assets/client_icons/armor_t83_g_i00.png",
+      "sha256": "b84d164a3d4cca331024718b7527ad77518ff135c25670300b12e29b374a1145"
+    },
+    "icon.armor_t83_g_i02": {
+      "object": "armor_t83_g_i02",
+      "path": "res://assets/client_icons/armor_t83_g_i02.png",
+      "sha256": "96274887b974bb8c08216c65b0f06cb6667d07f337a5a074aee89480b7842faa"
+    },
+    "icon.armor_t84_b_i00": {
+      "object": "armor_t84_b_i00",
+      "path": "res://assets/client_icons/armor_t84_b_i00.png",
+      "sha256": "ad474dca94006a8b5788a021968c9b4a7c2d052a360b7cce02d2986249057114"
+    },
+    "icon.armor_t84_g_i00": {
+      "object": "armor_t84_g_i00",
+      "path": "res://assets/client_icons/armor_t84_g_i00.png",
+      "sha256": "771a4bbfd7b15c7ef086f17cb4e6adeffa51d47458d73b201de14978e0b41673"
+    },
+    "icon.armor_t85_b_i00": {
+      "object": "armor_t85_b_i00",
+      "path": "res://assets/client_icons/armor_t85_b_i00.png",
+      "sha256": "1a7c027ac47cb808bb39a94f8ec8c22198e60fa88ac8cbbaf4cb9224769bfd34"
+    },
+    "icon.armor_t85_g_i00": {
+      "object": "armor_t85_g_i00",
+      "path": "res://assets/client_icons/armor_t85_g_i00.png",
+      "sha256": "d1f5328b1ac77849c710affa8ddfb785fb1cc86cd68c5dd69a74367462b06133"
+    },
+    "icon.armor_tunic_of_knowledge_i00": {
+      "object": "armor_tunic_of_knowledge_i00",
+      "path": "res://assets/client_icons/armor_tunic_of_knowledge_i00.png",
+      "sha256": "7e0029d9e6cf47c2ff8b07c14e63311ed59e1784edd1582dd5a35fc52544e959"
+    },
+    "icon.elemental_necklace_earth_i00": {
+      "object": "elemental_necklace_earth_i00",
+      "path": "res://assets/client_icons/elemental_necklace_earth_i00.png",
+      "sha256": "71987b51ac946fab4b270576879571d997800db93ed21f2c6555d34f0daea87b"
+    },
+    "icon.elemental_necklace_fire_i00": {
+      "object": "elemental_necklace_fire_i00",
+      "path": "res://assets/client_icons/elemental_necklace_fire_i00.png",
+      "sha256": "01aa917a5b91606b837cb3936b541818897b99452152f53e516ecb1383be7576"
+    },
+    "icon.elemental_necklace_water_i00": {
+      "object": "elemental_necklace_water_i00",
+      "path": "res://assets/client_icons/elemental_necklace_water_i00.png",
+      "sha256": "7b0323c9f2a8269f21243a66eeb7b97953ddd93bb5ae86516294da0b959b72a1"
+    },
+    "icon.elemental_necklace_wind_i00": {
+      "object": "elemental_necklace_wind_i00",
+      "path": "res://assets/client_icons/elemental_necklace_wind_i00.png",
+      "sha256": "c6a60aa0b8084f4bf417e9332ad6e7ebe0e0b146d51e8f322f95bd0f8a4c4fd8"
+    },
+    "icon.ev_11th_rare_acc_earing": {
+      "object": "ev_11th_rare_acc_earing",
+      "path": "res://assets/client_icons/ev_11th_rare_acc_earing.png",
+      "sha256": "be46c07933fecedb983f6b99ba8650b47fad13904c9463e25098de6ccdef8016"
+    },
+    "icon.ev_11th_rare_acc_necklace": {
+      "object": "ev_11th_rare_acc_necklace",
+      "path": "res://assets/client_icons/ev_11th_rare_acc_necklace.png",
+      "sha256": "64fb2b2e3e23e416aca9615c82972e73916004bf835f6fdd829f48e4b463bb64"
+    },
+    "icon.ev_11th_rare_acc_ring": {
+      "object": "ev_11th_rare_acc_ring",
+      "path": "res://assets/client_icons/ev_11th_rare_acc_ring.png",
+      "sha256": "f104d26eab36ac39ce7f53952009407834df73413eb88cbe6e8e79b706f38458"
+    },
+    "icon.event_classic_ring": {
+      "object": "event_classic_ring",
+      "path": "res://assets/client_icons/event_classic_ring.png",
+      "sha256": "a3c2ebc70055c40935db7ad409d9135faa711ac806386581519f49c9aae6b478"
+    },
+    "icon.r2_earring_i00": {
+      "object": "r2_earring_i00",
+      "path": "res://assets/client_icons/r2_earring_i00.png",
+      "sha256": "dce9a1aee500ed0f8ba6ad52ef9864a674b65374fea61b115cc9f51692851e7a"
+    },
+    "icon.r2_earring_i01": {
+      "object": "r2_earring_i01",
+      "path": "res://assets/client_icons/r2_earring_i01.png",
+      "sha256": "7c7b8eaf2946ea7d22cecb03fffd693c4e6619ef6456d10038996fac2df0da7d"
+    },
+    "icon.shield_aspis_i00": {
+      "object": "shield_aspis_i00",
+      "path": "res://assets/client_icons/shield_aspis_i00.png",
+      "sha256": "cf0b698dedfabbfa69327206f5f243fb1ae6bf25ccc9f32562a7bdfb900c77ba"
+    },
+    "icon.shield_avadon_shield_i00": {
+      "object": "shield_avadon_shield_i00",
+      "path": "res://assets/client_icons/shield_avadon_shield_i00.png",
+      "sha256": "29f0b638132c105805bd1311f3284a8af44474d2ee800fe50b001ea62a3c7dc5"
+    },
+    "icon.shield_bone_shield_i00": {
+      "object": "shield_bone_shield_i00",
+      "path": "res://assets/client_icons/shield_bone_shield_i00.png",
+      "sha256": "71ee4bd3ecc0f32adb1ec5ea2939cc422b5a2a7f547434c7d71ced6ace7758ec"
+    },
+    "icon.shield_brigandine_shield_i00": {
+      "object": "shield_brigandine_shield_i00",
+      "path": "res://assets/client_icons/shield_brigandine_shield_i00.png",
+      "sha256": "fa016f46ea171820599558b899610fd4cf678e205a3a93f4c99474a5dd500972"
+    },
+    "icon.shield_bronze_shield_i00": {
+      "object": "shield_bronze_shield_i00",
+      "path": "res://assets/client_icons/shield_bronze_shield_i00.png",
+      "sha256": "7ff5474fdf007815f08937a47b293d689e564c1a09dc4bc6dd449e9fb9aa048d"
+    },
+    "icon.shield_buckler_i00": {
+      "object": "shield_buckler_i00",
+      "path": "res://assets/client_icons/shield_buckler_i00.png",
+      "sha256": "2a88610bdc5e7a1b3d6553f50ca93f7babf34a57e850488d563f877fce58bda3"
+    },
+    "icon.shield_chain_shield_i00": {
+      "object": "shield_chain_shield_i00",
+      "path": "res://assets/client_icons/shield_chain_shield_i00.png",
+      "sha256": "5706076516debaf6ea192795fcafe46e9aa46741cd58485bed6547c4c67178be"
+    },
+    "icon.shield_composite_shield_i00": {
+      "object": "shield_composite_shield_i00",
+      "path": "res://assets/client_icons/shield_composite_shield_i00.png",
+      "sha256": "5a0eb104120fc968ca401f86d9965c49a58150ef7c28035e1a31f12fa5c03031"
+    },
+    "icon.shield_dark_crystal_shield_i00": {
+      "object": "shield_dark_crystal_shield_i00",
+      "path": "res://assets/client_icons/shield_dark_crystal_shield_i00.png",
+      "sha256": "9bb38f6256f0a8b762bb3581f2d319208f76b990348077800fca1a5d90097e4b"
+    },
+    "icon.shield_dark_crystal_shield_i02": {
+      "object": "shield_dark_crystal_shield_i02",
+      "path": "res://assets/client_icons/shield_dark_crystal_shield_i02.png",
+      "sha256": "5ed221a3cf4f77a9bb23e6ae9e2130df60407fbeb742b4749536e359bfeaa9bd"
+    },
+    "icon.shield_dark_dragon_shield_i00": {
+      "object": "shield_dark_dragon_shield_i00",
+      "path": "res://assets/client_icons/shield_dark_dragon_shield_i00.png",
+      "sha256": "90b4ac884c029ac822f2da1b46f6519c1f85ff9784f18bde0c2ee487359b5c67"
+    },
+    "icon.shield_doom_shield_i00": {
+      "object": "shield_doom_shield_i00",
+      "path": "res://assets/client_icons/shield_doom_shield_i00.png",
+      "sha256": "46f512d211fbc41917783c7b84d1d0b1b7a690b3c7a75484421b19bfa782a4b7"
+    },
+    "icon.shield_dwarven_chain_shield_i00": {
+      "object": "shield_dwarven_chain_shield_i00",
+      "path": "res://assets/client_icons/shield_dwarven_chain_shield_i00.png",
+      "sha256": "a81b0139b818d987cbfd1c6ac634efe5574c36cc6096693ad47de4078e5b4254"
+    },
+    "icon.shield_eldarake_i00": {
+      "object": "shield_eldarake_i00",
+      "path": "res://assets/client_icons/shield_eldarake_i00.png",
+      "sha256": "470bafd2be8e3963da5f63269fffda48a1fc0d30983f70044a7db6dc91b2d99c"
+    },
+    "icon.shield_full_plate_shield_i00": {
+      "object": "shield_full_plate_shield_i00",
+      "path": "res://assets/client_icons/shield_full_plate_shield_i00.png",
+      "sha256": "e902a38eb4ccf61a8b3d8f8fe4126097fdb11a4e66a42a57711c157243f559c5"
+    },
+    "icon.shield_hoplon_i00": {
+      "object": "shield_hoplon_i00",
+      "path": "res://assets/client_icons/shield_hoplon_i00.png",
+      "sha256": "1658bc529357475683df7afeb44f4bd66c7b0354a75a04482fe6166951600c07"
+    },
+    "icon.shield_kite_shield_i00": {
+      "object": "shield_kite_shield_i00",
+      "path": "res://assets/client_icons/shield_kite_shield_i00.png",
+      "sha256": "6bf6672302e8bfac5dc127b2c9393eb7c13ec03ec8d6eb81dd056d77bd4ab15b"
+    },
+    "icon.shield_knight_shield_i00": {
+      "object": "shield_knight_shield_i00",
+      "path": "res://assets/client_icons/shield_knight_shield_i00.png",
+      "sha256": "2ccfffd102c7f56b8b371ff98d51cc91e8238e0c648642108ba73e30f737adea"
+    },
+    "icon.shield_leather_shield_i00": {
+      "object": "shield_leather_shield_i00",
+      "path": "res://assets/client_icons/shield_leather_shield_i00.png",
+      "sha256": "381b4a582c817cf043200a0c6c723b3e85b77ac296528acc454cf3f736a3038a"
+    },
+    "icon.shield_masterpiece_shield_i00": {
+      "object": "shield_masterpiece_shield_i00",
+      "path": "res://assets/client_icons/shield_masterpiece_shield_i00.png",
+      "sha256": "ce95e9bf18ad2c93d84099d762565bf0350671e6787695babeab33fcc4ebd313"
+    },
+    "icon.shield_plate_shield_i00": {
+      "object": "shield_plate_shield_i00",
+      "path": "res://assets/client_icons/shield_plate_shield_i00.png",
+      "sha256": "7e36dbc07cffc7b6a5a60054cbb01b8f5a32004027db803512d05a1cfa886725"
+    },
+    "icon.shield_round_shield_i00": {
+      "object": "shield_round_shield_i00",
+      "path": "res://assets/client_icons/shield_round_shield_i00.png",
+      "sha256": "7086bdad60d169b3d32699269594be2e656254d8bf1ff162952e406b81ec63bd"
+    },
+    "icon.shield_sages_shield_i00": {
+      "object": "shield_sages_shield_i00",
+      "path": "res://assets/client_icons/shield_sages_shield_i00.png",
+      "sha256": "c98dd6d50560ee2300e705f88e41717d4df2291544885ba4118b22218793d6a9"
+    },
+    "icon.shield_shield_of_assistance_i00": {
+      "object": "shield_shield_of_assistance_i00",
+      "path": "res://assets/client_icons/shield_shield_of_assistance_i00.png",
+      "sha256": "cad0904545621acfb6a925c12f1d79428a496fde99802f485fa0e74b0e73e40d"
+    },
+    "icon.shield_shield_of_grace_i00": {
+      "object": "shield_shield_of_grace_i00",
+      "path": "res://assets/client_icons/shield_shield_of_grace_i00.png",
+      "sha256": "2df9211978402e351c924a1d5ecd49b0681f19bdb43e38987eaadb29c5d9aa60"
+    },
+    "icon.shield_shield_of_nightmare_i00": {
+      "object": "shield_shield_of_nightmare_i00",
+      "path": "res://assets/client_icons/shield_shield_of_nightmare_i00.png",
+      "sha256": "7797a8eec710001eb44503d82dd0692a806e803730d58eee9d98ddc8cfbd3201"
+    },
+    "icon.shield_shield_of_nightmare_i02": {
+      "object": "shield_shield_of_nightmare_i02",
+      "path": "res://assets/client_icons/shield_shield_of_nightmare_i02.png",
+      "sha256": "3563e5d81c28f8387a2ef3f941dbf3ba78b54f704ea22d06886d2cee7c4fabb0"
+    },
+    "icon.shield_shield_of_pledge_i00": {
+      "object": "shield_shield_of_pledge_i00",
+      "path": "res://assets/client_icons/shield_shield_of_pledge_i00.png",
+      "sha256": "9a8001712d3e30f6a4c9904ac4ef5f71fcd6ea851aedbd6ff153eda59cff24a8"
+    },
+    "icon.shield_shield_of_sola_eclipse_i00": {
+      "object": "shield_shield_of_sola_eclipse_i00",
+      "path": "res://assets/client_icons/shield_shield_of_sola_eclipse_i00.png",
+      "sha256": "ee473e32cb98f1c79f56ad8df7ab1e1306fd18dfd3c918635cc011eeb6e8b149"
+    },
+    "icon.shield_shield_of_victory_i00": {
+      "object": "shield_shield_of_victory_i00",
+      "path": "res://assets/client_icons/shield_shield_of_victory_i00.png",
+      "sha256": "c10d4058ffff99f47d82015900d0146301dbfe7b896d4ddf310902c216de1a23"
+    },
+    "icon.shield_shrnoens_shield_i00": {
+      "object": "shield_shrnoens_shield_i00",
+      "path": "res://assets/client_icons/shield_shrnoens_shield_i00.png",
+      "sha256": "4edd02f2b2b9bf19b458e65f228762753fc9df3a964c0fc344a0d18f4b49622d"
+    },
+    "icon.shield_skeleton_buckler_i00": {
+      "object": "shield_skeleton_buckler_i00",
+      "path": "res://assets/client_icons/shield_skeleton_buckler_i00.png",
+      "sha256": "c350fdf31fa55fd0cc9c12ad679b580925c96ec96ce9e36f5a4bac68dde623e9"
+    },
+    "icon.shield_square_shield_i00": {
+      "object": "shield_square_shield_i00",
+      "path": "res://assets/client_icons/shield_square_shield_i00.png",
+      "sha256": "0a1c5cd9bb979a2829a869f201bac04b6f9582752a9d2456faab81d37cac5480"
+    },
+    "icon.shield_tower_shield_i00": {
+      "object": "shield_tower_shield_i00",
+      "path": "res://assets/client_icons/shield_tower_shield_i00.png",
+      "sha256": "97f30298adf11cc9f8fc6b3112a3981b128296aab8c85febc684b95b2d608a55"
+    },
+    "icon.weapon_akat_long_bow_i00": {
+      "object": "weapon_akat_long_bow_i00",
+      "path": "res://assets/client_icons/weapon_akat_long_bow_i00.png",
+      "sha256": "fdbf4bbaa8b75342694599a027975368a0e2f58a56c791e6cb50d37425eb55d5"
+    },
+    "icon.weapon_akat_long_bow_i01": {
+      "object": "weapon_akat_long_bow_i01",
+      "path": "res://assets/client_icons/weapon_akat_long_bow_i01.png",
+      "sha256": "d8cbefd254c45eec17858ab56133d512a69be7665192bd5bf9786c98e69e9e17"
+    },
+    "icon.weapon_apprentices_spellbook_i00": {
+      "object": "weapon_apprentices_spellbook_i00",
+      "path": "res://assets/client_icons/weapon_apprentices_spellbook_i00.png",
+      "sha256": "74f19f08daf6f648e41dc5232f29567a2aa64cf0256b8a89429d9fe8089ae0db"
+    },
+    "icon.weapon_apprentices_spellbook_i01": {
+      "object": "weapon_apprentices_spellbook_i01",
+      "path": "res://assets/client_icons/weapon_apprentices_spellbook_i01.png",
+      "sha256": "67fd593d4a17cdad6aed6e13c45b194850bb8957b328703dae23c772d1021100"
+    },
+    "icon.weapon_apprentices_wand_i00": {
+      "object": "weapon_apprentices_wand_i00",
+      "path": "res://assets/client_icons/weapon_apprentices_wand_i00.png",
+      "sha256": "4388f9c1bf280b0f2e98dd54a05671b21a2740b4ad9de84389d1407ff6faff1e"
+    },
+    "icon.weapon_artisans_sword_i00": {
+      "object": "weapon_artisans_sword_i00",
+      "path": "res://assets/client_icons/weapon_artisans_sword_i00.png",
+      "sha256": "7e152716a8877ecb0cf062b7a448f18f1637b70458e325da68a0f303b7575dde"
+    },
+    "icon.weapon_artisans_sword_i01": {
+      "object": "weapon_artisans_sword_i01",
+      "path": "res://assets/client_icons/weapon_artisans_sword_i01.png",
+      "sha256": "8bddc901e517ce92261a432eb3a182236fbe8f70f74c8b39f6d324aff376a462"
+    },
+    "icon.weapon_atuba_mace_i00": {
+      "object": "weapon_atuba_mace_i00",
+      "path": "res://assets/client_icons/weapon_atuba_mace_i00.png",
+      "sha256": "a1d3d700089d9be82462ceeb2cac68be328dec74c1b47e0bdbdc2bd8af40ecfe"
+    },
+    "icon.weapon_atuba_mace_i01": {
+      "object": "weapon_atuba_mace_i01",
+      "path": "res://assets/client_icons/weapon_atuba_mace_i01.png",
+      "sha256": "d8bad8b49e9bb83b8d87d9579877b44cca9f0976e123c2313f498f36b8251907"
+    },
+    "icon.weapon_bastard_sword_i00": {
+      "object": "weapon_bastard_sword_i00",
+      "path": "res://assets/client_icons/weapon_bastard_sword_i00.png",
+      "sha256": "713dc4158ca1e71bf52d8ef114dcfb36c8406c52e65ff43a771cc165362a668a"
+    },
+    "icon.weapon_bastard_sword_i01": {
+      "object": "weapon_bastard_sword_i01",
+      "path": "res://assets/client_icons/weapon_bastard_sword_i01.png",
+      "sha256": "9e357633bd30e417d42c20866d4c3ee8a55a53151fcedff31b2506533f7392dd"
+    },
+    "icon.weapon_blood_of_saints_i00": {
+      "object": "weapon_blood_of_saints_i00",
+      "path": "res://assets/client_icons/weapon_blood_of_saints_i00.png",
+      "sha256": "859e0f8e9923d26aff6a2104d61e4801c3bf237770c910224602066a94f4caab"
+    },
+    "icon.weapon_blood_of_saints_i01": {
+      "object": "weapon_blood_of_saints_i01",
+      "path": "res://assets/client_icons/weapon_blood_of_saints_i01.png",
+      "sha256": "33b5200a0972300590b2f644e7f22fe6718a02ee000ac6534355f8f78a88f9c0"
+    },
+    "icon.weapon_bone_of_kaim_vanul_i00": {
+      "object": "weapon_bone_of_kaim_vanul_i00",
+      "path": "res://assets/client_icons/weapon_bone_of_kaim_vanul_i00.png",
+      "sha256": "e281132a6138564e794b81fe6870d6233eb712eb5e4da5bb5b6127531489e086"
+    },
+    "icon.weapon_bone_of_kaim_vanul_i01": {
+      "object": "weapon_bone_of_kaim_vanul_i01",
+      "path": "res://assets/client_icons/weapon_bone_of_kaim_vanul_i01.png",
+      "sha256": "60b7c86fecab474604d87b6a1741c4352a2ba36b6a1116d36605b78552b979db"
+    },
+    "icon.weapon_bow_i00": {
+      "object": "weapon_bow_i00",
+      "path": "res://assets/client_icons/weapon_bow_i00.png",
+      "sha256": "c12dba8519bc8dc01c7343208516fbd8df61ffeee0cbabf17cdc3b41c661eaa2"
+    },
+    "icon.weapon_branch_of_life_i00": {
+      "object": "weapon_branch_of_life_i00",
+      "path": "res://assets/client_icons/weapon_branch_of_life_i00.png",
+      "sha256": "58e5eeeb066b40983a6fffca510bb7c8a2521adb155628be347cc6a88fc64519"
+    },
+    "icon.weapon_branch_of_life_i01": {
+      "object": "weapon_branch_of_life_i01",
+      "path": "res://assets/client_icons/weapon_branch_of_life_i01.png",
+      "sha256": "4f3f6e35e2f5899308b0ad372778ee92dff9c6e230c2cdc962e0bb0626aa654e"
+    },
+    "icon.weapon_broad_sword_i00": {
+      "object": "weapon_broad_sword_i00",
+      "path": "res://assets/client_icons/weapon_broad_sword_i00.png",
+      "sha256": "4b1fbace2aaaa2b6c933fe4919172c28a984bf672637c283e1f4d81abe65d5c1"
+    },
+    "icon.weapon_buffalo_horn_i00": {
+      "object": "weapon_buffalo_horn_i00",
+      "path": "res://assets/client_icons/weapon_buffalo_horn_i00.png",
+      "sha256": "3bee7be135b0d3ff5391c6e24d027db19404d36ef5ceebd784fc88cfb6f2f4bb"
+    },
+    "icon.weapon_caliburs_i00": {
+      "object": "weapon_caliburs_i00",
+      "path": "res://assets/client_icons/weapon_caliburs_i00.png",
+      "sha256": "7899b29c3a9c9a8932c851040c8fa74b7cef5498ba51bcbd8ff04c42b7c9935c"
+    },
+    "icon.weapon_caliburs_i01": {
+      "object": "weapon_caliburs_i01",
+      "path": "res://assets/client_icons/weapon_caliburs_i01.png",
+      "sha256": "24dbb8c77dd299172b11ecabcae8fdbfad9143d9475e12efcfe00f2676f62fdf"
+    },
+    "icon.weapon_carnium_bow_i00": {
+      "object": "weapon_carnium_bow_i00",
+      "path": "res://assets/client_icons/weapon_carnium_bow_i00.png",
+      "sha256": "3d766ebff58655357c8209d1c7db01e71361a654bdc15bc7729dd8e67d3cfba6"
+    },
+    "icon.weapon_carnium_bow_i01": {
+      "object": "weapon_carnium_bow_i01",
+      "path": "res://assets/client_icons/weapon_carnium_bow_i01.png",
+      "sha256": "322363a36f823270530be822177aa1357d105439802894520f7a8cd3462d4a77"
+    },
+    "icon.weapon_chrono_cithara_i00": {
+      "object": "weapon_chrono_cithara_i00",
+      "path": "res://assets/client_icons/weapon_chrono_cithara_i00.png",
+      "sha256": "a61b1703b97997d9671eb1f6ab18e618e15b41d25cd1174e6208a3925cc1388f"
+    },
+    "icon.weapon_club_i00": {
+      "object": "weapon_club_i00",
+      "path": "res://assets/client_icons/weapon_club_i00.png",
+      "sha256": "ee275c7e5ae6f0f45448dfe2236e74b53c8968f89ee4d0d999909f895a9c4b8b"
+    },
+    "icon.weapon_club_of_nature_i00": {
+      "object": "weapon_club_of_nature_i00",
+      "path": "res://assets/client_icons/weapon_club_of_nature_i00.png",
+      "sha256": "f881e2f6b7bfe9e3e3d68ad31da8dc08e04196092882b78662c966ca0d4794f9"
+    },
+    "icon.weapon_club_of_nature_i01": {
+      "object": "weapon_club_of_nature_i01",
+      "path": "res://assets/client_icons/weapon_club_of_nature_i01.png",
+      "sha256": "957c739f18818f76ec586d01574b57d8b069d4a5587811f2cfe99e24fea00a2b"
+    },
+    "icon.weapon_composition_bow_i00": {
+      "object": "weapon_composition_bow_i00",
+      "path": "res://assets/client_icons/weapon_composition_bow_i00.png",
+      "sha256": "7324cb308e58e92387097e3f34743f6d5a0291abe18bc25336fa03bbd24402df"
+    },
+    "icon.weapon_crimson_sword_i00": {
+      "object": "weapon_crimson_sword_i00",
+      "path": "res://assets/client_icons/weapon_crimson_sword_i00.png",
+      "sha256": "219de9ad05f8c595b94e4e9c551b5544e88ce88e5f9df1db5cbe7abc849269fb"
+    },
+    "icon.weapon_crimson_sword_i01": {
+      "object": "weapon_crimson_sword_i01",
+      "path": "res://assets/client_icons/weapon_crimson_sword_i01.png",
+      "sha256": "5c1f08398e6ce7a19c4afb61391a706d665fb7966ac7ff451d42ce4abe189b6d"
+    },
+    "icon.weapon_crucifix_of_blessing_i00": {
+      "object": "weapon_crucifix_of_blessing_i00",
+      "path": "res://assets/client_icons/weapon_crucifix_of_blessing_i00.png",
+      "sha256": "8db781ab8e72aa492ba8e63f4d03524423e5e0a0246486a57f2891003f876882"
+    },
+    "icon.weapon_crucifix_of_blood_i00": {
+      "object": "weapon_crucifix_of_blood_i00",
+      "path": "res://assets/client_icons/weapon_crucifix_of_blood_i00.png",
+      "sha256": "25384d1ae33be048c2e19c43ab510b249645c4edddc836227f200158b6d50e1e"
+    },
+    "icon.weapon_crucifix_of_blood_i01": {
+      "object": "weapon_crucifix_of_blood_i01",
+      "path": "res://assets/client_icons/weapon_crucifix_of_blood_i01.png",
+      "sha256": "2fc55266a2610574ef891035278eb606c61a4ea88c3f3b385fd5e5ef788504da"
+    },
+    "icon.weapon_crystallized_ice_bow_i00": {
+      "object": "weapon_crystallized_ice_bow_i00",
+      "path": "res://assets/client_icons/weapon_crystallized_ice_bow_i00.png",
+      "sha256": "877bfaa05b579ab334e0db6488c2c87bd397368cfd9cf659d02d122a2cf71876"
+    },
+    "icon.weapon_crystallized_ice_bow_i01": {
+      "object": "weapon_crystallized_ice_bow_i01",
+      "path": "res://assets/client_icons/weapon_crystallized_ice_bow_i01.png",
+      "sha256": "661d796c086a585b387ef2aec3b7c47966fae9710f8cb54cdffd2adc845243e8"
+    },
+    "icon.weapon_cyclone_bow_i00": {
+      "object": "weapon_cyclone_bow_i00",
+      "path": "res://assets/client_icons/weapon_cyclone_bow_i00.png",
+      "sha256": "2d26b3230403f87ae692c5026c9ae73524298c115f7b34d11cc00505e7b0210f"
+    },
+    "icon.weapon_cyclone_bow_i01": {
+      "object": "weapon_cyclone_bow_i01",
+      "path": "res://assets/client_icons/weapon_cyclone_bow_i01.png",
+      "sha256": "3ea20aaaeb0301f53514ced89d8d42387cabbbb938a5b074191029ad9f2188b2"
+    },
+    "icon.weapon_dark_elven_bow_i00": {
+      "object": "weapon_dark_elven_bow_i00",
+      "path": "res://assets/client_icons/weapon_dark_elven_bow_i00.png",
+      "sha256": "e81ba2bb9ef94118d72d7c5fa287a73170606ae2ed4e277ebaa2ec91679369cc"
+    },
+    "icon.weapon_dark_elven_bow_i01": {
+      "object": "weapon_dark_elven_bow_i01",
+      "path": "res://assets/client_icons/weapon_dark_elven_bow_i01.png",
+      "sha256": "51cbdf1f0797bf464d92a2d5a61e1a551efc607225db04915398d4bc6d84e10b"
+    },
+    "icon.weapon_dark_elven_long_bow_i00": {
+      "object": "weapon_dark_elven_long_bow_i00",
+      "path": "res://assets/client_icons/weapon_dark_elven_long_bow_i00.png",
+      "sha256": "7a670a52e977414c0e15d897ff4cbf409dda166d02f4efb0edeed25d79a87963"
+    },
+    "icon.weapon_dark_elven_long_bow_i01": {
+      "object": "weapon_dark_elven_long_bow_i01",
+      "path": "res://assets/client_icons/weapon_dark_elven_long_bow_i01.png",
+      "sha256": "10f4331c157705fd02fedb92e5c32b7fb45907f2b755cbdd9c346e94684b957a"
+    },
+    "icon.weapon_dark_legions_edge_i00": {
+      "object": "weapon_dark_legions_edge_i00",
+      "path": "res://assets/client_icons/weapon_dark_legions_edge_i00.png",
+      "sha256": "9bb38cef4b9c1a2af90e6422e87bc4b25513a99274107877e3a4082cf7cf707d"
+    },
+    "icon.weapon_dark_legions_edge_i01": {
+      "object": "weapon_dark_legions_edge_i01",
+      "path": "res://assets/client_icons/weapon_dark_legions_edge_i01.png",
+      "sha256": "2e1ced83bcbbc623b7fec033182f4116cf3d28d03a68891ccd6e5542018372b2"
+    },
+    "icon.weapon_deathbreath_sword_i00": {
+      "object": "weapon_deathbreath_sword_i00",
+      "path": "res://assets/client_icons/weapon_deathbreath_sword_i00.png",
+      "sha256": "a11497feefc5b8a723656700d7acc996c293e31395a42deb44f00f4f12945be5"
+    },
+    "icon.weapon_deathbreath_sword_i01": {
+      "object": "weapon_deathbreath_sword_i01",
+      "path": "res://assets/client_icons/weapon_deathbreath_sword_i01.png",
+      "sha256": "2c1b53339d3ca95db16be99584d8b4b2c73130c1024178ffbbb5701a17036317"
+    },
+    "icon.weapon_demon_fangs_i00": {
+      "object": "weapon_demon_fangs_i00",
+      "path": "res://assets/client_icons/weapon_demon_fangs_i00.png",
+      "sha256": "0db107aa614d10285e8a9abe28ffc3804d613c78b759a152a1e4f5b845ddd346"
+    },
+    "icon.weapon_demon_fangs_i01": {
+      "object": "weapon_demon_fangs_i01",
+      "path": "res://assets/client_icons/weapon_demon_fangs_i01.png",
+      "sha256": "2788adc7d27208998f4c8c32a0739e42d121b5c119d3549f623a611b6cbf87bf"
+    },
+    "icon.weapon_divine_tome_i00": {
+      "object": "weapon_divine_tome_i00",
+      "path": "res://assets/client_icons/weapon_divine_tome_i00.png",
+      "sha256": "0ece9cb804b8f75f982311c7939d53f4cd2dfeeab70f326c29d67d5c5989d19d"
+    },
+    "icon.weapon_divine_tome_i01": {
+      "object": "weapon_divine_tome_i01",
+      "path": "res://assets/client_icons/weapon_divine_tome_i01.png",
+      "sha256": "2ff64f970d075ae4e959c64c1798eec1311a338a9fd265e306a1f2d7797fa4a5"
+    },
+    "icon.weapon_doom_hammer_i00": {
+      "object": "weapon_doom_hammer_i00",
+      "path": "res://assets/client_icons/weapon_doom_hammer_i00.png",
+      "sha256": "c409a466ae0df823b467afb77ad2c90ddea6dd05860fd5ee03679a678a0e462e"
+    },
+    "icon.weapon_doom_hammer_i01": {
+      "object": "weapon_doom_hammer_i01",
+      "path": "res://assets/client_icons/weapon_doom_hammer_i01.png",
+      "sha256": "f8046fb5ce5aa224ca2dd7e12b94e2b1f2f30f4c7d4ab561803606437a5ae253"
+    },
+    "icon.weapon_dragon_flame_head_i00": {
+      "object": "weapon_dragon_flame_head_i00",
+      "path": "res://assets/client_icons/weapon_dragon_flame_head_i00.png",
+      "sha256": "927af0e27769a5fb70aacedf70c589414d564435818a029132dcdc8aa5383b08"
+    },
+    "icon.weapon_dragon_flame_head_i01": {
+      "object": "weapon_dragon_flame_head_i01",
+      "path": "res://assets/client_icons/weapon_dragon_flame_head_i01.png",
+      "sha256": "59f2a3cb7204c009426b6165318134d48812e8bad961bf1c441632f70e70cf7d"
+    },
+    "icon.weapon_eclipse_axe_i00": {
+      "object": "weapon_eclipse_axe_i00",
+      "path": "res://assets/client_icons/weapon_eclipse_axe_i00.png",
+      "sha256": "30ee4357fe971951387a78888dc4b1157cdab8a8ec09c33291a5f14dd256e14a"
+    },
+    "icon.weapon_eclipse_axe_i01": {
+      "object": "weapon_eclipse_axe_i01",
+      "path": "res://assets/client_icons/weapon_eclipse_axe_i01.png",
+      "sha256": "d164136f278417d403fd28bb726c6f9ef17321a9dea3a81e6a0a54ce1c91972c"
+    },
+    "icon.weapon_elemental_bow_i00": {
+      "object": "weapon_elemental_bow_i00",
+      "path": "res://assets/client_icons/weapon_elemental_bow_i00.png",
+      "sha256": "b4d918d98e8546c45ba9adc742f802254c25d6bf0b4088b38aeec23ac61e1b8a"
+    },
+    "icon.weapon_elemental_bow_i01": {
+      "object": "weapon_elemental_bow_i01",
+      "path": "res://assets/client_icons/weapon_elemental_bow_i01.png",
+      "sha256": "71f065c32b2c1e3aa4c0b4eaca5b4c56846fc71409e1a8674ff8517c8ec15b01"
+    },
+    "icon.weapon_elemental_sword_i00": {
+      "object": "weapon_elemental_sword_i00",
+      "path": "res://assets/client_icons/weapon_elemental_sword_i00.png",
+      "sha256": "fdaa032c01116a3ad209ab1844533e5701ac08f8483fa8b4115a718b972a9455"
+    },
+    "icon.weapon_elemental_sword_i01": {
+      "object": "weapon_elemental_sword_i01",
+      "path": "res://assets/client_icons/weapon_elemental_sword_i01.png",
+      "sha256": "25192b1904f0d5996070334e1bf7311915c7a1d6b7fcc188af993039ac92c916"
+    },
+    "icon.weapon_elven_bow_i00": {
+      "object": "weapon_elven_bow_i00",
+      "path": "res://assets/client_icons/weapon_elven_bow_i00.png",
+      "sha256": "5629e7006e8a6b05c5558051010c26871fe673d0a36cefd55e0c1af1fb7cbca5"
+    },
+    "icon.weapon_elven_bow_i01": {
+      "object": "weapon_elven_bow_i01",
+      "path": "res://assets/client_icons/weapon_elven_bow_i01.png",
+      "sha256": "fdf00234470d0601ee940b863d1491c20beb50c9b2270919ebb0de72d984f022"
+    },
+    "icon.weapon_elven_long_sword_i00": {
+      "object": "weapon_elven_long_sword_i00",
+      "path": "res://assets/client_icons/weapon_elven_long_sword_i00.png",
+      "sha256": "faf73c1745f31316d8d6b0478e77821d9dff2511f178058534a051a3850eaf1d"
+    },
+    "icon.weapon_elven_long_sword_i01": {
+      "object": "weapon_elven_long_sword_i01",
+      "path": "res://assets/client_icons/weapon_elven_long_sword_i01.png",
+      "sha256": "18d9440dc6a7e4ead964ecaade935d88a2140e453024aa7653f4542d8fd095aa"
+    },
+    "icon.weapon_elven_sword_i00": {
+      "object": "weapon_elven_sword_i00",
+      "path": "res://assets/client_icons/weapon_elven_sword_i00.png",
+      "sha256": "d5d58c1b25c37a6bb93de2b69708ae45e4bf15d6ea36ed4c0c8eec66179c139c"
+    },
+    "icon.weapon_elven_sword_i01": {
+      "object": "weapon_elven_sword_i01",
+      "path": "res://assets/client_icons/weapon_elven_sword_i01.png",
+      "sha256": "8923abb437baeee164f30f4b87eb95277d41fd05fb676adc2bc60b50a9569e2c"
+    },
+    "icon.weapon_eminence_bow_i00": {
+      "object": "weapon_eminence_bow_i00",
+      "path": "res://assets/client_icons/weapon_eminence_bow_i00.png",
+      "sha256": "5aef1777c3314585a9cc32d54ab31324d9c591418beef0481be4dc57fa8c20cf"
+    },
+    "icon.weapon_eminence_bow_i01": {
+      "object": "weapon_eminence_bow_i01",
+      "path": "res://assets/client_icons/weapon_eminence_bow_i01.png",
+      "sha256": "28d2d002b13d260eca20831aef1a41c4c70e8d692bcdc1cee6623f6f75da0b96"
+    },
+    "icon.weapon_eye_of_soul_i00": {
+      "object": "weapon_eye_of_soul_i00",
+      "path": "res://assets/client_icons/weapon_eye_of_soul_i00.png",
+      "sha256": "9fd662607d36c9ab64b25ae9f25e73435aef511aa10ecd1508314a215633a023"
+    },
+    "icon.weapon_eye_of_soul_i01": {
+      "object": "weapon_eye_of_soul_i01",
+      "path": "res://assets/client_icons/weapon_eye_of_soul_i01.png",
+      "sha256": "27d5dd8ebee4e921646145f09fd0f21099885d110e85dad7229fce4f18d4bd66"
+    },
+    "icon.weapon_falchion_i00": {
+      "object": "weapon_falchion_i00",
+      "path": "res://assets/client_icons/weapon_falchion_i00.png",
+      "sha256": "587c74552c56a5270bf51013040430a6e6eb863f196182292963616914adaacd"
+    },
+    "icon.weapon_gastraphetes_i00": {
+      "object": "weapon_gastraphetes_i00",
+      "path": "res://assets/client_icons/weapon_gastraphetes_i00.png",
+      "sha256": "d95087c848286842dd5b4ae5f35d649e181492a8358975212e4d73350694314b"
+    },
+    "icon.weapon_gastraphetes_i01": {
+      "object": "weapon_gastraphetes_i01",
+      "path": "res://assets/client_icons/weapon_gastraphetes_i01.png",
+      "sha256": "be05f62afb36d8db53f6d37056b6cb839bafe24675b7678e57f54d034370989d"
+    },
+    "icon.weapon_gladius_i00": {
+      "object": "weapon_gladius_i00",
+      "path": "res://assets/client_icons/weapon_gladius_i00.png",
+      "sha256": "a3fec169217a620067ec099691c4995aea049c0cd9762742c0a056db0e7aaee1"
+    },
+    "icon.weapon_hand_of_cabrio_i00": {
+      "object": "weapon_hand_of_cabrio_i00",
+      "path": "res://assets/client_icons/weapon_hand_of_cabrio_i00.png",
+      "sha256": "61a74c50acd93ab84535c1e84b8d3ab897a7b76a51e251b54eed8481f8315a47"
+    },
+    "icon.weapon_hand_of_cabrio_i01": {
+      "object": "weapon_hand_of_cabrio_i01",
+      "path": "res://assets/client_icons/weapon_hand_of_cabrio_i01.png",
+      "sha256": "1aefc44f80796e586855b69f8744e7ab62a0669b5f74442b2fff92435b46c9b7"
+    },
+    "icon.weapon_handmade_sword_i00": {
+      "object": "weapon_handmade_sword_i00",
+      "path": "res://assets/client_icons/weapon_handmade_sword_i00.png",
+      "sha256": "e9ddfc686a54417cc3917fd818a9abcde1262bfb631e6caae0aa66dc3509c51e"
+    },
+    "icon.weapon_hazard_bow_i00": {
+      "object": "weapon_hazard_bow_i00",
+      "path": "res://assets/client_icons/weapon_hazard_bow_i00.png",
+      "sha256": "d6c884c89d96a0f3e1c28e0d2934fef47f2eefa68f3d2b363c882b5d7d0bfecc"
+    },
+    "icon.weapon_hazard_bow_i01": {
+      "object": "weapon_hazard_bow_i01",
+      "path": "res://assets/client_icons/weapon_hazard_bow_i01.png",
+      "sha256": "2eade383a4b9390898aa039df860d3fd3ce967764a1f9641be98c202a136a7ed"
+    },
+    "icon.weapon_homunkuluss_sword_i00": {
+      "object": "weapon_homunkuluss_sword_i00",
+      "path": "res://assets/client_icons/weapon_homunkuluss_sword_i00.png",
+      "sha256": "7937cac9bd1d8ea78230fce28540c1595f8e78dcf8fc8985e44217e54f8d60ff"
+    },
+    "icon.weapon_homunkuluss_sword_i01": {
+      "object": "weapon_homunkuluss_sword_i01",
+      "path": "res://assets/client_icons/weapon_homunkuluss_sword_i01.png",
+      "sha256": "beb7492fcb72e0ea91c131adbc4c08d52ebaac9a0716826c28b35313a921ae06"
+    },
+    "icon.weapon_horn_of_glory_i00": {
+      "object": "weapon_horn_of_glory_i00",
+      "path": "res://assets/client_icons/weapon_horn_of_glory_i00.png",
+      "sha256": "0247ff70ab814bf33d556bdaba5c4ba7195c01f3f1b88854a7b08584f6242a3f"
+    },
+    "icon.weapon_horn_of_glory_i01": {
+      "object": "weapon_horn_of_glory_i01",
+      "path": "res://assets/client_icons/weapon_horn_of_glory_i01.png",
+      "sha256": "ef3f88cdaae0c04cc1c58c1bc991d1f1f796ea602b5fe16e932dff9a21e35d2c"
+    },
+    "icon.weapon_hunting_bow_i00": {
+      "object": "weapon_hunting_bow_i00",
+      "path": "res://assets/client_icons/weapon_hunting_bow_i00.png",
+      "sha256": "4a8c21623e0d7e1357f33a3b3ff0c5e7ceddd984ad3098b0786040d0a6978822"
+    },
+    "icon.weapon_katana_i00": {
+      "object": "weapon_katana_i00",
+      "path": "res://assets/client_icons/weapon_katana_i00.png",
+      "sha256": "f98deef28661446519c3de9629a5816ccd16e64249c19a8a1f25b2b64266c534"
+    },
+    "icon.weapon_katana_i01": {
+      "object": "weapon_katana_i01",
+      "path": "res://assets/client_icons/weapon_katana_i01.png",
+      "sha256": "ab207429a11836ed446d8097d95751ee1c46208c77c831916ecd23d3b2ed142e"
+    },
+    "icon.weapon_knights_sword_i00": {
+      "object": "weapon_knights_sword_i00",
+      "path": "res://assets/client_icons/weapon_knights_sword_i00.png",
+      "sha256": "e5675fcd791e43cd90f5c795d1cbf2ea56887fada4603fce980e7205b047abab"
+    },
+    "icon.weapon_knights_sword_i01": {
+      "object": "weapon_knights_sword_i01",
+      "path": "res://assets/client_icons/weapon_knights_sword_i01.png",
+      "sha256": "56999e8177d1098ef9137072ef42995c1657faf6956c78179eeb52c9c23b1538"
+    },
+    "icon.weapon_krono_bow_i00": {
+      "object": "weapon_krono_bow_i00",
+      "path": "res://assets/client_icons/weapon_krono_bow_i00.png",
+      "sha256": "2f57dc57ecb3bf64746584d82b2e61c2384c369c1d7645d558144993903728c6"
+    },
+    "icon.weapon_kshanberk_i00": {
+      "object": "weapon_kshanberk_i00",
+      "path": "res://assets/client_icons/weapon_kshanberk_i00.png",
+      "sha256": "dc33a6f18545b32113c3d1aec296f6d42daba8d7fa956f8e2d66653b66887432"
+    },
+    "icon.weapon_kshanberk_i01": {
+      "object": "weapon_kshanberk_i01",
+      "path": "res://assets/client_icons/weapon_kshanberk_i01.png",
+      "sha256": "76d881f3e794dfe7042d8fdda2f8a7b3f76bf747b929c0dc170c2f4454fe78ae"
+    },
+    "icon.weapon_life_stick_i00": {
+      "object": "weapon_life_stick_i00",
+      "path": "res://assets/client_icons/weapon_life_stick_i00.png",
+      "sha256": "b590fd370c0e8ee35bcee90664877f5371359892cc3cb672bfd4e4f06c24ea2c"
+    },
+    "icon.weapon_life_stick_i01": {
+      "object": "weapon_life_stick_i01",
+      "path": "res://assets/client_icons/weapon_life_stick_i01.png",
+      "sha256": "0e1a46f8ac51fb37293a1364c1bcc1dc57eeb0b9045f819bb50dc56cb8643343"
+    },
+    "icon.weapon_long_bow_i00": {
+      "object": "weapon_long_bow_i00",
+      "path": "res://assets/client_icons/weapon_long_bow_i00.png",
+      "sha256": "33d9e88903802b9f1658eefcf0f7d5d18a6325f934884dd7d8f51e28ba84933d"
+    },
+    "icon.weapon_long_bow_i01": {
+      "object": "weapon_long_bow_i01",
+      "path": "res://assets/client_icons/weapon_long_bow_i01.png",
+      "sha256": "4b8d659dee8628438dfbf6e395ae24a54a0008b2c548838a441468edc8bd41a9"
+    },
+    "icon.weapon_mace_of_judgment_i00": {
+      "object": "weapon_mace_of_judgment_i00",
+      "path": "res://assets/client_icons/weapon_mace_of_judgment_i00.png",
+      "sha256": "e95771f11c2edb343c2d0a606a3e6a41b0286791600f4af2ce7f87c3c86616ad"
+    },
+    "icon.weapon_mace_of_judgment_i01": {
+      "object": "weapon_mace_of_judgment_i01",
+      "path": "res://assets/client_icons/weapon_mace_of_judgment_i01.png",
+      "sha256": "ed581b57da64eaf0dcf757fb88e996b99c38512861ab6beb996801ed8b4f4a49"
+    },
+    "icon.weapon_mace_of_miracle_i00": {
+      "object": "weapon_mace_of_miracle_i00",
+      "path": "res://assets/client_icons/weapon_mace_of_miracle_i00.png",
+      "sha256": "68bad8e5772859e61389889fe81eda3e4b7aa916277c2b139419b145c0ee3a9a"
+    },
+    "icon.weapon_mace_of_miracle_i01": {
+      "object": "weapon_mace_of_miracle_i01",
+      "path": "res://assets/client_icons/weapon_mace_of_miracle_i01.png",
+      "sha256": "a92f11f5be1b3bb9bf9bffd9350bc63e519107100ea7d2bdf0834c9e5dfeeea2"
+    },
+    "icon.weapon_mace_of_prayer_i00": {
+      "object": "weapon_mace_of_prayer_i00",
+      "path": "res://assets/client_icons/weapon_mace_of_prayer_i00.png",
+      "sha256": "d8176ac9f5c635b8b44f4780df2676c2d6321bdab40e4d4a659d2dd4e803fc14"
+    },
+    "icon.weapon_mace_of_prayer_i01": {
+      "object": "weapon_mace_of_prayer_i01",
+      "path": "res://assets/client_icons/weapon_mace_of_prayer_i01.png",
+      "sha256": "9a845c561b8b47536580bfa0ea5fc48f2f55e6ff0c4511d0f6c130c8ccb608d6"
+    },
+    "icon.weapon_mace_of_priest_i00": {
+      "object": "weapon_mace_of_priest_i00",
+      "path": "res://assets/client_icons/weapon_mace_of_priest_i00.png",
+      "sha256": "993021eb0e5cd9e3b792130878b1ce85674d0b9c024fa1e11f8d967bcd0c5ec7"
+    },
+    "icon.weapon_mace_of_priest_i01": {
+      "object": "weapon_mace_of_priest_i01",
+      "path": "res://assets/client_icons/weapon_mace_of_priest_i01.png",
+      "sha256": "e963b838b63fef96c38c34afb1bf27d3f6db07dd9bf77cf9f655314335f7cece"
+    },
+    "icon.weapon_mace_of_underworld_i00": {
+      "object": "weapon_mace_of_underworld_i00",
+      "path": "res://assets/client_icons/weapon_mace_of_underworld_i00.png",
+      "sha256": "b3a392ccfbfc139679ed5cc7c1f145d8fce1ee766b020945005fa99456c34149"
+    },
+    "icon.weapon_mace_of_underworld_i01": {
+      "object": "weapon_mace_of_underworld_i01",
+      "path": "res://assets/client_icons/weapon_mace_of_underworld_i01.png",
+      "sha256": "d6ea2ce28164344b62467245c203f54ddb4fb21e224526ac225ba6041a161ca5"
+    },
+    "icon.weapon_monster_i00": {
+      "object": "weapon_monster_i00",
+      "path": "res://assets/client_icons/weapon_monster_i00.png",
+      "sha256": "f6401460e2fcc5f3180e865722d3d13f3d67a9cdba5f49c53e2d33e6524940e5"
+    },
+    "icon.weapon_mystery_sword_i00": {
+      "object": "weapon_mystery_sword_i00",
+      "path": "res://assets/client_icons/weapon_mystery_sword_i00.png",
+      "sha256": "db93c58249fa97f7d8f769c114bffb984a9ff52d414bdeaaa02bea6b862e4260"
+    },
+    "icon.weapon_mystery_sword_i01": {
+      "object": "weapon_mystery_sword_i01",
+      "path": "res://assets/client_icons/weapon_mystery_sword_i01.png",
+      "sha256": "6dc1314f88605d8d12c978e4f62bed320973e53818a18c527e8cb75c08aeed59"
+    },
+    "icon.weapon_needle_wolverine_i00": {
+      "object": "weapon_needle_wolverine_i00",
+      "path": "res://assets/client_icons/weapon_needle_wolverine_i00.png",
+      "sha256": "7d68f9e3eb5a4cec4a7092137bfbeb6704e79fab0b6128a76a832cc9407b5f57"
+    },
+    "icon.weapon_nirvana_axe_i00": {
+      "object": "weapon_nirvana_axe_i00",
+      "path": "res://assets/client_icons/weapon_nirvana_axe_i00.png",
+      "sha256": "3ff24e1a5fff1361cdc2b0316e8145ccdf8be39bb9d56da36fd8536090a9c551"
+    },
+    "icon.weapon_nirvana_axe_i01": {
+      "object": "weapon_nirvana_axe_i01",
+      "path": "res://assets/client_icons/weapon_nirvana_axe_i01.png",
+      "sha256": "b492b2e583c25690c49f941ed711026c07c917941f4d6ca4c6d96fcc64802ff3"
+    },
+    "icon.weapon_noble_elven_bow_i00": {
+      "object": "weapon_noble_elven_bow_i00",
+      "path": "res://assets/client_icons/weapon_noble_elven_bow_i00.png",
+      "sha256": "3cc3a5b3615b12c975a6caf0e894fcbcbdf349fdbb3876af747dbf52c22e250b"
+    },
+    "icon.weapon_noble_elven_bow_i01": {
+      "object": "weapon_noble_elven_bow_i01",
+      "path": "res://assets/client_icons/weapon_noble_elven_bow_i01.png",
+      "sha256": "935e73088709267be3816c3dce6adfc645d471fd4be5de5fac23d00531f386ea"
+    },
+    "icon.weapon_orcish_sword_i00": {
+      "object": "weapon_orcish_sword_i00",
+      "path": "res://assets/client_icons/weapon_orcish_sword_i00.png",
+      "sha256": "cacfafff227ee35018429e2fc5fbe17691dfed3ba662be4038066ef6ed5edbfb"
+    },
+    "icon.weapon_phantom_sword_i00": {
+      "object": "weapon_phantom_sword_i00",
+      "path": "res://assets/client_icons/weapon_phantom_sword_i00.png",
+      "sha256": "dff079688feaea0dcab67ef1a59c4770d1a9b6581ede9808312e69ca4085a03c"
+    },
+    "icon.weapon_proof_of_revenge_i00": {
+      "object": "weapon_proof_of_revenge_i00",
+      "path": "res://assets/client_icons/weapon_proof_of_revenge_i00.png",
+      "sha256": "c185c14fa885a12ce3fd16e5ea9f623f0018fc201b5a61d7f98ef7c6d6c8f62f"
+    },
+    "icon.weapon_proof_of_revenge_i01": {
+      "object": "weapon_proof_of_revenge_i01",
+      "path": "res://assets/client_icons/weapon_proof_of_revenge_i01.png",
+      "sha256": "d77308c9bcfadc07b69fdd6a9e824ac77b59860a50f19075264ead50b8461242"
+    },
+    "icon.weapon_raid_sword_i00": {
+      "object": "weapon_raid_sword_i00",
+      "path": "res://assets/client_icons/weapon_raid_sword_i00.png",
+      "sha256": "5d64e56eb3be81025c75ea82f00b9ff14dd729806da5a43852084f22d1cc8281"
+    },
+    "icon.weapon_raid_sword_i01": {
+      "object": "weapon_raid_sword_i01",
+      "path": "res://assets/client_icons/weapon_raid_sword_i01.png",
+      "sha256": "6a49df4aae969283a3a421572ee02c155ce1be4a4576ab57c461b4f3bdb22bc0"
+    },
+    "icon.weapon_saber_i00": {
+      "object": "weapon_saber_i00",
+      "path": "res://assets/client_icons/weapon_saber_i00.png",
+      "sha256": "4c62c432ae6e5a69036d8077eaca855f7b35773bad8f3e1c93fcb3f8d9e7fb30"
+    },
+    "icon.weapon_saber_i01": {
+      "object": "weapon_saber_i01",
+      "path": "res://assets/client_icons/weapon_saber_i01.png",
+      "sha256": "8bf094881b9df66821054bb5c0cc6f2ad87cb49b90487cbee4b567780f73bde3"
+    },
+    "icon.weapon_samurai_longsword_i00": {
+      "object": "weapon_samurai_longsword_i00",
+      "path": "res://assets/client_icons/weapon_samurai_longsword_i00.png",
+      "sha256": "af92de49204bc53f90bb5b8fa9f68f6f4f651336a71de669871dcb134588d114"
+    },
+    "icon.weapon_samurai_old_longsword_i00": {
+      "object": "weapon_samurai_old_longsword_i00",
+      "path": "res://assets/client_icons/weapon_samurai_old_longsword_i00.png",
+      "sha256": "226ae7855a5c36b0b56cde56f07ec9907824951bf2cf949c5d0a2f09ea4bbed8"
+    },
+    "icon.weapon_scroll_of_wisdom_i00": {
+      "object": "weapon_scroll_of_wisdom_i00",
+      "path": "res://assets/client_icons/weapon_scroll_of_wisdom_i00.png",
+      "sha256": "dae6d286d2672ae5755a38297f810e7207440be8cd848f51e0d9ae74942c43e2"
+    },
+    "icon.weapon_scroll_of_wisdom_i01": {
+      "object": "weapon_scroll_of_wisdom_i01",
+      "path": "res://assets/client_icons/weapon_scroll_of_wisdom_i01.png",
+      "sha256": "e08b454af3c23de09d49d760f02e86d31ed4c43e47c804b9cb48e7eceadeaf3b"
+    },
+    "icon.weapon_shamshir_i00": {
+      "object": "weapon_shamshir_i00",
+      "path": "res://assets/client_icons/weapon_shamshir_i00.png",
+      "sha256": "63eea9bde5e4ce55dbdd8345c6eee3ca35433a94d79fdcb29b0d08fd542ac1b3"
+    },
+    "icon.weapon_shamshir_i01": {
+      "object": "weapon_shamshir_i01",
+      "path": "res://assets/client_icons/weapon_shamshir_i01.png",
+      "sha256": "cefdbce3b9128f4f603cef299c27728f3f802930aec3e73bd420c805a36ca2c5"
+    },
+    "icon.weapon_shyid_bow_i00": {
+      "object": "weapon_shyid_bow_i00",
+      "path": "res://assets/client_icons/weapon_shyid_bow_i00.png",
+      "sha256": "4f05a9f9fdd80c1e8f34aa442ff959095550b265e48ffef3444068a3716acf4f"
+    },
+    "icon.weapon_shyid_bow_i01": {
+      "object": "weapon_shyid_bow_i01",
+      "path": "res://assets/client_icons/weapon_shyid_bow_i01.png",
+      "sha256": "e0dbee82a1f92634526e0adfa65ef8cf5b02a86b3d4da660f9c4df30628b7afe"
+    },
+    "icon.weapon_sirr_blade_i00": {
+      "object": "weapon_sirr_blade_i00",
+      "path": "res://assets/client_icons/weapon_sirr_blade_i00.png",
+      "sha256": "b0bbad51c466e6abac1457176d067252d6d29880c7bfa150e5ce0f7009aa15d9"
+    },
+    "icon.weapon_sirr_blade_i01": {
+      "object": "weapon_sirr_blade_i01",
+      "path": "res://assets/client_icons/weapon_sirr_blade_i01.png",
+      "sha256": "4d54c2ac74b490e895b27efe71cb8531267dc7bccca488eb25deebcaacd286e6"
+    },
+    "icon.weapon_small_sword_i00": {
+      "object": "weapon_small_sword_i00",
+      "path": "res://assets/client_icons/weapon_small_sword_i00.png",
+      "sha256": "3fab831ac289bf087a2d6e6576d31815d5de431853e5541df26b45376d09ace3"
+    },
+    "icon.weapon_soul_bow_i00": {
+      "object": "weapon_soul_bow_i00",
+      "path": "res://assets/client_icons/weapon_soul_bow_i00.png",
+      "sha256": "7d112bc259951df9632c1235bf283a49709937bc104c73d547015a3c7fe3bc74"
+    },
+    "icon.weapon_soul_bow_i01": {
+      "object": "weapon_soul_bow_i01",
+      "path": "res://assets/client_icons/weapon_soul_bow_i01.png",
+      "sha256": "e40daa86d1c313739e97c2bc071744454e13c575b78f3228e98dac2715b9ded6"
+    },
+    "icon.weapon_spell_breaker_i00": {
+      "object": "weapon_spell_breaker_i00",
+      "path": "res://assets/client_icons/weapon_spell_breaker_i00.png",
+      "sha256": "fbe730a6953000c9dbbb517a204b8bf4473c0e185ef302d1f5ba710002c8c290"
+    },
+    "icon.weapon_spell_breaker_i01": {
+      "object": "weapon_spell_breaker_i01",
+      "path": "res://assets/client_icons/weapon_spell_breaker_i01.png",
+      "sha256": "0281df00080baf816d51875b2363b611ab203616f1d15a235b946c5583708154"
+    },
+    "icon.weapon_spinebone_sword_i00": {
+      "object": "weapon_spinebone_sword_i00",
+      "path": "res://assets/client_icons/weapon_spinebone_sword_i00.png",
+      "sha256": "1f3290f8c29bcd695e040951538f9ba197ee79fc91a5f36a7049df99622f5249"
+    },
+    "icon.weapon_spinebone_sword_i01": {
+      "object": "weapon_spinebone_sword_i01",
+      "path": "res://assets/client_icons/weapon_spinebone_sword_i01.png",
+      "sha256": "74a6a9dfd6dde782009dcdb28c0ffe38d7fe7e5a8245a70c202553b0e5cc75db"
+    },
+    "icon.weapon_spirits_sword_i00": {
+      "object": "weapon_spirits_sword_i00",
+      "path": "res://assets/client_icons/weapon_spirits_sword_i00.png",
+      "sha256": "0e90760c9905c50beafc37b62b87725c8b4449cf8cb0c787ce509ab829f8423f"
+    },
+    "icon.weapon_spirits_sword_i01": {
+      "object": "weapon_spirits_sword_i01",
+      "path": "res://assets/client_icons/weapon_spirits_sword_i01.png",
+      "sha256": "5621852719dd198c57543d6f85824c8d0dabbb6c83b51b9d59d89b6e9e508118"
+    },
+    "icon.weapon_squires_sword_i00": {
+      "object": "weapon_squires_sword_i00",
+      "path": "res://assets/client_icons/weapon_squires_sword_i00.png",
+      "sha256": "beedc39af95233c266a427c9b63656a149b6a44e73be26f3a0812074d596bcac"
+    },
+    "icon.weapon_stick_of_eternity_i00": {
+      "object": "weapon_stick_of_eternity_i00",
+      "path": "res://assets/client_icons/weapon_stick_of_eternity_i00.png",
+      "sha256": "3c7f63c27953a0a303fb037eef96ac48e48f27d7da282826a389033baf1740ef"
+    },
+    "icon.weapon_stick_of_eternity_i01": {
+      "object": "weapon_stick_of_eternity_i01",
+      "path": "res://assets/client_icons/weapon_stick_of_eternity_i01.png",
+      "sha256": "1f7dba36c79ee1f301a23121a199e70f9ed694496a8fb9c11ab569d894d00b5e"
+    },
+    "icon.weapon_stick_of_faith_i00": {
+      "object": "weapon_stick_of_faith_i00",
+      "path": "res://assets/client_icons/weapon_stick_of_faith_i00.png",
+      "sha256": "c8d89f04aad0adfc68c6ac67bb9fa0fa734da393df3325ecccf26324e33a8c7e"
+    },
+    "icon.weapon_stick_of_faith_i01": {
+      "object": "weapon_stick_of_faith_i01",
+      "path": "res://assets/client_icons/weapon_stick_of_faith_i01.png",
+      "sha256": "63eada065481c4d4e1bd4c7cd28e6558261c1ab8a4d3ea99175dad783aeccf1c"
+    },
+    "icon.weapon_stormbringer_i00": {
+      "object": "weapon_stormbringer_i00",
+      "path": "res://assets/client_icons/weapon_stormbringer_i00.png",
+      "sha256": "a71cd539c1dc07ed752efbd8df9f99f392d7bf2a08807785c2c1314e4917c384"
+    },
+    "icon.weapon_stormbringer_i01": {
+      "object": "weapon_stormbringer_i01",
+      "path": "res://assets/client_icons/weapon_stormbringer_i01.png",
+      "sha256": "afbbd9fca5b7ebe8da03177b86b145a83941639f22048b9129ed18a0adfa2498"
+    },
+    "icon.weapon_strengthening_bow_i00": {
+      "object": "weapon_strengthening_bow_i00",
+      "path": "res://assets/client_icons/weapon_strengthening_bow_i00.png",
+      "sha256": "5540f3597b8394208f09cb218ce9d3bd6a1e6283156159e79d938ba334fad605"
+    },
+    "icon.weapon_strengthening_bow_i01": {
+      "object": "weapon_strengthening_bow_i01",
+      "path": "res://assets/client_icons/weapon_strengthening_bow_i01.png",
+      "sha256": "4ca29462635cb077c78d1b0920b1957b48e4f4b25ed27740b896ed6295180919"
+    },
+    "icon.weapon_strengthening_long_bow_i00": {
+      "object": "weapon_strengthening_long_bow_i00",
+      "path": "res://assets/client_icons/weapon_strengthening_long_bow_i00.png",
+      "sha256": "21fca55b1a7adc950501b70f21c03e9c64d406309d263dec2d8db2fcf1b96019"
+    },
+    "icon.weapon_strengthening_long_bow_i01": {
+      "object": "weapon_strengthening_long_bow_i01",
+      "path": "res://assets/client_icons/weapon_strengthening_long_bow_i01.png",
+      "sha256": "08670fff44f8957d630ccec562bdb83cd033e735ce905d30449add1ae6157c99"
+    },
+    "icon.weapon_sword_of_damascus_i00": {
+      "object": "weapon_sword_of_damascus_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_damascus_i00.png",
+      "sha256": "8df798d99695adbf43fcbe792ad3d887e57df05b9c2c186140a9fbced977dfbd"
+    },
+    "icon.weapon_sword_of_damascus_i01": {
+      "object": "weapon_sword_of_damascus_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_damascus_i01.png",
+      "sha256": "d9bb802440bdda93ebfdd6a56f3f62542e9a8e8dfe83549ba1a221bb11caff5d"
+    },
+    "icon.weapon_sword_of_delusion_i00": {
+      "object": "weapon_sword_of_delusion_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_delusion_i00.png",
+      "sha256": "95f5e5049ac9e769e626d734a62e212181f30124c73275c9e88bbc548a718b27"
+    },
+    "icon.weapon_sword_of_delusion_i01": {
+      "object": "weapon_sword_of_delusion_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_delusion_i01.png",
+      "sha256": "64dd1c29f0cd2dab468bf5240c302e5fa3f481e4e3d9555910039fb60276c01c"
+    },
+    "icon.weapon_sword_of_eclipse_i00": {
+      "object": "weapon_sword_of_eclipse_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_eclipse_i00.png",
+      "sha256": "754fed253221fc6de94f95ed303c237ef13aaca4761532a20e200753a3d6f293"
+    },
+    "icon.weapon_sword_of_eclipse_i01": {
+      "object": "weapon_sword_of_eclipse_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_eclipse_i01.png",
+      "sha256": "ec2ac46985f939d198b63ef444ad8f5200435d81dcbe6559c1cedd8bdf7b9c72"
+    },
+    "icon.weapon_sword_of_limit_i00": {
+      "object": "weapon_sword_of_limit_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_limit_i00.png",
+      "sha256": "52f2e578ca06e8e9e31b058979233c03dfe189b2b7d4b7c71bc3c26a4af15bea"
+    },
+    "icon.weapon_sword_of_limit_i01": {
+      "object": "weapon_sword_of_limit_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_limit_i01.png",
+      "sha256": "bcb2de91a2635124c90dd0d84183c3cc19fb3983bee8cea03939ca308a845832"
+    },
+    "icon.weapon_sword_of_magic_fog_i00": {
+      "object": "weapon_sword_of_magic_fog_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_magic_fog_i00.png",
+      "sha256": "62f67d31ec088e8c2de6ae67f6d0da2cc41987becd7d491636c642ffc3a2f3f3"
+    },
+    "icon.weapon_sword_of_magic_fog_i01": {
+      "object": "weapon_sword_of_magic_fog_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_magic_fog_i01.png",
+      "sha256": "c514a65bc21cb609bac13b8793c019fc8ecb299135d22addc4d548013bce3828"
+    },
+    "icon.weapon_sword_of_magic_i00": {
+      "object": "weapon_sword_of_magic_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_magic_i00.png",
+      "sha256": "043d9f55d1c8f7fdc2479011e1ac1507eda9a9033142c889fbd54a2852589c02"
+    },
+    "icon.weapon_sword_of_magic_i01": {
+      "object": "weapon_sword_of_magic_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_magic_i01.png",
+      "sha256": "e232b5d630167ad4570495ad3520ebf8be5ad9e4e0052f155608ad2c748b9bf8"
+    },
+    "icon.weapon_sword_of_miracle_i00": {
+      "object": "weapon_sword_of_miracle_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_miracle_i00.png",
+      "sha256": "a398978006202279b8ef463f931779866f325aa35a4aeae4da4a3ec109dc4cc4"
+    },
+    "icon.weapon_sword_of_miracle_i01": {
+      "object": "weapon_sword_of_miracle_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_miracle_i01.png",
+      "sha256": "7a7a3fc54b64f23ef23a40ab8cc0374fb4bedfb0dd19e04c7a9e223713d41289"
+    },
+    "icon.weapon_sword_of_mystic_i00": {
+      "object": "weapon_sword_of_mystic_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_mystic_i00.png",
+      "sha256": "4a5c89954166fcc7812a5475606c90266336a65fe4fb3944ea615bfbe0b46193"
+    },
+    "icon.weapon_sword_of_mystic_i01": {
+      "object": "weapon_sword_of_mystic_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_mystic_i01.png",
+      "sha256": "56280ec1f2c997c2ee9e47fd24b2eb09a180837858124e410e64b127aa176d37"
+    },
+    "icon.weapon_sword_of_nightmare_i00": {
+      "object": "weapon_sword_of_nightmare_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_nightmare_i00.png",
+      "sha256": "77517c9d64d231a9d0bd77bd168436dff06b927fea6a3f3b305e92b2a2b743cf"
+    },
+    "icon.weapon_sword_of_nightmare_i01": {
+      "object": "weapon_sword_of_nightmare_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_nightmare_i01.png",
+      "sha256": "5a77bf1f4b5a50bef12c8da7dd2fa38646e70f1ee74c79a1b7bc987470fb118d"
+    },
+    "icon.weapon_sword_of_occult_i00": {
+      "object": "weapon_sword_of_occult_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_occult_i00.png",
+      "sha256": "a070f6209ef95f3559c8f9ffa1e575c9e2a8b20f85b0e675e8d869f4b5df6e94"
+    },
+    "icon.weapon_sword_of_occult_i01": {
+      "object": "weapon_sword_of_occult_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_occult_i01.png",
+      "sha256": "92c883f8baf41ceb299136210cc46fcb348d18fedfbeede493727611e1aeec8a"
+    },
+    "icon.weapon_sword_of_priest_i00": {
+      "object": "weapon_sword_of_priest_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_priest_i00.png",
+      "sha256": "fc6aeebd17cbdb807086abcdb8d3b11f39b75d35bf1cee63f7dad904c57ed165"
+    },
+    "icon.weapon_sword_of_priest_i01": {
+      "object": "weapon_sword_of_priest_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_priest_i01.png",
+      "sha256": "7be8b9eafc0a0052fbf31814f447192a7c5dabe92a76bff9303c31c8124c5ec1"
+    },
+    "icon.weapon_sword_of_revolution_i00": {
+      "object": "weapon_sword_of_revolution_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_revolution_i00.png",
+      "sha256": "6d2f5e1ed77bea7991d7dfbb848fb2ff796d23dfd64ca1fcfa4e596097aa67dd"
+    },
+    "icon.weapon_sword_of_revolution_i01": {
+      "object": "weapon_sword_of_revolution_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_revolution_i01.png",
+      "sha256": "accc085374cd59b473b59124c3f56f09166c574e2b07f31f33960b378324cee6"
+    },
+    "icon.weapon_sword_of_valhalla_i00": {
+      "object": "weapon_sword_of_valhalla_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_valhalla_i00.png",
+      "sha256": "77081504d564217fb55048fbc8333db743760c4212616b6bd45ea884d097b0fd"
+    },
+    "icon.weapon_sword_of_valhalla_i01": {
+      "object": "weapon_sword_of_valhalla_i01",
+      "path": "res://assets/client_icons/weapon_sword_of_valhalla_i01.png",
+      "sha256": "c3f36eae265390757124f05162cbc7e2e0403b63bd54f4c6759568b088d6d23d"
+    },
+    "icon.weapon_sword_of_watershadow_i00": {
+      "object": "weapon_sword_of_watershadow_i00",
+      "path": "res://assets/client_icons/weapon_sword_of_watershadow_i00.png",
+      "sha256": "f9546f6f201492052efe9182da2623649d3788134a3c9bc0accb6787e19e2abc"
+    },
+    "icon.weapon_tallum_blade_i00": {
+      "object": "weapon_tallum_blade_i00",
+      "path": "res://assets/client_icons/weapon_tallum_blade_i00.png",
+      "sha256": "7fee2703346bb445d40c09faaf71ba29016aba048c4c99679817306433e0ed19"
+    },
+    "icon.weapon_tallum_blade_i01": {
+      "object": "weapon_tallum_blade_i01",
+      "path": "res://assets/client_icons/weapon_tallum_blade_i01.png",
+      "sha256": "c3f3e5d198848428663f72eb273f65aadaf93cfefd7f504aeef3c33b94b60bbb"
+    },
+    "icon.weapon_tears_of_eva_i00": {
+      "object": "weapon_tears_of_eva_i00",
+      "path": "res://assets/client_icons/weapon_tears_of_eva_i00.png",
+      "sha256": "4334b978d7a4e6c80c7fcba77831338b4b87e110bb8a501bf1a185d126cb9b36"
+    },
+    "icon.weapon_tears_of_wizard_i00": {
+      "object": "weapon_tears_of_wizard_i00",
+      "path": "res://assets/client_icons/weapon_tears_of_wizard_i00.png",
+      "sha256": "3f8a4db39973b0503bec1a4c0377770b5216b8b930a6adb5b65722825aaa5b3e"
+    },
+    "icon.weapon_tears_of_wizard_i01": {
+      "object": "weapon_tears_of_wizard_i01",
+      "path": "res://assets/client_icons/weapon_tears_of_wizard_i01.png",
+      "sha256": "bc7328b9430d083786ad2755d0e43e635ce41d56f093ee38ff7b48c13ea16db8"
+    },
+    "icon.weapon_temptation_of_abyss_i00": {
+      "object": "weapon_temptation_of_abyss_i00",
+      "path": "res://assets/client_icons/weapon_temptation_of_abyss_i00.png",
+      "sha256": "5a3858328ee51f656073f3b4bb06b4ee87c86232a10f2237d2896fad70cab52b"
+    },
+    "icon.weapon_temptation_of_abyss_i01": {
+      "object": "weapon_temptation_of_abyss_i01",
+      "path": "res://assets/client_icons/weapon_temptation_of_abyss_i01.png",
+      "sha256": "1894e87da1c88dc66a3b31084840de7e917034ed3528655f1847c94569fcb948"
+    },
+    "icon.weapon_the_bow_of_hero_i00": {
+      "object": "weapon_the_bow_of_hero_i00",
+      "path": "res://assets/client_icons/weapon_the_bow_of_hero_i00.png",
+      "sha256": "09378a539a10635378031f63dcbe383e0ae361d6518196935723fecd74a16801"
+    },
+    "icon.weapon_the_mace_of_hero_i00": {
+      "object": "weapon_the_mace_of_hero_i00",
+      "path": "res://assets/client_icons/weapon_the_mace_of_hero_i00.png",
+      "sha256": "7f849bdaa05d5823a230c68c96d8d852a1206a5c1106a2e26d336b74f1f87d9a"
+    },
+    "icon.weapon_the_sword_of_hero_i00": {
+      "object": "weapon_the_sword_of_hero_i00",
+      "path": "res://assets/client_icons/weapon_the_sword_of_hero_i00.png",
+      "sha256": "c1476cbbcc7d6b4d964a37b16ab0404f4b717cfcac75547ce0aae9805b199ead"
+    },
+    "icon.weapon_tome_of_blood_i00": {
+      "object": "weapon_tome_of_blood_i00",
+      "path": "res://assets/client_icons/weapon_tome_of_blood_i00.png",
+      "sha256": "6e17252e29ad9381d607ef089b7900000b464373a316732cfdb92f38ddd6249d"
+    },
+    "icon.weapon_tome_of_blood_i01": {
+      "object": "weapon_tome_of_blood_i01",
+      "path": "res://assets/client_icons/weapon_tome_of_blood_i01.png",
+      "sha256": "035ac5f0cd567219eb35054ee2e263739fd87fd4ca6d27649ebaa935581c7a90"
+    },
+    "icon.weapon_tongue_of_themis_i00": {
+      "object": "weapon_tongue_of_themis_i00",
+      "path": "res://assets/client_icons/weapon_tongue_of_themis_i00.png",
+      "sha256": "fe2263e62c5d6a86ed698c56ae2b2ecf68d765b8ed26d68cbda4e626557cebaa"
+    },
+    "icon.weapon_tongue_of_themis_i01": {
+      "object": "weapon_tongue_of_themis_i01",
+      "path": "res://assets/client_icons/weapon_tongue_of_themis_i01.png",
+      "sha256": "ec0ab284e0430428d8b22c8b9091aee338e7d035da64c1395edfb4f27a58b80c"
+    },
+    "icon.weapon_tsurugi_i00": {
+      "object": "weapon_tsurugi_i00",
+      "path": "res://assets/client_icons/weapon_tsurugi_i00.png",
+      "sha256": "103f07ce393e1b71f18456c5088dcfb6a7cb862e061fc718ba2fa13eb3ef820e"
+    },
+    "icon.weapon_tsurugi_i01": {
+      "object": "weapon_tsurugi_i01",
+      "path": "res://assets/client_icons/weapon_tsurugi_i01.png",
+      "sha256": "34e91ebf59527f4116939f2afb27398f581d1ad6deb5e4ee15776d65a01f6b5a"
+    },
+    "icon.weapon_voodoo_doll_i00": {
+      "object": "weapon_voodoo_doll_i00",
+      "path": "res://assets/client_icons/weapon_voodoo_doll_i00.png",
+      "sha256": "17fe6f0070fa091a240b036ae810f014a19f738607b8d375a83828bfe8041c4d"
     }
   },
   "notes": [
@@ -1062,5 +3957,7 @@
       "magic_defense_bonus": 32,
       "hp_bonus": 30
     }
-  }
+  },
+  "expanded_catalog": "assets/client_equipment/source.json",
+  "icon_count": 661
 }

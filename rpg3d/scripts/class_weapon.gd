@@ -4,6 +4,8 @@ extends Node3D
 const SHORT_BOW := preload("res://assets/short_bow.glb")
 const APPRENTICES_ROD := preload("res://assets/apprentices_rod.glb")
 @export var class_id := "arqueiro"
+@export var weapon_key := ""
+const ClientVisual := preload("res://scripts/client_weapon_visual.gd")
 
 func _ready() -> void:
 	if get_child_count() == 0:
@@ -23,8 +25,26 @@ func configure(next_class_id: String) -> void:
 func _build() -> void:
 	if class_id not in ["arqueiro", "mago", "healer"]:
 		return
+	if not weapon_key.is_empty():
+		var client_weapon := ClientVisual.new()
+		client_weapon.weapon_key = weapon_key
+		add_child(client_weapon)
+		return
 	var weapon := (SHORT_BOW if class_id == "arqueiro" else APPRENTICES_ROD).instantiate() as Node3D
 	weapon.name = "OriginalShortBow" if class_id == "arqueiro" else "OriginalApprenticesRod"
 	# Same native axis conversion as the approved sword, without arbitrary turns.
 	weapon.basis = Basis(Vector3.RIGHT, PI / 2)
 	add_child(weapon)
+
+func set_equipment(key: String) -> void:
+	if weapon_key == key and get_child_count() > 0: return
+	weapon_key = key
+	for child in get_children():
+		remove_child(child)
+		child.queue_free()
+	if key.is_empty():
+		_build()
+	else:
+		var weapon := ClientVisual.new()
+		weapon.weapon_key = key
+		add_child(weapon)

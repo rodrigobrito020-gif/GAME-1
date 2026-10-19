@@ -51,6 +51,12 @@ static func apply(model: Node3D, inventory: Dictionary, class_id: String) -> voi
 	var chest := LootItems.equipped_item(inventory, "armor")
 	if LootItems.covers_pants(chest):
 		selected["pants"] = selected.get("armor", "")
+	for mesh: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+		if mesh.get_meta("dynamic_client", false) and str(mesh.get_meta("wardrobe_key")) not in selected.values():
+			mesh.get_parent().remove_child(mesh)
+			mesh.queue_free()
+	for key: String in selected.values():
+		_ensure_entry(model, key)
 	var prefix := "mmagic" if class_id in ["mago", "healer"] else "mfighter"
 	for mesh: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
 		if mesh.has_meta("wardrobe_key"):
@@ -63,3 +69,31 @@ static func apply(model: Node3D, inventory: Dictionary, class_id: String) -> voi
 					mesh.visible = not selected.has(slot)
 				elif name.begins_with(prefix + "_m001_" + suffix):
 					mesh.visible = false
+
+static func _ensure_entry(model: Node3D, key: String) -> void:
+	var entry := Catalog.get_entry(key)
+	if not entry.has("scene"): return
+	for mesh: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+		if mesh.get_meta("wardrobe_key", "") == key: return
+	var rig: Skeleton3D = model.find_children("*", "Skeleton3D", true, false)[0]
+	var library: Node3D = (load(entry.scene) as PackedScene).instantiate()
+	model.add_child(library)
+	var source: Skeleton3D = library.find_children("*", "Skeleton3D", true, false)[0]
+	for mesh: MeshInstance3D in library.find_children("*", "MeshInstance3D", true, false):
+		var original := mesh.skin
+		var skin := Skin.new()
+		skin.set_bind_count(original.get_bind_count())
+		for bind in original.get_bind_count():
+			var bone_name := original.get_bind_name(bind)
+			if bone_name.is_empty(): bone_name = source.get_bone_name(original.get_bind_bone(bind))
+			assert(rig.find_bone(bone_name) >= 0, "Missing client equipment bone: " + bone_name)
+			skin.set_bind_name(bind, bone_name)
+			skin.set_bind_pose(bind, original.get_bind_pose(bind))
+		mesh.reparent(rig, false)
+		mesh.skin = skin
+		mesh.skeleton = mesh.get_path_to(rig)
+		mesh.set_meta("wardrobe_key", key)
+		mesh.set_meta("wardrobe_slot", entry.slot)
+		mesh.set_meta("dynamic_client", true)
+	model.remove_child(library)
+	library.queue_free()

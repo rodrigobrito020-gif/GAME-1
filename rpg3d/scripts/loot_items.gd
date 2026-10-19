@@ -1,19 +1,20 @@
 extends RefCounted
 ## Equipment rewards and the transfer of unique items between bag and equipment.
+const Gear := preload("res://scripts/gear_catalog.gd")
 const Catalog := preload("res://scripts/equipment_catalog.gd")
 const Jewelry := preload("res://scripts/jewelry_catalog.gd")
 const STARTER_SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots", "pants"]
 const JEWELRY_SLOTS: Array[String] = ["earring1", "earring2", "ring1", "ring2", "necklace"]
 
-const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots", "pants", "earring1", "earring2", "ring1", "ring2", "necklace"]
-const BASE_KEYS := {"sword":"equipped", "shield":"shield", "armor":"armor", "gloves":"gloves", "boots":"boots", "pants":"pants", "earring1":"earring1", "earring2":"earring2", "ring1":"ring1", "ring2":"ring2", "necklace":"necklace"}
+const SLOTS: Array[String] = ["sword", "shield", "armor", "gloves", "boots", "pants", "earring1", "earring2", "ring1", "ring2", "necklace", "helmet"]
+const BASE_KEYS := {"sword":"equipped", "shield":"shield", "armor":"armor", "gloves":"gloves", "boots":"boots", "pants":"pants", "earring1":"earring1", "earring2":"earring2", "ring1":"ring1", "ring2":"ring2", "necklace":"necklace", "helmet":"helmet"}
 const RARITIES: Array[String] = ["Comum", "Incomum", "Raro", "Épico", "Lendário"]
 const GRADES := {"Comum": "No Grade", "Incomum": "D", "Raro": "C", "Épico": "B", "Lendário": "A"}
 ## Percentages, totaling 100. The RNG uses one roll for rarity, regardless of slot.
 const WEIGHTS: Array[float] = [65.0, 27.0, 7.5, 0.45, 0.05]
 const RARITY_CUTOFFS: Array[float] = [65.0, 92.0, 99.5, 99.95, 100.0]
 const MAX_STAT_BONUS := 100000
-const ITEM_NAMES := {"sword":"Espada", "shield":"Escudo", "armor":"Peitoral", "gloves":"Luvas", "boots":"Botas", "pants":"Calça", "ring1":"Anel", "ring2":"Anel", "earring1":"Brinco", "earring2":"Brinco", "necklace":"Colar"}
+const ITEM_NAMES := {"sword":"Espada", "shield":"Escudo", "armor":"Peitoral", "gloves":"Luvas", "boots":"Botas", "pants":"Calça", "ring1":"Anel", "ring2":"Anel", "earring1":"Brinco", "earring2":"Brinco", "necklace":"Colar", "helmet":"Helmo"}
 const WORLD_NAMES: Array[String] = ["da Campina", "da Floresta", "do Pântano", "das Ruínas", "da Montanha", "do Deserto", "da Geada", "das Cinzas", "do Abismo", "da Aurora"]
 const RARITY_POWER: Array[int] = [1, 2, 4, 8, 16]
 
@@ -35,7 +36,7 @@ static func rarity_for_roll(roll: float) -> String:
 
 static func create_reward(rng: RandomNumberGenerator, world_number: int, class_id: String = "tanque") -> Dictionary:
 	var rarity := rarity_for_roll(rng.randf() * 100.0)
-	var drop_slots := STARTER_SLOTS + ["earring1", "ring1", "necklace"]
+	var drop_slots := STARTER_SLOTS + ["earring1", "ring1", "necklace", "helmet"]
 	var slot: String = drop_slots[rng.randi_range(0, drop_slots.size() - 1)]
 	var world := clampi(world_number, 1, WORLD_NAMES.size())
 	var power := world * RARITY_POWER[RARITIES.find(rarity)]
@@ -44,7 +45,7 @@ static func create_reward(rng: RandomNumberGenerator, world_number: int, class_i
 	match slot:
 		"sword":
 			attack = power * 2 + rng.randi_range(0, world)
-		"shield", "armor", "pants":
+		"shield", "armor", "pants", "helmet":
 			defense = power * 2 + rng.randi_range(0, world)
 		"gloves":
 			attack = power
@@ -55,22 +56,16 @@ static func create_reward(rng: RandomNumberGenerator, world_number: int, class_i
 	# consume the seeded reward RNG, so seeding still reproduces loot attributes.
 	var id := Crypto.new().generate_random_bytes(16).hex_encode()
 	var reward := {"id": id, "slot": slot, "name": "%s %s" % [ITEM_NAMES[slot], WORLD_NAMES[world - 1]], "rarity": rarity, "grade": grade_for_rarity(rarity), "attack_bonus": attack, "defense_bonus": defense}
-	if slot in Catalog.CLOTHING_SLOTS:
-		var key := Catalog.key_for(class_id, reward.grade, slot)
-		reward["lineage_key"] = key
-		reward["name"] = Catalog.get_entry(key).name
-	elif slot == "sword":
-		reward["weapon_type"] = weapon_type_for_class(class_id)
-		reward["name"] = weapon_name(reward.weapon_type)
-	elif slot in JEWELRY_SLOTS:
-		var key := Jewelry.key_for(slot, rarity)
-		var jewel: Dictionary = Jewelry.ITEMS[key]
-		reward["jewelry_key"] = key
-		reward.name = jewel.name
+	var kind := weapon_type_for_class(class_id) if slot == "sword" else slot
+	var choices := Gear.pool(kind, reward.grade, class_id)
+	assert(not choices.is_empty(), "Missing catalog drop pool: " + kind + " " + reward.grade)
+	var offer: Dictionary = choices[rng.randi_range(0, choices.size() - 1)]
+	var catalog_item := Gear.create_item(offer)
+	for field: String in ["name", "weapon_type", "weapon_key", "lineage_key", "jewelry_key", "magic_defense_bonus", "hp_bonus"]:
+		if catalog_item.has(field): reward[field] = catalog_item[field]
+	if slot in JEWELRY_SLOTS:
 		reward.attack_bonus = 0
 		reward.defense_bonus = 0
-		reward["magic_defense_bonus"] = jewel.magic_defense_bonus
-		reward["hp_bonus"] = jewel.hp_bonus
 	return reward
 
 static func weapon_type_for_class(class_id: String) -> String:
@@ -315,6 +310,13 @@ static func _validated_item(value: Variant) -> Dictionary:
 		if value.slot != "sword" or value.weapon_type not in ["sword", "bow", "rod"]:
 			return {}
 		result["weapon_type"] = value.weapon_type
+	if value.has("weapon_key"):
+		if not value.weapon_key is String or not Catalog.Expanded.WEAPONS.has(value.weapon_key): return {}
+		var weapon: Dictionary = Catalog.Expanded.WEAPONS[value.weapon_key]
+		if weapon.slot != value.slot or weapon.grade != grade_for_rarity(value.rarity): return {}
+		if value.slot == "sword" and value.get("weapon_type", "") != weapon.weapon_type: return {}
+		result["weapon_key"] = value.weapon_key
+		result.name = weapon.name
 	if value.has("grade"):
 		result["grade"] = grade_for_rarity(value.rarity)
 	if value.has("lineage_key"):
@@ -399,13 +401,24 @@ static func set_progress(inv: Dictionary, class_id: String) -> Dictionary:
 			if not result.has(key):
 				result[key] = []
 			result[key].append(slot)
+	for key: String in Catalog.collections:
+		var collection: Dictionary = Catalog.collections[key]
+		if not collection.has("required"): continue
+		var pieces: Array[String] = []
+		for slot: String in collection.required:
+			var item := equipped_item(inv, slot)
+			if item.get("lineage_key", "") in collection.required[slot] and Catalog.compatible(item, class_id): pieces.append(slot)
+		if not pieces.is_empty(): result[key] = pieces
 	return result
+
+static func collection_size(key: String) -> int:
+	return Catalog.collections[key].get("required", {}).size() if Catalog.collections[key].has("required") else 4
 
 static func set_bonuses(inv: Dictionary, class_id: String) -> Dictionary:
 	var result := {"hp": 0, "attack": 0, "defense": 0, "speed_percent": 0.0}
 	var worn := set_progress(inv, class_id)
 	for key: String in worn:
-		if worn[key].size() == Catalog.CLOTHING_SLOTS.size():
+		if worn[key].size() == collection_size(key):
 			for stat: String in result:
 				result[stat] += Catalog.collections[key].bonus[stat]
 	return result

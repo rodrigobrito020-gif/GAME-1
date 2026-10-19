@@ -47,7 +47,10 @@ func _initialize() -> void:
 			backgrounds.append(background_pixel)
 			check(texture.get_meta("client_icon_path") == Client.ICONS[ref].resource_path and texture.get_meta("rarity") == rarity, "display variant retains source identity and item rarity: " + ref + " " + rarity)
 		check(preserved and original.get_data() == original_bytes, "equipment colors and original image remain untouched: " + ref)
-		check(background_count > 500 and object_count > 250, "background replacement retains an equipment silhouette: " + ref)
+		# The native elemental fire pendant fills almost its entire 32px tile;
+		# its illustration must not be erased just to reach a padding quota.
+		var minimum_background := 250 if ref == "icon.elemental_necklace_fire_i00" else 500
+		check(background_count > minimum_background and object_count > 250, "background replacement retains an equipment silhouette: " + ref)
 		check(backgrounds[0] != backgrounds[1] and backgrounds[1] != backgrounds[2] and backgrounds[2] != backgrounds[3] and backgrounds[3] != backgrounds[4], "all five rarities have different backgrounds: " + ref)
 	var common := Icons.for_display({"slot":"armor", "rarity":"Comum"}).get_image().get_pixel(31, 0)
 	var green := Icons.for_display({"slot":"armor", "rarity":"Incomum"}).get_image().get_pixel(31, 0)

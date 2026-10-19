@@ -52,7 +52,7 @@ func _run() -> void:
 			weapon_types[drop.weapon_type] = true
 			if drop.weapon_type == "rod": rod = drop
 			if drop.weapon_type == "bow": bow = drop
-		elif drop.has("lineage_key"):
+		elif drop.slot in Loot.Catalog.CLOTHING_SLOTS and drop.has("lineage_key"):
 			profiles[Loot.Catalog.get_entry(drop.lineage_key).profile] = true
 	check(weapon_types.size() == 3 and profiles.size() == 3, "world drop pool includes swords, bows, rods and all three clothing families")
 	game.inventory.loot_items.append(rod)

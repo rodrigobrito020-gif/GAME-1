@@ -2,10 +2,10 @@ extends PanelContainer
 ## Equipment screen: live model, paper doll, filterable bag and item inspection.
 signal item_requested(item: String)
 signal closed
-const IDS := ["sword", "potion", "fang", "armor", "gloves", "boots", "shield", "pants", "earring1", "earring2", "ring1", "ring2", "necklace"]
-const NAMES := ["Long Sword", "Poção de vida", "Presa Grelim", "Peitoral inicial", "Luvas", "Botas", "Small Shield", "Calça inicial", "Brinco", "Brinco", "Anel", "Anel", "Colar"]
-const TYPES := ["Arma · Uma mão", "Consumível · Vida", "Material · Saque", "Armadura · Peito", "Armadura · Mãos", "Armadura · Pés", "Escudo · Mão esquerda", "Armadura · Pernas", "Joia · Brinco", "Joia · Brinco", "Joia · Anel", "Joia · Anel", "Joia · Colar"]
-const KEYS := ["equipped", "potions", "fangs", "armor", "gloves", "boots", "shield", "pants", "earring1", "earring2", "ring1", "ring2", "necklace"]
+const IDS := ["sword", "potion", "fang", "armor", "gloves", "boots", "shield", "pants", "earring1", "earring2", "ring1", "ring2", "necklace", "helmet"]
+const NAMES := ["Long Sword", "Poção de vida", "Presa Grelim", "Peitoral inicial", "Luvas", "Botas", "Small Shield", "Calça inicial", "Brinco", "Brinco", "Anel", "Anel", "Colar", "Helmo"]
+const TYPES := ["Arma · Uma mão", "Consumível · Vida", "Material · Saque", "Armadura · Peito", "Armadura · Mãos", "Armadura · Pés", "Escudo · Mão esquerda", "Armadura · Pernas", "Joia · Brinco", "Joia · Brinco", "Joia · Anel", "Joia · Anel", "Joia · Colar", "Armadura · Cabeça"]
+const KEYS := ["equipped", "potions", "fangs", "armor", "gloves", "boots", "shield", "pants", "earring1", "earring2", "ring1", "ring2", "necklace", "helmet"]
 const OrnateFrame := preload("res://scripts/ornate_frame.gd")
 const LootItems := preload("res://scripts/loot_items.gd")
 const ItemIcons := preload("res://scripts/item_icons.gd")
@@ -184,7 +184,7 @@ func _character_panel(column: VBoxContainer) -> void:
 	left.add_theme_constant_override("separation", 3)
 	doll.add_child(left)
 	_equipment_slot(left, "Arma", 0)
-	_equipment_slot(left, "Cabeça", -1)
+	_equipment_slot(left, "Cabeça", 13)
 	_equipment_slot(left, "Luvas", 4)
 	var container := SubViewportContainer.new()
 	container.stretch = true
@@ -459,8 +459,8 @@ func sync_items(inventory: Dictionary, dead: bool, level: int, hp: float, maximu
 func _matches(index: int) -> bool:
 	match category:
 		"Armas": return index in [0, 6]
-		"Trajes": return index in [3, 4, 5, 7]
-		"Joias": return index >= 8
+		"Trajes": return index in [3, 4, 5, 7, 13]
+		"Joias": return index >= 8 and index <= 12
 		"Poções": return index == 1
 		"Materiais": return index == 2
 	return true
@@ -600,6 +600,8 @@ func _refresh_loot_details(item: Dictionary) -> void:
 	else:
 		selected_description.text += "\n\nEquipado no personagem."
 	selected_description.text += _set_details(item)
+	if item.slot == "helmet":
+		selected_description.text += "\n\nHelmo original sem malha visível na cabeça. Os atributos são aplicados normalmente."
 	action_button.text = "Retirar" if equipped else "Equipar"
 	action_button.disabled = is_dead or (not equipped and not LootItems.Catalog.compatible(item, player_class_id))
 	if not equipped and not LootItems.Catalog.compatible(item, player_class_id):
@@ -691,16 +693,16 @@ func _set_details(item: Dictionary) -> String:
 	var progress := LootItems.set_progress(data, player_class_id)
 	var pieces: Array = progress.get(key, [])
 	var missing: Array[String] = []
-	for slot: String in LootItems.Catalog.CLOTHING_SLOTS:
+	for slot: String in collection.get("required", {"armor":[], "pants":[], "gloves":[], "boots":[]}):
 		if slot not in pieces:
 			missing.append({"armor": "peito", "pants": "calça", "gloves": "luvas", "boots": "botas"}[slot])
-	return "\n\n%s · %d/4\n%s\n%s" % [collection.name, pieces.size(), LootItems.bonus_text(collection.bonus), "Bônus ativo" if missing.is_empty() else "Faltam: " + ", ".join(missing)]
+	return "\n\n%s · %d/%d\n%s\n%s" % [collection.name, pieces.size(), LootItems.collection_size(key), LootItems.bonus_text(collection.bonus), "Bônus ativo" if missing.is_empty() else "Faltam: " + ", ".join(missing)]
 
 func _refresh_set_summary() -> void:
 	var progress := LootItems.set_progress(data, player_class_id)
 	set_label.text = "Conjunto incompleto · Bônus inativo"
 	set_label.add_theme_color_override("font_color", Color("9ca8ac"))
 	for key: String in progress:
-		if progress[key].size() == 4:
-			set_label.text = LootItems.Catalog.collections[key].name + " · 4/4\n" + LootItems.bonus_text(LootItems.Catalog.collections[key].bonus)
+		if progress[key].size() == LootItems.collection_size(key):
+			set_label.text = LootItems.Catalog.collections[key].name + " · %d/%d\n" % [progress[key].size(), LootItems.collection_size(key)] + LootItems.bonus_text(LootItems.Catalog.collections[key].bonus)
 			set_label.add_theme_color_override("font_color", Color("88ce91"))

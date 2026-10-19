@@ -29,9 +29,14 @@ const GroundTargeting := preload("res://scripts/ground_targeting.gd")
 var ground_targeting := GroundTargeting.new()
 const ArenaBossVisual := preload("res://scripts/arena_boss_visual.gd")
 const ClassWeapon := preload("res://scripts/class_weapon.gd")
+const ClientWeaponVisual := preload("res://scripts/client_weapon_visual.gd")
 const Wardrobe := preload("res://scripts/wardrobe.gd")
 const MerchantMenu := preload("res://scripts/merchant_menu.gd")
 const MerchantStock := preload("res://scripts/merchant_stock.gd")
+const EquipmentShop := preload("res://scripts/equipment_shop.gd")
+const GearCatalog := preload("res://scripts/gear_catalog.gd")
+var equipment_shop: PanelContainer
+var equipment_shop_backdrop: ColorRect
 const StorageMenu := preload("res://scripts/storage_menu.gd")
 const StorageItems := preload("res://scripts/storage_items.gd")
 const Balance := preload("res://scripts/combat_balance.gd")
@@ -221,6 +226,9 @@ func _equip_sword(model: Node3D) -> void:
 	# Centro do cabo original em X=-1.85 unidades, convertido para metros.
 	blade.position.x = 1.85 * 0.038
 	sword.add_child(blade)
+	var client_blade := ClientWeaponVisual.new()
+	client_blade.name = "ClientWeapon"
+	sword.add_child(client_blade)
 	shield_attachment = BoneAttachment3D.new()
 	shield_attachment.name = "ShieldAttachment"
 	shield_attachment.bone_name = "Shield_L_Bone"
@@ -256,6 +264,14 @@ func _gear_nodes(slot: String, alternate: bool) -> Array[MeshInstance3D]:
 	return results
 
 func _apply_equipment() -> void:
+	var weapon := LootItems.equipped_item(inventory, "sword")
+	var weapon_key := str(weapon.get("weapon_key", ""))
+	var sword: Node3D = sword_attachment.get_node("Sword")
+	sword.get_node("OriginalLongSword").visible = weapon_key.is_empty() or weapon_key == "weapon_2"
+	var client_blade: Node3D = sword.get_node("ClientWeapon")
+	client_blade.configure(weapon_key if player_class == "tanque" and weapon_key != "weapon_2" else "")
+	var shield := LootItems.equipped_item(inventory, "shield")
+	shield_attachment.get_node("ShieldMount").set_equipment(str(shield.get("weapon_key", "")))
 	sword_attachment.visible = player_class == "tanque" and LootItems.is_equipped(inventory, "sword")
 	shield_attachment.visible = player_class in ["tanque", "mago", "healer"] and LootItems.is_equipped(inventory, "shield")
 	shield_carry_pose.shield_equipped = shield_attachment.visible
@@ -264,6 +280,7 @@ func _apply_equipment() -> void:
 		ranged_attachment.bone_name = "Weapon_L_Bone" if player_class == "arqueiro" else "Weapon_R_Bone"
 		if ranged_weapon.class_id != player_class:
 			ranged_weapon.configure(player_class)
+		ranged_weapon.set_equipment(weapon_key if player_class != "tanque" else "")
 		ranged_weapon.rotation = Vector3.ZERO
 	Wardrobe.apply(character_model, inventory, player_class)
 	var glove: Dictionary = inventory.get("equipped_loot", {}).get("gloves", {})
@@ -316,6 +333,16 @@ func _ui() -> void:
 	merchant_menu.trade_requested.connect(_trade)
 	merchant_menu.sell_selected_requested.connect(_sell_selected)
 	merchant_menu.visibility_changed.connect(func() -> void: merchant_backdrop.visible = merchant_menu.visible)
+	equipment_shop_backdrop = ColorRect.new()
+	equipment_shop_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	equipment_shop_backdrop.color = Color(0.01, 0.02, 0.03, 0.78)
+	equipment_shop_backdrop.hide()
+	hud.root.add_child(equipment_shop_backdrop)
+	equipment_shop = EquipmentShop.new()
+	hud.root.add_child(equipment_shop)
+	equipment_shop.closed.connect(_close_equipment_shop)
+	equipment_shop.purchase_requested.connect(_buy_equipment)
+	equipment_shop.visibility_changed.connect(func() -> void: equipment_shop_backdrop.visible = equipment_shop.visible)
 	storage_backdrop = ColorRect.new()
 	storage_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	storage_backdrop.color = Color(0.01, 0.02, 0.03, 0.78)
@@ -392,6 +419,8 @@ func _refresh_hud() -> void:
 			prompt = "[E] Instrutor · Escolher classe humana"
 		elif _near_merchant():
 			prompt = "[E] Bento · Comprar e vender"
+		elif not _near_equipment_vendor().is_empty():
+			prompt = "[E] " + ("Dara · Armaduras e joias" if _near_equipment_vendor() == "armor" else "Orin · Armas e escudos")
 		elif _near_storage():
 			prompt = "[E] Baú pessoal · Guardar e retirar itens"
 		elif _near_portal():
@@ -421,7 +450,29 @@ func _open_chest() -> bool:
 	return true
 
 func _modal_open() -> bool:
-	return hud.inventory_panel.visible or hud.rift_panel.visible or (is_instance_valid(class_menu) and class_menu.visible) or (is_instance_valid(merchant_menu) and merchant_menu.visible) or (is_instance_valid(storage_menu) and storage_menu.visible) or hud.run_result_panel.visible or hud.chest_rewards_panel.visible
+	return hud.inventory_panel.visible or hud.rift_panel.visible or (is_instance_valid(class_menu) and class_menu.visible) or (is_instance_valid(merchant_menu) and merchant_menu.visible) or (is_instance_valid(storage_menu) and storage_menu.visible) or (is_instance_valid(equipment_shop) and equipment_shop.visible) or hud.run_result_panel.visible or hud.chest_rewards_panel.visible
+
+func _near_equipment_vendor() -> String:
+	if current_world != 0: return ""
+	if player.position.distance_to(Village.ARMOR_MERCHANT_POSITION) <= 2.8: return "armor"
+	if player.position.distance_to(Village.WEAPON_MERCHANT_POSITION) <= 2.8: return "weapons"
+	return ""
+
+func _close_equipment_shop() -> void:
+	equipment_shop.hide()
+	animation.speed_scale = 1.0
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_refresh_hud()
+
+func _buy_equipment(vendor: String, id: String) -> bool:
+	if dead or not equipment_shop.visible or vendor != equipment_shop.vendor or _near_equipment_vendor() != vendor: return false
+	var result := GearCatalog.purchase(inventory, vendor, id)
+	equipment_shop.sync_inventory(inventory, player_class)
+	equipment_shop.status_label.text = result.message
+	if result.ok:
+		_refresh_hud()
+		_save_profile()
+	return result.ok
 
 func _near_storage() -> bool:
 	return current_world == 0 and player.position.distance_to(Village.STORAGE_POSITION) <= 2.8
@@ -480,6 +531,13 @@ func _near_portal() -> bool:
 func _interact() -> bool:
 	if dead or attack_clock > 0 or _modal_open():
 		return false
+	var vendor := _near_equipment_vendor()
+	if not vendor.is_empty():
+		equipment_shop.open_shop(vendor, inventory, player_class)
+		hud.potion_popup.hide()
+		animation.speed_scale = 0.0
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		return true
 	if _near_chest():
 		return _open_chest()
 	if _near_storage():
@@ -558,6 +616,7 @@ func _change_zone(number: int) -> void:
 	hud.hide_chest_rewards()
 	class_menu.hide()
 	merchant_menu.hide()
+	equipment_shop.hide()
 	storage_menu.hide()
 	class_combat.cancel(self)
 	enemy_ranged_combat.cancel()
@@ -704,7 +763,7 @@ func _toggle_inventory() -> void:
 	_refresh_hud()
 
 func _use_item(item: String) -> bool:
-	if dead or hud.rift_panel.visible or class_menu.visible or merchant_menu.visible or storage_menu.visible or hud.run_result_panel.visible or hud.chest_rewards_panel.visible:
+	if dead or hud.rift_panel.visible or class_menu.visible or merchant_menu.visible or storage_menu.visible or equipment_shop.visible or hud.run_result_panel.visible or hud.chest_rewards_panel.visible:
 		return false
 	if attack_clock > 0 and item != "potion":
 		return false
@@ -992,7 +1051,9 @@ func _receive_damage(amount: float, magical := false) -> void:
 func _input(event: InputEvent) -> void:
 	# TAB também funciona quando um controle da interface está com foco.
 	if event is InputEventKey and event.keycode == KEY_TAB and event.pressed and not event.echo:
-		if storage_menu.visible:
+		if equipment_shop.visible:
+			_close_equipment_shop()
+		elif storage_menu.visible:
 			_close_storage()
 		elif merchant_menu.visible:
 			_close_merchant()
@@ -1015,6 +1076,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.keycode == KEY_ESCAPE:
 			if ground_targeting.active():
 				ground_targeting.cancel()
+			elif equipment_shop.visible:
+				_close_equipment_shop()
 			elif storage_menu.visible:
 				_close_storage()
 			elif merchant_menu.visible:

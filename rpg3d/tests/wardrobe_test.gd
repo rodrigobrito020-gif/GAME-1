@@ -54,7 +54,7 @@ func _run() -> void:
 	root.add_child(game)
 	game.smoke = true
 	game.set_physics_process(false)
-	check(Catalog.entries.size() == 66, "five authentic clothing tiers for heavy, light and robe profiles")
+	check(preload("res://scripts/equipment_catalog_data.gd").ITEMS.size() == 66 and Catalog.entries.size() == 66 + Catalog.Expanded.CLOTHING.size() + Catalog.Expanded.HELMETS.size(), "original five-tier wardrobe remains intact alongside expanded clothing and helmet catalogs")
 	var brigandine_ids: Array = Catalog.get_entry("heavy_1_armor").client_item_ids
 	check(brigandine_ids.size() == 1 and int(brigandine_ids[0]) == 352 and int(Catalog.get_entry("heavy_1_pants").client_item_ids[0]) == 2378, "Brigandine chest and gaiters have separate client IDs and slots")
 	var robe_ids: Array = Catalog.get_entry("robe_4_fullbody").client_item_ids

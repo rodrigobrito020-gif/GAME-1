@@ -2,16 +2,45 @@ extends GridContainer
 ## The same 72px cells, 64px icons and rarity backgrounds as the backpack.
 signal item_pressed(id: String)
 signal item_toggled(enabled: bool, id: String)
+signal item_quick_transfer(id: String)
+signal item_dropped(id: String)
 const Icons := preload("res://scripts/item_icons.gd")
 const MINIMUM_SLOTS := 30
 var buttons: Dictionary = {}
 var empty_buttons: Array[Button] = []
+var transfer_peer: Control
+var _drag_token: RefCounted
 
 func _ready() -> void:
 	columns = 6
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	add_theme_constant_override("h_separation", 6)
 	add_theme_constant_override("v_separation", 6)
+	set_drag_forwarding(Callable(), _can_receive_drag, _receive_drag)
+
+func _drag_item(_position: Vector2, id: String) -> Variant:
+	if not is_visible_in_tree() or not is_instance_valid(transfer_peer) or not buttons.has(id): return null
+	var preview := TextureRect.new()
+	preview.texture = buttons[id].icon
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.size = Vector2(64, 64)
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	set_drag_preview(preview)
+	return {"storage_source":self, "item_id":id, "token":_drag_token}
+
+func _can_receive_drag(_position: Vector2, payload: Variant) -> bool:
+	if not is_visible_in_tree() or not is_instance_valid(transfer_peer) or not transfer_peer.is_visible_in_tree(): return false
+	if not payload is Dictionary or payload.get("storage_source") != transfer_peer: return false
+	return payload.get("token") == transfer_peer._drag_token and transfer_peer.buttons.has(payload.get("item_id", ""))
+
+func _receive_drag(position: Vector2, payload: Variant) -> void:
+	if _can_receive_drag(position, payload): item_dropped.emit(str(payload.item_id))
+
+func _slot_input(event: InputEvent, id: String, button: Button) -> void:
+	if not is_instance_valid(transfer_peer) or not event is InputEventMouseButton or not event.pressed: return
+	if event.button_index == MOUSE_BUTTON_RIGHT or (event.button_index == MOUSE_BUTTON_LEFT and event.double_click):
+		button.accept_event()
+		item_quick_transfer.emit(id)
 
 func _appearance(button: Button, rarity: String, selected: bool) -> void:
 	for state: String in ["normal", "hover", "pressed"]:
@@ -47,6 +76,7 @@ func _badge(button: Button, text: String, right: bool) -> void:
 	button.add_child(label)
 
 func sync_items(items: Array[Dictionary], class_id: String, selected: Dictionary = {}, multi_select := false) -> void:
+	_drag_token = RefCounted.new()
 	for child in get_children():
 		remove_child(child)
 		child.queue_free()
@@ -62,6 +92,7 @@ func sync_items(items: Array[Dictionary], class_id: String, selected: Dictionary
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.add_theme_constant_override("icon_max_width", 64)
 		add_child(button)
+		button.set_drag_forwarding(Callable(), _can_receive_drag, _receive_drag)
 		if index >= items.size():
 			_appearance(button, "Comum", false)
 			button.disabled = true
@@ -79,6 +110,10 @@ func sync_items(items: Array[Dictionary], class_id: String, selected: Dictionary
 		button.set_pressed_no_signal(multi_select and selected.has(id))
 		_appearance(button, rarity, selected.has(id))
 		buttons[id] = button
+		if is_instance_valid(transfer_peer):
+			button.tooltip_text += "\nDuplo clique esquerdo / clique direito: transferir tudo\nArraste para o outro inventário para transferir."
+			button.gui_input.connect(_slot_input.bind(id, button))
+			button.set_drag_forwarding(_drag_item.bind(id), _can_receive_drag, _receive_drag)
 		if item.get("count", 1) > 1: _badge(button, "×%d" % int(item.count), true)
 		if item.has("price"): _badge(button, "%d" % int(item.price), false)
 		if multi_select:

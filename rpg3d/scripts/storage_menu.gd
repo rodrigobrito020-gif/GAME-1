@@ -3,6 +3,9 @@ signal closed
 signal transfer_requested(direction: String, id: String, quantity: int)
 const Storage := preload("res://scripts/storage_items.gd")
 const SlotGrid := preload("res://scripts/item_slot_grid.gd")
+const Order := preload("res://scripts/inventory_order.gd")
+var sort_buttons: Dictionary = {}
+var sort_directions := {"deposit":0, "withdraw":0}
 var bag_grid: GridContainer
 var chest_grid: GridContainer
 var status_label: Label
@@ -63,7 +66,18 @@ func _ready() -> void:
 		var side := VBoxContainer.new()
 		side.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		lists.add_child(side)
-		side.add_child(_label(heading, 20))
+		var mode := "deposit" if heading.begins_with("MOCHILA") else "withdraw"
+		var row := HBoxContainer.new()
+		side.add_child(row)
+		var label := _label(heading, 20)
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(label)
+		var sort_button := _button("Organizar")
+		sort_button.add_theme_font_size_override("font_size", 13)
+		Order.update_button(sort_button, 0)
+		sort_button.pressed.connect(_sort_items.bind(mode))
+		row.add_child(sort_button)
+		sort_buttons[mode] = sort_button
 		var scroll := ScrollContainer.new()
 		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -71,10 +85,14 @@ func _ready() -> void:
 		var grid := SlotGrid.new()
 		scroll.add_child(grid)
 		grid.item_pressed.connect(func(id: String) -> void:
-			select_entry("deposit" if heading.begins_with("MOCHILA") else "withdraw", id)
+			select_entry(mode, id)
 		)
+		grid.item_quick_transfer.connect(_quick_transfer.bind(mode))
+		grid.item_dropped.connect(_quick_transfer.bind("withdraw" if mode == "deposit" else "deposit"))
 		if heading.begins_with("MOCHILA"): bag_grid = grid
 		else: chest_grid = grid
+	bag_grid.transfer_peer = chest_grid
+	chest_grid.transfer_peer = bag_grid
 	selected_label = _label("Selecione um item de um dos lados.", 18)
 	column.add_child(selected_label)
 	var footer := HBoxContainer.new()
@@ -90,16 +108,28 @@ func _ready() -> void:
 	transfer_button.custom_minimum_size.y = 44
 	transfer_button.pressed.connect(func() -> void: transfer_requested.emit(direction, selected_id, int(quantity.value)))
 	footer.add_child(transfer_button)
-	status_label = _label("Retire o equipamento do personagem antes de guardá-lo.", 14)
+	status_label = _label("Duplo clique, botão direito ou arrastar: transfere tudo. Para parte da pilha, use Quantidade.", 14)
 	column.add_child(status_label)
 	hide()
 
 func sync_inventory(inv: Dictionary, class_id: String) -> void:
 	_inventory = inv
 	_class_id = class_id
-	bag_grid.sync_items(Storage.entries(inv, false), _class_id)
-	chest_grid.sync_items(Storage.entries(inv, true), _class_id)
+	bag_grid.sync_items(Order.ordered(Storage.entries(inv, false), sort_directions.deposit), _class_id)
+	chest_grid.sync_items(Order.ordered(Storage.entries(inv, true), sort_directions.withdraw), _class_id)
 	_refresh_selected()
+
+func _sort_items(mode: String) -> void:
+	sort_directions[mode] = -1 if int(sort_directions[mode]) >= 0 else 1
+	Order.update_button(sort_buttons[mode], sort_directions[mode])
+	sync_inventory(_inventory, _class_id)
+
+func _quick_transfer(id: String, mode: String) -> void:
+	if not is_visible_in_tree(): return
+	for item: Dictionary in Storage.entries(_inventory, mode == "withdraw"):
+		if item.id == id:
+			transfer_requested.emit(mode, id, int(item.get("count", 1)))
+			return
 
 func select_entry(mode: String, id: String) -> void:
 	direction = mode

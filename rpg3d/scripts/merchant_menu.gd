@@ -4,6 +4,9 @@ signal trade_requested(mode: String, id: String, quantity: int)
 signal sell_selected_requested(selection: Dictionary)
 const Stock := preload("res://scripts/merchant_stock.gd")
 const SlotGrid := preload("res://scripts/item_slot_grid.gd")
+const Order := preload("res://scripts/inventory_order.gd")
+var sort_button: Button
+var sort_direction := 0
 var status_label: Label
 var gold_label: Label
 var choice_label: Label
@@ -73,7 +76,17 @@ func _ready() -> void:
 		var section := VBoxContainer.new()
 		section.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		lists.add_child(section)
-		section.add_child(_label(heading, 20))
+		var row := HBoxContainer.new()
+		section.add_child(row)
+		var label := _label(heading, 20)
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(label)
+		if heading != "COMPRAR":
+			sort_button = _button("Organizar")
+			sort_button.add_theme_font_size_override("font_size", 13)
+			Order.update_button(sort_button, 0)
+			sort_button.pressed.connect(_sort_items)
+			row.add_child(sort_button)
 		var scroll := ScrollContainer.new()
 		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -159,10 +172,15 @@ func sync_inventory(inv: Dictionary, class_id: String) -> void:
 	var entries := Stock.selling_entries(inv)
 	for item: Dictionary in entries:
 		item["price_text"] = "%d ouro cada" % Stock.sale_price(item)
-	sell_grid.sync_items(entries, _class_id, sale_selection, true)
+	sell_grid.sync_items(Order.ordered(entries, sort_direction), _class_id, sale_selection, true)
 	sale_checks = sell_grid.buttons
 	_update_choice()
 	_update_bulk()
+
+func _sort_items() -> void:
+	sort_direction = -1 if sort_direction >= 0 else 1
+	Order.update_button(sort_button, sort_direction)
+	sync_inventory(_inventory, _class_id)
 
 func select_entry(mode: String, id: String) -> void:
 	selected_mode = mode

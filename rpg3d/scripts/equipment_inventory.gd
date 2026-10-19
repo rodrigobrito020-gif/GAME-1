@@ -9,6 +9,9 @@ const KEYS := ["equipped", "potions", "fangs", "armor", "gloves", "boots", "shie
 const OrnateFrame := preload("res://scripts/ornate_frame.gd")
 const LootItems := preload("res://scripts/loot_items.gd")
 const ItemIcons := preload("res://scripts/item_icons.gd")
+const Order := preload("res://scripts/inventory_order.gd")
+var sort_button: Button
+var sort_direction := 0
 const GOLD := Color("d1b680")
 const PAPER := Color("eee4ce")
 var item_buttons: Array[Button] = []
@@ -47,6 +50,7 @@ var source: Node3D
 var count_labels: Dictionary = {}
 
 func style_item_button(button: Button, rarity: String, selected_item := false) -> void:
+	button.set_meta("rarity", rarity)
 	var background := ItemIcons.background_color(rarity)
 	var border := rarity_color(rarity)
 	for state: String in ["normal", "hover", "pressed"]:
@@ -256,8 +260,16 @@ func _equipment_slot(parent: Node, title: String, index: int) -> void:
 	parent.add_child(button)
 
 func _bag_panel(column: VBoxContainer) -> void:
+	var heading := HBoxContainer.new()
+	column.add_child(heading)
 	capacity_label = label_for("MOCHILA  0 / 20", 21, true)
-	column.add_child(capacity_label)
+	capacity_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	heading.add_child(capacity_label)
+	sort_button = button_for("Organizar")
+	sort_button.add_theme_font_size_override("font_size", 12)
+	Order.update_button(sort_button, 0)
+	sort_button.pressed.connect(_sort_items)
+	heading.add_child(sort_button)
 	var filter_row := HBoxContainer.new()
 	filter_row.add_theme_constant_override("separation", 4)
 	column.add_child(filter_row)
@@ -521,6 +533,26 @@ func _sync_loot_buttons() -> int:
 			loot_buttons.erase(item_id)
 	return shown
 
+func _sort_items() -> void:
+	sort_direction = -1 if sort_direction >= 0 else 1
+	Order.update_button(sort_button, sort_direction)
+	_refresh_items()
+
+func _apply_bag_order() -> void:
+	if sort_direction == 0: return
+	var entries: Array[Dictionary] = []
+	for index in IDS.size():
+		entries.append({"button":item_buttons[index], "rarity":"Comum"})
+	for item: Dictionary in data.get("loot_items", []):
+		entries.append({"button":loot_buttons[item.id], "rarity":item.rarity})
+	var index := 0
+	for entry: Dictionary in Order.ordered(entries, sort_direction):
+		bag_grid.move_child(entry.button, index)
+		index += 1
+	for button: Button in empty_buttons:
+		bag_grid.move_child(button, index)
+		index += 1
+
 func _bonus_text(item: Dictionary) -> String:
 	if str(item.get("slot", "")) in LootItems.JEWELRY_SLOTS:
 		return "Defesa mágica +%d · Vida +%d" % [int(item.get("magic_defense_bonus", 0)), int(item.get("hp_bonus", 0))]
@@ -598,6 +630,7 @@ func _refresh_items() -> void:
 		var active := selected_loot_id.is_empty() and selected == index
 		style_item_button(button, "Comum", active)
 	shown += _sync_loot_buttons()
+	_apply_bag_order()
 	occupied += loot_buttons.size()
 	var empty_count := maxi(20, ceili(shown / 5.0) * 5) - shown
 	for index in range(empty_buttons.size()):

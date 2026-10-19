@@ -5,8 +5,36 @@ const LootItems := preload("res://scripts/loot_items.gd")
 const InstanceRun := preload("res://scripts/instance_run.gd")
 const REUSE_KEYS := ["skill_cooldown", "spin_cooldown", "guard_cooldown", "dash_cooldown"]
 const OFFENSIVE_SLOTS := {"arqueiro": [0, 1, 3], "mago": [0, 1], "healer": [0, 3]}
+const GROUND_AREAS := {
+	"arqueiro": {3:{"radius":3.7, "range":22.0}},
+	"mago": {0:{"radius":2.6, "range":22.0}, 1:{"radius":5.0, "range":16.0}},
+	"healer": {2:{"radius":4.0, "range":14.0}, 3:{"radius":6.0, "range":16.0}},
+}
 var _projectiles: Array[Dictionary] = []
 var _fields: Array[Dictionary] = []
+
+static func ground_area(class_id: String, slot: int) -> Dictionary:
+	return GROUND_AREAS.get(class_id, {}).get(slot, {})
+
+func valid_ground_target(game, slot: int, point: Vector3) -> bool:
+	var area := ground_area(game.player_class, slot)
+	if area.is_empty() or not point.is_finite(): return false
+	var offset: Vector3 = point - game.player.global_position
+	offset.y = 0
+	if offset.length() > float(area.range) + 0.01 or absf(point.x) > game.OpenField.ARENA_BOUNDARY - 0.5 or absf(point.z) > game.OpenField.ARENA_BOUNDARY - 0.5: return false
+	var excluded: Array[RID] = [game.player.get_rid()]
+	for foe in game.enemies: excluded.append(foe.get_rid())
+	var floor_query := PhysicsRayQueryParameters3D.create(point + Vector3.UP * 0.3, point - Vector3.UP * 0.3)
+	floor_query.exclude = excluded
+	var floor_hit: Dictionary = game.get_world_3d().direct_space_state.intersect_ray(floor_query)
+	if floor_hit.is_empty() or floor_hit.normal.y < 0.7 or absf(point.y - floor_hit.position.y) > 0.15: return false
+	var query := PhysicsRayQueryParameters3D.create(game.player.global_position + Vector3.UP * 1.1, point + Vector3.UP * 0.2)
+	query.exclude = excluded
+	return game.get_world_3d().direct_space_state.intersect_ray(query).is_empty()
+
+func can_activate(game, slot: int) -> bool:
+	if not _available(game) or slot < 0 or slot > 3 or game.attack_clock > 0 or float(game.get(REUSE_KEYS[slot])) > 0: return false
+	return slot not in OFFENSIVE_SLOTS.get(game.player_class, []) or LootItems.is_equipped(game.inventory, "sword")
 
 func basic_attack(game, powered: bool = false) -> bool:
 	if powered:
@@ -22,8 +50,8 @@ func basic_attack(game, powered: bool = false) -> bool:
 	game._refresh_hud()
 	return true
 
-func activate_skill(game, slot: int) -> bool:
-	if not _available(game) or slot < 0 or slot > 3 or game.attack_clock > 0 or float(game.get(REUSE_KEYS[slot])) > 0:
+func activate_skill(game, slot: int, ground_point := Vector3.INF) -> bool:
+	if not can_activate(game, slot):
 		return false
 	var id: String = game.player_class
 	if id == "tanque":
@@ -33,15 +61,21 @@ func activate_skill(game, slot: int) -> bool:
 	var definition := PlayerClasses.get_definition(id)
 	var target = _target(game, float(definition.range))
 	var point: Vector3 = _aim_point(game, target, 10.0)
+	if ground_point != Vector3.INF:
+		if not valid_ground_target(game, slot, ground_point): return false
+		point = ground_point
 	var displacement := Vector3.ZERO
 	if (id == "arqueiro" and slot == 2) or (id == "mago" and slot == 3):
 		displacement = _safe_displacement(game, _forward(game) * (-5.0 if id == "arqueiro" else 8.0))
 		if displacement.length() < 0.2:
 			return false
-	if id == "healer" and slot in [1, 2] and game.hp >= game._maximum_hp():
+	if id == "healer" and (slot == 1 or (slot == 2 and ground_point == Vector3.INF)) and game.hp >= game._maximum_hp():
 		return false
 	game.set(REUSE_KEYS[slot], float(definition.cooldowns[slot]))
 	_begin_action(game, "skill", 0.8)
+	if ground_point != Vector3.INF:
+		var facing: Vector3 = point - game.player.global_position
+		if Vector2(facing.x, facing.z).length() > 0.1: game.facing.rotation.y = atan2(-facing.x, -facing.z)
 	match id:
 		"arqueiro":
 			match slot:
@@ -54,16 +88,16 @@ func activate_skill(game, slot: int) -> bool:
 					game.player.global_position += displacement
 					game.guard_clock = maxf(game.guard_clock, 0.9)
 				3:
-					for index in range(7):
-						var angle := TAU * index / 7.0
-						var landing := point + Vector3(cos(angle), 0, sin(angle)) * (1.7 if index > 0 else 0.0)
-						_launch(game, null, "arrow", _damage(game, 14), 16, 2.0, index * 0.07, landing + Vector3.UP * 7, landing)
+					if ground_point == Vector3.INF: point.y = 0.0
+					_field(game, point, Color("b7d69b"), 3.7, 6.0, 0, false, _damage(game, 16), 1.0, true)
 		"mago":
 			match slot:
-				0: _launch(game, target, "fire", _damage(game, 58), 22, 2.6)
+				0: _launch(game, target if ground_point == Vector3.INF else null, "fire", _damage(game, 58), 22, 2.6, 0, Vector3.INF, Vector3.INF if ground_point == Vector3.INF else point + Vector3.UP * 0.2, 4.0)
 				1:
-					_flash(game.active_zone, game.player.global_position + Vector3.UP * 0.3, Color("ad88ed"), 5)
-					_area_damage(game, game.player.global_position + Vector3.UP, 5, _damage(game, 42))
+					var center: Vector3 = game.player.global_position if ground_point == Vector3.INF else point
+					_flash(game.active_zone, center + Vector3.UP * 0.3, Color("ad88ed"), 5)
+					_area_damage(game, center + Vector3.UP * 0.8, 5, _damage(game, 42))
+					_field(game, center, Color("ad88ed"), 5, 6, 0, false, _damage(game, 42) * 0.25)
 				2:
 					game.guard_clock = maxf(game.guard_clock, 4.0)
 					_field(game, game.player.global_position, Color("86b8f5"), 1.0, 4.0, 0, true)
@@ -77,10 +111,12 @@ func activate_skill(game, slot: int) -> bool:
 				1:
 					game.hp = minf(game._maximum_hp(), game.hp + 40)
 					_flash(game.active_zone, game.player.global_position + Vector3.UP * 0.5, Color("c5f1a0"), 1)
-				2: _field(game, game.player.global_position, Color("e6d58b"), 4.0, 4.0, 10, false)
+				2: _field(game, game.player.global_position if ground_point == Vector3.INF else point, Color("e6d58b"), 4.0, 6.0, 10, false)
 				3:
-					_flash(game.active_zone, game.player.global_position + Vector3.UP * 0.3, Color("ffe8a4"), 6)
-					_area_damage(game, game.player.global_position + Vector3.UP, 6, _damage(game, 38))
+					var center: Vector3 = game.player.global_position if ground_point == Vector3.INF else point
+					_flash(game.active_zone, center + Vector3.UP * 0.3, Color("ffe8a4"), 6)
+					_area_damage(game, center + Vector3.UP * 0.8, 6, _damage(game, 38))
+					_field(game, center, Color("ffe8a4"), 6, 6, 0, false, _damage(game, 38) * 0.25)
 	game._refresh_hud()
 	return true
 
@@ -116,6 +152,8 @@ func auto_ready(game) -> Array[bool]:
 func tick(game, delta: float) -> void:
 	if not is_finite(delta) or delta <= 0:
 		return
+	# Fields created on projectile impact start their own duration on this tick.
+	var field_count := _fields.size()
 	for index in range(_projectiles.size() - 1, -1, -1):
 		var shot := _projectiles[index]
 		if not _context_valid(game, shot) or not is_instance_valid(shot.visual):
@@ -145,21 +183,23 @@ func tick(game, delta: float) -> void:
 		shot.remaining -= distance
 		if not hit.is_empty():
 			var impact: Vector3 = hit.position - offset.normalized() * 0.035
-			if _can_damage(game):
+			if _can_damage(game) and not shot.cosmetic:
 				if shot.radius > 0:
 					_area_damage(game, impact, shot.radius, shot.damage)
 				elif hit.collider in game.enemies:
 					game._damage_enemy(hit.collider, shot.damage)
 			_flash(game.active_zone, impact, shot.color, maxf(0.3, shot.radius))
+			_lingering_impact(game, shot, impact)
 			_discard(_projectiles, index)
 		elif shot.remaining <= 0 or offset.length() <= distance + 0.001:
-			if shot.radius > 0 and _can_damage(game):
+			if shot.radius > 0 and _can_damage(game) and not shot.cosmetic:
 				_area_damage(game, next, shot.radius, shot.damage)
 			_flash(game.active_zone, next, shot.color, maxf(0.2, shot.radius))
+			_lingering_impact(game, shot, next)
 			_discard(_projectiles, index)
 		else:
 			shot.visual.global_position = next
-	for index in range(_fields.size() - 1, -1, -1):
+	for index in range(field_count - 1, -1, -1):
 		var field := _fields[index]
 		if not _context_valid(game, field) or not is_instance_valid(field.visual):
 			_discard(_fields, index)
@@ -169,11 +209,22 @@ func tick(game, delta: float) -> void:
 		var elapsed := minf(delta, field.remaining)
 		field.remaining -= elapsed
 		field.pulse += elapsed
-		while field.pulse >= 1.0 - 0.000001:
-			field.pulse = maxf(0, field.pulse - 1.0)
+		if field.rain:
+			field.rain_clock += elapsed
+			while field.rain_clock >= 0.2:
+				field.rain_clock -= 0.2
+				var angle: float = field.rain_index * 2.4
+				field.rain_index += 1
+				var landing: Vector3 = field.visual.global_position + Vector3(cos(angle), 0, sin(angle)) * 2.5
+				_launch(game, null, "arrow", 0, 10, 0, 0, landing + Vector3.UP * 7, landing, 0, true)
+		while field.pulse >= field.interval - 0.000001:
+			field.pulse = maxf(0, field.pulse - field.interval)
 			if field.healing > 0 and game.player.global_position.distance_to(field.visual.global_position) <= field.radius:
 				game.hp = minf(game._maximum_hp(), game.hp + field.healing)
 				game._refresh_hud()
+			if field.damage > 0 and _can_damage(game):
+				_area_damage(game, field.visual.global_position + Vector3.UP * 0.8, field.radius, field.damage)
+				_flash(game.active_zone, field.visual.global_position, field.color, field.radius)
 		if field.remaining <= 0.000001:
 			_discard(_fields, index)
 
@@ -234,7 +285,11 @@ func _target(game, reach: float):
 	return selected
 
 func _line_of_sight(game, origin: Vector3, foe) -> bool:
-	var query := PhysicsRayQueryParameters3D.create(origin, foe.global_position + Vector3.UP * 0.8)
+	var endpoint: Vector3 = foe.global_position + Vector3.UP * 0.8
+	if origin.distance_squared_to(endpoint) < 0.000001: endpoint += Vector3.UP * 0.1
+	var query := PhysicsRayQueryParameters3D.create(origin, endpoint)
+	# A ground area can be centered inside the target's collision volume.
+	query.hit_from_inside = true
 	var excluded: Array[RID] = [game.player.get_rid()]
 	for other in game.enemies:
 		if is_instance_valid(other) and other != foe:
@@ -268,10 +323,13 @@ func _area_damage(game, origin: Vector3, radius: float, amount: float) -> void:
 	if not _can_damage(game):
 		return
 	for foe in game.enemies.duplicate():
-		if is_instance_valid(foe) and foe.global_position.distance_to(origin) <= radius and _line_of_sight(game, origin, foe):
+		if not is_instance_valid(foe): continue
+		var offset: Vector3 = foe.global_position - origin
+		offset.y = 0
+		if offset.length() <= radius and _line_of_sight(game, origin, foe):
 			game._damage_enemy(foe, amount)
 
-func _launch(game, target, kind: String, amount: float, reach: float, radius: float = 0, delay: float = 0, source: Vector3 = Vector3.INF, landing: Vector3 = Vector3.INF) -> void:
+func _launch(game, target, kind: String, amount: float, reach: float, radius: float = 0, delay: float = 0, source: Vector3 = Vector3.INF, landing: Vector3 = Vector3.INF, lingering: float = 0, cosmetic := false) -> void:
 	var color := Color("e9d8a2") if kind == "arrow" else (Color("f78c3b") if kind == "fire" else Color("fff0ad"))
 	var visual := Node3D.new()
 	visual.name = "ClassProjectile"
@@ -302,10 +360,20 @@ func _launch(game, target, kind: String, amount: float, reach: float, radius: fl
 		sphere.rings = 6
 		_mesh(visual, sphere, color, Vector3.ZERO)
 	var destination: Vector3 = _aim_point(game, target, reach) if landing == Vector3.INF else landing
-	_projectiles.append({"visual": visual, "zone": game.active_zone, "run": game.arena_run, "target": weakref(target) if is_instance_valid(target) else null, "destination": destination, "damage": amount, "radius": radius, "delay": delay, "remaining": reach, "speed": 28.0 if kind == "arrow" else 19.0, "color": color})
+	_projectiles.append({"visual": visual, "zone": game.active_zone, "run": game.arena_run, "target": weakref(target) if is_instance_valid(target) else null, "destination": destination, "damage": amount, "radius": radius, "delay": delay, "remaining": reach, "speed": 28.0 if kind == "arrow" else 19.0, "color": color, "lingering":lingering, "cosmetic":cosmetic})
 	visual.visible = delay <= 0
 
-func _field(game, position: Vector3, color: Color, radius: float, duration: float, healing: float, follow: bool) -> void:
+func _lingering_impact(game, shot: Dictionary, at: Vector3) -> void:
+	if shot.lingering <= 0 or not _can_damage(game): return
+	var query := PhysicsRayQueryParameters3D.create(at + Vector3.UP * 0.3, at - Vector3.UP * 8)
+	var excluded: Array[RID] = [game.player.get_rid()]
+	for foe in game.enemies: excluded.append(foe.get_rid())
+	query.exclude = excluded
+	var hit: Dictionary = game.get_world_3d().direct_space_state.intersect_ray(query)
+	var floor_point: Vector3 = hit.position if not hit.is_empty() else Vector3(at.x, 0, at.z)
+	_field(game, floor_point, shot.color, shot.radius, shot.lingering, 0, false, shot.damage * 0.2)
+
+func _field(game, position: Vector3, color: Color, radius: float, duration: float, healing: float, follow: bool, damage: float = 0, interval: float = 1.0, rain := false) -> void:
 	var ring := TorusMesh.new()
 	ring.inner_radius = maxf(0.1, radius - 0.045)
 	ring.outer_radius = radius + 0.045
@@ -313,7 +381,8 @@ func _field(game, position: Vector3, color: Color, radius: float, duration: floa
 	ring.ring_segments = 6
 	var visual := _mesh(game.active_zone, ring, color, Vector3.ZERO)
 	visual.global_position = position + Vector3.UP * 0.06
-	_fields.append({"visual": visual, "zone": game.active_zone, "run": game.arena_run, "radius": radius, "remaining": duration, "pulse": 0.0, "healing": healing, "follow": follow})
+	visual.name = "ClassAreaEffect"
+	_fields.append({"visual": visual, "zone": game.active_zone, "run": game.arena_run, "radius": radius, "remaining": duration, "pulse": 0.0, "healing": healing, "follow": follow, "damage":damage, "interval":interval, "rain":rain, "rain_clock":0.0, "rain_index":0, "color":color})
 
 func _flash(parent: Node3D, position: Vector3, color: Color, radius: float) -> void:
 	if not is_instance_valid(parent):

@@ -9,7 +9,7 @@ const DEFINITIONS := {
 		"description": "Resiste na linha de frente e controla os inimigos com espada e escudo.",
 		"max_hp": 100, "attack_scale": 1.0, "range": 2.8, "color": Color("75b7cf"),
 		"skill_names": ["Golpe potente", "Corte giratório", "Defesa", "Investida"],
-		"skill_hints": ["Um golpe frontal mais forte.", "Atinge os inimigos ao redor.", "Reduz o dano recebido por 4 segundos.", "Avança rapidamente na direção da câmera."],
+		"skill_hints": ["Um golpe frontal mais forte.", "Atinge ao redor e mantém cortes por 3 segundos.", "Reduz o dano recebido por 4 segundos.", "Avança rapidamente na direção da câmera."],
 		"cooldowns": [6.0, 8.0, 12.0, 7.0]
 	},
 	"arqueiro": {
@@ -17,7 +17,7 @@ const DEFINITIONS := {
 		"description": "Mantém distância com disparos precisos e sai de perto dos inimigos.",
 		"max_hp": 85, "attack_scale": 1.0, "range": 22.0, "color": Color("9bc779"),
 		"skill_names": ["Disparo potente", "Rajada de flechas", "Passo evasivo", "Chuva de flechas"],
-		"skill_hints": ["Um disparo reforçado contra o alvo.", "Dispara várias flechas contra o alvo.", "Recua para abrir distância dos inimigos.", "Atinge uma área com uma chuva de flechas."],
+		"skill_hints": ["Um disparo reforçado contra o alvo.", "Dispara várias flechas contra o alvo.", "Recua para abrir distância dos inimigos.", "Chuva de flechas por 6 segundos no local escolhido."],
 		"cooldowns": [6.0, 8.0, 9.0, 12.0]
 	},
 	"mago": {
@@ -25,7 +25,7 @@ const DEFINITIONS := {
 		"description": "Concentra poder mágico à distância e protege a si mesmo com uma barreira.",
 		"max_hp": 75, "attack_scale": 1.1, "range": 22.0, "color": Color("bc99e1"),
 		"skill_names": ["Bola de fogo", "Explosão arcana", "Barreira arcana", "Teleporte"],
-		"skill_hints": ["Lança fogo contra o alvo.", "Causa dano mágico em uma área.", "Reduz o dano recebido por 4 segundos.", "Teleporta na direção da câmera."],
+		"skill_hints": ["Explode e deixa o chão em chamas por 4 segundos.", "Explosão e pulsos de dano por 6 segundos no local escolhido.", "Reduz o dano recebido por 4 segundos.", "Teleporta na direção da câmera."],
 		"cooldowns": [6.0, 8.0, 12.0, 7.0]
 	},
 	"healer": {
@@ -33,7 +33,7 @@ const DEFINITIONS := {
 		"description": "Combina magia sagrada ofensiva com curas para sobreviver aos confrontos.",
 		"max_hp": 90, "attack_scale": 0.75, "range": 18.0, "color": Color("91d8bc"),
 		"skill_names": ["Luz sagrada", "Cura", "Santuário", "Onda sagrada"],
-		"skill_hints": ["Atinge o alvo com energia sagrada.", "Recupera 40 pontos de vida.", "Recupera vida ao longo de 4 segundos.", "Atinge inimigos em uma área com luz sagrada."],
+		"skill_hints": ["Atinge o alvo com energia sagrada.", "Recupera 40 pontos de vida.", "Cura por 6 segundos na área escolhida. Entre nela para receber cura.", "Luz sagrada com pulsos de dano por 6 segundos no local escolhido."],
 		"cooldowns": [6.0, 8.0, 14.0, 10.0]
 	}
 }

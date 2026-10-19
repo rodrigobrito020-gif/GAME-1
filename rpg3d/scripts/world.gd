@@ -25,6 +25,8 @@ const LootItems := preload("res://scripts/loot_items.gd")
 const PlayerClasses := preload("res://scripts/player_classes.gd")
 const ClassMenu := preload("res://scripts/class_menu.gd")
 const ClassCombat := preload("res://scripts/class_combat.gd")
+const GroundTargeting := preload("res://scripts/ground_targeting.gd")
+var ground_targeting := GroundTargeting.new()
 const ArenaBossVisual := preload("res://scripts/arena_boss_visual.gd")
 const ClassWeapon := preload("res://scripts/class_weapon.gd")
 const Wardrobe := preload("res://scripts/wardrobe.gd")
@@ -282,7 +284,7 @@ func _ui() -> void:
 	add_child(hud)
 	hud.inventory_panel.set_character_source(character_model)
 	notice = hud.notice
-	hud.skill_requested.connect(_activate_skill)
+	hud.skill_requested.connect(_request_skill)
 	hud.skill_automatic_changed.connect(_set_skill_automatic)
 	hud.inventory_requested.connect(_toggle_inventory)
 	hud.item_requested.connect(_use_item)
@@ -334,6 +336,7 @@ func _maximum_hp() -> float:
 	return float(PlayerClasses.get_definition(player_class).max_hp) + Balance.health_growth(level) + float(LootItems.set_bonuses(inventory, player_class).hp) + float(LootItems.jewelry_bonuses(inventory).hp)
 
 func _sync_class() -> void:
+	ground_targeting.cancel()
 	LootItems.ensure_identity(inventory, player_class)
 	LootItems.store_incompatible_equipment(inventory, player_class)
 	_set_character_model()
@@ -547,6 +550,7 @@ func _finish_rewards() -> void:
 	_refresh_hud()
 
 func _change_zone(number: int) -> void:
+	ground_targeting.cancel()
 	hud.inventory_panel.hide()
 	hud.rift_panel.hide()
 	hud.potion_popup.hide()
@@ -629,6 +633,7 @@ func _update_location() -> void:
 		hud.set_location("MUNDO %d · %s" % [current_world, definition.subtitle], objective, false)
 
 func _complete_instance() -> void:
+	ground_targeting.cancel()
 	enemy_ranged_combat.cancel()
 	var unlocked := progress.complete_world(current_world)
 	reward_chest = RewardChest.new()
@@ -644,6 +649,7 @@ func _complete_instance() -> void:
 	_save_profile()
 
 func _fail_instance(reason: String) -> void:
+	ground_targeting.cancel()
 	enemy_ranged_combat.cancel()
 	attack_pending = false
 	attack_clock = 0.0
@@ -687,6 +693,7 @@ func _notification(what: int) -> void:
 		_save_profile()
 
 func _toggle_inventory() -> void:
+	ground_targeting.cancel()
 	if _modal_open() and not hud.inventory_panel.visible:
 		return
 	hud.inventory_panel.visible = not hud.inventory_panel.visible
@@ -752,11 +759,22 @@ func _auto_potion_step(delta: float) -> void:
 	if current_world > 0 and auto_potion and not dead and hp > 0 and hp / _maximum_hp() * 100.0 <= potion_threshold:
 		_use_item("potion")
 
-func _activate_skill(slot: int) -> bool:
+func _request_skill(slot: int) -> bool:
+	if ground_targeting.active() and ground_targeting.slot == slot:
+		ground_targeting.cancel()
+		return true
+	ground_targeting.cancel()
+	if not class_combat.ground_area(player_class, slot).is_empty():
+		if not class_combat.can_activate(self, slot): return false
+		ground_targeting.begin(self, slot)
+		return true
+	return _activate_skill(slot)
+
+func _activate_skill(slot: int, ground_point := Vector3.INF) -> bool:
 	if current_world == 0 or _instance_failed() or dead or _modal_open():
 		return false
 	if player_class != "tanque":
-		return class_combat.activate_skill(self, slot)
+		return class_combat.activate_skill(self, slot, ground_point)
 	match slot:
 		0:
 			return _attack(true)
@@ -789,7 +807,7 @@ func _set_skill_automatic(slot: int, enabled: bool) -> void:
 		_save_profile()
 
 func _automatic_skills_step() -> void:
-	if current_world == 0 or _instance_failed() or dead or attack_clock > 0 or _modal_open():
+	if current_world == 0 or _instance_failed() or dead or attack_clock > 0 or _modal_open() or ground_targeting.active():
 		return
 	var ready: Array[bool] = [false, false, false, false]
 	if player_class != "tanque":
@@ -995,7 +1013,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_toggle_inventory()
 			return
 		if event.keycode == KEY_ESCAPE:
-			if storage_menu.visible:
+			if ground_targeting.active():
+				ground_targeting.cancel()
+			elif storage_menu.visible:
 				_close_storage()
 			elif merchant_menu.visible:
 				_close_merchant()
@@ -1020,11 +1040,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_Q:
 			_use_item("potion")
 		elif event.keycode >= KEY_1 and event.keycode <= KEY_4:
-			_activate_skill(event.keycode - KEY_1)
+			_request_skill(event.keycode - KEY_1)
 	if _modal_open():
 		return
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		if ground_targeting.active() and event.button_index in [MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT]:
+			if event.button_index == MOUSE_BUTTON_RIGHT: ground_targeting.cancel()
+			else:
+				ground_targeting.update(self)
+				ground_targeting.confirm(self)
+			get_viewport().set_input_as_handled()
+			return
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			zoom_distance = clampf(zoom_distance - 0.8, 2.0, 14.0)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			zoom_distance = clampf(zoom_distance + 0.8, 2.0, 14.0)
@@ -1047,6 +1074,9 @@ func _physics_process(delta: float) -> void:
 			_refresh_hud()
 			return
 	class_combat.tick(self, delta)
+	if _modal_open():
+		_refresh_hud()
+		return
 	boom.rotation = Vector3(pitch, yaw, 0)
 	boom.spring_length = lerpf(boom.spring_length, zoom_distance, 1.0 - exp(-10.0 * delta))
 	spin_cooldown = maxf(0, spin_cooldown - delta)
@@ -1088,11 +1118,13 @@ func _physics_process(delta: float) -> void:
 		player.velocity.y -= 20 * delta
 		player.move_and_slide()
 	_enemies_step(delta)
+	if ground_targeting.active(): ground_targeting.update(self)
 	_auto_potion_step(delta)
 	_automatic_skills_step()
 	_refresh_hud()
 
 func _attack(powered := false) -> bool:
+	if ground_targeting.active(): return false
 	if player_class != "tanque":
 		return class_combat.basic_attack(self, powered)
 	if current_world == 0 or _instance_failed() or dead or _modal_open() or not LootItems.is_equipped(inventory, "sword") or cooldown > 0 or (powered and skill_cooldown > 0):
@@ -1115,6 +1147,8 @@ func _melee_hit() -> void:
 	# Um golpe por ação; só acerta inimigos próximos, à frente e sem parede entre eles.
 	if attack_kind > 0:
 		_skill_arc()
+	if attack_kind == 2:
+		class_combat._field(self, player.global_position, Color("8ce9ff"), 3.2, 3.0, 0, true, class_combat._damage(self, 40) * 0.2, 0.5)
 	var reach := 3.2 if attack_kind == 2 else (3.6 if powered_attack else 2.6)
 	for foe in enemies.duplicate():
 		var offset: Vector3 = foe.global_position - player.global_position

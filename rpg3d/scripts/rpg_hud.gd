@@ -198,6 +198,8 @@ func _ready() -> void:
 
 func _skill_tooltip(index: int) -> String:
 	var hint := str(_class_skill_hints[index]).get_slice("Recarga:", 0).strip_edges()
+	if not preload("res://scripts/class_combat.gd").ground_area(_class_id, index).is_empty():
+		hint += "\nManual: escolha o ponto no chão e clique. Botão direito / Esc cancela."
 	return "%d · %s\n%s\nRecarga: %ss.\nSegure e arraste para baixo: automático. Para cima: manual." % [index + 1, _class_skill_names[index], hint, str(_class_cooldowns[index])]
 
 func set_player_class(definition: Dictionary) -> void:

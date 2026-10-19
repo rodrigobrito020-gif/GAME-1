@@ -13,7 +13,7 @@ O jogo começa na **Vila da Fenda**, uma área rural segura e inteiramente cerca
 | Mago | 75 | Bola de fogo; Explosão arcana; Barreira arcana; Teleporte | 6 / 8 / 12 / 7 s |
 | Curandeiro | 90 | Luz sagrada; Cura; Santuário; Onda sagrada | 6 / 8 / 14 / 10 s |
 
-O Tanque combate de perto com espada e escudo; Defesa reduz o dano em 65% por quatro segundos. Arqueiro, Mago e Curandeiro têm ataques comuns à distância e habilidades próprias. Flechas e magias viajam como projéteis, colidem com obstáculos e causam dano ao atingir. A seleção de alvos e o dano em área respeitam linha de visão. Passo evasivo e Teleporte respeitam colisões. Cura recupera até 40 de vida; Santuário cura ao longo de quatro segundos. Estas ações funcionam em combate, com alcance e recarga; escolher uma classe muda a jogabilidade.
+O Tanque combate de perto com espada e escudo; Defesa reduz o dano em 65% por quatro segundos. Arqueiro, Mago e Curandeiro têm ataques comuns à distância e habilidades próprias. Flechas e magias viajam como projéteis, colidem com obstáculos e causam dano ao atingir. A seleção de alvos e o dano em área respeitam linha de visão. Passo evasivo e Teleporte respeitam colisões. Cura recupera até 40 de vida; Santuário cura ao longo de seis segundos. Estas ações funcionam em combate, com alcance e recarga; escolher uma classe muda a jogabilidade.
 
 **Modelos por classe:** o Tanque preserva o Fighter e a pose aprovada de espada/escudo. O Arqueiro usa `human_archer.glb`, com as mesmas malhas texturizadas do Fighter e os clipes nativos `wait_Bow`, `walk_Bow`, `run_Bow`, `Atk01_Bow` e `SpAtk01_Bow`. Mago e Curandeiro usam `human_mage.glb`, as malhas MMagic_M000 de `Magic.ukx`, postura, caminhada, corrida, conjuração e morte do Mage. A troca no Instrutor também troca o modelo da prévia do inventário. As posturas de repouso usam `wait_Bow_MFighter` e `wait_1HS_MMagic`, sem a postura de prontidão `atkWait`. O Arqueiro usa a animação de disparo nativa em 0,9 s para ataque comum e 0,65 s para habilidades, ajustando a velocidade do clipe. A longa animação especial de quatro segundos não bloqueia mais o ataque comum; recargas individuais continuam independentes. A velocidade normal é restaurada ao voltar ao repouso, andar, correr ou morrer.
 
@@ -106,6 +106,7 @@ godot --headless --path . --script res://tests/client_item_icons_test.gd
 godot --headless --path . --script res://tests/rarity_icon_background_test.gd
 godot --headless --path . --script res://tests/storage_jewelry_balance_test.gd
 godot --headless --path . --script res://tests/enemy_ranged_combat_test.gd
+godot --headless --path . --script res://tests/ground_area_duration_test.gd
 ```
 
 A validação cobre controles e câmera, animações importadas e pose de morte, combate e recargas, quatro classes, projéteis e obstáculos, cura, equipamentos e bônus, poções, pausa, instâncias, seis ondas, chefe, prazo compartilhado, ausência de portal de retorno, baú único, resultado e passagem até o Mundo 10. Também verifica geração e restauração de itens, raridades, salvamento de classe e progressão, sem alterar o perfil normal do jogador.
@@ -218,3 +219,27 @@ O Mundo 1 começa com Grelins: o arqueiro aparece na segunda onda e o xamã na t
 `tests/enemy_ranged_combat_test.gd` verifica a composição das ondas, corpos e armas diferentes, preparação, flechas e magia com dano real, esquiva, obstáculos, recuo, ataque em área, pausa, interrupção por morte do lançador e cancelamento ao encerrar a instância. As telas do baú/mercador e as criaturas em repouso, caminhada, ataque e morte são conferidas com renderização nativa do Godot.
 
 [Arqueiro e xamã](../docs/monstros-arqueiro-xama.png) · [Preparação dos ataques](../docs/monstros-ataque-distancia.png) · [Magia de área](../docs/monstros-magia-area.png)
+
+
+## Duração das áreas e mira no chão
+
+As recargas permanecem as mesmas. A duração do efeito foi ampliada: os monstros recebem novos pulsos de dano enquanto permanecem dentro da área. Sair dela interrompe os próximos pulsos; entrar novamente permite ser atingido pelos pulsos restantes. O dano respeita obstáculos e a tentativa precisa continuar ativa. Flechas comuns, Golpe potente, Rajada de flechas e Luz sagrada preservam seus ataques diretos.
+
+| Habilidade | Duração do efeito | Como funciona |
+| --- | --- | --- |
+| Chuva de flechas | 6 s | Flechas visíveis durante todo o período; dano em pulsos a cada segundo, sem dano duplicado pelas flechas decorativas |
+| Bola de fogo | 4 s após impacto | Explosão inicial e queimadura em pulsos a cada segundo |
+| Explosão arcana | 6 s | Explosão inicial e pulsos a cada segundo |
+| Onda sagrada | 6 s | Impacto inicial e pulsos a cada segundo |
+| Corte giratório | 3 s após o golpe | Cortes adicionais a cada meio segundo, acompanhando o Tanque |
+| Santuário | 6 s | Cura de 10 por segundo enquanto o personagem está dentro da área |
+
+No modo manual, pressione o número da habilidade ou clique no slot. Para as áreas de Arqueiro, Mago e Curandeiro aparece um círculo no chão, com o tamanho real do efeito. Mova o mouse e clique com o botão esquerdo para lançar. **Botão direito, Esc ou a mesma tecla novamente cancelam**, sem gastar a habilidade. Pontos fora do alcance, no ar ou atrás de obstáculos ficam inválidos. A confirmação restaura o modo anterior do mouse; se a câmera estava capturada, ela volta a acompanhar o mouse. O scroll continua ajustando o zoom durante a escolha. A luta continua acontecendo enquanto você mira.
+
+O alcance até o centro é 22 m para Chuva de flechas/Bola de fogo, 16 m para Explosão arcana/Onda sagrada e 14 m para Santuário. Corte giratório continua sendo uma habilidade de corpo a corpo centrada no Tanque. No automático, as habilidades escolhem seu alvo como antes e não abrem a mira. Enquanto uma mira manual estiver aberta, o automático aguarda a confirmação ou o cancelamento. Mochila, derrota, vitória, troca de classe e mudança de cenário encerram a seleção; sair da instância remove os efeitos ativos.
+
+Os pulsos somam dano ao longo do tempo; não aumentam a duração da animação de conjuração nem prendem o jogador até o efeito terminar. A recuperação curta do Arqueiro foi preservada. Os valores de dano em pulsos são balanceamento inicial próprio do protótipo.
+
+`tests/ground_area_duration_test.gd` verifica ativação pela tecla, mira sem custo, ponto fora do centro, confirmação/cancelamento, modos do mouse, luta durante a mira, bloqueio do automático, alcance, obstáculos, rejeição de pontos no ar, dano dentro/fora da área, duração exata, ausência de dano duplicado nas flechas, queimadura após o voo, cura por localização e limpeza ao sair. A seleção pelo cursor e a confirmação pelo clique também são exercitadas na renderização nativa.
+
+[Mira no chão](../docs/habilidade-mira-chao.png) · [Chuva de flechas persistente](../docs/habilidade-chuva-persistente.png) · [Área arcana](../docs/habilidade-area-arcana.png)

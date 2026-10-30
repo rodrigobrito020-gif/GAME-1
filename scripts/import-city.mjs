@@ -11,6 +11,8 @@ import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
+import { prepareReferenceResources } from "./reference-resources.mjs";
+
 export const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const crcTable = Uint32Array.from({ length: 256 }, (_, n) => {
   for (let i = 0; i < 8; i++) n = n & 1 ? 0xedb88320 ^ (n >>> 1) : n >>> 1;
@@ -132,6 +134,9 @@ export function prepareCity(entries, packHash) {
   const files = new Map(),
     ids = new Set(),
     renderSets = [];
+  const referenceExcluded = map.tilesets.map((set) =>
+    path.posix.basename(set.src),
+  );
   for (const set of map.tilesets) {
     if (
       !/^[a-z0-9_-]{1,50}$/i.test(set.id) ||
@@ -222,6 +227,8 @@ export function prepareCity(entries, packHash) {
       { id: "forge", name: "Forja Universal", ...point(18, 31) },
       { id: "shop", name: "Mercador", ...point(37, 31) },
       { id: "class", name: "Mestre de Profissões", ...point(29, 33) },
+      { id: "healer", name: "Curandeira", ...point(33, 18) },
+      { id: "storage", name: "Guarda-volumes", ...point(40, 26) },
     ],
     collision: { tileSize: 32, columns: 60, rows: 48, cells: map.collisions },
     atlas: { mapUrl: "/local-city/map.json", tilesets: renderSets, packHash },
@@ -265,6 +272,10 @@ export function prepareCity(entries, packHash) {
       )
     )
       throw Error(`NPC sem caminho: ${npc.name}.`);
+  const resources = prepareReferenceResources(entries, referenceExcluded);
+  for (const [name, data] of resources.files) files.set(name, data);
+  if (resources.files.size)
+    layout.atlas.resourcesUrl = "/local-city/reference.json";
   files.set("map.json", Buffer.from(JSON.stringify(map)));
   files.set("layout.json", Buffer.from(JSON.stringify(layout)));
   return { files, layout };
@@ -309,7 +320,7 @@ if (
     );
     const result = importCity(source);
     console.log(
-      `Praça importada: ${result.layout.width}×${result.layout.height}, ${result.files} arquivos. Personagens, farm e banco preservados. Reinicie o servidor.`,
+      `Referência importada: ${result.layout.width}×${result.layout.height}, ${result.files} arquivos. Cenário, interface e áudio locais preparados; banco preservado. Reinicie o servidor.`,
     );
   } catch (error) {
     console.error(`Não foi possível importar a praça: ${error.message}`);

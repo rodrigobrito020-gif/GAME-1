@@ -10,46 +10,24 @@ import {
   RACES,
   WEAPONS,
   GRADES,
-  RARITIES,
   BALANCE,
   canEnter,
   professionName,
   xpRequired,
   THIRD_PARTY_SKILLS_PENDING,
 } from "@idle/shared";
-import type { Command, Item, Race, Snapshot, Weapon } from "@idle/shared";
+import type { Command, Race, Snapshot, Weapon } from "@idle/shared";
 import { World } from "./world";
 import { portraitFor } from "./art";
 import { Icon } from "./icons";
 import "./style.css";
 import "./visual.css";
 import "./reference-layout.css";
+import "./reference-polish.css";
 const money = (n: number) => Math.floor(n).toLocaleString("pt-BR");
-function ItemArt({ item }: { item: Item }) {
-  return (
-    <span
-      className={`item-art rarity-${RARITIES.indexOf(item.rarity ?? "Comum")}`}
-      aria-hidden
-    >
-      <Icon
-        name={
-          item.kind === "potion"
-            ? item.potion!
-            : item.kind === "material"
-              ? "material"
-              : (item.weapon ?? item.slot ?? "bag")
-        }
-        color={
-          item.potion === "hp"
-            ? "#bd5363"
-            : item.potion === "mp"
-              ? "#597dc9"
-              : "#ae9bdd"
-        }
-      />
-    </span>
-  );
-}
+import { ItemArt, Inventory, Warehouse } from "./inventory";
+import { ReferenceProvider, ReferenceGallery } from "./reference";
+import { ReferenceAudio } from "./audio";
 function GameWorld({
   snapshot,
   send,
@@ -107,6 +85,14 @@ function GameWorld({
   );
 }
 function App() {
+  const [resourcesUrl, setResourcesUrl] = useState<string>();
+  return (
+    <ReferenceProvider url={resourcesUrl}>
+      <GameApp onResources={setResourcesUrl} />
+    </ReferenceProvider>
+  );
+}
+function GameApp({ onResources }: { onResources: (url?: string) => void }) {
   const [token, setToken] = useState(
       () => localStorage.getItem("idle-token") ?? "",
     ),
@@ -116,13 +102,15 @@ function App() {
     [connected, setConnected] = useState(false),
     [race, setRace] = useState<Race>("human"),
     [mode, setMode] = useState<"register" | "login">("register"),
-    [selected, setSelected] = useState<Item | null>(null),
     [busy, setBusy] = useState(false),
     [devProfession, setDevProfession] = useState("warrior");
   const socket = useRef<Socket | null>(null),
     latest = useRef(snap),
     noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   latest.current = snap;
+  useEffect(() => {
+    onResources(snap?.city.atlas?.resourcesUrl);
+  }, [snap?.city.atlas?.resourcesUrl, onResources]);
   const tell = useCallback((text: string) => {
     setNotice(text);
     if (noticeTimer.current) clearTimeout(noticeTimer.current);
@@ -166,6 +154,8 @@ function App() {
         send({ type: "skill", slot: Number(e.key) - 1 });
       if (e.key.toLowerCase() === "f")
         send({ type: "farm", enabled: !s.autoFarm });
+      if (e.key.toLowerCase() === "z") send({ type: "potion", kind: "hp" });
+      if (e.key.toLowerCase() === "x") send({ type: "potion", kind: "mp" });
       if (e.key.toLowerCase() === "i")
         setPanel((p) => (p === "inventory" ? null : "inventory"));
       if (e.key === "Escape") setPanel(null);
@@ -331,9 +321,11 @@ function App() {
     target = snap.actors.find((a) => a.id === snap.actor.targetId),
     levelProgress = (self.xp / xpRequired(self.level)) * 100;
   const near = (id: string) => {
-    const npc = cityLayout.npcs.find((n) => n.id === id)!;
+    const npc = cityLayout.npcs.find((n) => n.id === id);
     return (
-      city && Math.hypot(npc.x - snap.actor.x, npc.y - snap.actor.y) <= 105
+      !!npc &&
+      city &&
+      Math.hypot(npc.x - snap.actor.x, npc.y - snap.actor.y) <= 105
     );
   };
   const gotoNpc = (id: string) => {
@@ -349,13 +341,15 @@ function App() {
           ? "shop"
           : panel === "class"
             ? "class"
-            : null;
-  const selectItem = (item: Item) => {
-    setSelected(item);
-  };
+            : panel === "storage"
+              ? "storage"
+              : panel === "healer"
+                ? "healer"
+                : null;
   return (
     <main className="play reference-layout">
       <GameWorld snapshot={snap} send={send} open={open} />
+      <ReferenceAudio snapshot={snap} />
       <header className="topbar">
         <div className="brand">
           L
@@ -368,6 +362,7 @@ function App() {
           <b>{city ? cityLayout.name : snap.hunt?.name}</b>
         </div>
         <div className="top-actions">
+          <b className="version-tag">REFERÊNCIA · 3</b>
           <span className={connected ? "online" : "offline"}>
             {connected ? `● ${snap.online.length} online` : "● Reconectando"}
           </span>
@@ -446,6 +441,12 @@ function App() {
           ["forge", "⚒", "Forja"],
           ["shop", "◈", "Mercador"],
           ["class", "✦", "Profissões"],
+          ...(cityLayout.npcs.some((n) => n.id === "storage")
+            ? [["storage", "▦", "Armazém"]]
+            : []),
+          ...(cityLayout.npcs.some((n) => n.id === "healer")
+            ? [["healer", "+", "Curandeira"]]
+            : []),
         ].map(([id, _icon, name]) => (
           <button
             key={id}
@@ -684,6 +685,9 @@ function App() {
                 <h2>
                   {
                     {
+                      resources: "Recursos do pacote enviado",
+                      storage: "Guarda-volumes",
+                      healer: "Curandeira da cidade",
                       inventory: "Inventário & equipamentos",
                       character: "Seu personagem",
                       hunts: "Escolha sua hunt",
@@ -715,132 +719,42 @@ function App() {
                 )}
               </div>
             )}
-            {panel === "inventory" && (
-              <div className="inventory-layout">
-                <div>
-                  <h3>Equipado</h3>
-                  <div className="equipment">
-                    {[
-                      "weapon",
-                      "shield",
-                      "helmet",
-                      "chest",
-                      "legs",
-                      "gloves",
-                      "boots",
-                      "ring",
-                      "necklace",
-                    ].map((slot) => {
-                      const item =
-                        self.equipment[slot as keyof typeof self.equipment];
-                      return (
-                        <button
-                          key={slot}
-                          className="equipped-slot"
-                          onClick={() => item && selectItem(item)}
-                        >
-                          {item ? <ItemArt item={item} /> : <span>◇</span>}
-                          <small>
-                            {
-                              {
-                                weapon: "Arma",
-                                shield: "Escudo",
-                                helmet: "Cabeça",
-                                chest: "Peito",
-                                legs: "Calças",
-                                gloves: "Luvas",
-                                boots: "Botas",
-                                ring: "Anel",
-                                necklace: "Colar",
-                              }[slot]
-                            }
-                          </small>
-                        </button>
-                      );
-                    })}
+            {panel === "inventory" && <Inventory snapshot={snap} send={send} />}
+            {panel === "storage" && (
+              <Warehouse snapshot={snap} send={send} near={near("storage")} />
+            )}
+            {panel === "healer" && (
+              <div className="healer-panel">
+                <Icon name="healer" />
+                <h3>Descanse antes da próxima hunt</h3>
+                <p>A curandeira restaura seu HP e MP na cidade.</p>
+                <div className="stat-grid">
+                  <div>
+                    <small>HP</small>
+                    <b>
+                      {Math.ceil(snap.actor.hp)} / {stats.maxHp}
+                    </b>
                   </div>
-                  <p className="muted">
-                    A arma e o peitoral mudam a aparência no mundo. Equipar é
-                    permitido na cidade.
-                  </p>
-                </div>
-                <div>
-                  <h3>
-                    Mochila{" "}
-                    <span>
-                      {self.inventory.length} / {BALANCE.inventoryLimit}
-                    </span>
-                  </h3>
-                  <div className="bag-grid">
-                    {self.inventory.map((item) => (
-                      <button
-                        className={`item-cell ${selected?.id === item.id ? "selected" : ""}`}
-                        key={item.id}
-                        title={`${item.name} · ${item.rarity ?? ""}`}
-                        onClick={() => selectItem(item)}
-                        onDoubleClick={() =>
-                          item.kind === "equipment" &&
-                          send({ type: "equip", id: item.id })
-                        }
-                      >
-                        <ItemArt item={item} />
-                        {item.quantity > 1 && <small>×{item.quantity}</small>}
-                      </button>
-                    ))}
+                  <div>
+                    <small>MP</small>
+                    <b>
+                      {Math.floor(self.mp)} / {stats.maxMp}
+                    </b>
                   </div>
                 </div>
-                <div className="item-detail">
-                  {selected ? (
-                    <>
-                      <ItemArt item={selected} />
-                      <h3>{selected.name}</h3>
-                      <p>
-                        {selected.grade === "NG" ? "No Grade" : selected.grade}{" "}
-                        · {selected.rarity ?? selected.kind}
-                      </p>
-                      <p>
-                        {selected.grade
-                          ? `Requer nível ${GRADES[selected.grade]}`
-                          : ""}
-                      </p>
-                      {selected.kind === "equipment" && (
-                        <>
-                          <p>
-                            Linha de ataque de teste: +{selected.bonus ?? 0}
-                          </p>
-                          {self.inventory.some((i) => i.id === selected.id) ? (
-                            <button
-                              className="primary wide"
-                              disabled={!city}
-                              onClick={() =>
-                                send({ type: "equip", id: selected.id })
-                              }
-                            >
-                              Equipar
-                            </button>
-                          ) : (
-                            <button
-                              className="wide"
-                              disabled={!city}
-                              onClick={() =>
-                                send({ type: "unequip", slot: selected.slot })
-                              }
-                            >
-                              Retirar para mochila
-                            </button>
-                          )}
-                        </>
-                      )}
-                      <small>
-                        Duplo clique em equipamento da mochila também equipa.
-                      </small>
-                    </>
-                  ) : (
-                    <p>Selecione um item para ver os detalhes.</p>
-                  )}
-                </div>
+                <button
+                  className="primary"
+                  disabled={!near("healer")}
+                  onClick={() => send({ type: "heal.city" })}
+                >
+                  Restaurar HP e MP
+                </button>
+                <p className="muted">
+                  Serviço gratuito de teste; custo definitivo pendente.
+                </p>
               </div>
             )}
+            {panel === "resources" && <ReferenceGallery />}
             {panel === "character" && (
               <>
                 <div className="stat-grid">
@@ -1282,6 +1196,15 @@ function App() {
                   </div>
                   <button className="primary">Salvar configuração</button>
                 </form>
+                <h3>Pacote visual de referência</h3>
+                <p>
+                  Cenário, ícones e sons locais do pacote enviado. Personagens
+                  completos e servidor original não estavam no ZIP; mantemos a
+                  simulação funcional própria.
+                </p>
+                <button onClick={() => setPanel("resources")}>
+                  Ver imagens do pacote
+                </button>
                 <h3>Controles</h3>
                 <p>
                   WASD e setas: andar na cidade · Clique: caminhar / selecionar

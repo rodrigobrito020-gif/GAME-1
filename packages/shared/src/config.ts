@@ -9,6 +9,7 @@ export const BALANCE = {
   respawnMs: 5000,
   skillDuration: 6000,
   inventoryLimit: 100,
+  storageLimit: 100,
   initialAdena: 1200,
   potionCost: 20,
   craftCost: 500,
@@ -279,6 +280,8 @@ export const CITY = {
     { id: "forge", name: "Forja Universal", x: 500, y: 420 },
     { id: "shop", name: "Mercador", x: 1080, y: 830 },
     { id: "class", name: "Mestre de Profissões", x: 520, y: 810 },
+    { id: "healer", name: "Curandeira", x: 1010, y: 420 },
+    { id: "storage", name: "Guarda-volumes", x: 1100, y: 690 },
   ],
   blocks: [
     { x: 150, y: 140, w: 370, h: 190 },

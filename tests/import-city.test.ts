@@ -152,6 +152,29 @@ describe("importação local de cenário", () => {
       );
     }
   });
+  it("importa ícones locais disponíveis e registra lacunas sem copiar scripts compilados", () => {
+    const source = fixture();
+    source.set("0010_p-inventario.png", png());
+    source.set("0011_main.js", Buffer.from("throw Error('never executed')"));
+    const prepared = prepareCity(readZip(zip(source, true)), hash);
+    const manifest = JSON.parse(
+      prepared.files.get("reference.json")!.toString(),
+    );
+    expect(manifest.images["p-inventario"]).toBe(
+      "/local-city/reference/images/p-inventario.png",
+    );
+    expect(prepared.layout.atlas!.resourcesUrl).toBe(
+      "/local-city/reference.json",
+    );
+    expect(manifest.missing).toContain("character-walk-and-combat-sheets");
+    expect(
+      [...prepared.files.keys()].some((name) => name.endsWith(".js")),
+    ).toBe(false);
+    source.set("0010_p-inventario.png", Buffer.from("invalid image"));
+    expect(() => prepareCity(readZip(zip(source)), hash)).toThrow(
+      /interface inválida/,
+    );
+  });
   it("recusa caminhos que escapam da pasta e ZIP truncado", () => {
     expect(() =>
       readZip(zip(new Map([["../escape.txt", Buffer.from("x")]]))),
@@ -194,7 +217,7 @@ describe("importação local de cenário", () => {
       rmSync(root, { recursive: true, force: true });
     }
   });
-  it("servidor usa dimensões/colisões importadas, encontra os quatro serviços e volta ao spawn correto", () => {
+  it("servidor usa dimensões/colisões importadas, encontra os seis serviços e volta ao spawn correto", () => {
     const { layout } = prepareCity(readZip(zip(fixture())), hash),
       engine = new GameEngine(true, () => 0.01, layout),
       p = engine.connect(

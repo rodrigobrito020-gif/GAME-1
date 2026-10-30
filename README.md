@@ -2,9 +2,9 @@
 
 Primeiro marco de um RPG idle multiplayer para navegador. A implementação está nesta pasta independente; GAME-1/GAME-2 não foram modificados. A especificação original está integralmente em [PROMPT_MESTRE_CODEX_LINEAGE_2D_IDLE.md](PROMPT_MESTRE_CODEX_LINEAGE_2D_IDLE.md).
 
-**Esta é uma adaptação no nosso jogo**, com o cenário importado e a interface aproximada da referência. Os personagens, servidor, contas, farm, skills e economia continuam sendo os nossos; o ZIP do site não trouxe o backend nem todos os sistemas/arquivos necessários para um clone completo.
+**Direção aprovada: reconstruir primeiro a experiência do jogo de referência e decidir os cortes depois.** A versão **REFERÊNCIA 3** integra cenário, ícones, poções, fontes e áudio disponíveis no ZIP, além de serviços funcionais de curandeira e guarda-volumes. Ainda não é uma reprodução completa: as imagens completas dos personagens e o servidor original não vieram no pacote. As regras aprovadas no prompt mestre permanecem válidas. Veja o [estado real da reconstrução](docs/REFERENCIA_COMPLETA.md).
 
-![Cidade social navegável](docs/images/cidade.png)
+As imagens em `docs/images` documentam a etapa anterior de arte própria; não representam o cenário importado atual.
 
 ## Baixar pelo GitHub
 
@@ -14,13 +14,13 @@ Esta versão usa a branch exclusiva `lineage-2d-idle` do GAME-1. A branch princi
 
 ## Testar a praça do ZIP enviado
 
-**Teste 2:** HUD compacto no alto à esquerda, menus no alto à direita, chat embaixo à esquerda, quatro skills no centro e Auto Farm separado à direita. O iniciador anuncia `TESTE 2` e recusa iniciar se uma versão antiga ainda estiver usando as portas. Feche o terminal anterior com Ctrl+C antes de abrir `INICIAR_TESTE.bat`. O Vite não muda mais silenciosamente para outra porta.
+**REFERÊNCIA 3:** cenário importado, ícones reais do pacote nos menus, poções, música e passos/combate com som opcional. O inventário tem slots, prévia, busca, filtros e ordenação por raridade. Guarda-volumes salva itens e aceita duplo clique, botão direito e arrastar; curandeira restaura HP/MP. O iniciador anuncia `REFERENCIA 3` e recusa iniciar com portas ocupadas. Feche o terminal anterior com Ctrl+C antes de abrir `INICIAR_TESTE.bat`.
 
 Está disponível a [versão de teste da praça importada](docs/TESTE_DA_PRACA.md), com nossas regras, personagens e serviços. Mantenha seu `recursos-publicos.zip` em Downloads ou na pasta do jogo e abra **`INICIAR_TESTE.bat`**. Depois abra **http://localhost:5173** quando o terminal estiver pronto. Para atualizar mantendo o progresso, mescle os arquivos de código novos na instalação anterior com o servidor parado; preserve `.env` e `prisma/dev.db`.
 
 O ZIP de recursos é importado localmente; o download do GitHub contém o importador e nosso código. Sem o pacote local, o jogo continua usando a cidade anterior. Esta atualização de teste modifica cliente, servidor e configuração compartilhada: **copiar somente `apps/client` não basta para ela**. Os personagens atuais permanecem até criarmos os assets próprios.
 
-## Atualização visual — 30/10/2026
+## Histórico: primeira atualização de arte própria — 30/10/2026
 
 A praça agora usa pedra em tons de ardósia, escadaria, jardins, iluminação, fonte animada e serviços visualmente distintos. Os personagens têm proporções, armaduras, cabelo e poses de frente/costas/perfil; criaturas e summons usam desenhos próprios. Retratos e ícones de equipamentos/habilidades substituem letras e símbolos genéricos. HUD/chat foram compactados; o scroll aproxima/afasta a câmera. A arte continua original e local, sem carregar imagens do jogo usado como referência.
 

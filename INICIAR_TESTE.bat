@@ -1,8 +1,8 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title Lineage 2D Idle - TESTE 2
-echo TESTE 2 - interface compacta e praca importada
+title Lineage 2D Idle - REFERENCIA 3
+echo REFERENCIA 3 - cenario, imagens, sons e servicos da referencia
 where node >nul 2>nul
 if errorlevel 1 goto missing_node
 where npm >nul 2>nul

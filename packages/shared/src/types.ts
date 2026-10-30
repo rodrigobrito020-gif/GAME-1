@@ -100,6 +100,7 @@ export interface Character {
   profession: string | null;
   specialization: string | null;
   inventory: Item[];
+  storage: Item[];
   equipment: Partial<Record<Slot, Item>>;
   hp: number;
   mp: number;
@@ -214,6 +215,7 @@ export interface CityLayout {
     mapUrl: string;
     tilesets: { id: string; url: string }[];
     packHash: string;
+    resourcesUrl?: string;
   };
 }
 export type CityInfo = Omit<CityLayout, "collision">;

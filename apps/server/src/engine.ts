@@ -103,6 +103,8 @@ export class GameEngine {
   connect(c: Character) {
     const existing = this.players.get(c.id);
     if (existing?.online) throw Error("Personagem já conectado.");
+    // Older saves predate the warehouse. Keep all existing items untouched.
+    c.storage ??= [];
     const stats = statsFor(c);
     c.hp = Math.max(1, Math.min(stats.maxHp, c.hp));
     c.mp = Math.min(stats.maxMp, c.mp);
@@ -159,6 +161,8 @@ export class GameEngine {
     if (p.map !== "city") throw Error("Disponível somente na cidade.");
     if (npc) {
       const target = this.city.npcs.find((n) => n.id === npc)!;
+      if (!target)
+        throw Error("Serviço não instalado. Atualize o pacote local.");
       if (distance(p.actor, target) > 105)
         throw Error(`Aproxime-se de ${target.name}.`);
     }
@@ -394,6 +398,45 @@ export class GameEngine {
         if (!item) throw Error("Item não está na mochila.");
         c.adena += item.kind === "equipment" ? 80 : 2 * item.quantity;
         c.inventory.splice(i, 1);
+        break;
+      }
+      case "storage.deposit":
+      case "storage.withdraw": {
+        this.requireCity(p, "storage");
+        const depositing = cmd.type === "storage.deposit";
+        const source = depositing ? c.inventory : c.storage;
+        const destination = depositing ? c.storage : c.inventory;
+        const index = source.findIndex((item) => item.id === cmd.id);
+        if (index < 0) throw Error("Item não encontrado nesta coleção.");
+        const item = source[index];
+        const stacked =
+          item.kind !== "equipment"
+            ? destination.find(
+                (entry) => entry.kind === item.kind && entry.name === item.name,
+              )
+            : undefined;
+        const limit = depositing
+          ? BALANCE.storageLimit
+          : BALANCE.inventoryLimit;
+        if (!stacked && destination.length >= limit)
+          throw Error(depositing ? "Armazém cheio." : "Mochila cheia.");
+        source.splice(index, 1);
+        if (stacked) stacked.quantity += item.quantity;
+        else destination.push(item);
+        this.log(
+          p,
+          `${depositing ? "Guardado" : "Retirado"}: ${item.name} ×${item.quantity}.`,
+        );
+        break;
+      }
+      case "heal.city": {
+        this.requireCity(p, "healer");
+        const stats = statsFor(c);
+        p.actor.hp = stats.maxHp;
+        c.hp = stats.maxHp;
+        c.mp = stats.maxMp;
+        this.effect(c.id, c.id, "heal", stats.maxHp);
+        this.log(p, "A curandeira restaurou seu HP e MP.");
         break;
       }
       case "craft": {

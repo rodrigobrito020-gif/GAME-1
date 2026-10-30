@@ -215,6 +215,7 @@ export function newCharacter(
     adena: BALANCE.initialAdena,
     profession: null,
     specialization: null,
+    storage: [],
     inventory: [
       {
         id: "hp-stock",

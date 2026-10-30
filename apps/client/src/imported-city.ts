@@ -235,8 +235,9 @@ export function drawImportedCity(
           : npc.id === "class"
             ? "elf"
             : "human";
-    const kind =
-      npc.id === "class" || npc.id === "portal" ? "mystic" : "fighter";
+    const kind = ["class", "portal", "healer"].includes(npc.id)
+      ? "mystic"
+      : "fighter";
     scenery.push(
       scene.add
         .ellipse(npc.x, npc.y, 36, 11, 0x111529, 0.45)

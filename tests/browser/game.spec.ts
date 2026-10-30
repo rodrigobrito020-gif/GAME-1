@@ -327,3 +327,140 @@ test("praça indisponível mostra orientação para reimportar e continua estáv
   await page.waitForTimeout(900);
   expect(errors).toEqual([]);
 });
+
+test("recursos locais: ícones do pacote, áudio opt-in e fallback para imagem indisponível", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await register(page, `Media ${suffix()}`);
+  const current = await state(page);
+  test.skip(
+    !current.city?.atlas?.resourcesUrl,
+    "Pacote local do usuário não instalado.",
+  );
+  const manifest = await (
+    await page.request.get(current.city.atlas.resourcesUrl)
+  ).json();
+  expect(Object.keys(manifest.images).length).toBeGreaterThan(50);
+  expect(Object.keys(manifest.audio).length).toBeGreaterThan(50);
+  const icon = page.locator('.side-menu img[src$="p-inventario.png"]');
+  await expect(icon).toBeVisible();
+  await expect
+    .poll(() =>
+      icon.evaluate(
+        (image: HTMLImageElement) => image.complete && image.naturalWidth > 0,
+      ),
+    )
+    .toBe(true);
+  const audioRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().endsWith(".ogg")) audioRequests.push(request.url());
+  });
+  await page.getByRole("button", { name: "Ativar som", exact: false }).click();
+  await expect
+    .poll(() => audioRequests.some((url) => url.endsWith("praca-de-seul.ogg")))
+    .toBe(true);
+  await expect(
+    page.getByRole("button", { name: "Som ligado", exact: false }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Som ligado", exact: false }).click();
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem("idle-sound")))
+    .toBe("off");
+  await page.route("**/local-city/reference/images/p-inventario.png", (route) =>
+    route.abort(),
+  );
+  await page.reload();
+  await expect(
+    page.locator('.side-menu button[aria-label="Mochila [I]"] svg'),
+  ).toBeVisible();
+  await page.locator('.side-menu button[aria-label="Mochila [I]"]').click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(
+    page.locator('input[aria-label="Buscar em Mochila"]'),
+  ).toBeVisible();
+  await page.getByLabel("Buscar em Mochila").fill("HP");
+  await expect(page.locator(".collection .item-cell")).toHaveCount(1);
+  await page
+    .getByRole("button", {
+      name: "Organizar Mochila por raridade",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.getByRole("button", {
+      name: "Organizar Mochila por raridade",
+      exact: true,
+    }),
+  ).toHaveText("Raridade ↑");
+  expect(errors).toEqual([]);
+});
+
+test("guarda-volumes: duplo clique, botão direito, arrastar, persistência e curandeira operantes", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await register(page, `Vault ${suffix()}`);
+  await goNpc(page, "Armazém");
+  const current = await state(page),
+    npc = current.city.npcs.find((npc: any) => npc.id === "storage");
+  await expect
+    .poll(
+      async () => {
+        const value = await state(page);
+        return Math.hypot(value.actor.x - npc.x, value.actor.y - npc.y);
+      },
+      { timeout: 12000 },
+    )
+    .toBeLessThan(100);
+  const bag = page.locator('[data-collection="inventory"]'),
+    vault = page.locator('[data-collection="storage"]');
+  await bag
+    .getByRole("button", { name: "Poção de HP ×10", exact: true })
+    .dblclick();
+  await expect
+    .poll(async () => (await state(page)).self.storage.length)
+    .toBe(1);
+  await expect(
+    bag.getByRole("button", { name: "Poção de HP ×10", exact: true }),
+  ).toHaveCount(0);
+  await vault
+    .getByRole("button", { name: "Poção de HP ×10", exact: true })
+    .click({ button: "right" });
+  await expect
+    .poll(async () => (await state(page)).self.storage.length)
+    .toBe(0);
+  await bag
+    .getByRole("button", { name: "Poção de HP ×10", exact: true })
+    .dragTo(vault.locator(".empty-cell").first());
+  await expect
+    .poll(async () => (await state(page)).self.storage.length)
+    .toBe(1);
+  await page.reload();
+  await expect
+    .poll(async () => (await state(page))?.self?.storage?.length)
+    .toBe(1);
+  const saved = await state(page);
+  expect(
+    saved.self.inventory.filter((item: any) => item.potion === "hp"),
+  ).toHaveLength(0);
+  await goNpc(page, "Curandeira");
+  const restore = page.getByRole("button", {
+    name: "Restaurar HP e MP",
+    exact: true,
+  });
+  await expect(restore).toBeEnabled({ timeout: 12000 });
+  await restore.click();
+  await expect
+    .poll(async () => {
+      const value = await state(page);
+      return (
+        value.actor.hp === value.stats.maxHp &&
+        value.self.mp === value.stats.maxMp
+      );
+    })
+    .toBe(true);
+  expect(errors).toEqual([]);
+});

@@ -1750,3 +1750,16 @@ export function portraitFor(race: Race, kind: Archetype) {
   }
   return portraits.get(key)!;
 }
+
+const fullBodies = new Map<string, string>();
+export function fullBodyFor(race: Race, kind: Archetype) {
+  const key = `${race}-${kind}`;
+  if (!fullBodies.has(key)) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 96;
+    canvas.height = 112;
+    paintHero(canvas.getContext("2d")!, race, kind);
+    fullBodies.set(key, canvas.toDataURL());
+  }
+  return fullBodies.get(key)!;
+}

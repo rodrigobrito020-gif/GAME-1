@@ -44,8 +44,8 @@ export function loadCity(): CityLayout {
     !Array.isArray(city.blocks) ||
     city.blocks.length ||
     !Array.isArray(city.npcs) ||
-    city.npcs.length !== 4 ||
-    new Set(city.npcs.map((n) => n.id)).size !== 4 ||
+    ![4, 6].includes(city.npcs.length) ||
+    new Set(city.npcs.map((n) => n.id)).size !== city.npcs.length ||
     !["portal", "forge", "shop", "class"].every((id) =>
       city.npcs.some((n) => n.id === id),
     )

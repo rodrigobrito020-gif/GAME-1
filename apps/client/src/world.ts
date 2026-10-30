@@ -290,7 +290,9 @@ export class World extends Phaser.Scene {
         } else {
           const race =
             npc.id === "forge" ? "orc" : npc.id === "shop" ? "dwarf" : "elf";
-          const kind = npc.id === "class" ? "mystic" : "fighter";
+          const kind = ["class", "healer"].includes(npc.id)
+            ? "mystic"
+            : "fighter";
           const npcSprite = this.add
             .image(npc.x, npc.y, `hero-${race}-${kind}-front-0`)
             .setOrigin(0.5, 100 / 112)
@@ -330,7 +332,11 @@ export class World extends Phaser.Scene {
                 ? "◇ FABRICAR E REFORJAR"
                 : npc.id === "shop"
                   ? "◇ COMPRAR E VENDER"
-                  : "◇ ESCOLHER PROFISSÃO",
+                  : npc.id === "healer"
+                    ? "◇ RESTAURAR HP E MP"
+                    : npc.id === "storage"
+                      ? "◇ GUARDAR E RETIRAR"
+                      : "◇ ESCOLHER PROFISSÃO",
             {
               fontFamily: "Verdana, sans-serif",
               fontSize: "7px",

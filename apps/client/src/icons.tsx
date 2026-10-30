@@ -1,4 +1,5 @@
-import { useId } from "react";
+import { useId, useState } from "react";
+import { referenceIcons, useReference } from "./reference";
 
 // Original vector inventory/skill icons. No platform emoji or proprietary assets.
 export function Icon({
@@ -9,6 +10,19 @@ export function Icon({
   color?: string;
 }) {
   const id = "art" + useId().replaceAll(":", "");
+  const pack = useReference();
+  const [failed, setFailed] = useState("");
+  const source = pack?.images[referenceIcons[name]];
+  if (source && failed !== source)
+    return (
+      <img
+        className="reference-icon"
+        src={source}
+        alt=""
+        aria-hidden
+        onError={() => setFailed(source)}
+      />
+    );
   const silver = `url(#${id}s)`,
     gold = `url(#${id}g)`;
   const sword = (

@@ -9,6 +9,7 @@ import {
 } from "node:fs";
 import path from "node:path";
 import { Protocol } from "./protocol.mjs";
+import { LocalFarm, AREAS, ITEMS, SKILLS } from "./farm.mjs";
 export function attachLocalGame(server, { build, map, root, status }) {
   const protocol = new Protocol(build),
     connections = new Set(),
@@ -38,7 +39,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-bootstrap-1";
+  catalog.version = "local-farm-1";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -95,6 +96,80 @@ export function attachLocalGame(server, { build, map, root, status }) {
       },
     },
   ];
+  catalog.items = ITEMS;
+  catalog.skills = SKILLS.map((skill) => ({
+    ...skill,
+    classId: "guerreiro",
+    kind: "damage",
+    source: "physical",
+    description: "Habilidade local de teste. Valores provisórios.",
+  }));
+  catalog.consumables = [1, 2].map((kind) => ({
+    kind,
+    tier: 1,
+    name: kind === 1 ? "Poção de vida local" : "Poção de mana local",
+    icon: kind === 1 ? "pocao-vida" : "pocao-mana",
+    pct: 0.4,
+    price: 10,
+    basePrice: 10,
+    minLevel: 1,
+  }));
+  catalog.gates = AREAS.map((a) => ({
+    id: a.id,
+    sceneId: a.id,
+    name: a.name,
+    minLevel: a.required,
+    icon: "p-cacadas",
+  }));
+  catalog.difficulties = [
+    {
+      id: "normal",
+      name: "Normal — teste local",
+      reqLevel: 1,
+      statusMult: 1,
+      rewardMult: 1,
+      dropMult: 1,
+      rarityCap: "comum",
+      levelOffset: 0,
+    },
+  ];
+  catalog.monsters = AREAS.map((a) => ({
+    id: a.id + "-mob",
+    name: a.id === "treino-local" ? "Sombra de treino" : "Sombra veterana",
+    category: "normal",
+    role: "melee",
+    spriteDir: "local-treino",
+    displayHeight: 64,
+    artHeight: 112,
+    tint: a.required === 1 ? 0xc090ff : 0xff7777,
+    stats: {
+      level: a.required,
+      fixedHp: a.hp,
+      fixedDamage: a.damage,
+      speed: 70,
+      attackInterval: 1.4,
+      range: 55,
+    },
+    drops: [{ itemId: "fragmento-local", chance: 1, min: 1, max: 1 }],
+  }));
+  catalog.tiers = AREAS.map((a) => ({
+    min: a.tier,
+    max: a.max,
+    gateId: a.id,
+    monsterId: a.id + "-mob",
+    layers: [],
+    areas: [
+      { difficulty: "normal", level: a.required, requiredLevel: a.required },
+    ],
+  }));
+  catalog.scenes.push(
+    ...AREAS.map((a) => ({
+      id: a.id,
+      kind: 2,
+      name: a.name + " (cenário provisório)",
+      map: catalog.scenes[0].map,
+    })),
+  );
   catalog.appearance.skinTones = ["clara", "media", "escura"];
   catalog.rarities = [
     { id: "comum", name: "Comum", color: "#aaaaaa", order: 0, statMult: 1 },
@@ -168,14 +243,16 @@ export function attachLocalGame(server, { build, map, root, status }) {
     };
     writeFileSync(accountFile, JSON.stringify(account));
   }
-  delete account.character.hunt.lastDeath;
+  if (!account.character.hunt.lastDeath?.diedAtMs)
+    delete account.character.hunt.lastDeath;
+  const farm = new LocalFarm(account);
   account.character.identity.skinId = "local-sombra";
   account.character.identity.ownedSkins = ["local-sombra"];
   const persist = () => {
     writeFileSync(accountFile + ".tmp", JSON.stringify(account));
     renameSync(accountFile + ".tmp", accountFile);
   };
-  status.mode = "local-compatible-bootstrap";
+  status.mode = "local-compatible-farm";
   status.localBackend = true;
   status.protocolMessages = protocol.messages.size;
   status.commands = {};
@@ -332,18 +409,128 @@ export function attachLocalGame(server, { build, map, root, status }) {
     x: Math.round(client.x * 10),
     y: Math.round(client.y * 10),
     facing: client.facing,
-    anim: client.moving ? 1 : 0,
-    hp: 250,
-    maxHp: 250,
-    mana: 100,
-    maxMana: 100,
+    anim: client.hunt?.deadAt
+      ? 5
+      : client.combatAnimUntil > Date.now()
+        ? 2
+        : client.moving
+          ? 1
+          : 0,
+    hp: account.character.progress.hp,
+    maxHp: account.character.derived.maxHp,
+    mana: account.character.progress.mana,
+    maxMana: account.character.derived.maxMana,
+    target: client.hunt?.target ?? 0,
   });
+  const patch = (client) => {
+    const c = account.character;
+    send(client, "characterPatch", {
+      progress: c.progress,
+      wallet: c.wallet,
+      derived: c.derived,
+      equipment: c.equipment,
+      consumables: c.consumables,
+      automation: c.automation,
+      inventory: c.inventory,
+      hunt: c.hunt,
+    });
+  };
+  const delta = (client, value, reason = 1) => {
+    if (
+      !(value.added?.length || value.updated?.length || value.removed?.length)
+    )
+      return;
+    send(client, "inventoryDelta", {
+      scope: 1,
+      ...value,
+      usedSlots: account.bag.length,
+      capacity: 100,
+      reason,
+    });
+  };
+  const monsterState = (m) => ({
+    id: m.id,
+    kind: 2,
+    x: Math.round(m.x * 10),
+    y: Math.round(m.y * 10),
+    facing: m.facing,
+    anim: m.anim,
+    hp: m.hp,
+    maxHp: m.maxHp,
+    target: m.hp ? 1 : 0,
+  });
+  const monsterInfo = (client, m) => ({
+    state: monsterState(m),
+    defId: client.hunt.area.id + "-mob",
+    name:
+      client.hunt.area.required === 1 ? "Sombra de treino" : "Sombra veterana",
+    level: client.hunt.area.required,
+    scale: 1,
+  });
+  const enterScene = (client) => {
+    client.moving = false;
+    client.route = [];
+    client.target = null;
+    client.until = 0;
+    const hunt = client.hunt;
+    if (!hunt) {
+      client.x = spawn.x;
+      client.y = spawn.y;
+    }
+    const localScene = {
+      ...scene,
+      sceneId: hunt ? hunt.area.id : scene.sceneId,
+      instanceId: hunt ? 2 : 1,
+      kind: hunt ? 2 : 1,
+      spawn: { x: Math.round(client.x * 10), y: Math.round(client.y * 10) },
+    };
+    if (hunt)
+      localScene.hunt = {
+        gateId: hunt.area.id,
+        tierMin: hunt.area.tier,
+        difficulty: "normal",
+      };
+    send(client, "sceneEnter", localScene);
+    send(client, "entitySpawn", {
+      tick,
+      entities: [
+        {
+          state: actor(client),
+          name: account.character.identity.name,
+          level: account.character.progress.level,
+          skinId: "local-sombra",
+          classId: "guerreiro",
+          scale: 1,
+          appearance: account.character.identity.appearance,
+        },
+        ...(hunt ? hunt.monsters.map((m) => monsterInfo(client, m)) : []),
+      ],
+    });
+    if (hunt) send(client, "huntSession", hunt.session);
+  };
+  const returnCity = (client) => {
+    farm.stop(client);
+    account.character.progress.hp = account.character.derived.maxHp;
+    account.character.progress.mana = account.character.derived.maxMana;
+    send(client, "deathState", { dead: false });
+    enterScene(client);
+    patch(client);
+    persist();
+  };
   const auth = (client, requestId) => {
+    // One authoritative local character: a second tab cannot double rewards.
+    for (const other of connections)
+      if (other !== client && other.auth) {
+        other.auth = false;
+        farm.stop(other);
+        other.ws.close(1000, "Conta local aberta em outra janela");
+      }
+    if (client.hunt) farm.stop(client);
     const token = randomBytes(32).toString("hex");
     tokens.set(token, Date.now() + 8 * 60 * 60 * 1000);
     client.auth = true;
-    client.x = spawn.x;
-    client.y = spawn.y;
+    account.character.progress.hp = account.character.derived.maxHp;
+    account.character.progress.mana = account.character.derived.maxMana;
     send(
       client,
       "authOk",
@@ -360,21 +547,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
     );
     send(client, "contentCatalog", catalog);
     send(client, "characterState", account.character);
-    send(client, "sceneEnter", scene);
-    send(client, "entitySpawn", {
-      tick,
-      entities: [
-        {
-          state: actor(client),
-          name: account.character.identity.name,
-          level: 1,
-          skinId: account.character.identity.skinId,
-          classId: "guerreiro",
-          scale: 1,
-          appearance: account.character.identity.appearance,
-        },
-      ],
-    });
+    enterScene(client);
     status.authenticated++;
   };
   wss.on("connection", (ws, request) => {
@@ -475,11 +648,14 @@ export function attachLocalGame(server, { build, map, root, status }) {
           return;
         }
         if (kind === "logout") {
+          farm.stop(client);
+          persist();
           client.auth = false;
           send(client, "logoutOk", {}, message.requestId);
           return;
         }
         if (kind === "moveDir") {
+          if (client.hunt) return;
           client.dx = Math.max(-1, Math.min(1, value.dirX / 1000));
           client.dy = Math.max(-1, Math.min(1, value.dirY / 1000));
           client.until = now + 350;
@@ -489,26 +665,132 @@ export function attachLocalGame(server, { build, map, root, status }) {
           return;
         }
         if (kind === "moveTo") {
+          if (client.hunt) return;
           if (free(value.x / 10, value.y / 10)) {
             client.route = route(client, { x: value.x / 10, y: value.y / 10 });
             client.target = client.route.shift() ?? null;
           }
           return;
         }
-        if (kind === "inventoryPage") {
-          send(
-            client,
+        if (
+          [
+            "startHunt",
+            "leaveHunt",
+            "setTarget",
+            "useSkill",
             "inventoryPage",
-            {
-              scope: value.scope,
-              page: 1,
-              pages: 1,
-              pageSize: 30,
-              capacity: 100,
-              counts: {},
-            },
-            message.requestId,
-          );
+            "equip",
+            "unequip",
+            "setAutomation",
+            "useConsumable",
+            "buyConsumable",
+            "dismissDeathReport",
+            "resetHuntStats",
+          ].includes(kind)
+        ) {
+          try {
+            if (kind === "startHunt") {
+              const hunt = farm.start(client, value);
+              send(
+                client,
+                "startHuntResult",
+                {
+                  gateId: hunt.area.id,
+                  tierMin: hunt.area.tier,
+                  difficulty: "normal",
+                  sceneId: hunt.area.id,
+                },
+                message.requestId,
+              );
+              enterScene(client);
+              patch(client);
+              persist();
+            } else if (kind === "leaveHunt") {
+              returnCity(client);
+              send(
+                client,
+                "leaveHuntResult",
+                { sceneId: "cidade-local" },
+                message.requestId,
+              );
+            } else if (kind === "setTarget") farm.target(client, value.entity);
+            else if (kind === "useSkill") {
+              const output = farm.cast(
+                client,
+                value.skillId,
+                value.target || client.hunt?.target,
+              );
+              send(client, "worldEvents", { tick, ...output.events });
+              for (const d of output.deltas) delta(client, d);
+              patch(client);
+              persist();
+            } else if (kind === "inventoryPage")
+              send(
+                client,
+                "inventoryPage",
+                farm.inventory(value),
+                message.requestId,
+              );
+            else if (kind === "equip" || kind === "unequip") {
+              if (client.hunt) throw Error("local.city_only");
+              const output =
+                kind === "equip"
+                  ? farm.equip(value.uid)
+                  : farm.unequip(value.slot);
+              send(client, kind + "Result", output.result, message.requestId);
+              delta(client, output.delta, 6);
+              patch(client);
+              persist();
+            } else if (kind === "setAutomation") {
+              send(
+                client,
+                "setAutomationResult",
+                { automation: farm.automation(value.automation ?? {}) },
+                message.requestId,
+              );
+              patch(client);
+              persist();
+            } else if (kind === "useConsumable") {
+              send(
+                client,
+                "useConsumableResult",
+                farm.potion(value.kind, value.tier),
+                message.requestId,
+              );
+              patch(client);
+              persist();
+            } else if (kind === "buyConsumable") {
+              if (client.hunt) throw Error("local.city_only");
+              send(
+                client,
+                "buyConsumableResult",
+                farm.buyPotion(value.kind, value.tier, value.qty),
+                message.requestId,
+              );
+              patch(client);
+              persist();
+            } else if (kind === "dismissDeathReport") {
+              delete account.character.hunt.lastDeath;
+              send(client, "dismissDeathReportResult", {}, message.requestId);
+              patch(client);
+              persist();
+            } else if (kind === "resetHuntStats") {
+              if (!client.hunt) throw Error("local.not_hunting");
+              // Session counters also determine scheduled drops; cannot reset them mid-hunt.
+              throw Error("local.not_implemented");
+            }
+          } catch (error) {
+            send(
+              client,
+              "error",
+              {
+                code: error.message.startsWith("local.")
+                  ? error.message
+                  : "local.not_implemented",
+              },
+              message.requestId,
+            );
+          }
           return;
         }
         if (kind === "channelList") {
@@ -533,17 +815,56 @@ export function attachLocalGame(server, { build, map, root, status }) {
         ws.close(1003, "Invalid message");
       }
     });
-    ws.on("close", () => connections.delete(client));
+    ws.on("close", () => {
+      if (client.auth) {
+        farm.stop(client);
+        persist();
+      }
+      connections.delete(client);
+    });
     ws.on("error", () => connections.delete(client));
   });
+  persist();
   const timer = setInterval(() => {
     tick++;
     const now = Date.now();
     for (const client of connections) {
       if (!client.auth) continue;
+      if (client.hunt) {
+        const output = farm.step(client, { free, route });
+        if (output.returnCity) {
+          returnCity(client);
+          continue;
+        }
+        if (output.spawned.length) {
+          send(client, "entityDespawn", {
+            tick,
+            ids: output.spawned.map((m) => m.id),
+          });
+          send(client, "entitySpawn", {
+            tick,
+            entities: output.spawned.map((m) => monsterInfo(client, m)),
+          });
+        }
+        if (Object.values(output.events).some((events) => events.length))
+          send(client, "worldEvents", { tick, ...output.events });
+        for (const d of output.deltas) delta(client, d);
+        if (output.died)
+          send(client, "deathState", {
+            dead: true,
+            diedAtMs: now,
+            autoReturnAtMs: now + 3000,
+            noHealItems: true,
+          });
+        if (output.deltas.length || output.died || tick % 20 === 0) {
+          patch(client);
+          send(client, "huntSession", client.hunt.session);
+        }
+        if (output.deltas.length || output.died) persist();
+      }
       let dx = 0,
         dy = 0;
-      if (client.target) {
+      if (!client.hunt && client.target) {
         dx = client.target.x - client.x;
         dy = client.target.y - client.y;
         if (Math.hypot(dx, dy) < 5) {
@@ -551,12 +872,12 @@ export function attachLocalGame(server, { build, map, root, status }) {
           dx = 0;
           dy = 0;
         }
-      } else if (client.until > now) {
+      } else if (!client.hunt && client.until > now) {
         dx = client.dx;
         dy = client.dy;
       }
       const len = Math.hypot(dx, dy);
-      client.moving = len > 0;
+      if (!client.hunt) client.moving = len > 0;
       if (len) {
         const amount = client.target ? Math.min(8, len) : 8;
         const x = client.x + (dx / len) * amount,
@@ -584,7 +905,10 @@ export function attachLocalGame(server, { build, map, root, status }) {
         send(client, "worldSnapshot", {
           tick,
           serverTimeMs: now,
-          entities: [actor(client)],
+          entities: [
+            actor(client),
+            ...(client.hunt ? client.hunt.monsters.map(monsterState) : []),
+          ],
           full: true,
         });
     }

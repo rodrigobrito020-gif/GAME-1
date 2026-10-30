@@ -1,70 +1,70 @@
-# Cliente capturado com servidor local — versão 0.2
+# Cliente capturado + servidor local — 0.3: teste de farm
 
-Agora o cliente copiado entra no jogo com um **servidor local de compatibilidade próprio**. A versão anterior carregava somente o cliente e parava em 25%; esta implementação responde ao protocolo binário, autentica a conta de demonstração, envia os dados necessários e abre a praça.
-
-**Escopo desta versão: abrir o jogo, entrar no mapa e caminhar.** Não é uma cópia completa do servidor original e não é o Lineage 2D Idle desenvolvido anteriormente.
+Esta versão usa **o cliente do seu `recursos-publicos.zip` como base**, com um servidor local próprio. Já permite testar uma caçada funcional: movimento automático até os inimigos, ataques, quatro habilidades, dano recebido, mortes, respawn, EXP, ouro, drops, equipamentos e progresso salvo.
 
 ## Abrir no Windows
 
-1. Instale Node.js **22.12+ ou 24 LTS** se ainda não tiver.
-2. Extraia este ZIP em uma **pasta nova**, separada dos outros jogos. Se a versão anterior deste teste estiver aberta, encerre seu terminal com Ctrl+C.
-3. Coloque o `recursos-publicos.zip` que você enviou nesta pasta, ou mantenha-o em Downloads. Não precisa extrair esse arquivo.
-4. Abra **ABRIR_CLIENTE_COPIADO.bat**. Na primeira vez, ele instala a dependência `ws` pelo npm.
-5. O navegador abre **http://127.0.0.1:5188/jogar?demo=1** e entra na conta local de demonstração. Se não abrir automaticamente, acesse esse endereço. Deixe o terminal aberto.
+1. Encerre a versão anterior com **Ctrl+C** no terminal.
+2. Extraia o novo ZIP em uma pasta nova.
+3. Coloque **recursos-publicos.zip** junto de **ABRIR_CLIENTE_COPIADO.bat**, sem extrair o arquivo de recursos. Ele também pode ficar em Downloads.
+4. Para manter o progresso da versão anterior, copie a pasta **.local-runtime** inteira para a nova pasta, com ambos os servidores fechados. Se não copiar, será criada outra conta local de teste.
+5. Abra **ABRIR_CLIENTE_COPIADO.bat**. O navegador entra automaticamente na conta local em **http://127.0.0.1:5188/jogar?demo=1**. Deixe o terminal aberto.
 
-Login manual em **http://127.0.0.1:5188/jogar**: clique em **Já tenho conta**, usuário **teste**, senha **Teste123!**. Essa é uma conta local nova; nenhuma conta ou sessão do site original é usada.
+Requer Node.js **22.12+ ou 24 LTS**. O iniciador instala a dependência `ws` na primeira execução. Login manual: **teste**, senha **Teste123!**. Nenhuma conta do site original é utilizada.
 
-**WASD ou setas:** movimentação. **I:** inventário. **Esc:** fechar painéis. O cliente original usa clique para selecionar/interagir; clicar no chão não manda um comando de caminhada.
+## Testar o farm
 
-Para iniciar pelo terminal, dentro da pasta extraída:
+1. Na cidade, pressione **M** para abrir **Caçadas**.
+2. Em **Arena local — treino**, clique em **Iniciar**. O personagem procura e ataca monstros automaticamente. A segunda arena exige nível 5.
+3. As quatro habilidades são usadas automaticamente por padrão. **1–4** também permitem acioná-las respeitando alvo, alcance, mana e recarga. **Z** usa uma poção de vida e **X**, de mana. Cada conta recebe dez pequenas de cada, uma única vez.
+4. Observe a vida dos inimigos, os números de dano, EXP, ouro, contador de abates e drops. Os inimigos reaparecem três segundos depois de morrer.
+5. Clique em **Sair da caçada** no canto superior direito e confirme. **I** abre a mochila. Selecione uma espada ou peitoral de treino recebido e use a opção de equipar. Equipamentos só são trocados na cidade.
+6. Feche e reabra o servidor: nível, EXP, ouro, itens, equipamentos, poções e ordem das habilidades permanecem salvos. A conta retorna à cidade; não existe ganho offline nesta versão.
+
+Na cidade: **WASD/setas** para andar, **I** inventário, **M** caçadas e **Esc** fecha painéis. O cliente usa clique para selecionar/interagir, não para caminhar pelo chão. Na caçada, a movimentação é automática.
+
+Ao morrer, o farm para e o personagem volta à cidade em três segundos, recuperado. Não há perda de EXP neste teste. Uma segunda janela autenticada encerra a conexão da primeira: existe **um único personagem local**, sem duplicar recompensas por abas abertas.
+
+## Conteúdo e limites deste teste
+
+- O ZIP forneceu **um mapa completo da cidade**, seus sete tilesets e colisões. Não vieram os mapas das caçadas. As duas arenas são instâncias separadas que reutilizam esse cenário; a praça segura não recebe monstros.
+- Não vieram os sprites completos de monstros nem as animações completas dos personagens. Avatar e inimigos usam **artes provisórias derivadas da sombra idle disponível**. Os GIFs de prévia não equivalem às folhas completas de animação. Não recuperamos as animações ausentes.
+- As habilidades usam eventos reais de combate no cliente, com dano e cura calculados no servidor. Alguns efeitos gráficos e áudios não vieram no pacote e continuam indisponíveis.
+- Itens implementados: fragmento empilhável, espada e peitoral de treino. Cada abate dá fragmento se houver espaço; a cada três abates da caçada, uma espada ou peitoral. Com mochila cheia, não entram itens novos; o jogo continua concedendo EXP e ouro. Retirar equipamento com a mochila cheia é recusado.
+- Poções pequenas de vida/mana consomem estoque, recuperam 40% e têm intervalo de 1,5 segundo. O protocolo de compra funciona na cidade: dez ouros por poção, sem ouro ou itens gratuitos repetidos.
+- Números de dano, monstros, drops, progressão, cura na cidade e preços são **regras provisórias para testar a base**, não o balanceamento do jogo original nem decisões finais aprovadas.
+- Não há novos personagens/classes, todos os equipamentos originais, chefes, NPCs de serviço, negociação, guildas, rankings, talentos ou multiplayer implementados. Os menus capturados desses sistemas podem existir, mas suas operações continuam recusadas. Consultas de avisos/listas recebem estados vazios, sem criar eventos ou recompensas.
+
+## Executar e testar pelo terminal
+
+Dentro da pasta extraída, no CMD:
 
 ```bat
 npm ci --omit=dev --ignore-scripts
 node server.mjs "C:\Users\Brito\Downloads\recursos-publicos.zip"
 ```
 
-Depois abra **http://127.0.0.1:5188/jogar?demo=1**. Não use a porta 5173 da instalação anterior.
-
-## O que funciona
-
-- Conexão WebSocket local e Protobuf compatível com os descritores contidos no cliente capturado. Nenhuma conexão com o serviço original.
-- Autenticação da conta de demonstração, verificação de senha com scrypt, token local e reconexão ao recarregar.
-- Interface original do cliente, dados básicos de personagem e inventário vazio consultável.
-- Entrada na praça do ZIP, sete tilesets, animações e iluminação renderizados pelo próprio cliente capturado.
-- Coordenadas em décimos de pixel, snapshots, direção e confirmações de movimento no formato esperado pelo cliente.
-- Caminhada WASD/setas com validação de colisões no servidor e grade em bits usada pela previsão do cliente.
-- Avatar temporário visível e retrato, usando a imagem `idle-sombra.png` do pacote. O adaptador ajusta o tamanho dos quadros e reaproveita as poses idle; **não inventa nem recupera as animações de caminhada/ataque ausentes**.
-- Marcador discreto “SERVIDOR LOCAL · AVATAR TEMPORÁRIO” diferencia esta instalação.
-
-## Limites explícitos
-
-Caçadas, combate, drops, NPCs de serviço, evolução, comércio, guildas, rankings, correio e outros sistemas não foram implementados neste servidor de entrada. Os menus do cliente existem, mas pedidos desses recursos recebem erro localizado; não simulamos sucesso nem recompensas.
-
-Os números iniciais do personagem e a capacidade do inventário são apenas dados mínimos de demonstração para abrir a interface, não balanceamento aprovado. O inventário começa vazio. Não há novas raças, classes ou kits aprovados por esta etapa.
-
-O pacote do navegador não continha as imagens completas dos personagens nem todos os demais assets. O diagnóstico lista arquivos ausentes; alguns ícones/sons secundários permanecem indisponíveis. Ícones ausentes recebem um marcador neutro e continuam listados no diagnóstico. Consultas automáticas de avisos/listas recebem estados vazios para a interface iniciar sem uma pilha de erros; ações de gameplay não implementadas continuam recusadas. O pequeno adaptador de aparência insere somente uma skin local de teste no catálogo visual e converte a folha idle disponível em memória. Os scripts e estilos compilados capturados continuam sem alterações.
-
-## Dados locais e isolamento
-
-A conta e o hash da senha ficam em `.local-runtime/account.json`, ignorado pelo Git. Não há vínculo com o banco dos outros jogos. Tokens de sessão duram até oito horas dentro do processo; ao reiniciar o servidor, entre novamente ou use a entrada automática da demonstração.
-
-O servidor escuta somente **127.0.0.1**, não abre a rede/VPS. Esta é uma implementação de teste para uma conta local, não um servidor multiplayer pronto para publicação. O navegador só pode solicitar recursos e WebSocket locais; não há proxy para o serviço original.
-
-O GitHub contém código próprio e adaptadores. O pacote capturado permanece no ZIP local do usuário. O servidor lê seus arquivos em memória; não é necessário redistribuir as imagens/áudios/builds do outro jogo no repositório.
-
-## Verificação
+Abra **http://127.0.0.1:5188/jogar?demo=1**. Não use a porta 5173 do projeto anterior.
 
 ```bat
 npm test
 ```
 
-Os testes de codec e PNG usam fixtures próprias. A integração de rede usa o ZIP local quando disponível; se ele estiver fora da pasta/Downloads, indique `TEST_CAPTURE_ZIP`. No CMD:
+Se o ZIP não estiver nesta pasta ou em Downloads:
 
 ```bat
 set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-A integração verifica autenticação, falha de senha, mapa, colisões, movimento, consulta ao inventário, retomada de sessão e recusa explícita de comandos não implementados. O cliente capturado também foi aberto em Chromium para conferir a entrada na cidade e a interface. O relatório descreve os limites reais. Os comandos/batch foram preparados para Windows; a execução disponível neste ambiente é Linux/Chromium.
+São dez testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, capacidade, poções e integração real WebSocket com o protocolo capturado. A integração também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
 
-Diagnóstico ao vivo: **http://127.0.0.1:5188/diagnostico**.
+## Dados e isolamento
+
+Conta e progresso: **.local-runtime/account.json**. Não apague essa pasta para conservar os dados. Senha armazenada com scrypt; tokens locais duram até oito horas no processo. Ao reiniciar o servidor, a entrada automática faz novo login.
+
+Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. Scripts e estilos compilados do cliente permanecem sem alteração; nossos adaptadores leem o ZIP local e acrescentam o conteúdo de teste em memória.
+
+O GitHub contém código próprio e adaptadores, sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
+
+Diagnóstico: **http://127.0.0.1:5188/diagnostico**.

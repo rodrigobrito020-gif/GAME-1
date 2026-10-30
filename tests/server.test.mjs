@@ -23,8 +23,8 @@ const source = [
   .filter(Boolean)
   .find(existsSync);
 test(
-  "real captured protocol: local auth, map, collisions, movement, inventory, resume and blocked unsupported actions",
-  { skip: !source, timeout: 20000 },
+  "real captured client protocol: authentication, movement, farm, skills, rewards, equipment, potions, resume and saved progress after restart",
+  { skip: !source, timeout: 45000 },
   async () => {
     const entries = readZip(readFileSync(source));
     const read = (name) =>
@@ -38,15 +38,20 @@ test(
     const port = probe.address().port;
     await new Promise((resolve) => probe.close(resolve));
     const data = mkdtempSync(path.join(tmpdir(), "captured-server-test-"));
-    const child = spawn(process.execPath, ["server.mjs", source], {
-      cwd: root,
-      env: { ...process.env, CAPTURE_PORT: String(port), LOCAL_DATA_DIR: data },
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    let stderr = "";
-    child.stderr.on("data", (chunk) => (stderr += chunk));
-    let ws;
-    try {
+    let child,
+      stderr = "",
+      ws;
+    const startServer = async () => {
+      child = spawn(process.execPath, ["server.mjs", source], {
+        cwd: root,
+        env: {
+          ...process.env,
+          CAPTURE_PORT: String(port),
+          LOCAL_DATA_DIR: data,
+        },
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      child.stderr.on("data", (chunk) => (stderr += chunk));
       await new Promise((resolve, reject) => {
         const timer = setTimeout(
           () => reject(Error("Server start timeout " + stderr)),
@@ -58,10 +63,14 @@ test(
             resolve();
           }
         });
-        child.once("exit", (code) =>
-          reject(Error("Server exited " + code + " " + stderr)),
-        );
+        child.once("exit", (code) => {
+          clearTimeout(timer);
+          reject(Error("Server exited " + code + " " + stderr));
+        });
       });
+    };
+    try {
+      await startServer();
       const base = `http://127.0.0.1:${port}`;
       const original = await (
         await fetch(base + "/assets/main-Du8N-0Wf.js")
@@ -152,7 +161,103 @@ test(
       id = send("startHunt", {});
       assert.equal(
         (await wait((m) => m.requestId === id)).body.value.code,
-        "local.not_implemented",
+        "local.invalid_hunt",
+      );
+      id = send("startHunt", {
+        gateId: "elite-local",
+        tierMin: 5,
+        difficulty: "normal",
+      });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.code,
+        "local.level_required",
+      );
+      id = send("startHunt", {
+        gateId: "treino-local",
+        tierMin: 1,
+        difficulty: "normal",
+      });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.case,
+        "startHuntResult",
+      );
+      await wait(
+        (m) => m.body?.case === "sceneEnter" && m.body.value.kind === 2,
+      );
+      await wait(
+        (m) =>
+          m.body?.case === "entitySpawn" &&
+          m.body.value.entities.some((e) => e.state.kind === 2),
+      );
+      for (
+        let n = 0;
+        n < 1000 &&
+        !messages.some(
+          (m) =>
+            m.body?.case === "huntSession" && Number(m.body.value.kills) >= 3,
+        );
+        n++
+      )
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      assert.ok(
+        messages.some(
+          (m) =>
+            m.body?.case === "huntSession" && Number(m.body.value.kills) >= 3,
+        ),
+        "must actually kill and respawn monsters",
+      );
+      assert.ok(
+        messages.some(
+          (m) => m.body?.case === "worldEvents" && m.body.value.damage.length,
+        ),
+      );
+      assert.ok(
+        messages.some(
+          (m) => m.body?.case === "worldEvents" && m.body.value.casts.length,
+        ),
+      );
+      assert.ok(
+        messages.some(
+          (m) => m.body?.case === "inventoryDelta" && m.body.value.added.length,
+        ),
+      );
+      id = send("equip", { uid: "999999" });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.code,
+        "local.city_only",
+      );
+      id = send("leaveHunt", {});
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.case,
+        "leaveHuntResult",
+      );
+      id = send("inventoryPage", { scope: 1, page: 1, pageSize: 30 });
+      const earned = (await wait((m) => m.requestId === id)).body.value.items;
+      assert.ok(earned.some((i) => i.defId === "fragmento-local"));
+      const gear = earned.find((i) => i.defId !== "fragmento-local");
+      assert.ok(gear);
+      id = send("equip", { uid: gear.uid });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.equippedUid,
+        gear.uid,
+      );
+      id = send("unequip", { slot: gear.defId === "espada-local" ? 1 : 4 });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.uid,
+        gear.uid,
+      );
+      id = send("buyConsumable", { kind: 1, tier: 1, qty: 2 });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.goldCost,
+        "20",
+      );
+      const saved = JSON.parse(
+        readFileSync(path.join(data, "account.json"), "utf8"),
+      );
+      assert.ok(saved.character.wallet.gold > 1000);
+      assert.equal(
+        saved.bag.some((i) => i.uid === gear.uid),
+        true,
       );
       ws.close();
       await once(ws, "close");
@@ -160,11 +265,34 @@ test(
       id = send("resume", { token: auth.token });
       assert.equal((await wait((m) => m.requestId === id)).body.case, "authOk");
       assert.ok(existsSync(path.join(data, "account.json")));
+      ws.close();
+      await once(ws, "close");
+      child.kill("SIGTERM");
+      await once(child, "exit");
+      await startServer();
+      messages.length = 0;
+      ws = await connect();
+      id = send("login", { username: "teste", password: "Teste123!" });
+      assert.equal((await wait((m) => m.requestId === id)).body.case, "authOk");
+      const restored = (await wait((m) => m.body?.case === "characterState"))
+        .body.value;
+      assert.equal(restored.wallet.gold, String(saved.character.wallet.gold));
+      assert.equal(restored.progress.xp, String(saved.character.progress.xp));
+      assert.equal(restored.consumables.hpPotions.pequena, 12);
+      id = send("inventoryPage", { scope: 1, page: 1, pageSize: 30 });
+      assert.ok(
+        (await wait((m) => m.requestId === id)).body.value.items.some(
+          (i) => i.uid === gear.uid,
+        ),
+      );
       assert.equal(stderr, "");
     } finally {
       ws?.terminate();
-      child.kill("SIGTERM");
-      await once(child, "exit");
+      if (child.exitCode === null && child.signalCode === null) {
+        child.kill("SIGTERM");
+        await once(child, "exit");
+      }
+      if (stderr) console.error(stderr);
       rmSync(data, { recursive: true, force: true });
     }
   },

@@ -24,7 +24,54 @@ export function localAssets(byName, status) {
     "errors.auth.invalid_credentials":
       "Neste teste local, entre com teste e a senha Teste123!. Nenhuma conta do site é usada.",
   });
+  const messages = {
+    invalid_hunt: "Caçada inválida. Escolha uma das arenas locais de teste.",
+    level_required: "Você ainda não tem o nível necessário para esta caçada.",
+    already_hunting: "Retorne à cidade antes de iniciar outra caçada.",
+    invalid_target: "Selecione um monstro vivo ao alcance da habilidade.",
+    not_hunting: "Entre em uma caçada para usar habilidades de combate.",
+    invalid_skill: "Habilidade inválida para este personagem local.",
+    cooldown: "A habilidade ainda está recarregando.",
+    no_mana: "Mana insuficiente.",
+    invalid_item:
+      "Item indisponível ou operação inválida. Confira o espaço na mochila.",
+    invalid_inventory: "Inventário inválido.",
+    city_only: "Retorne à cidade para trocar equipamentos ou comprar poções.",
+    potion_unavailable:
+      "Poção indisponível: confira estoque, vida/mana e intervalo de uso.",
+    no_gold: "Ouro insuficiente.",
+  };
+  for (const [key, value] of Object.entries(messages))
+    errors["errors.local." + key] = value;
   return (pathname) => {
+    if (pathname === "/assets/monsters/local-treino/anim.json")
+      return {
+        type: "application/json",
+        bytes: Buffer.from(
+          JSON.stringify({
+            quadro: { w: 96, h: 112 },
+            pivo: { x: 48, y: 100 },
+            andar: { passada: 48 },
+            estados: Object.fromEntries(
+              ["idle", "attack", "death", "hurt"].map((name) => [
+                name,
+                {
+                  folha: name + ".png",
+                  frames: 4,
+                  ms: 180,
+                  loop: name === "idle",
+                },
+              ]),
+            ),
+          }),
+        ),
+      };
+    if (
+      /^\/assets\/monsters\/local-treino\/(walk|idle|attack|death|hurt)\.png$/.test(
+        pathname,
+      )
+    )
+      return { type: "image/png", bytes: first("idle-sombra.png") };
     if (pathname === "/data/gear-emanation-styles.json")
       return { type: "application/json", bytes: Buffer.from("{}") };
     if (pathname === "/assets/audio/musica/bosque-dos-cacadores.ogg")

@@ -1,39 +1,57 @@
-CLIENTE CAPTURADO COM SERVIDOR LOCAL - VERSAO 0.2
+CLIENTE CAPTURADO + SERVIDOR LOCAL — 0.3: FARM
 Data: 30/10/2026
-Pacote de entrada: recursos-publicos.zip enviado pelo usuário, 245 arquivos.
+Entrada: recursos-publicos.zip do usuário, 245 arquivos.
 
-RESULTADO: agora entra na praça. A versão anterior parava em 25% por falta
-  de servidor. Este servidor próprio implementa as mensagens mínimas para
-  autenticar a conta de demonstração e abrir o mundo do cliente capturado.
+RESULTADO AUTOMATIZADO: 10 testes passaram, nenhum pulado, usando o ZIP real.
 
-Verificações automatizadas: 5 testes passaram.
-- Codec Protobuf com quadro binário de referência independente, oneof,
-  mapas, inteiros negativos, uint64 exatos e dados repetidos.
-- Rejeição de mensagens truncadas e varints inválidos.
-- Conversão RGBA/PNG e adaptação da folha idle disponível.
-- Conexão real: login, senha incorreta, mapa, colisões e movimento.
-- Inventário vazio consultável, retomada de sessão e operações não
-  implementadas recusadas. Consulta vazia de guilda não cria guilda.
+Regras próprias verificadas:
+- Caçada exige portão, faixa, dificuldade e nível válidos.
+- Ataques automáticos, habilidades, custo de mana, alcance e recargas.
+- Sem mana, ataques básicos continuam funcionando.
+- Mortes e respawn de monstros; um morto não concede recompensa novamente.
+- EXP, avanço de nível, ouro, drops e empilhamento de materiais.
+- Morte do jogador interrompe recompensas e agenda retorno à cidade.
+- Sair da caçada encerra a simulação; não há recompensas offline.
+- Equipar/retirar preserva UID e recalcula atributos.
+- Mochila cheia impede retirar equipamento, sem destruir o item.
+- Poções usam estoque real; compras descontam ouro e rejeitam quantidades inválidas.
 
-Verificação no Chromium com o cliente original:
-- Login manual local: OK.
-- Entrada automática em /jogar?demo=1: OK.
-- Praça, tilesets, iluminação e animações do mapa: carregados.
-- Personagem temporário (sombra do pacote): visível.
-- Caminhada WASD: confirmada pelos snapshots do servidor.
-- Inventário: painel original abre e consulta o inventário vazio.
-- Recarregar: retoma a sessão e volta para a praça.
-- Viewport 390x844: sem rolagem horizontal da página.
-- Exceções JavaScript: nenhuma.
-- Origens externas acessadas: nenhuma.
-- PWA offline indisponível: sw.js não veio na captura; aviso não bloqueante.
+Integração real WebSocket, com o Protobuf do cliente capturado:
+- Login, falha de senha, mapa, colisões, movimento e retomada de sessão.
+- Catálogo de caçadas, entrada, monstros, dano, habilidades e drops.
+- Inventário, equipar, retirar, compra de poções e retorno à cidade.
+- Trocar equipamento durante caçada é recusado.
+- Processo reiniciado: EXP, ouro, poções e itens restaurados.
+- Sistemas não implementados continuam recusados; consulta de guilda não cria guilda.
+- Bundle principal servido byte a byte igual ao do ZIP.
+- Sem erros no stderr da integração.
 
-LIMITES
-  Não há combate, hunts, drops, serviços de NPCs, evolução ou comércio neste
-  servidor mínimo. Não é reprodução integral do backend original.
-  O avatar temporário reutiliza quadros idle: não corresponde às animações
-  completas de caminhada e ataque mostradas no vídeo.
-  O jogo anterior não é carregado. A conta é local, sem conexão ao site.
+Codec/PNG:
+- Protobuf: oneof, mapas, campos repetidos, inteiros negativos e uint64 exatos.
+- Mensagens truncadas e varints inválidos recusados.
+- Conversão PNG RGBA e adaptação de quadros idle disponíveis.
 
-Windows: iniciador preparado para CMD/Node.js. Testes executados no ambiente
-  Linux/Chromium disponível; não foi usada uma máquina Windows física.
+Chromium com o cliente original, viewport 1440x900:
+- Entrada automática local: OK.
+- M abre Caçadas; arena inicial disponível e nível 5 bloqueado: OK.
+- Iniciar caçada: OK; cidade usada como cenário da instância provisória.
+- Monstros visíveis e dano numérico: OK.
+- Em uma execução: sete abates, 21 eventos de dano e sete conjurações.
+- EXP, ouro, drops e avanço de nível visíveis: OK.
+- Sair da caçada pede confirmação e retorna à praça: OK.
+- I abre a mochila com os itens recebidos e os ícones disponíveis: OK.
+- Selecionar espada e equipar na interface: OK; ataque subiu de 21 para 27.
+- Recarregar a página após equipar: sem exceções JavaScript.
+- Nenhuma exceção JavaScript durante o ciclo de farm.
+- Nenhuma requisição HTTP para origem externa.
+
+LIMITES REAIS
+O ZIP contém a cidade completa, não os mapas de caça. Avatar e monstros
+reutilizam a folha idle de sombra: não são as animações completas ausentes.
+Alguns efeitos e áudios de combate continuam faltando no pacote capturado.
+Itens, estatísticas, curva de EXP, cura, drops e preços são dados de teste.
+Não é reprodução integral do backend original nem versão multiplayer.
+Não há todas as classes, itens, chefes, serviços de NPCs ou sistemas sociais.
+
+Windows: iniciador preparado para CMD/Node.js 22.12+ ou 24 LTS.
+Testes executados em Linux/Chromium; sem máquina Windows física.

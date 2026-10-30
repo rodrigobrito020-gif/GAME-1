@@ -76,7 +76,7 @@ const types = {
   ".woff2": "font/woff2",
   ".html": "text/html; charset=utf-8",
 };
-const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leveling — servidor local de teste</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" style="position:fixed;top:2px;left:50%;transform:translateX(-50%);z-index:2147483647;color:#cfb7e5;background:#171024db;padding:3px 10px;border-radius:3px;font:10px sans-serif;text-decoration:none">SERVIDOR LOCAL · AVATAR TEMPORÁRIO</a><div id="game"></div><div id="ui"></div><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
+const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leveling — servidor local de teste</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" style="position:fixed;top:2px;left:50%;transform:translateX(-50%);z-index:2147483647;color:#cfb7e5;background:#171024db;padding:3px 10px;border-radius:3px;font:10px sans-serif;text-decoration:none">FARM LOCAL · ARTES PROVISÓRIAS</a><div id="game"></div><div id="ui"></div><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
 const server = createServer((req, res) => {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");

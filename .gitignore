@@ -6,4 +6,6 @@ test-results/
 playwright-report/
 *.log
 apps/client/public/local-city/
+apps/client/public/local-city-preparing/
+apps/client/public/local-city-previous/
 recursos-publicos.zip

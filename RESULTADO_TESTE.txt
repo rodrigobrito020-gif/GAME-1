@@ -1,0 +1,20 @@
+TESTE ISOLADO DO CLIENTE COPIADO
+Data: 30/10/2026
+Pacote de entrada: recursos-publicos.zip, enviado pelo usuário
+Arquivos no pacote: 245
+
+Abertura em Chromium 1440x900, durante seis segundos:
+- Cliente e estilos capturados: carregados sem alterações.
+- Traduções pt-BR: carregadas.
+- Tela original: LEVELING IDLE / PREPARANDO O SISTEMA.
+- Progresso: 25%.
+- Mensagem: Servidor indisponível. Tentando novamente…
+- Tentativas de conexão WebSocket registradas: 4.
+- Exceções JavaScript: 0.
+- Código do nosso Lineage 2D Idle: não carregado.
+- Backend original: ausente.
+- Entrada em personagem/cidade/hunt: não disponível neste pacote.
+
+CONCLUSÃO: a captura permite carregar o cliente original, mas não jogar
+uma instalação independente. O servidor estático não implementa o servidor
+do jogo. Não foi anunciado nem simulado um login funcional.

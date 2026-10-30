@@ -19,45 +19,33 @@ import {
 } from "@idle/shared";
 import type { Command, Item, Race, Snapshot, Weapon } from "@idle/shared";
 import { World } from "./world";
+import { portraitFor } from "./art";
+import { Icon } from "./icons";
 import "./style.css";
+import "./visual.css";
 const money = (n: number) => Math.floor(n).toLocaleString("pt-BR");
-const weaponGlyph: Record<Weapon, string> = {
-  swordShield: "⚔",
-  dual: "⚔",
-  polearm: "↟",
-  dagger: "†",
-  bow: "➹",
-  greatsword: "⚔",
-  fist: "✊",
-  hammer: "⚒",
-  staff: "⚚",
-  magicMace: "✦",
-};
 function ItemArt({ item }: { item: Item }) {
   return (
     <span
       className={`item-art rarity-${RARITIES.indexOf(item.rarity ?? "Comum")}`}
       aria-hidden
     >
-      {item.kind === "potion"
-        ? item.potion === "hp"
-          ? "♥"
-          : "◆"
-        : item.kind === "material"
-          ? "⬡"
-          : item.weapon
-            ? weaponGlyph[item.weapon]
-            : item.slot === "chest"
-              ? "♜"
-              : item.slot === "helmet"
-                ? "♟"
-                : item.slot === "ring"
-                  ? "◉"
-                  : item.slot === "necklace"
-                    ? "♢"
-                    : item.slot === "shield"
-                      ? "⛨"
-                      : "▥"}
+      <Icon
+        name={
+          item.kind === "potion"
+            ? item.potion!
+            : item.kind === "material"
+              ? "material"
+              : (item.weapon ?? item.slot ?? "bag")
+        }
+        color={
+          item.potion === "hp"
+            ? "#bd5363"
+            : item.potion === "mp"
+              ? "#597dc9"
+              : "#ae9bdd"
+        }
+      />
     </span>
   );
 }
@@ -84,7 +72,7 @@ function GameWorld({
       height: innerHeight,
       pixelArt: true,
       roundPixels: true,
-      backgroundColor: "#17342a",
+      backgroundColor: "#232a3b",
       scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -375,13 +363,7 @@ function App() {
       <section className="player-hud surface">
         <div className="player-title">
           <span className="portrait">
-            {self.race === "orc"
-              ? "O"
-              : self.race === "dwarf"
-                ? "D"
-                : self.archetype === "mystic"
-                  ? "M"
-                  : "F"}
+            <img src={portraitFor(self.race, self.archetype)} alt="" />
           </span>
           <div>
             <b>{self.name}</b>
@@ -437,10 +419,18 @@ function App() {
           ["forge", "⚒", "Forja"],
           ["shop", "◈", "Mercador"],
           ["class", "✦", "Profissões"],
-        ].map(([id, icon, name]) => (
-          <button key={id} onClick={() => setPanel(panel === id ? null : id)}>
-            <span>{icon}</span>
-            {name}
+        ].map(([id, _icon, name]) => (
+          <button
+            key={id}
+            aria-label={name}
+            title={name}
+            className={panel === id ? "menu-active" : ""}
+            onClick={() => setPanel(panel === id ? null : id)}
+          >
+            <span>
+              <Icon name={id === "inventory" ? "bag" : id} />
+            </span>
+            <span className="menu-label">{name.replace(" [I]", "")}</span>
           </button>
         ))}
         {snap.dev && (
@@ -528,7 +518,7 @@ function App() {
       <footer className="action-area">
         <div className="travel-hint">
           {city
-            ? "WASD / clique para andar · E para conversar com NPCs"
+            ? "WASD / clique para andar · E conversar · Scroll aproximar"
             : `${money((snap.metrics.exp / snap.metrics.seconds) * 3600)} EXP/h · ${money((snap.metrics.loot / snap.metrics.seconds) * 3600)} itens/h · métricas da sessão`}
         </div>
         <div className="action-row">
@@ -537,7 +527,7 @@ function App() {
             onClick={() => send({ type: "potion", kind: "hp" })}
             title="Consumir poção de HP"
           >
-            ♥
+            <Icon name="hp" color="#c5576e" />
             <small>
               {self.inventory
                 .filter((i) => i.potion === "hp")
@@ -560,21 +550,16 @@ function App() {
                   }
                 >
                   <span className="skill-glyph">
-                    {skill.effect === "summon"
-                      ? "♟"
-                      : skill.effect === "spoil"
-                        ? "⌁"
-                        : skill.effect === "sweep"
-                          ? "◈"
-                          : ["heal", "restore"].includes(skill.effect)
-                            ? "✚"
-                            : skill.effect === "guard"
-                              ? "⛨"
-                              : skill.effect === "aoe"
-                                ? "✺"
-                                : skill.effect === "vampire"
-                                  ? "♥"
-                                  : "✦"}
+                    <Icon
+                      name={
+                        skill.effect === "strike"
+                          ? (snap.actor.weapon ?? "strike")
+                          : skill.effect
+                      }
+                      color={
+                        self.archetype === "mystic" ? "#b2a5e2" : "#deb77c"
+                      }
+                    />
                   </span>
                   <kbd>{i + 1}</kbd>
                   {snap.cooldowns[i] > 0 && (
@@ -609,7 +594,7 @@ function App() {
             onClick={() => send({ type: "potion", kind: "mp" })}
             title="Consumir poção de MP"
           >
-            ◆
+            <Icon name="mp" color="#638fda" />
             <small>
               {self.inventory
                 .filter((i) => i.potion === "mp")
@@ -1102,7 +1087,10 @@ function App() {
                   {(["hp", "mp"] as const).map((kind) => (
                     <article key={kind}>
                       <div className={`potion ${kind}-potion`}>
-                        {kind === "hp" ? "♥" : "◆"}
+                        <Icon
+                          name={kind}
+                          color={kind === "hp" ? "#c5576e" : "#638fda"}
+                        />
                       </div>
                       <h3>5 poções de {kind.toUpperCase()}</h3>
                       <button
@@ -1119,7 +1107,7 @@ function App() {
                   {Object.entries(WEAPONS).map(([kind, name]) => (
                     <article key={kind}>
                       <span className="shop-glyph">
-                        {weaponGlyph[kind as Weapon]}
+                        <Icon name={kind} />
                       </span>
                       <b>{name}</b>
                       <button

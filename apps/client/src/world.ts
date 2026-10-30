@@ -1,5 +1,6 @@
 import Phaser from "phaser";
-import { CITY, SPAWNS, RACES } from "@idle/shared";
+import { CITY } from "@idle/shared";
+import { createArt, createFloor } from "./art";
 import type { Actor, Command, Snapshot } from "@idle/shared";
 export class World extends Phaser.Scene {
   snapshot: Snapshot | null = null;
@@ -8,6 +9,8 @@ export class World extends Phaser.Scene {
   private lastMove = 0;
   private moving = false;
   private lastEvent = 0;
+  private reducedMotion = matchMedia("(prefers-reduced-motion: reduce)")
+    .matches;
   private burstPool: Phaser.GameObjects.Arc[] = [];
   private boltPool: Phaser.GameObjects.Rectangle[] = [];
   private textPool: Phaser.GameObjects.Text[] = [];
@@ -52,8 +55,21 @@ export class World extends Phaser.Scene {
       "W,A,S,D,UP,DOWN,LEFT,RIGHT",
       false,
     ) as Record<string, Phaser.Input.Keyboard.Key>;
-    this.cameras.main.setZoom(1.25);
-    this.cameras.main.setBackgroundColor("#142b24");
+    this.cameras.main.setZoom(innerWidth < 700 ? 1.05 : 1);
+    this.input.on(
+      "wheel",
+      (
+        _p: Phaser.Input.Pointer,
+        _objects: unknown,
+        _dx: number,
+        dy: number,
+      ) => {
+        this.cameras.main.setZoom(
+          Phaser.Math.Clamp(this.cameras.main.zoom - dy * 0.001, 0.8, 1.5),
+        );
+      },
+    );
+    this.cameras.main.setBackgroundColor("#222b3b");
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       if (pointer.button !== 0 || !this.snapshot) return;
       const point = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
@@ -89,146 +105,7 @@ export class World extends Phaser.Scene {
     return Phaser.Display.Color.HexStringToColor(hex).color;
   }
   private makeTextures() {
-    const colors = ["#377345", "#3f7d4b", "#39714b"];
-    for (let n = 0; n < 3; n++) {
-      const canvas = this.textures.createCanvas(`grass${n}`, 32, 32)!,
-        ctx = canvas.context;
-      ctx.fillStyle = colors[n];
-      ctx.fillRect(0, 0, 32, 32);
-      for (let j = 0; j < 16; j++) {
-        ctx.fillStyle = j % 2 ? "#639458" : "#315c3d";
-        ctx.fillRect((j * 11 + n * 5) % 31, (j * 7) % 31, 2, 2);
-      }
-      canvas.refresh();
-    }
-    const stone = this.textures.createCanvas("stone", 32, 32)!,
-      ctx = stone.context;
-    ctx.fillStyle = "#9c9781";
-    ctx.fillRect(0, 0, 32, 32);
-    ctx.strokeStyle = "#747767";
-    ctx.strokeRect(0, 0, 16, 16);
-    ctx.strokeRect(16, 16, 16, 16);
-    ctx.fillStyle = "#b2ab91";
-    ctx.fillRect(2, 2, 12, 2);
-    ctx.fillRect(18, 18, 12, 2);
-    stone.refresh();
-    for (const race of Object.keys(RACES))
-      for (const kind of ["fighter", "mystic"])
-        for (let frame = 0; frame < 3; frame++) {
-          const tex = this.textures.createCanvas(
-              `${race}-${kind}-${frame}`,
-              32,
-              48,
-            )!,
-            c = tex.context;
-          const dwarf = race === "dwarf",
-            orc = race === "orc",
-            y = dwarf ? 9 : 0,
-            skin = RACES[race as keyof typeof RACES].color;
-          const rect = (
-            color: string,
-            x: number,
-            yy: number,
-            w: number,
-            h: number,
-          ) => {
-            c.fillStyle = color;
-            c.fillRect(x, yy, w, h);
-          };
-          rect("#142126", 6, 14 + y, 21, 25 - y);
-          rect(
-            kind === "mystic" ? "#656b96" : "#718b95",
-            8,
-            22 + y,
-            17,
-            14 - y,
-          );
-          rect("#bdad70", 10, 24 + y, 3, 11 - y);
-          rect("#a0916e", 7, 35, 20, 3);
-          rect("#373f4b", 9 + (frame === 1 ? -2 : 0), 38, 6, 8);
-          rect("#373f4b", 19 + (frame === 2 ? 2 : 0), 38, 6, 8);
-          rect("#856047", 8 + (frame === 1 ? -2 : 0), 44, 8, 3);
-          rect("#856047", 19 + (frame === 2 ? 2 : 0), 44, 8, 3);
-          rect(skin, 5, 5 + y, 23, 19);
-          rect("#dbc7a1", 8, 5 + y, 17, 3);
-          rect(
-            race === "elf"
-              ? "#f0dd9a"
-              : race === "darkelf"
-                ? "#d4d4ec"
-                : race === "orc"
-                  ? "#363933"
-                  : "#69503b",
-            5,
-            3 + y,
-            23,
-            7,
-          );
-          rect("#1b2933", 10, 14 + y, 3, 3);
-          rect("#1b2933", 21, 14 + y, 3, 3);
-          rect("#d5a37c", 16, 20 + y, 4, 2);
-          if (race === "elf" || race === "darkelf") {
-            rect(skin, 1, 13 + y, 6, 4);
-            rect(skin, 27, 13 + y, 5, 4);
-          }
-          if (dwarf) {
-            rect("#ad9a7e", 10, 20, 14, 10);
-            rect("#67523d", 15, 21, 4, 7);
-          }
-          if (orc) rect("#e4ddbd", 12, 21, 3, 4);
-          rect(skin, 3, 25 + y, 5, 9);
-          rect(skin, 26, 25 + y, 5, 9);
-          tex.refresh();
-        }
-    for (const type of ["physical", "magic", "summon"]) {
-      const tex = this.textures.createCanvas(type, 40, 42)!,
-        c = tex.context;
-      const rect = (
-        color: string,
-        x: number,
-        y: number,
-        w: number,
-        h: number,
-      ) => {
-        c.fillStyle = color;
-        c.fillRect(x, y, w, h);
-      };
-      rect("#18232c", 6, 10, 28, 27);
-      rect(
-        type === "physical"
-          ? "#a46c51"
-          : type === "magic"
-            ? "#7b72bb"
-            : "#9b9c89",
-        8,
-        13,
-        24,
-        19,
-      );
-      rect(
-        type === "physical"
-          ? "#ceaa69"
-          : type === "magic"
-            ? "#9f8bd0"
-            : "#c8b67f",
-        12,
-        8,
-        17,
-        14,
-      );
-      rect("#decf9b", 5, 3, 5, 12);
-      rect("#decf9b", 29, 3, 5, 12);
-      rect("#e9d474", 12, 17, 6, 4);
-      rect("#e9d474", 24, 17, 6, 4);
-      rect("#202a30", 14, 17, 2, 3);
-      rect("#202a30", 25, 17, 2, 3);
-      rect("#2a3033", 16, 26, 10, 3);
-      rect("#d1ba8f", 2, 24, 5, 11);
-      rect("#d1ba8f", 33, 24, 5, 11);
-      rect("#584839", 8, 34, 8, 6);
-      rect("#584839", 25, 34, 8, 6);
-      tex.refresh();
-    }
+    createArt(this);
   }
   private drawMap(map: string) {
     this.mapId = map;
@@ -240,168 +117,477 @@ export class World extends Phaser.Scene {
     const city = map === "city",
       width = city ? 1600 : 1536,
       height = city ? 1152 : 1088;
+    const min = this.snapshot?.hunt?.min ?? 1;
+    const theme = city ? 0 : min >= 251 ? 2 : min >= 151 ? 1 : 0;
     this.cameras.main.setBounds(0, 0, width, height);
-    const floor = this.add.container(0, 0).setDepth(-1000);
+    const floor = this.add
+      .image(0, 0, createFloor(this, city, theme))
+      .setOrigin(0)
+      .setDepth(-1000);
     this.scenery.push(floor);
-    let seed = 73;
-    const random = () => {
-      seed = (seed * 16807) % 2147483647;
-      return seed / 2147483647;
+    let seed = 71;
+    const random = () =>
+      ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    const prop = (kind: string, x: number, y: number, scale = 1) => {
+      const image = this.add
+        .image(x, y, `prop-${kind}`)
+        .setOrigin(0.5, 1)
+        .setDepth(y)
+        .setScale(scale);
+      this.scenery.push(image);
+      return image;
     };
-    for (let y = 0; y < height; y += 32)
-      for (let x = 0; x < width; x += 32) {
-        const road =
-          city &&
-          (Math.abs(x - 784) < 76 ||
-            Math.abs(y - 592) < 70 ||
-            (y > 350 && y < 420 && x > 450 && x < 1110));
-        floor.add(
-          this.add.image(
-            x + 16,
-            y + 16,
-            road ? "stone" : `grass${Math.floor(random() * 3)}`,
-          ),
-        );
-      }
-    const g = this.add.graphics().setDepth(-10);
-    this.scenery.push(g);
-    const tree = (x: number, y: number) => {
-      const crown = this.add.graphics({ x, y }).setDepth(y);
-      crown.fillStyle(0x183b31, 0.35);
-      crown.fillEllipse(4, 13, 65, 19);
-      crown.fillStyle(0x66503c);
-      crown.fillRect(-6, -35, 12, 45);
-      crown.fillStyle(0x193d32);
-      crown.fillRect(-30, -90, 60, 55);
-      crown.fillStyle(0x2d6840);
-      crown.fillRect(-35, -80, 70, 34);
-      crown.fillRect(-22, -104, 42, 27);
-      crown.fillStyle(0x4f8e50);
-      crown.fillRect(-23, -94, 32, 18);
-      crown.fillStyle(0x76a65a);
-      crown.fillRect(-17, -94, 15, 8);
-      this.scenery.push(crown);
-      this.tweens.add({
-        targets: crown,
-        angle: 1.2,
-        duration: 2000 + random() * 1200,
-        yoyo: true,
-        repeat: -1,
-        ease: "Sine.InOut",
-      });
+    const tree = (x: number, y: number, pine = true, scale = 1) => {
+      const image = this.add
+        .image(x, y, pine ? "tree-pine" : "tree-oak")
+        .setOrigin(0.5, 0.91)
+        .setDepth(y)
+        .setScale(scale);
+      this.scenery.push(image);
+      if (!this.reducedMotion)
+        this.tweens.add({
+          targets: image,
+          angle: { from: -0.6, to: 0.7 },
+          duration: 2700 + random() * 1800,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.InOut",
+        });
     };
-    for (let i = 0; i < 30; i++) {
-      tree(35 + i * 55, 65);
-      tree(i % 2 ? 45 : width - 40, 160 + i * 28);
-    }
-    for (let i = 0; i < 60; i++) {
-      const x = 100 + random() * (width - 200),
-        y = 100 + random() * (height - 200);
-      if (city && x > 350 && x < 1200) continue;
-      g.fillStyle(random() > 0.5 ? 0xd5bb6d : 0x99abb6);
-      g.fillRect(x, y, 3, 3);
-    }
-    if (city) {
-      for (const b of CITY.blocks) {
-        const house = this.add.graphics().setDepth(b.y + b.h);
-        house.fillStyle(0x14271f, 0.35);
-        house.fillRect(b.x + 12, b.y + 16, b.w, b.h);
-        house.fillStyle(0xd0bc92);
-        house.fillRect(b.x, b.y + 70, b.w, b.h - 70);
-        house.fillStyle(0x654735);
-        for (let x = b.x; x <= b.x + b.w; x += 70)
-          house.fillRect(x, b.y + 70, 9, b.h - 70);
-        house.fillRect(b.x, b.y + b.h - 12, b.w, 12);
-        house.fillStyle(0x664035);
-        house.fillTriangle(
-          b.x - 20,
-          b.y + 80,
-          b.x + b.w / 2,
-          b.y - 15,
-          b.x + b.w + 20,
-          b.y + 80,
-        );
-        house.fillStyle(0x9f5c43);
-        house.fillTriangle(
-          b.x - 5,
-          b.y + 68,
-          b.x + b.w / 2,
-          b.y - 4,
-          b.x + b.w + 5,
-          b.y + 68,
-        );
-        house.fillStyle(0x322e2c);
-        house.fillRect(b.x + b.w / 2 - 18, b.y + b.h - 65, 36, 65);
-        house.fillStyle(0x78a7ad);
-        for (let x = b.x + 30; x < b.x + b.w - 30; x += 100) {
-          house.fillRect(x, b.y + 100, 28, 34);
-          house.lineStyle(3, 0xebd7a3);
-          house.strokeRect(x, b.y + 100, 28, 34);
-        }
-        this.scenery.push(house);
-      }
-      g.fillStyle(0x656e69);
-      g.fillEllipse(800, 460, 140, 75);
-      g.fillStyle(0x78aaad);
-      g.fillEllipse(800, 452, 120, 59);
-      g.fillStyle(0xb7bdac);
-      g.fillRect(790, 400, 20, 55);
-      g.fillEllipse(800, 397, 70, 24);
-      for (const npc of CITY.npcs) {
-        const glow = this.add.graphics().setDepth(npc.y - 1);
-        glow.lineStyle(2, npc.id === "portal" ? 0x74b7c5 : 0xc4a76a, 0.7);
-        glow.strokeEllipse(npc.x, npc.y + 8, 70, 30);
-        if (npc.id === "portal") {
-          glow.lineStyle(9, 0x746c6b);
-          glow.strokeEllipse(npc.x, npc.y - 20, 65, 95);
-          glow.lineStyle(4, 0x80bee0);
-          glow.strokeEllipse(npc.x, npc.y - 20, 46, 76);
+    const light = (x: number, y: number, color = 0xf4c78a, radius = 62) => {
+      for (let i = 0; i < 4; i++) {
+        const glow = this.add
+          .ellipse(
+            x,
+            y,
+            radius * (1 - i * 0.18),
+            radius * 0.55 * (1 - i * 0.18),
+            color,
+            0.025 + i * 0.015,
+          )
+          .setDepth(y - 140);
+        this.scenery.push(glow);
+        if (!this.reducedMotion)
           this.tweens.add({
             targets: glow,
-            alpha: 0.5,
+            alpha: glow.alpha * 0.6,
+            duration: 1300 + i * 210,
             yoyo: true,
             repeat: -1,
-            duration: 1300,
+            ease: "Sine.InOut",
           });
+      }
+    };
+    if (city) {
+      for (const [i, b] of CITY.blocks.entries()) {
+        const house = this.add
+          .image(b.x, b.y - 35, `building-${i}`)
+          .setOrigin(0)
+          .setDepth(b.y + b.h);
+        this.scenery.push(house);
+      }
+      for (const x of [175, 280, 1330, 1410])
+        for (const y of [450, 570]) tree(x, y, true, 0.8 + random() * 0.15);
+      for (let i = 0; i < 14; i++) {
+        tree(42 + i * 116, 120, i % 4 !== 0, 0.8);
+        if (i % 2 === 0) tree(i % 4 ? 35 : 1560, 350 + i * 44, true, 0.9);
+      }
+      for (const [x, y] of [
+        [435, 540],
+        [1120, 400],
+        [430, 730],
+        [1160, 700],
+        [680, 840],
+        [925, 840],
+      ]) {
+        prop("lamp", x, y, 0.75);
+        light(x, y - 77);
+        light(x, y, 0xecc494, 100);
+      }
+      for (const [x, y] of [
+        [610, 492],
+        [975, 490],
+        [665, 835],
+        [931, 835],
+      ])
+        prop("bench", x, y, 0.75);
+      for (const [x, y] of [
+        [564, 480],
+        [1024, 480],
+        [618, 830],
+        [982, 830],
+      ])
+        prop("planter", x, y, 0.68);
+      prop("fountain", 800, 485, 0.85);
+      for (let i = 0; i < 3; i++) {
+        const ripple = this.add
+          .ellipse(800, 455, 52 + i * 20, 16 + i * 6)
+          .setStrokeStyle(1, 0xa4d6dc, 0.5)
+          .setDepth(487);
+        this.scenery.push(ripple);
+        if (!this.reducedMotion)
+          this.tweens.add({
+            targets: ripple,
+            scaleX: 1.3,
+            scaleY: 1.3,
+            alpha: 0,
+            duration: 1800,
+            delay: i * 600,
+            repeat: -1,
+          });
+      }
+      prop("forge", 475, 397, 0.8);
+      light(470, 370, 0xffa15b, 100);
+      prop("market", 1080, 799, 0.9);
+      for (const npc of CITY.npcs) {
+        const shadow = this.add
+          .ellipse(npc.x, npc.y + 2, 38, 12, 0x111927, 0.45)
+          .setDepth(npc.y - 1);
+        this.scenery.push(shadow);
+        if (npc.id === "portal") {
+          prop("portal", npc.x, npc.y + 10, 0.78);
+          light(npc.x, npc.y - 35, 0x8e9eea, 110);
+          const veil = this.add
+            .ellipse(npc.x, npc.y - 61, 38, 75, 0x80b6e2, 0.17)
+            .setDepth(npc.y + 11);
+          this.scenery.push(veil);
+          if (!this.reducedMotion)
+            this.tweens.add({
+              targets: veil,
+              alpha: 0.4,
+              scaleX: 0.88,
+              duration: 1800,
+              yoyo: true,
+              repeat: -1,
+            });
         } else {
+          const race =
+            npc.id === "forge" ? "orc" : npc.id === "shop" ? "dwarf" : "elf";
+          const kind = npc.id === "class" ? "mystic" : "fighter";
           const npcSprite = this.add
-            .image(npc.x, npc.y, "human-mystic-0")
-            .setOrigin(0.5, 1)
-            .setDepth(npc.y)
-            .setTint(npc.id === "forge" ? 0xffcc88 : 0xa9c1bd);
+            .image(npc.x, npc.y, `hero-${race}-${kind}-front-0`)
+            .setOrigin(0.5, 100 / 112)
+            .setScale(0.86)
+            .setDepth(npc.y);
           this.scenery.push(npcSprite);
+          if (!this.reducedMotion)
+            this.tweens.add({
+              targets: npcSprite,
+              y: npc.y - 0.8,
+              duration: 1700,
+              yoyo: true,
+              repeat: -1,
+              ease: "Sine.InOut",
+            });
         }
         const label = this.add
-          .text(npc.x, npc.y + 20, npc.name, {
-            fontFamily: "monospace",
+          .text(npc.x, npc.y - 97, npc.name, {
+            fontFamily: "Verdana, sans-serif",
             fontSize: "11px",
-            color: "#e8d49b",
-            backgroundColor: "#17242bd9",
-            padding: { x: 7, y: 5 },
+            fontStyle: "bold",
+            color: "#9cdcc8",
+            stroke: "#151a2d",
+            strokeThickness: 4,
+            padding: { x: 6, y: 4 },
+            backgroundColor: "#131a2be8",
           })
-          .setOrigin(0.5, 0)
-          .setDepth(npc.y + 1);
-        this.scenery.push(glow, label);
+          .setOrigin(0.5, 1)
+          .setDepth(npc.y + 12);
+        const role = this.add
+          .text(
+            npc.x,
+            npc.y - 80,
+            npc.id === "portal"
+              ? "◇ INSTÂNCIAS DE CAÇA"
+              : npc.id === "forge"
+                ? "◇ FABRICAR E REFORJAR"
+                : npc.id === "shop"
+                  ? "◇ COMPRAR E VENDER"
+                  : "◇ ESCOLHER PROFISSÃO",
+            {
+              fontFamily: "Verdana, sans-serif",
+              fontSize: "7px",
+              color: "#b6b4bc",
+              stroke: "#14182b",
+              strokeThickness: 2,
+            },
+          )
+          .setOrigin(0.5, 1)
+          .setDepth(npc.y + 13);
+        this.scenery.push(label, role);
       }
     } else {
-      for (const [i, s] of SPAWNS.entries()) {
-        g.lineStyle(2, 0x7b8b69, 0.22);
-        g.strokeCircle(s.x, s.y, 80);
-        const label = this.add
-          .text(s.x, s.y + 100, `RESPAWN ${i + 1}`, {
-            fontFamily: "monospace",
-            fontSize: "10px",
-            color: "#9cbd95",
-          })
-          .setOrigin(0.5)
-          .setAlpha(0.45);
-        this.scenery.push(label);
+      // Three visual biomes use the same authoritative spawn layout and species IDs.
+      for (let i = 0; i < 25; i++) {
+        tree(25 + i * 63, 93, i % 5 !== 0, 0.8 + random() * 0.3);
+        if (i < 16) {
+          tree(25, 170 + i * 58, true, 0.9);
+          tree(width - 20, 160 + i * 58, true, 0.9);
+        }
       }
-      for (let i = 0; i < 9; i++) {
-        const x = 70 + i * 164,
-          y = i % 2 ? 1050 : 110;
-        g.fillStyle(0x69766a);
-        g.fillRoundedRect(x, y, 65, 28, 6);
+      for (const [x, y] of [
+        [130, 490],
+        [710, 220],
+        [1310, 570],
+        [1030, 990],
+        [420, 980],
+        [1300, 170],
+      ]) {
+        prop("rock", x, y, 0.7 + random() * 0.4);
+        if (theme > 0) {
+          const ruins = this.add.graphics().setDepth(y - 20);
+          ruins.fillStyle(0x3d4658);
+          ruins.fillRect(x - 8, y - 104, 17, 82);
+          ruins.fillStyle(0x727c88);
+          ruins.fillRect(x - 11, y - 114, 23, 10);
+          ruins.fillRect(x - 13, y - 28, 27, 8);
+          ruins.lineStyle(1, 0xb6b8ac, 0.5);
+          ruins.lineBetween(x - 5, y - 104, x - 5, y - 30);
+          this.scenery.push(ruins);
+        }
+      }
+      if (!this.reducedMotion)
+        for (let i = 0; i < 15; i++) {
+          const mote = this.add
+            .ellipse(
+              100 + random() * (width - 200),
+              170 + random() * (height - 300),
+              2,
+              2,
+              theme === 1 ? 0xaca1e1 : 0xd6d4a1,
+              0.55,
+            )
+            .setDepth(2000);
+          this.scenery.push(mote);
+          this.tweens.add({
+            targets: mote,
+            y: mote.y - 20,
+            alpha: 0.08,
+            duration: 1800 + random() * 2600,
+            yoyo: true,
+            repeat: -1,
+          });
+        }
+    }
+  }
+  private actorTexture(actor: Actor, frame: number) {
+    if (actor.kind === "player") {
+      const direction =
+        Math.sin(actor.facing) < -0.55
+          ? "back"
+          : Math.abs(Math.cos(actor.facing)) > 0.75
+            ? "side"
+            : "front";
+      return `hero-${actor.race}-${actor.archetype}-${direction}-${frame}`;
+    }
+    const variant =
+      actor.kind === "summon"
+        ? actor.name.includes("Swoop")
+          ? 2
+          : actor.name.includes("Hog")
+            ? 1
+            : 0
+        : Math.floor((Number(actor.species?.split("-")[1] ?? 1) - 1) / 50) % 3;
+    return `creature-${actor.kind === "summon" ? "summon" : actor.species?.startsWith("magic") ? "magic" : "physical"}-${variant}-${frame}`;
+  }
+  private drawGear(
+    gear: Phaser.GameObjects.Graphics,
+    actor: Actor,
+    attack: number,
+  ) {
+    gear.clear();
+    if (actor.kind !== "player" || actor.hp <= 0) return;
+    const back = Math.sin(actor.facing) < -0.55;
+    gear.setScale(
+      Math.abs(Math.cos(actor.facing)) > 0.75 && Math.cos(actor.facing) < 0
+        ? -1
+        : 1,
+      1,
+    );
+    gear.setRotation(attack);
+    const polygon = (points: number[][], color: number, outline = 0x161e2d) => {
+      const p = points.map(([x, y]) => ({ x, y }));
+      gear.fillStyle(color);
+      gear.fillPoints(p, true);
+      gear.lineStyle(1, outline);
+      gear.strokePoints(p, true);
+    };
+    if (actor.archetype !== "mystic" && !back) {
+      const top = actor.race === "dwarf" ? -32 : -43;
+      polygon(
+        [
+          [-9, top],
+          [0, top - 3],
+          [9, top],
+          [7, -22],
+          [0, -18],
+          [-7, -22],
+        ],
+        this.color(actor.armorColor ?? "#71818b"),
+      );
+      gear.lineStyle(1, 0xd4c49b, 0.75);
+      gear.lineBetween(-7, top + 3, 0, top + 7);
+      gear.lineBetween(0, top + 7, 7, top + 3);
+      gear.lineBetween(0, top + 7, 0, -23);
+    }
+    if (actor.weapon === "bow") {
+      gear.lineStyle(5, 0x252234);
+      gear.beginPath();
+      gear.arc(13, -27, 20, -Math.PI / 2, Math.PI / 2);
+      gear.strokePath();
+      gear.lineStyle(2.6, 0xc5a575);
+      gear.beginPath();
+      gear.arc(13, -27, 20, -Math.PI / 2, Math.PI / 2);
+      gear.strokePath();
+      gear.lineStyle(1, 0xc5d4d5);
+      gear.lineBetween(13, -47, 13, -7);
+      gear.lineStyle(3, 0x655444);
+      gear.lineBetween(29, -30, 29, -23);
+      gear.lineStyle(1, 0xddd8bb);
+      gear.lineBetween(8, -26, 38, -26);
+    } else if (actor.weapon === "staff" || actor.weapon === "magicMace") {
+      gear.lineStyle(5, 0x242234);
+      gear.lineBetween(18, -6, 18, -61);
+      gear.lineStyle(2.5, 0xba9c68);
+      gear.lineBetween(18, -6, 18, -61);
+      gear.fillStyle(0xc0a478);
+      gear.fillCircle(18, -64, 8);
+      gear.fillStyle(0x31384f);
+      gear.fillCircle(18, -64, 5.5);
+      polygon(
+        [
+          [18, -72],
+          [22, -65],
+          [18, -57],
+          [14, -65],
+        ],
+        actor.weapon === "staff" ? 0xa4bced : 0xd9cf98,
+        0xe1d6aa,
+      );
+      gear.lineStyle(1, 0xe0d2a4);
+      gear.lineBetween(14, -42, 22, -42);
+      gear.lineBetween(14, -39, 22, -39);
+    } else if (actor.weapon === "hammer") {
+      gear.lineStyle(5, 0x252431);
+      gear.lineBetween(18, -9, 21, -44);
+      gear.lineStyle(2.5, 0x9c7a59);
+      gear.lineBetween(18, -9, 21, -44);
+      polygon(
+        [
+          [9, -50],
+          [29, -48],
+          [32, -38],
+          [10, -39],
+        ],
+        0x65788b,
+      );
+      gear.fillStyle(0xc1c6bd);
+      gear.fillRect(10, -49, 5, 10);
+      gear.lineStyle(1, 0xd8d5ba);
+      gear.lineBetween(15, -48, 29, -46);
+    } else if (actor.weapon === "fist") {
+      for (const x of [-19, 13]) {
+        polygon(
+          [
+            [x, -28],
+            [x + 9, -29],
+            [x + 10, -17],
+            [x, -16],
+          ],
+          0xa49371,
+        );
+        gear.lineStyle(1, 0xe5d7ae);
+        gear.lineBetween(x + 2, -25, x + 7, -25);
+      }
+    } else if (actor.weapon) {
+      const pole = actor.weapon === "polearm",
+        dagger = actor.weapon === "dagger",
+        large = actor.weapon === "greatsword";
+      if (pole) {
+        gear.lineStyle(4, 0x202536);
+        gear.lineBetween(17, 5, 21, -66);
+        gear.lineStyle(2, 0xa88c68);
+        gear.lineBetween(17, 5, 21, -66);
+        polygon(
+          [
+            [21, -81],
+            [26, -65],
+            [21, -57],
+            [16, -65],
+          ],
+          0xabbfc9,
+        );
+      } else {
+        const tipY = dagger ? -43 : large ? -70 : -57,
+          tipX = large ? 29 : 23;
+        polygon(
+          [
+            [16, -23],
+            [16, tipY + 10],
+            [tipX, tipY],
+            [23, -24],
+            [20, -19],
+          ],
+          0x8296ab,
+        );
+        polygon(
+          [
+            [18, -26],
+            [19, tipY + 12],
+            [tipX, tipY],
+            [21, -25],
+          ],
+          0xd4d9cf,
+          0xb4c4ce,
+        );
+        gear.lineStyle(3, 0xb49a68);
+        gear.lineBetween(11, -24, 29, -22);
+        gear.lineStyle(4, 0x4f4040);
+        gear.lineBetween(18, -22, 18, -11);
+        gear.fillStyle(0xc7b17c);
+        gear.fillCircle(18, -10, 2.5);
+      }
+      if (actor.weapon === "swordShield" && actor.shield) {
+        polygon(
+          [
+            [-29, -41],
+            [-14, -38],
+            [-12, -24],
+            [-20, -13],
+            [-30, -24],
+          ],
+          0x5e6f88,
+          0xb7a57b,
+        );
+        polygon(
+          [
+            [-27, -39],
+            [-20, -37],
+            [-20, -17],
+            [-28, -25],
+          ],
+          0x8598a4,
+          0xb7a57b,
+        );
+        gear.lineStyle(2, 0xd2bc88);
+        gear.lineBetween(-21, -35, -21, -24);
+        gear.lineBetween(-26, -30, -17, -30);
+      }
+      if (actor.weapon === "dual") {
+        polygon(
+          [
+            [-19, -18],
+            [-27, -52],
+            [-29, -60],
+            [-32, -52],
+            [-23, -16],
+          ],
+          0xa3b4bf,
+        );
+        gear.lineStyle(3, 0xc3a674);
+        gear.lineBetween(-29, -21, -16, -24);
+        gear.lineStyle(3, 0x524343);
+        gear.lineBetween(-21, -21, -18, -13);
       }
     }
   }
@@ -418,48 +604,39 @@ export class World extends Phaser.Scene {
       }
     for (const actor of snap.actors) {
       let entity = this.entities.get(actor.id);
-      const texture =
-        actor.kind === "player"
-          ? `${actor.race}-${actor.archetype}-0`
-          : actor.kind === "summon"
-            ? "summon"
-            : actor.species?.startsWith("magic")
-              ? "magic"
-              : "physical";
+      const texture = this.actorTexture(actor, 0);
       if (!this.textures.exists(texture)) continue;
       if (!entity) {
-        const shadow = this.add.ellipse(0, 0, 28, 9, 0x0b181c, 0.35),
-          sprite = this.add.image(0, 0, texture).setOrigin(0.5, 1),
+        const shadow = this.add.ellipse(0, 0, 36, 11, 0x101523, 0.48),
+          sprite = this.add
+            .image(0, 0, texture)
+            .setOrigin(0.5, 100 / 112)
+            .setScale(0.8),
           gear = this.add.graphics(),
-          bar = this.add.graphics(),
-          label = this.add
-            .text(
-              0,
-              10,
-              actor.kind === "monster"
-                ? `${actor.boss ? actor.name : actor.species?.startsWith("magic") ? "Mágico" : "Físico"}`
-                : actor.name,
-              {
-                fontFamily: "monospace",
-                fontSize: "10px",
-                color:
-                  actor.kind === "player"
-                    ? "#e6d5a3"
-                    : actor.kind === "summon"
-                      ? "#91d5cc"
-                      : "#d7b5a3",
-                stroke: "#15242b",
-                strokeThickness: 3,
-              },
-            )
-            .setOrigin(0.5, 0),
-          root = this.add.container(actor.x, actor.y, [
-            shadow,
-            sprite,
-            gear,
-            bar,
-            label,
-          ]);
+          bar = this.add.graphics();
+        const label = this.add
+          .text(0, -91, actor.name, {
+            fontFamily: "Verdana, sans-serif",
+            fontSize: "11px",
+            fontStyle: "bold",
+            color:
+              actor.kind === "player"
+                ? "#e7e5db"
+                : actor.kind === "summon"
+                  ? "#9dcfc6"
+                  : "#edcfa4",
+            stroke: "#10182a",
+            strokeThickness: 4,
+            align: "center",
+          })
+          .setOrigin(0.5, 1);
+        const root = this.add.container(actor.x, actor.y, [
+          shadow,
+          sprite,
+          gear,
+          bar,
+          label,
+        ]);
         entity = { root, sprite, gear, bar, label, actor };
         this.entities.set(actor.id, entity);
       }
@@ -471,100 +648,60 @@ export class World extends Phaser.Scene {
       entity.root.y += dy * alpha;
       entity.root.setDepth(entity.root.y);
       const walking = Math.hypot(dx, dy) > 1,
-        attacking = clock - actor.lastAttack < 330;
-      entity.sprite.setTexture(
-        actor.kind === "player"
-          ? `${actor.race}-${actor.archetype}-${walking ? 1 + (Math.floor(time / 140) % 2) : 0}`
-          : texture,
-      );
+        attacking = clock - actor.lastAttack < 330,
+        dead = actor.hp <= 0;
+      const frame = walking ? 1 + (Math.floor(time / 150) % 2) : 0;
+      entity.sprite.setTexture(this.actorTexture(actor, frame));
       entity.sprite.setFlipX(Math.cos(actor.facing) < 0);
-      entity.sprite.y = walking
-        ? Math.sin(time / 85) * 2
-        : Math.sin(time / 450) * 0.4;
-      entity.sprite.setAngle(
-        actor.hp <= 0
-          ? 80
-          : attacking
-            ? Math.sin((clock - actor.lastAttack) / 65) * 7
-            : 0,
-      );
-      entity.root.setAlpha(actor.hp <= 0 ? 0.4 : 1);
-      entity.root.setScale(actor.boss ? 1.8 : 1);
+      entity.sprite.y = dead
+        ? 0
+        : walking
+          ? Math.sin(time / 95) * 1.2
+          : this.reducedMotion
+            ? 0
+            : Math.sin(time / 650) * 0.35;
+      const strike = attacking ? Math.sin((clock - actor.lastAttack) / 75) : 0;
+      entity.sprite.setAngle(dead ? 85 : strike * 4);
+      entity.root.setAlpha(dead ? 0.3 : 1);
+      entity.root.setScale(actor.boss ? 1.65 : 1);
+      const top = actor.kind === "player" && actor.race === "dwarf" ? -65 : -79;
+      const selected = snap.actor.targetId === actor.id;
+      const showName = actor.kind === "player" || actor.boss || selected;
+      entity.label.setVisible(showName && !dead).setY(top - 10);
+      const name =
+        actor.kind === "player"
+          ? `${actor.name}\nNv. ${actor.id === snap.self.id ? snap.self.level : (snap.online.find((p) => p.id === actor.id)?.level ?? "")}`
+          : actor.name.replace(" [modelo de teste]", "");
+      if (entity.label.text !== name) entity.label.setText(name);
       const bar = entity.bar;
       bar.clear();
-      bar.fillStyle(0x13202b);
-      bar.fillRect(-18, -54, 36, 5);
-      bar.fillStyle(
-        actor.kind === "player"
-          ? 0x7fae70
-          : actor.kind === "summon"
-            ? 0x6ab7b0
-            : 0xc06b61,
-      );
-      bar.fillRect(-17, -53, 34 * Math.max(0, actor.hp / actor.maxHp), 3);
-      if (snap.actor.targetId === actor.id) {
-        bar.lineStyle(2, 0xe9ca7b);
-        bar.strokeEllipse(0, 0, 45, 18);
+      if (selected) {
+        bar.lineStyle(2, 0xccb17e, 0.9);
+        bar.strokeEllipse(0, 1, 49, 17);
+        bar.lineStyle(1, 0xf5e5b0, 0.5);
+        bar.strokeEllipse(0, 1, 55, 21);
+      } else if (actor.id === snap.self.id) {
+        bar.lineStyle(1, 0xc9b68f, 0.4);
+        bar.strokeEllipse(0, 1, 39, 14);
       }
-      const gear = entity.gear;
-      gear.clear();
-      if (actor.kind === "player" && actor.hp > 0) {
-        gear.fillStyle(this.color(actor.armorColor ?? "#718b95"));
-        gear.fillRect(-7, -25, 14, 12);
-        gear.fillStyle(0xd1b56e);
-        gear.fillRect(-7, -26, 14, 2);
-        const angle = attacking
-          ? Math.sin((clock - actor.lastAttack) / 90) * 0.9
-          : 0;
-        gear.setRotation(angle);
-        gear.lineStyle(3, 0xd5d7c4);
-        if (actor.weapon === "bow") {
-          gear.lineStyle(3, 0xb68c59);
-          gear.strokeEllipse(15, -23, 15, 35);
-          gear.lineStyle(1, 0xd2cfaa);
-          gear.lineBetween(15, -40, 15, -7);
-        } else if (actor.weapon === "staff" || actor.weapon === "magicMace") {
-          gear.lineStyle(3, 0x9b774b);
-          gear.lineBetween(13, -4, 13, -43);
-          gear.fillStyle(actor.weapon === "staff" ? 0x84a9db : 0xddcc85);
-          gear.fillCircle(13, -43, 5);
-        } else if (actor.weapon === "hammer") {
-          gear.lineStyle(3, 0x9b774b);
-          gear.lineBetween(13, -9, 13, -36);
-          gear.fillStyle(0xbcc8bd);
-          gear.fillRect(4, -41, 21, 11);
-          gear.fillStyle(0x687d83);
-          gear.fillRect(4, -41, 4, 11);
-        } else if (actor.weapon === "fist") {
-          gear.fillStyle(0xbfa266);
-          gear.fillRect(10, -20, 10, 8);
-          gear.fillRect(-20, -20, 10, 8);
-        } else if (actor.weapon) {
-          gear.lineStyle(actor.weapon === "greatsword" ? 5 : 3, 0xd5d7c4);
-          gear.lineBetween(
-            12,
-            -12,
-            actor.weapon === "polearm" ? 17 : 18,
-            actor.weapon === "polearm"
-              ? -58
-              : actor.weapon === "dagger"
-                ? -28
-                : actor.weapon === "greatsword"
-                  ? -49
-                  : -39,
-          );
-          gear.lineStyle(4, 0xc1a362);
-          gear.lineBetween(7, -20, 21, -20);
-          if (actor.weapon === "swordShield" && actor.shield) {
-            gear.fillStyle(0xa18d5c);
-            gear.fillRoundedRect(-22, -31, 13, 20, 3);
-          }
-          if (actor.weapon === "dual") {
-            gear.lineStyle(3, 0xd5d7c4);
-            gear.lineBetween(-13, -12, -20, -39);
-          }
-        }
+      if (
+        !dead &&
+        (actor.kind === "player" || selected || actor.hp < actor.maxHp)
+      ) {
+        bar.fillStyle(0x161b2a);
+        bar.fillRect(-21, top, 42, 5);
+        bar.fillStyle(
+          actor.kind === "player"
+            ? 0x71b78a
+            : actor.kind === "summon"
+              ? 0x6caeaf
+              : 0xb8696d,
+        );
+        bar.fillRect(-20, top + 1, 40 * Math.max(0, actor.hp / actor.maxHp), 3);
+        bar.lineStyle(1, 0xb0ac9980, 0.4);
+        bar.strokeRect(-21, top, 42, 5);
       }
+      this.drawGear(entity.gear, actor, strike * 0.22);
     }
     const self = this.entities.get(snap.self.id);
     if (self) this.cameras.main.centerOn(self.root.x, self.root.y - 25);
@@ -587,7 +724,7 @@ export class World extends Phaser.Scene {
       );
       if (burst) {
         burst
-          .setPosition(to.root.x, to.root.y - 22)
+          .setPosition(to.root.x, to.root.y - 32)
           .setRadius(4)
           .setFillStyle(color, 0.8)
           .setAlpha(1)
@@ -607,7 +744,7 @@ export class World extends Phaser.Scene {
         );
         if (bolt) {
           bolt
-            .setPosition(from.root.x, from.root.y - 25)
+            .setPosition(from.root.x, from.root.y - 38)
             .setSize(event.kind === "arrow" ? 14 : 5, 3)
             .setFillStyle(color)
             .setAlpha(1)
@@ -619,7 +756,7 @@ export class World extends Phaser.Scene {
           this.tweens.add({
             targets: bolt,
             x: to.root.x,
-            y: to.root.y - 24,
+            y: to.root.y - 32,
             duration: 180,
             onComplete: () => bolt.setActive(false).setVisible(false),
           });
@@ -628,8 +765,8 @@ export class World extends Phaser.Scene {
       if (event.amount || event.kind === "miss") {
         const text = this.pooled(this.textPool, 64, () =>
           this.add.text(0, 0, "", {
-            fontFamily: "monospace",
-            fontSize: "14px",
+            fontFamily: "Verdana, sans-serif",
+            fontSize: "15px",
             fontStyle: "bold",
             stroke: "#17212a",
             strokeThickness: 3,
@@ -637,7 +774,7 @@ export class World extends Phaser.Scene {
         );
         if (text) {
           text
-            .setPosition(to.root.x, to.root.y - 64)
+            .setPosition(to.root.x + ((event.id % 5) - 2) * 8, to.root.y - 103)
             .setText(
               event.kind === "miss"
                 ? "MISS"

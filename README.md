@@ -10,6 +10,14 @@ Primeiro marco de um RPG idle multiplayer para navegador. A implementação est�
 
 Esta versão usa a branch exclusiva `lineage-2d-idle` do GAME-1. A branch principal do RPG 3D permanece preservada. O ZIP contém este jogo; extraia e abra o terminal na pasta que contém `package.json`.
 
+## Atualização visual — 30/10/2026
+
+A praça agora usa pedra em tons de ardósia, escadaria, jardins, iluminação, fonte animada e serviços visualmente distintos. Os personagens têm proporções, armaduras, cabelo e poses de frente/costas/perfil; criaturas e summons usam desenhos próprios. Retratos e ícones de equipamentos/habilidades substituem letras e símbolos genéricos. HUD/chat foram compactados; o scroll aproxima/afasta a câmera. A arte continua original e local, sem carregar imagens do jogo usado como referência.
+
+**Para atualizar uma instalação existente sem alterar seu personagem:** pare o jogo com Ctrl+C, extraia o ZIP novo em outra pasta e copie **somente a pasta `apps/client`** dele para dentro da sua instalação anterior, substituindo os arquivos. Depois, na instalação anterior, execute `npm run dev` e atualize o navegador. Se usar a versão compilada, rode `npm run build` antes de `npm start`. Este passe não modifica servidor, regras, dependências ou banco. Preserve sua `.env` e `prisma/dev.db`; não é preciso recriar o personagem ou reaplicar o setup.
+
+Detalhes e limites em [docs/ATUALIZACAO_VISUAL.md](docs/ATUALIZACAO_VISUAL.md).
+
 ## Executar no Windows
 
 Instale **Node.js 22.12+ ou 24 LTS**. Abra PowerShell ou CMD na pasta extraída que contém `package.json`. Na primeira execução:
@@ -67,7 +75,7 @@ O banco fica em `prisma/dev.db`; preserve esse arquivo para manter os personagen
 ## Controles e percurso sugerido
 
 1. Crie um personagem. Use WASD, setas ou clique no chão da cidade.
-2. Clique no portal ou abra **Hunts** e use **Caminhar até o NPC**. Entre em 1–25.
+2. Clique no portal ou abra **Hunts** e use **Caminhar até o NPC**. Entre em 1–25. O scroll do mouse ajusta o zoom da câmera.
 3. Auto Farm começa ativo; **F** pausa/retoma. Clique num monstro para trocar o alvo. **1–4** ativam as quatro skills, e seus checkboxes controlam o uso automático.
 4. Use **Retornar à cidade** para voltar. **I** abre a mochila; um duplo clique equipa itens na cidade. Selecione um item para retirar do slot. Visite o mercador para suprimentos e vendas.
 5. No nível 50, visite o Mestre de Profissões. Compre/fabrique ou obtenha uma arma permitida pelo novo caminho. Equipamentos incompatíveis voltam à mochila, com validação de espaço.
@@ -103,7 +111,7 @@ A aparência é pixel art original/procedural de teste. Algumas armaduras usam a
 
 Etapas deste primeiro marco: (1) workspace, dados e banco; (2) criação/cidade/hunts e loop de combate; (3) classes, summons, Spoil e Party; (4) inventário, economia e forja; (5) testes de regras/rede/navegador, compilação executável e inspeção visual. As expansões que dependem de design estão separadas em `docs/APROVACOES_PENDENTES.md`.
 
-- `apps/client`: React/Vite para HUD/painéis e Phaser 3 para mundo, câmera, personagens e efeitos. Pooling de efeitos limita somente a apresentação, não os combatentes.
+- `apps/client`: React/Vite para HUD/painéis e Phaser 3 para mundo, câmera, personagens e efeitos. `art.ts` gera a arte local uma vez por textura; `icons.tsx` contém os ícones originais e `visual.css` o acabamento da interface. Pooling de efeitos limita somente a apresentação, não os combatentes.
 - `apps/server/src/engine.ts`: simulação autoritativa de cidade, instâncias, combate, Party e comandos; sem regras de negócio nos componentes visuais.
 - `apps/server/src/index.ts`: HTTP, autenticação, Socket.IO, limites de mensagens, snapshots e gravações serializadas.
 - `apps/server/src/db.ts`: limite de acesso ao banco. Para PostgreSQL, trocar adapter/provider e migrations aqui; alterar só a URL não basta.

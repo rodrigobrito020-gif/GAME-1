@@ -1,11 +1,15 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-title Lineage 2D Idle - teste da praca
+title Lineage 2D Idle - TESTE 2
+echo TESTE 2 - interface compacta e praca importada
 where node >nul 2>nul
 if errorlevel 1 goto missing_node
 where npm >nul 2>nul
 if errorlevel 1 goto missing_node
+node scripts\check-test-start.mjs
+if errorlevel 1 goto failed
+set "CITY_MODE=imported"
 set "IDLE_CITY_ZIP=%~dp0recursos-publicos.zip"
 if not exist "%IDLE_CITY_ZIP%" set "IDLE_CITY_ZIP=%USERPROFILE%\Downloads\recursos-publicos.zip"
 if not exist "%IDLE_CITY_ZIP%" goto missing_zip

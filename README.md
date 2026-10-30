@@ -2,6 +2,8 @@
 
 Primeiro marco de um RPG idle multiplayer para navegador. A implementação está nesta pasta independente; GAME-1/GAME-2 não foram modificados. A especificação original está integralmente em [PROMPT_MESTRE_CODEX_LINEAGE_2D_IDLE.md](PROMPT_MESTRE_CODEX_LINEAGE_2D_IDLE.md).
 
+**Esta é uma adaptação no nosso jogo**, com o cenário importado e a interface aproximada da referência. Os personagens, servidor, contas, farm, skills e economia continuam sendo os nossos; o ZIP do site não trouxe o backend nem todos os sistemas/arquivos necessários para um clone completo.
+
 ![Cidade social navegável](docs/images/cidade.png)
 
 ## Baixar pelo GitHub
@@ -11,6 +13,8 @@ Primeiro marco de um RPG idle multiplayer para navegador. A implementação est�
 Esta versão usa a branch exclusiva `lineage-2d-idle` do GAME-1. A branch principal do RPG 3D permanece preservada. O ZIP contém este jogo; extraia e abra o terminal na pasta que contém `package.json`.
 
 ## Testar a praça do ZIP enviado
+
+**Teste 2:** HUD compacto no alto à esquerda, menus no alto à direita, chat embaixo à esquerda, quatro skills no centro e Auto Farm separado à direita. O iniciador anuncia `TESTE 2` e recusa iniciar se uma versão antiga ainda estiver usando as portas. Feche o terminal anterior com Ctrl+C antes de abrir `INICIAR_TESTE.bat`. O Vite não muda mais silenciosamente para outra porta.
 
 Está disponível a [versão de teste da praça importada](docs/TESTE_DA_PRACA.md), com nossas regras, personagens e serviços. Mantenha seu `recursos-publicos.zip` em Downloads ou na pasta do jogo e abra **`INICIAR_TESTE.bat`**. Depois abra **http://localhost:5173** quando o terminal estiver pronto. Para atualizar mantendo o progresso, mescle os arquivos de código novos na instalação anterior com o servidor parado; preserve `.env` e `prisma/dev.db`.
 

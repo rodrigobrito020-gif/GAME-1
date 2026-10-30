@@ -1,0 +1,506 @@
+/* Compact screen composition inspired by the user-provided reference.
+   These panels remain connected to our server; no simulated online counts/buffs. */
+.reference-layout .topbar {
+  height: 36px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  pointer-events: none;
+}
+.reference-layout .brand {
+  display: none;
+}
+.reference-layout .location {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  translate: -50% 0;
+  max-width: 34%;
+  padding: 5px 12px;
+  background: #101323a8;
+  border: 1px solid #76678d38;
+  border-radius: 3px;
+  pointer-events: auto;
+}
+.reference-layout .location > span {
+  font-size: 6px;
+  letter-spacing: 1.6px;
+}
+.reference-layout .location > b {
+  font:
+    11px/1.2 "Segoe UI",
+    sans-serif;
+  margin-top: 2px;
+}
+.reference-layout .top-actions {
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  padding: 3px 5px;
+  gap: 7px;
+  background: #101322de;
+  border: 1px solid #65587966;
+  pointer-events: auto;
+}
+.reference-layout .top-actions button {
+  padding: 2px 6px;
+  font-size: 9px;
+}
+.reference-layout .online {
+  font-size: 9px;
+  display: inline;
+  color: #8ddac4;
+}
+.reference-layout .player-hud {
+  top: 12px;
+  left: 12px;
+  width: 225px;
+  padding: 7px 9px;
+  background: linear-gradient(110deg, #17192aee, #111421ee);
+  border-color: #8d76af77;
+}
+.reference-layout .player-title {
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.reference-layout .portrait {
+  width: 39px;
+  height: 42px;
+  border-color: #a48bc1;
+}
+.reference-layout .player-title > div {
+  min-width: 0;
+}
+.reference-layout .player-title b {
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.reference-layout .player-title small {
+  font-size: 8px;
+}
+.reference-layout .player-title > strong {
+  font-size: 22px;
+  color: #cfb2ef;
+  line-height: 1.1;
+}
+.reference-layout .player-title > strong small {
+  font-size: 6px;
+}
+.reference-layout .player-hud .meter {
+  height: 10px;
+  margin: 3px 0;
+  border-color: #53516b;
+}
+.reference-layout .player-hud .meter > span {
+  font-size: 7px;
+  line-height: 8px;
+}
+.reference-layout .player-hud .xp {
+  height: 4px;
+}
+.reference-layout .currency {
+  margin-top: 5px;
+  font-size: 10px;
+}
+.reference-layout .currency span {
+  font-size: 7px;
+}
+.session-strip {
+  position: absolute;
+  left: 12px;
+  top: 144px;
+  width: 225px;
+  display: grid;
+  gap: 4px;
+}
+.session-strip > span {
+  font:
+    9px/1.2 "Segoe UI",
+    sans-serif;
+  color: #c2bbd2;
+  padding: 6px 9px;
+  background: #101522e8;
+  border: 1px solid #65577866;
+  border-radius: 2px;
+}
+.session-strip b {
+  font-size: 8px;
+  color: #c0a7e4;
+  margin-right: 7px;
+}
+.reference-layout .side-menu {
+  left: auto;
+  right: 12px;
+  top: 55px;
+  width: auto;
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  background: #111322ed;
+  border: 1px solid #8462ac66;
+  box-shadow: 0 3px 12px #0b0d2355;
+}
+.reference-layout .side-menu button {
+  flex: 0 0 45px;
+  width: 45px;
+  min-height: 47px;
+  gap: 1px;
+  padding: 4px 2px 3px;
+  border-color: transparent;
+  background: linear-gradient(#28253a80, #17182c80);
+  border-radius: 2px;
+}
+.reference-layout .side-menu button:hover {
+  border-color: #9d80bd;
+}
+.reference-layout .side-menu button > span {
+  width: 28px;
+  height: 28px;
+}
+.reference-layout .side-menu button > .menu-label {
+  width: auto;
+  height: auto;
+  font:
+    7px/1.2 "Segoe UI",
+    sans-serif;
+}
+.reference-layout .side-menu .menu-active {
+  border-color: #b89fce;
+  background: #4e3c6655;
+}
+.reference-layout .side-menu .dev-button {
+  flex: 0 0 35px;
+  width: 35px;
+  min-height: 47px;
+  margin: 0;
+  padding: 4px 2px;
+  font-size: 8px;
+  border-color: #80619d55;
+}
+.reference-layout .target {
+  top: 76px;
+  width: 230px;
+  padding: 7px 10px;
+}
+.reference-layout .target > b {
+  font-size: 12px;
+}
+.reference-layout .party-hud {
+  top: 125px;
+  right: 12px;
+  width: 205px;
+  padding: 9px 11px;
+  background: #171626de;
+  border-color: #6f5b8655;
+}
+.reference-layout .solo-party {
+  display: none;
+}
+.reference-layout .journal {
+  left: 12px;
+  bottom: 12px;
+  width: 360px;
+  max-height: 260px;
+  padding: 0 0 8px;
+  background: linear-gradient(#171526ed, #101421f5);
+  border-color: #70528599;
+  box-shadow: 0 3px 20px #060b2477;
+}
+.reference-layout .journal-title {
+  padding: 8px 12px;
+  background: #252035ad;
+  border-color: #7b5a9766;
+}
+.reference-layout .journal-title > b {
+  font-size: 10px;
+  color: #c7a8e9;
+  letter-spacing: 0.3px;
+  padding-bottom: 3px;
+  border-bottom: 2px solid #a681cf;
+}
+.reference-layout .journal-title > span {
+  font-size: 8px;
+}
+.reference-layout .log-lines {
+  padding: 0 12px;
+  max-height: 174px;
+  font-size: 11px;
+  line-height: 1.65;
+  color: #c9c2db;
+}
+.reference-layout .log-lines .chat {
+  color: #e1d5ef;
+}
+.reference-layout .journal form {
+  margin: 7px 8px 0;
+}
+.reference-layout .journal input {
+  font-size: 10px;
+  background: #151826;
+  border-radius: 3px;
+}
+.reference-layout .journal button {
+  min-width: 32px;
+}
+.reference-layout .action-area {
+  bottom: 9px;
+  max-width: 95%;
+  width: max-content;
+}
+.reference-layout .travel-hint {
+  font-size: 8px;
+  padding: 4px 8px;
+  margin-bottom: 5px;
+  background: #111423b3;
+  border-color: #7b6c8c33;
+}
+.reference-layout .action-row {
+  gap: 7px;
+  padding: 5px 8px;
+  background: linear-gradient(#181728c9, #0d1321dc);
+  border-color: #75618366;
+  border-radius: 3px;
+  box-shadow: 0 2px 14px #080c1f66;
+}
+.reference-layout .skills {
+  gap: 4px;
+}
+.reference-layout .skill-wrap {
+  width: 53px;
+}
+.reference-layout .skill {
+  height: 47px;
+  width: 47px;
+}
+.reference-layout .skill-glyph {
+  height: 39px;
+  width: 39px;
+}
+.reference-layout .skill-wrap > small {
+  display: none;
+}
+.reference-layout .auto-skill {
+  margin-top: 4px;
+  font-size: 7px;
+}
+.reference-layout .potion {
+  width: 32px;
+  height: 36px;
+  border-radius: 3px;
+  border-color: #70557f;
+  background: #29203e88;
+  align-self: start;
+  margin-top: 6px;
+}
+.reference-layout .potion small {
+  font-size: 8px;
+  bottom: -3px;
+}
+.reference-layout .farm-buttons {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 180px;
+  display: grid;
+  gap: 5px;
+  padding: 9px 10px;
+  margin: 0;
+  background: linear-gradient(#211b32e8, #111423ed);
+  border-color: #8a61aa88;
+}
+.reference-layout .farm-buttons > small {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #c2a5df;
+}
+.reference-layout .farm-buttons button {
+  padding: 7px;
+  font-size: 10px;
+}
+.reference-layout .farm-buttons button + button {
+  padding: 5px;
+  font-size: 9px;
+}
+.reference-layout .farm-buttons .primary {
+  background: linear-gradient(#6a4f86, #443156);
+  color: #e4d6f6;
+  border-color: #aa89cd;
+  text-shadow: none;
+}
+.reference-layout .farm-buttons .farming {
+  box-shadow: 0 0 13px #9c7ac52b;
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .reference-layout .journal {
+    width: 280px;
+    max-height: 208px;
+  }
+  .reference-layout .log-lines {
+    max-height: 130px;
+    font-size: 10px;
+  }
+  .reference-layout .farm-buttons {
+    width: 145px;
+  }
+  .reference-layout .location {
+    left: 40%;
+    max-width: 25%;
+  }
+}
+@media (max-height: 760px) and (min-width: 701px) {
+  .reference-layout .journal {
+    max-height: 190px;
+  }
+  .reference-layout .log-lines {
+    max-height: 110px;
+  }
+  .reference-layout .player-hud {
+    top: 10px;
+  }
+  .reference-layout .session-strip {
+    top: 142px;
+  }
+}
+@media (max-width: 700px) {
+  .reference-layout .player-hud {
+    left: 8px;
+    top: 8px;
+    width: 184px;
+    padding: 6px 7px;
+  }
+  .reference-layout .player-title {
+    gap: 6px;
+  }
+  .reference-layout .player-title b {
+    font-size: 10px;
+  }
+  .reference-layout .player-title small {
+    font-size: 7px;
+  }
+  .reference-layout .player-title > strong {
+    font-size: 19px;
+  }
+  .reference-layout .portrait {
+    width: 33px;
+    height: 36px;
+  }
+  .reference-layout .session-strip {
+    left: 8px;
+    top: 134px;
+    width: 184px;
+    gap: 3px;
+  }
+  .reference-layout .session-strip > span {
+    font-size: 8px;
+    padding: 5px 7px;
+  }
+  .reference-layout .top-actions {
+    top: 8px;
+    right: 8px;
+    gap: 5px;
+    padding: 3px;
+  }
+  .reference-layout .online {
+    font-size: 8px;
+  }
+  .reference-layout .top-actions button {
+    font-size: 8px;
+  }
+  .reference-layout .side-menu {
+    top: 42px;
+    right: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, 36px);
+    gap: 2px;
+    padding: 3px;
+  }
+  .reference-layout .side-menu button,
+  .reference-layout .side-menu .dev-button {
+    width: 36px;
+    min-height: 42px;
+    padding: 3px 0;
+    margin: 0;
+    grid-column: auto;
+  }
+  .reference-layout .side-menu button > span {
+    width: 23px;
+    height: 23px;
+  }
+  .reference-layout .side-menu button > .menu-label {
+    font-size: 6px;
+  }
+  .reference-layout .location {
+    top: 192px;
+    left: 50%;
+    max-width: 90%;
+    width: max-content;
+    padding: 4px 8px;
+  }
+  .reference-layout .location > span {
+    display: none;
+  }
+  .reference-layout .location > b {
+    font-size: 9px;
+  }
+  .reference-layout .target {
+    top: 230px;
+    left: 8px;
+    right: auto;
+    translate: none;
+    width: 184px;
+  }
+  .reference-layout .party-hud,
+  .reference-layout .journal {
+    display: none;
+  }
+  .reference-layout .action-area {
+    width: max-content;
+    bottom: 7px;
+    max-width: 100%;
+    padding: 0;
+  }
+  .reference-layout .action-row {
+    flex-wrap: nowrap;
+    gap: 4px;
+    padding: 5px;
+  }
+  .reference-layout .skills {
+    order: 1;
+    gap: 2px;
+  }
+  .reference-layout .skill-wrap {
+    width: 49px;
+  }
+  .reference-layout .skill {
+    width: 43px;
+    height: 43px;
+  }
+  .reference-layout .skill-glyph {
+    width: 35px;
+    height: 35px;
+  }
+  .reference-layout .potion {
+    width: 28px;
+    height: 32px;
+  }
+  .reference-layout .auto-skill {
+    font-size: 7px;
+  }
+  .reference-layout .farm-buttons {
+    right: 8px;
+    bottom: 118px;
+    width: 123px;
+    padding: 7px;
+    gap: 4px;
+  }
+  .reference-layout .farm-buttons button {
+    font-size: 9px;
+    padding: 6px;
+  }
+  .reference-layout .travel-hint {
+    font-size: 7px;
+  }
+}

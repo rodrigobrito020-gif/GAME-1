@@ -5,11 +5,14 @@ Esta versão permite jogar no mapa do ZIP `recursos-publicos.zip` fornecido pelo
 ## Windows: iniciar com dois cliques
 
 1. Extraia o ZIP de código baixado do GitHub.
+   Se uma versão anterior ainda estiver rodando, encerre-a com Ctrl+C no terminal. O iniciador do Teste 2 verifica as portas 3001/5173 e interrompe a abertura com uma mensagem se estiverem ocupadas; não encerra outros programas automaticamente.
 2. Mantenha `recursos-publicos.zip` na pasta Downloads do Windows ou coloque uma cópia na mesma pasta de `package.json`. O iniciador procura primeiro na pasta do jogo e depois em `%USERPROFILE%\Downloads`.
 3. Abra `INICIAR_TESTE.bat`. Ele instala as dependências se necessário, importa o cenário, prepara o banco sem apagar personagens e inicia os dois processos.
 4. Quando o terminal mostrar Vite pronto, abra **http://localhost:5173**. Deixe o terminal aberto; Ctrl+C encerra.
 
 O Node.js 22.12+ continua necessário. Para manter os personagens da instalação anterior, pare o servidor e copie os **arquivos de código novos para dentro da pasta antiga**, substituindo os arquivos e mesclando pastas. Como o ZIP de código não contém `.env` nem banco, esses arquivos existentes permanecem. Não apague a pasta antiga ou substitua `prisma/dev.db` por um banco vazio. Faça uma cópia do banco com o servidor parado antes de atualizar.
+
+O iniciador identifica a versão como `TESTE 2`. A interface dessa versão usa indicadores compactos no alto à esquerda, menus no alto à direita, chat no canto inferior esquerdo e Auto Farm separado à direita. Os contadores de jogadores/EXP/loot são reais. Não foram adicionados buffs premium, jogadores fictícios ou serviços de sistemas não implementados para reproduzir a imagem da referência.
 
 ## Instalação manual
 
@@ -38,7 +41,7 @@ Para executar a compilação, importe antes de `npm run build` e depois use `npm
 
 O GitHub entrega nosso código de integração e o iniciador. O arquivo de recursos fornecido pelo usuário é importado **localmente**, em `apps/client/public/local-city/`, pasta ignorada pelo Git. Os arquivos originais do cenário, o ZIP de recursos e as capturas desse cenário não são adicionados à branch publicada. Os termos de redistribuição dos recursos externos continuam não identificados no pacote; este mecanismo não declara que o outro jogo ou suas artes sejam open source.
 
-O projeto funciona também sem esse ZIP, usando nossa cidade anterior. Para forçar a cidade anterior mesmo com um pacote instalado, use `CITY_MODE=original` na `.env` e reinicie o servidor/recarregue o navegador. No PowerShell, a configuração temporária é `$env:CITY_MODE = "original"` antes de iniciar; no CMD é `set CITY_MODE=original`. Remova essa configuração para voltar ao cenário importado.
+O projeto funciona também sem esse ZIP, usando nossa cidade anterior. Para forçar a cidade anterior mesmo com um pacote instalado, use `CITY_MODE=original` na `.env` e inicie manualmente com `npm run dev`. No PowerShell, a configuração temporária é `$env:CITY_MODE = "original"`; no CMD é `set CITY_MODE=original`. Remova essa configuração para voltar ao cenário importado. `INICIAR_TESTE.bat` escolhe explicitamente o cenário importado no processo de teste e não altera permanentemente a `.env`.
 
 Os próximos assets de personagens serão próprios. Não foram importadas as regras, a economia, as contas, os itens ou o backend do jogo de referência.
 

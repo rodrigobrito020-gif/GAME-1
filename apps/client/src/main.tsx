@@ -23,6 +23,7 @@ import { portraitFor } from "./art";
 import { Icon } from "./icons";
 import "./style.css";
 import "./visual.css";
+import "./reference-layout.css";
 const money = (n: number) => Math.floor(n).toLocaleString("pt-BR");
 function ItemArt({ item }: { item: Item }) {
   return (
@@ -353,7 +354,7 @@ function App() {
     setSelected(item);
   };
   return (
-    <main className="play">
+    <main className="play reference-layout">
       <GameWorld snapshot={snap} send={send} open={open} />
       <header className="topbar">
         <div className="brand">
@@ -368,7 +369,7 @@ function App() {
         </div>
         <div className="top-actions">
           <span className={connected ? "online" : "offline"}>
-            {connected ? "● Conectado" : "● Reconectando"}
+            {connected ? `● ${snap.online.length} online` : "● Reconectando"}
           </span>
           <button onClick={() => setPanel("settings")} title="Configurações">
             ⚙
@@ -414,6 +415,16 @@ function App() {
           ◈ <b>{money(self.adena)}</b> <span>ADENA</span>
         </div>
       </section>
+      <div className="session-strip" aria-label="Métricas da sessão">
+        <span>
+          <b>EXP</b> {money((snap.metrics.exp / snap.metrics.seconds) * 3600)} /
+          hora
+        </span>
+        <span>
+          <b>LOOT</b> {money((snap.metrics.loot / snap.metrics.seconds) * 3600)}{" "}
+          itens / hora
+        </span>
+      </div>
       {target && target.hp > 0 && (
         <section className="target surface">
           <small>ALVO SELECIONADO</small>
@@ -450,12 +461,19 @@ function App() {
           </button>
         ))}
         {snap.dev && (
-          <button className="dev-button" onClick={() => setPanel("dev")}>
-            DEV · Testar conteúdo
+          <button
+            className="dev-button"
+            aria-label="DEV · Testar conteúdo"
+            title="DEV · Testar conteúdo"
+            onClick={() => setPanel("dev")}
+          >
+            DEV
           </button>
         )}
       </nav>
-      <aside className="party-hud surface">
+      <aside
+        className={`party-hud surface ${snap.party || snap.invites.length || (!city && BOSSES.some((b) => b.level === snap.hunt?.max && self.level >= b.level)) ? "has-party" : "solo-party"}`}
+      >
         {!city &&
           snap.hunt &&
           BOSSES.filter(
@@ -500,8 +518,8 @@ function App() {
       </aside>
       <aside className="journal surface">
         <div className="journal-title">
-          <b>REGISTRO DA JORNADA</b>
-          <span>{city ? "Chat da cidade" : "Combate & drops"}</span>
+          <b>{city ? "Cidade" : "Combate"}</b>
+          <span>Registro & drops</span>
         </div>
         <div className="log-lines" aria-live="off">
           {snap.logs.slice(-9).map((l) => (
@@ -534,8 +552,8 @@ function App() {
       <footer className="action-area">
         <div className="travel-hint">
           {city
-            ? "WASD / clique para andar · E conversar · Scroll aproximar"
-            : `${money((snap.metrics.exp / snap.metrics.seconds) * 3600)} EXP/h · ${money((snap.metrics.loot / snap.metrics.seconds) * 3600)} itens/h · métricas da sessão`}
+            ? "WASD mover · E interagir · I mochila"
+            : "1–4 habilidades · F pausar farm"}
         </div>
         <div className="action-row">
           <button
@@ -617,26 +635,6 @@ function App() {
                 .reduce((a, b) => a + b.quantity, 0)}
             </small>
           </button>
-          <div className="farm-buttons">
-            <button
-              className={snap.autoFarm ? "primary farming" : ""}
-              disabled={city}
-              data-testid="farm-toggle"
-              onClick={() => send({ type: "farm", enabled: !snap.autoFarm })}
-            >
-              {snap.autoFarm ? "❚❚ Pausar farm" : "▶ Auto Farm"} <kbd>F</kbd>
-            </button>
-            {!city && (
-              <button
-                onClick={() => {
-                  send({ type: "return" });
-                  setPanel(null);
-                }}
-              >
-                Retornar à cidade
-              </button>
-            )}
-          </div>
         </div>
         <small className="build-note">
           {snap.dev ? "DEMONSTRAÇÃO LOCAL · " : ""}Balanceamento e conteúdo não
@@ -646,6 +644,27 @@ function App() {
             : ""}
         </small>
       </footer>
+      <aside className="farm-buttons surface">
+        <small>AUTO FARM</small>
+        <button
+          className={snap.autoFarm ? "primary farming" : ""}
+          disabled={city}
+          data-testid="farm-toggle"
+          onClick={() => send({ type: "farm", enabled: !snap.autoFarm })}
+        >
+          {snap.autoFarm ? "❚❚ Pausar farm" : "▶ Auto Farm"} <kbd>F</kbd>
+        </button>
+        {!city && (
+          <button
+            onClick={() => {
+              send({ type: "return" });
+              setPanel(null);
+            }}
+          >
+            Retornar à cidade
+          </button>
+        )}
+      </aside>
       {panel && (
         <div
           className="panel-backdrop"

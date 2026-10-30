@@ -1,0 +1,22 @@
+generator client {
+ provider = "prisma-client-js"
+ engineType = "client"
+}
+datasource db {
+ provider = "sqlite"
+ url = env("DATABASE_URL")
+}
+model Character {
+ id String @id
+ name String @unique
+ passwordHash String
+ data String
+ updatedAt DateTime @updatedAt
+ sessions Session[]
+}
+model Session {
+ tokenHash String @id
+ characterId String
+ character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+ expiresAt DateTime
+}

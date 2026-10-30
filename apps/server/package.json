@@ -1,0 +1,14 @@
+{
+  "name": "@idle/server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@idle/shared": "*",
+    "express": "4.21.2",
+    "socket.io": "4.8.1"
+  }
+}

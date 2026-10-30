@@ -35,6 +35,7 @@ async function start(dev: boolean) {
       env: {
         ...process.env,
         PORT: "3387",
+        CITY_MODE: "original",
         DATABASE_URL: `file:./${filename}`,
         DEV_MODE: dev ? "true" : "true",
         NODE_ENV: dev ? "development" : "production",

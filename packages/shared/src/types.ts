@@ -196,7 +196,29 @@ export interface Vfx {
   kind: string;
   amount?: number;
 }
+export interface CityLayout {
+  id: string;
+  name: string;
+  width: number;
+  height: number;
+  spawn: { x: number; y: number };
+  npcs: { id: string; name: string; x: number; y: number }[];
+  blocks: { x: number; y: number; w: number; h: number }[];
+  collision?: {
+    tileSize: number;
+    columns: number;
+    rows: number;
+    cells: number[];
+  };
+  atlas?: {
+    mapUrl: string;
+    tilesets: { id: string; url: string }[];
+    packHash: string;
+  };
+}
+export type CityInfo = Omit<CityLayout, "collision">;
 export interface Snapshot {
+  city: CityInfo;
   self: Character;
   stats: Stats;
   actor: Actor;

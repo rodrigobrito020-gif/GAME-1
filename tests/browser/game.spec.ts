@@ -220,3 +220,110 @@ test("celular: criação anã sem Mystic, painéis operantes e canvas sem erro",
     "Sweeper",
   ]);
 });
+
+test("praça importada: sete tilesets locais, quatro serviços acessíveis, paredes bloqueadas e retorno correto", async ({
+  page,
+}) => {
+  const failures: string[] = [];
+  page.on("pageerror", (e) => failures.push(e.message));
+  await register(page, `Atlas ${suffix()}`);
+  const first = await state(page);
+  test.skip(
+    !first.city?.atlas,
+    "O pacote local do usuário não está instalado; a cidade original continua disponível.",
+  );
+  expect(first.city.width).toBe(1920);
+  expect(first.city.height).toBe(1536);
+  const mapResponse = await page.request.get(first.city.atlas.mapUrl);
+  expect(mapResponse.ok()).toBe(true);
+  const map = await mapResponse.json();
+  expect(map.collisions).toHaveLength(2880);
+  expect(first.city.atlas.tilesets).toHaveLength(7);
+  for (const set of first.city.atlas.tilesets) {
+    const r = await page.request.get(set.url);
+    expect(r.ok()).toBe(true);
+    expect(r.headers()["content-type"]).toContain("image/png");
+  }
+  for (const [panel, id] of [
+    ["Hunts", "portal"],
+    ["Mercador", "shop"],
+    ["Forja", "forge"],
+    ["Profissões", "class"],
+  ]) {
+    await goNpc(page, panel);
+    const npc = first.city.npcs.find((n: any) => n.id === id);
+    await expect
+      .poll(
+        async () => {
+          const s = await state(page);
+          return Math.hypot(s.actor.x - npc.x, s.actor.y - npc.y);
+        },
+        { timeout: 12000 },
+      )
+      .toBeLessThan(100);
+    await page.getByRole("button", { name: "Fechar painel" }).click();
+  }
+  await page.waitForTimeout(700);
+  const before = await state(page),
+    size = page.viewportSize()!;
+  const blocked = map.collisions
+    .map((v: number, i: number) => ({
+      v,
+      x: (i % 60) * 32 + 16,
+      y: Math.floor(i / 60) * 32 + 16,
+    }))
+    .filter(
+      (p: any) =>
+        p.v === 1 &&
+        Math.hypot(p.x - before.actor.x, p.y - before.actor.y) < 170 &&
+        first.city.npcs.every(
+          (n: any) => Math.hypot(p.x - n.x, p.y - n.y) > 85,
+        ),
+    )
+    .sort(
+      (a: any, b: any) =>
+        Math.hypot(a.x - before.actor.x, a.y - before.actor.y) -
+        Math.hypot(b.x - before.actor.x, b.y - before.actor.y),
+    )[0];
+  expect(blocked).toBeTruthy();
+  await page.mouse.click(
+    blocked.x - before.actor.x + size.width / 2,
+    blocked.y - (before.actor.y - 25) + size.height / 2,
+  );
+  await expect(page.getByRole("alert")).toContainText("ponto livre");
+  const after = await state(page);
+  expect(
+    Math.hypot(after.actor.x - before.actor.x, after.actor.y - before.actor.y),
+  ).toBeLessThan(4);
+  await goNpc(page, "Hunts");
+  await expect(page.locator('[data-hunt="hunt-1-physical"]')).toBeEnabled({
+    timeout: 12000,
+  });
+  await page.locator('[data-hunt="hunt-1-physical"]').click();
+  await expect.poll(async () => (await state(page)).map).toMatch(/^solo:/);
+  await page
+    .getByRole("button", { name: "Retornar à cidade", exact: true })
+    .click();
+  await expect.poll(async () => (await state(page)).map).toBe("city");
+  const final = await state(page);
+  expect({ x: final.actor.x, y: final.actor.y }).toEqual(first.city.spawn);
+  expect(failures).toEqual([]);
+});
+
+test("praça indisponível mostra orientação para reimportar e continua estável ao receber snapshots", async ({
+  page,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await register(page, `Missing ${suffix()}`);
+  const current = await state(page);
+  test.skip(
+    !current.city?.atlas,
+    "O pacote local do usuário não está instalado.",
+  );
+  await page.route("**/local-city/tilesets/**", (route) => route.abort());
+  await page.reload();
+  await expect(page.locator(".world-error")).toContainText("INICIAR_TESTE.bat");
+  await page.waitForTimeout(900);
+  expect(errors).toEqual([]);
+});

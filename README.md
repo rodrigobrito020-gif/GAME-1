@@ -10,11 +10,17 @@ Primeiro marco de um RPG idle multiplayer para navegador. A implementação est�
 
 Esta versão usa a branch exclusiva `lineage-2d-idle` do GAME-1. A branch principal do RPG 3D permanece preservada. O ZIP contém este jogo; extraia e abra o terminal na pasta que contém `package.json`.
 
+## Testar a praça do ZIP enviado
+
+Está disponível a [versão de teste da praça importada](docs/TESTE_DA_PRACA.md), com nossas regras, personagens e serviços. Mantenha seu `recursos-publicos.zip` em Downloads ou na pasta do jogo e abra **`INICIAR_TESTE.bat`**. Depois abra **http://localhost:5173** quando o terminal estiver pronto. Para atualizar mantendo o progresso, mescle os arquivos de código novos na instalação anterior com o servidor parado; preserve `.env` e `prisma/dev.db`.
+
+O ZIP de recursos é importado localmente; o download do GitHub contém o importador e nosso código. Sem o pacote local, o jogo continua usando a cidade anterior. Esta atualização de teste modifica cliente, servidor e configuração compartilhada: **copiar somente `apps/client` não basta para ela**. Os personagens atuais permanecem até criarmos os assets próprios.
+
 ## Atualização visual — 30/10/2026
 
 A praça agora usa pedra em tons de ardósia, escadaria, jardins, iluminação, fonte animada e serviços visualmente distintos. Os personagens têm proporções, armaduras, cabelo e poses de frente/costas/perfil; criaturas e summons usam desenhos próprios. Retratos e ícones de equipamentos/habilidades substituem letras e símbolos genéricos. HUD/chat foram compactados; o scroll aproxima/afasta a câmera. A arte continua original e local, sem carregar imagens do jogo usado como referência.
 
-**Para atualizar uma instalação existente sem alterar seu personagem:** pare o jogo com Ctrl+C, extraia o ZIP novo em outra pasta e copie **somente a pasta `apps/client`** dele para dentro da sua instalação anterior, substituindo os arquivos. Depois, na instalação anterior, execute `npm run dev` e atualize o navegador. Se usar a versão compilada, rode `npm run build` antes de `npm start`. Este passe não modifica servidor, regras, dependências ou banco. Preserve sua `.env` e `prisma/dev.db`; não é preciso recriar o personagem ou reaplicar o setup.
+**Para atualizar uma instalação existente sem alterar seu personagem:** pare o jogo com Ctrl+C, extraia o ZIP novo em outra pasta e mescle os arquivos de código novos na instalação anterior. Preserve `.env` e `prisma/dev.db`. Siga o [procedimento da praça de teste](docs/TESTE_DA_PRACA.md) para a versão atual; ela inclui a integração no servidor. Se usar a versão compilada, rode `npm run build` antes de `npm start`.
 
 Detalhes e limites em [docs/ATUALIZACAO_VISUAL.md](docs/ATUALIZACAO_VISUAL.md).
 

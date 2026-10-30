@@ -60,9 +60,16 @@ function GameWorld({
 }) {
   const host = useRef<HTMLDivElement>(null),
     scene = useRef<World | null>(null);
+  const [assetError, setAssetError] = useState("");
+  const cityKey =
+    snapshot.city?.atlas?.packHash ?? snapshot.city?.id ?? "original";
   useEffect(() => {
-    const world = new World(send, (name) =>
-      open(name === "portal" ? "hunts" : name),
+    setAssetError("");
+    const world = new World(
+      send,
+      (name) => open(name === "portal" ? "hunts" : name),
+      snapshot.city ?? CITY,
+      setAssetError,
     );
     scene.current = world;
     const game = new Phaser.Game({
@@ -84,11 +91,19 @@ function GameWorld({
       scene.current = null;
       game.destroy(true);
     };
-  }, [send, open]);
+  }, [send, open, cityKey]);
   useEffect(() => {
     scene.current?.setSnapshot(snapshot);
   }, [snapshot]);
-  return <div id="game-world" ref={host} aria-label="Mundo 2D navegável" />;
+  return (
+    <div id="game-world" ref={host} aria-label="Mundo 2D navegável">
+      {assetError && (
+        <div className="world-error surface" role="alert">
+          {assetError}
+        </div>
+      )}
+    </div>
+  );
 }
 function App() {
   const [token, setToken] = useState(
@@ -154,7 +169,7 @@ function App() {
         setPanel((p) => (p === "inventory" ? null : "inventory"));
       if (e.key === "Escape") setPanel(null);
       if (e.key.toLowerCase() === "e" && s.map === "city") {
-        const nearest = CITY.npcs.find(
+        const nearest = (s.city ?? CITY).npcs.find(
           (n) => Math.hypot(n.x - s.actor.x, n.y - s.actor.y) < 110,
         );
         if (nearest) setPanel(nearest.id === "portal" ? "hunts" : nearest.id);
@@ -309,18 +324,19 @@ function App() {
       </main>
     );
   const self = snap.self,
+    cityLayout = snap.city ?? CITY,
     stats = snap.stats,
     city = snap.map === "city",
     target = snap.actors.find((a) => a.id === snap.actor.targetId),
     levelProgress = (self.xp / xpRequired(self.level)) * 100;
   const near = (id: string) => {
-    const npc = CITY.npcs.find((n) => n.id === id)!;
+    const npc = cityLayout.npcs.find((n) => n.id === id)!;
     return (
       city && Math.hypot(npc.x - snap.actor.x, npc.y - snap.actor.y) <= 105
     );
   };
   const gotoNpc = (id: string) => {
-    const npc = CITY.npcs.find((n) => n.id === id)!;
+    const npc = cityLayout.npcs.find((n) => n.id === id)!;
     send({ type: "move", x: npc.x - 32, y: npc.y + 38 });
   };
   const npcPanel =
@@ -348,7 +364,7 @@ function App() {
         </div>
         <div className="location">
           <span>{city ? "ÁREA SEGURA" : "INSTÂNCIA DE CAÇA"}</span>
-          <b>{city ? "Refúgio de Aden" : snap.hunt?.name}</b>
+          <b>{city ? cityLayout.name : snap.hunt?.name}</b>
         </div>
         <div className="top-actions">
           <span className={connected ? "online" : "offline"}>

@@ -269,6 +269,8 @@ export const SPAWNS = [
   { x: 250, y: 720 },
 ];
 export const CITY = {
+  id: "original",
+  name: "Refúgio de Aden",
   width: 1600,
   height: 1152,
   spawn: { x: 790, y: 620 },

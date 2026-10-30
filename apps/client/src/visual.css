@@ -1,4 +1,16 @@
 /* Visual pass: slate stone, aged metal, compact HUD. All colours are art only. */
+.world-error {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  translate: -50% -50%;
+  width: min(500px, 90vw);
+  z-index: 5;
+  padding: 24px;
+  text-align: center;
+  color: #ead4b5;
+  line-height: 1.6;
+}
 :root {
   font-family: "Segoe UI", system-ui, sans-serif;
   color: #e2e0e7;

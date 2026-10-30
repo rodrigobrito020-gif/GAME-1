@@ -8,6 +8,7 @@
     "packages/*"
   ],
   "scripts": {
+    "import:city": "node scripts/import-city.mjs",
     "dev": "concurrently -k -n SERVER,CLIENT \"npm run dev -w @idle/server\" \"npm run dev -w @idle/client\"",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",

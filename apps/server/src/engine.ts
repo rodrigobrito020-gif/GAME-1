@@ -45,6 +45,7 @@ import type {
   Snapshot,
   Vfx,
   Weapon,
+  CityLayout,
 } from "@idle/shared";
 export interface Player {
   c: Character;
@@ -89,6 +90,7 @@ export class GameEngine {
   constructor(
     public dev = false,
     private rng = Math.random,
+    public city: CityLayout = CITY,
   ) {}
   log(p: Player, text: string, kind: LogEntry["kind"] = "system") {
     p.logs.push({ id: ++this.sequence, text, kind });
@@ -110,8 +112,8 @@ export class GameEngine {
         id: c.id,
         name: c.name,
         kind: "player",
-        x: CITY.spawn.x,
-        y: CITY.spawn.y,
+        x: this.city.spawn.x,
+        y: this.city.spawn.y,
         hp: c.hp,
         maxHp: stats.maxHp,
         targetId: null,
@@ -153,10 +155,10 @@ export class GameEngine {
     this.leaveHunt(p);
     this.leaveParty(p);
   }
-  private city(p: Player, npc?: string) {
+  private requireCity(p: Player, npc?: string) {
     if (p.map !== "city") throw Error("Disponível somente na cidade.");
     if (npc) {
-      const target = CITY.npcs.find((n) => n.id === npc)!;
+      const target = this.city.npcs.find((n) => n.id === npc)!;
       if (distance(p.actor, target) > 105)
         throw Error(`Aproxime-se de ${target.name}.`);
     }
@@ -248,14 +250,14 @@ export class GameEngine {
         this.potion(p, cmd.kind === "mp" ? "mp" : "hp", true);
         break;
       case "enter":
-        this.city(p, "portal");
+        this.requireCity(p, "portal");
         this.enterHunt(p, String(cmd.hunt));
         break;
       case "return":
         this.leaveHunt(p);
         break;
       case "equip": {
-        this.city(p);
+        this.requireCity(p);
         const i = c.inventory.findIndex((i) => i.id === cmd.id),
           item = c.inventory[i];
         if (!item) throw Error("Item inexistente.");
@@ -291,7 +293,7 @@ export class GameEngine {
         break;
       }
       case "unequip": {
-        this.city(p);
+        this.requireCity(p);
         const slot = String(cmd.slot) as keyof Character["equipment"],
           item = c.equipment[slot];
         if (!Object.hasOwn(c.equipment, slot) || !item)
@@ -312,7 +314,7 @@ export class GameEngine {
         break;
       }
       case "profession": {
-        this.city(p, "class");
+        this.requireCity(p, "class");
         const def = PROFESSIONS.find(
           (d) =>
             d.id === cmd.id && d.race === c.race && d.archetype === c.archetype,
@@ -336,7 +338,7 @@ export class GameEngine {
         break;
       }
       case "specialization": {
-        this.city(p, "class");
+        this.requireCity(p, "class");
         const def = PROFESSIONS.find(
           (d) => d.id === c.profession,
         )?.branches.find((b) => b.id === cmd.id);
@@ -359,7 +361,7 @@ export class GameEngine {
         break;
       }
       case "buy": {
-        this.city(p, "shop");
+        this.requireCity(p, "shop");
         const kind = String(cmd.kind);
         if (kind === "hp" || kind === "mp") {
           if (c.adena < BALANCE.potionCost * 5)
@@ -386,7 +388,7 @@ export class GameEngine {
         break;
       }
       case "sell": {
-        this.city(p, "shop");
+        this.requireCity(p, "shop");
         const i = c.inventory.findIndex((i) => i.id === cmd.id),
           item = c.inventory[i];
         if (!item) throw Error("Item não está na mochila.");
@@ -395,7 +397,7 @@ export class GameEngine {
         break;
       }
       case "craft": {
-        this.city(p, "forge");
+        this.requireCity(p, "forge");
         const grade = String(cmd.grade) as Grade,
           weapon = String(cmd.weapon) as Weapon;
         if (!Object.hasOwn(GRADES, grade) || !Object.hasOwn(WEAPONS, weapon))
@@ -433,7 +435,7 @@ export class GameEngine {
         break;
       }
       case "reforge": {
-        this.city(p, "forge");
+        this.requireCity(p, "forge");
         const item =
           c.inventory.find((i) => i.id === cmd.id) ??
           Object.values(c.equipment).find((i) => i?.id === cmd.id);
@@ -453,7 +455,7 @@ export class GameEngine {
       }
       case "party.create":
         if (p.partyId) throw Error("Você já está em uma Party.");
-        this.city(p);
+        this.requireCity(p);
         {
           const party: Party = {
             id: randomUUID(),
@@ -468,7 +470,7 @@ export class GameEngine {
         }
         break;
       case "party.invite": {
-        this.city(p);
+        this.requireCity(p);
         const party = this.partyFor(p),
           other = this.players.get(String(cmd.id));
         if (
@@ -490,7 +492,7 @@ export class GameEngine {
         break;
       }
       case "party.accept": {
-        this.city(p);
+        this.requireCity(p);
         if (p.partyId) throw Error("Você já possui Party.");
         const party = this.parties.get(String(cmd.id)),
           invite = this.invites
@@ -509,7 +511,7 @@ export class GameEngine {
         break;
       }
       case "party.leave":
-        this.city(p);
+        this.requireCity(p);
         if (this.members(p).some((m) => m.map !== "city"))
           throw Error("Todos devem retornar à cidade antes de mudar a Party.");
         this.leaveParty(p);
@@ -729,8 +731,8 @@ export class GameEngine {
       if (!instance.players.size) this.instances.delete(instance.id);
     }
     p.map = "city";
-    p.actor.x = CITY.spawn.x;
-    p.actor.y = CITY.spawn.y;
+    p.actor.x = this.city.spawn.x;
+    p.actor.y = this.city.spawn.y;
     p.actor.targetId = null;
     delete p.actor.deadUntil;
     p.auto = false;
@@ -1488,12 +1490,29 @@ export class GameEngine {
     actor.facing = Math.atan2(dy, dx);
   }
   private free(x: number, y: number) {
+    const grid = this.city.collision;
+    if (grid) {
+      for (const dx of [-8, 8])
+        for (const dy of [-8, 8]) {
+          const col = Math.floor((x + dx) / grid.tileSize),
+            row = Math.floor((y + dy) / grid.tileSize);
+          if (
+            col < 0 ||
+            row < 0 ||
+            col >= grid.columns ||
+            row >= grid.rows ||
+            grid.cells[row * grid.columns + col]
+          )
+            return false;
+        }
+      return true;
+    }
     return (
       x >= 40 &&
       y >= 40 &&
-      x < CITY.width - 40 &&
-      y < CITY.height - 40 &&
-      !CITY.blocks.some(
+      x < this.city.width - 40 &&
+      y < this.city.height - 40 &&
+      !this.city.blocks.some(
         (b) =>
           x > b.x - 15 &&
           x < b.x + b.w + 15 &&
@@ -1509,8 +1528,8 @@ export class GameEngine {
   private path(start: Actor, end: { x: number; y: number }) {
     if (!this.free(end.x, end.y))
       throw Error("Escolha um ponto livre do caminho.");
-    const w = 50,
-      h = 36,
+    const w = Math.ceil(this.city.width / 32),
+      h = Math.ceil(this.city.height / 32),
       toId = (x: number, y: number) =>
         Math.floor(y / 32) * w + Math.floor(x / 32),
       from = toId(start.x, start.y),
@@ -1544,6 +1563,7 @@ export class GameEngine {
     return route;
   }
   snapshot(p: Player): Snapshot {
+    const { collision: _collision, ...city } = this.city;
     const instance = this.instances.get(p.map);
     const actors =
       p.map === "city"
@@ -1559,6 +1579,7 @@ export class GameEngine {
           ];
     this.syncAppearance(p);
     return {
+      city,
       self: this.capture(p),
       actor: p.actor,
       stats: statsFor(p.c),

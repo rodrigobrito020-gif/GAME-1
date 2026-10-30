@@ -2,6 +2,8 @@
 
 Executada em 30/10/2026, Linux, Node 24.19.0, npm 11.9.0 e Chromium do ambiente. Esta é uma primeira versão jogável, com arte procedural e balanceamento provisórios.
 
+A atualização de integração da praça possui validação adicional e instruções em [TESTE_DA_PRACA.md](TESTE_DA_PRACA.md): 34 testes de regras/rede/importação e seis fluxos de navegador, com o pacote local instalado. As contagens abaixo descrevem o marco anterior. O pacote externo é importado localmente; não é incluído no GitHub.
+
 ## Verificações automáticas
 
 | Comando | Resultado |

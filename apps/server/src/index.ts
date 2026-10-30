@@ -14,6 +14,7 @@ import { createDatabase, rootDir } from "./db";
 import { RACES, newCharacter } from "@idle/shared";
 import type { Archetype, Character, Command, Race } from "@idle/shared";
 import { GameEngine } from "./engine";
+import { loadCity } from "./city";
 const db = createDatabase(),
   app = express(),
   http = createServer(app),
@@ -23,7 +24,7 @@ const io = new Server(http, {
   cors: { origin: process.env.CLIENT_ORIGIN ?? "http://localhost:5173" },
   maxHttpBufferSize: 16384,
 });
-export const engine = new GameEngine(dev);
+export const engine = new GameEngine(dev, Math.random, loadCity());
 app.disable("x-powered-by");
 app.use(express.json({ limit: "12kb" }));
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
@@ -44,7 +45,7 @@ const check = (password: string, stored: string) => {
 };
 const attempts = new Map<string, { n: number; until: number }>();
 app.get("/api/health", (_req, res) =>
-  res.json({ ok: true, dev, version: "0.1.0" }),
+  res.json({ ok: true, dev, version: "0.1.0", city: engine.city.id }),
 );
 for (const route of ["register", "login"])
   app.post(`/api/${route}`, async (req, res) => {
@@ -103,12 +104,10 @@ for (const route of ["register", "login"])
       });
       res.json({ token });
     } catch (error) {
-      res
-        .status(400)
-        .json({
-          error:
-            error instanceof Error ? error.message : "Não foi possível entrar.",
-        });
+      res.status(400).json({
+        error:
+          error instanceof Error ? error.message : "Não foi possível entrar.",
+      });
     }
   });
 const pending = new Set<string>();

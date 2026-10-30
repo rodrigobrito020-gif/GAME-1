@@ -5,3 +5,5 @@ prisma/*.db*
 test-results/
 playwright-report/
 *.log
+apps/client/public/local-city/
+recursos-publicos.zip

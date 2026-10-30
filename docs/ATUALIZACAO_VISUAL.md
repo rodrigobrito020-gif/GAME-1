@@ -1,5 +1,7 @@
 # Primeiro passe de arte — 30/10/2026
 
+Este documento descreve o passe visual anterior. Para a versão atual com importação da praça, use [TESTE_DA_PRACA.md](TESTE_DA_PRACA.md): a atualização atual também inclui arquivos de servidor e configuração compartilhada.
+
 O passe atende à comparação visual enviada pelo dono: cidade de pedra em tons frios, personagens com proporções mais próximas de um RPG 2D, detalhes medievais e interface discreta. A referência orienta a direção de arte; nenhuma imagem, sprite ou interface proprietária foi extraída dela.
 
 ![Cidade em execução](images/cidade.png)

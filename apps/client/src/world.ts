@@ -1,7 +1,8 @@
 import Phaser from "phaser";
 import { CITY } from "@idle/shared";
 import { createArt, createFloor } from "./art";
-import type { Actor, Command, Snapshot } from "@idle/shared";
+import { preloadImportedCity, drawImportedCity } from "./imported-city";
+import type { Actor, Command, Snapshot, CityInfo } from "@idle/shared";
 export class World extends Phaser.Scene {
   snapshot: Snapshot | null = null;
   private receivedAt = 0;
@@ -9,6 +10,7 @@ export class World extends Phaser.Scene {
   private lastMove = 0;
   private moving = false;
   private lastEvent = 0;
+  private failed = false;
   private reducedMotion = matchMedia("(prefers-reduced-motion: reduce)")
     .matches;
   private burstPool: Phaser.GameObjects.Arc[] = [];
@@ -46,10 +48,22 @@ export class World extends Phaser.Scene {
   constructor(
     private send: (cmd: Command) => void,
     private panel: (name: string) => void,
+    private city: CityInfo = CITY,
+    private onAssetError: (message: string) => void = () => {},
   ) {
     super("world");
   }
+  preload() {
+    this.load.on("loaderror", () => {
+      this.failed = true;
+      this.onAssetError(
+        "Não foi possível carregar a praça local. Feche o jogo, execute INICIAR_TESTE.bat novamente e recarregue o navegador.",
+      );
+    });
+    preloadImportedCity(this, this.city);
+  }
   create() {
+    if (this.failed) return;
     this.makeTextures();
     this.keys = this.input.keyboard!.addKeys(
       "W,A,S,D,UP,DOWN,LEFT,RIGHT",
@@ -74,7 +88,7 @@ export class World extends Phaser.Scene {
       if (pointer.button !== 0 || !this.snapshot) return;
       const point = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
       if (this.snapshot.map === "city") {
-        const npc = CITY.npcs.find(
+        const npc = this.city.npcs.find(
           (n) => Phaser.Math.Distance.Between(n.x, n.y, point.x, point.y) < 55,
         );
         this.send({
@@ -93,13 +107,22 @@ export class World extends Phaser.Scene {
         if (enemy) this.send({ type: "target", id: enemy.id });
       }
     });
-    this.drawMap("city");
-    this.cameras.main.centerOn(CITY.spawn.x, CITY.spawn.y);
+    try {
+      this.drawMap("city");
+    } catch (error) {
+      this.failed = true;
+      this.onAssetError(
+        error instanceof Error ? error.message : "Cenário indisponível.",
+      );
+      return;
+    }
+    this.cameras.main.centerOn(this.city.spawn.x, this.city.spawn.y);
   }
   setSnapshot(s: Snapshot) {
     this.snapshot = s;
     this.receivedAt = performance.now();
-    if (this.sys.isActive() && s.map !== this.mapId) this.drawMap(s.map);
+    if (!this.failed && this.sys.isActive() && s.map !== this.mapId)
+      this.drawMap(s.map);
   }
   private color(hex: string) {
     return Phaser.Display.Color.HexStringToColor(hex).color;
@@ -115,11 +138,15 @@ export class World extends Phaser.Scene {
     }
     this.scenery = [];
     const city = map === "city",
-      width = city ? 1600 : 1536,
-      height = city ? 1152 : 1088;
+      width = city ? this.city.width : 1536,
+      height = city ? this.city.height : 1088;
     const min = this.snapshot?.hunt?.min ?? 1;
     const theme = city ? 0 : min >= 251 ? 2 : min >= 151 ? 1 : 0;
     this.cameras.main.setBounds(0, 0, width, height);
+    if (city && this.city.atlas) {
+      drawImportedCity(this, this.city, this.scenery, this.reducedMotion);
+      return;
+    }
     const floor = this.add
       .image(0, 0, createFloor(this, city, theme))
       .setOrigin(0)
@@ -592,6 +619,7 @@ export class World extends Phaser.Scene {
     }
   }
   update(time: number, delta: number) {
+    if (this.failed) return;
     const snap = this.snapshot;
     if (!snap) return;
     if (snap.map !== this.mapId) this.drawMap(snap.map);

@@ -1,3 +1,4 @@
 recursos-publicos.zip
 *.log
 node_modules/
+.local-runtime/

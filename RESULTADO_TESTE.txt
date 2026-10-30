@@ -1,20 +1,39 @@
-TESTE ISOLADO DO CLIENTE COPIADO
+CLIENTE CAPTURADO COM SERVIDOR LOCAL - VERSAO 0.2
 Data: 30/10/2026
-Pacote de entrada: recursos-publicos.zip, enviado pelo usuário
-Arquivos no pacote: 245
+Pacote de entrada: recursos-publicos.zip enviado pelo usuário, 245 arquivos.
 
-Abertura em Chromium 1440x900, durante seis segundos:
-- Cliente e estilos capturados: carregados sem alterações.
-- Traduções pt-BR: carregadas.
-- Tela original: LEVELING IDLE / PREPARANDO O SISTEMA.
-- Progresso: 25%.
-- Mensagem: Servidor indisponível. Tentando novamente…
-- Tentativas de conexão WebSocket registradas: 4.
-- Exceções JavaScript: 0.
-- Código do nosso Lineage 2D Idle: não carregado.
-- Backend original: ausente.
-- Entrada em personagem/cidade/hunt: não disponível neste pacote.
+RESULTADO: agora entra na praça. A versão anterior parava em 25% por falta
+  de servidor. Este servidor próprio implementa as mensagens mínimas para
+  autenticar a conta de demonstração e abrir o mundo do cliente capturado.
 
-CONCLUSÃO: a captura permite carregar o cliente original, mas não jogar
-uma instalação independente. O servidor estático não implementa o servidor
-do jogo. Não foi anunciado nem simulado um login funcional.
+Verificações automatizadas: 5 testes passaram.
+- Codec Protobuf com quadro binário de referência independente, oneof,
+  mapas, inteiros negativos, uint64 exatos e dados repetidos.
+- Rejeição de mensagens truncadas e varints inválidos.
+- Conversão RGBA/PNG e adaptação da folha idle disponível.
+- Conexão real: login, senha incorreta, mapa, colisões e movimento.
+- Inventário vazio consultável, retomada de sessão e operações não
+  implementadas recusadas. Consulta vazia de guilda não cria guilda.
+
+Verificação no Chromium com o cliente original:
+- Login manual local: OK.
+- Entrada automática em /jogar?demo=1: OK.
+- Praça, tilesets, iluminação e animações do mapa: carregados.
+- Personagem temporário (sombra do pacote): visível.
+- Caminhada WASD: confirmada pelos snapshots do servidor.
+- Inventário: painel original abre e consulta o inventário vazio.
+- Recarregar: retoma a sessão e volta para a praça.
+- Viewport 390x844: sem rolagem horizontal da página.
+- Exceções JavaScript: nenhuma.
+- Origens externas acessadas: nenhuma.
+- PWA offline indisponível: sw.js não veio na captura; aviso não bloqueante.
+
+LIMITES
+  Não há combate, hunts, drops, serviços de NPCs, evolução ou comércio neste
+  servidor mínimo. Não é reprodução integral do backend original.
+  O avatar temporário reutiliza quadros idle: não corresponde às animações
+  completas de caminhada e ataque mostradas no vídeo.
+  O jogo anterior não é carregado. A conta é local, sem conexão ao site.
+
+Windows: iniciador preparado para CMD/Node.js. Testes executados no ambiente
+  Linux/Chromium disponível; não foi usada uma máquina Windows física.

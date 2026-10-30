@@ -1,1 +1,44 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Diagnóstico do cliente capturado</title><link rel="stylesheet" href="/diagnostic.css"><script src="/diagnostic.js" defer></script></head><body><main><small>TESTE ISOLADO DO PACOTE ENVIADO</small><h1>Cliente original capturado</h1><p>Esta instalação carrega os scripts, estilos e traduções que vieram no ZIP. Ela não utiliza o Lineage 2D Idle que desenvolvemos.</p><p class="notice"><strong>O servidor original não veio no pacote.</strong> O cliente depende dele para login, personagens e mundo. A tela pode permanecer em “Conectando”. Este teste não é uma cópia jogável completa.</p><a class="button" href="/jogar" target="_blank" rel="noopener">Abrir cliente capturado</a><h2>Resultado local</h2><p id="status">Verificando…</p><h2>Arquivos carregados</h2><ul id="served"></ul><h2>Arquivos solicitados e ausentes</h2><ul id="missing"></ul></main></body></html>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Servidor local do cliente capturado</title>
+    <link rel="stylesheet" href="/diagnostic.css" />
+    <script src="/diagnostic.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <small>CLIENTE CAPTURADO + SERVIDOR LOCAL · 0.2</small>
+      <h1>Abrir a praça local</h1>
+      <p>
+        Esta instalação utiliza o cliente que veio no ZIP e um servidor de
+        compatibilidade próprio. O Lineage 2D Idle desenvolvido antes não é
+        carregado.
+      </p>
+      <p class="notice">
+        <strong>Login e entrada no mapa estão implementados.</strong> A conta de
+        demonstração é <b>teste / Teste123!</b>. O avatar temporário usa a
+        imagem de sombra disponível no pacote. Suas poses reutilizam a animação
+        idle; as animações completas dos personagens não estavam no ZIP.
+      </p>
+      <a class="button" href="/jogar?demo=1" target="_blank" rel="noopener"
+        >Entrar na conta de demonstração</a
+      >
+      <p>
+        Ande com WASD ou setas e abra o inventário com I. Caçadas, combate,
+        comércio, guildas e demais sistemas ainda não foram implementados neste
+        servidor; botões desses sistemas retornam uma mensagem de recurso
+        indisponível.
+      </p>
+      <h2>Estado local</h2>
+      <p id="status">Verificando…</p>
+      <h2>Arquivos carregados — últimos 100 caminhos</h2>
+      <ul id="served"></ul>
+      <h2>
+        Arquivos solicitados que não vieram na captura — últimos 100 caminhos
+      </h2>
+      <ul id="missing"></ul>
+    </main>
+  </body>
+</html>

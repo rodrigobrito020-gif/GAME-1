@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.5.1: corrigido o pivô dos monstros para que sprites e barras de vida sejam desenhados dentro da tela na hunt.
+
 - 0.2: login local, cidade, movimento e colisões.
 - 0.3: caçadas de teste, combate automático, quatro habilidades, morte e retorno, EXP, ouro, drops, equipamentos e dados salvos.
 - 0.5: cidade medieval própria (Praça da Coroa), paleta branca/marfim/dourada, interface correspondente e colisões separadas das arenas.

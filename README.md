@@ -1,8 +1,12 @@
-# Cliente capturado + servidor local — 0.5: cidade medieval e interface branca e dourada
+# Cliente capturado + servidor local — 0.5.1: cidade medieval e interface branca e dourada
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Correção da hunt — 0.5.1
+
+Os monstros agora são desenhados no ponto correto do mapa. O pivô da imagem estava em pixels (`48`, `100`), mas o renderer utiliza valores proporcionais ao quadro (`0.5`, `100/112`). Isso deixava a imagem e a barra sobre o monstro fora da tela, embora o servidor calculasse os ataques e as recompensas. A correção preserva os dados salvos, as regras do farm e o visual medieval.
 
 ## Abrir no Windows
 
@@ -73,7 +77,7 @@ set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-São quinze testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, capacidade, poções e integração real WebSocket com o protocolo capturado. O teste da cidade confere caminhos até os três serviços e ao portão, passagem ao redor da fonte e bloqueio das construções. A integração confere a nova grade da cidade e a grade separada das arenas; também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
+São dezesseis testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, capacidade, poções e integração real WebSocket com o protocolo capturado. O teste da cidade confere caminhos até os três serviços e ao portão, passagem ao redor da fonte e bloqueio das construções. A integração confere a nova grade da cidade e a grade separada das arenas; também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
 
 ## Dados e isolamento
 

@@ -52,7 +52,9 @@ export function localAssets(byName, status) {
         bytes: Buffer.from(
           JSON.stringify({
             quadro: { w: 96, h: 112 },
-            pivo: { x: 48, y: 100 },
+            // Phaser origins are normalized to the frame, not pixel offsets.
+            // Pixel values placed the artwork thousands of pixels off-screen.
+            pivo: { x: 0.5, y: 100 / 112 },
             andar: { passada: 48 },
             estados: Object.fromEntries(
               ["idle", "attack", "death", "hurt"].map((name) => [

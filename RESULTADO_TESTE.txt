@@ -1,55 +1,47 @@
-JOGO LOCAL — 0.5: CIDADE MEDIEVAL E INTERFACE BRANCA/DOURADA
-Data: 31/10/2026
+JOGO LOCAL — 0.5.1: MONSTROS VISÍVEIS NA HUNT
+Data local: 30/10/2026
 
-ALTERAÇÕES
-- Cidade própria chamada Praça da Coroa: palácio, comércio, armazém, fonte,
-  muralhas, jardins, bancos, estandartes e ruas de pedra clara.
-- Arte arquitetônica original em art/medieval-ivory-gold.png, criada para este
-  projeto. O mapa é composto por medieval-city.mjs e servido pelo servidor local.
-- Tema próprio royal-theme.css: branco, marfim, dourado e texto escuro no HUD,
-  painéis, menus, chat, loja, inventário, campos e confirmações.
-- Construções e fonte têm colisões no servidor e grade correspondente no cliente.
-- Arenas conservam o cenário anterior e sua grade própria, separada da cidade.
-- Progresso, serviços e regras anteriores preservados.
+PROBLEMA REPRODUZIDO
+Os monstros eram criados no servidor, recebiam ataques e concediam recompensas,
+mas suas imagens e barras de vida ficavam fora da tela. O pivô da animação usava
+coordenadas em pixels (48,100), enquanto o renderer aplica origens proporcionais
+à largura e altura do quadro.
 
-TESTES AUTOMATIZADOS: 15 testes com o ZIP real.
-- Protobuf e PNG: quadros de referência, oneof, mapas, uint64, campos repetidos,
-  entradas truncadas e conversão RGBA da sombra provisória.
-- Combate, mana, habilidades, recargas, morte, respawn, EXP, ouro e drops.
-- Equipamentos, prévia/aplicação de melhores peças, proteção contra duplicação,
-  vendas parciais, itens travados, armazém, capacidade, ordenação e poções.
-- Cidade: caminhos até os três NPCs, acesso ao portão sul e circulação dos dois
-  lados da fonte. Palácio, comércio, armazém e fonte bloqueiam passagem.
-- Integração real WebSocket: login, movimento, cidade, caçada, habilidades,
-  atualização de nível, mercador, armazém, venda, compras e retomada de sessão.
-- Teste de rede confere o novo mapa, sua textura e tema, recusa movimento dentro
-  da fonte e verifica a grade separada da arena.
-- Reinício do processo: ouro, EXP, poções e equipamento guardado preservados.
-- Bundle principal capturado continua sendo servido sem alterar seus bytes.
+CORREÇÃO
+assets.mjs agora fornece pivo.x=0.5 e pivo.y=100/112 para o quadro de 96x112.
+As imagens ficam alinhadas aos pontos de nascimento e acompanham os monstros
+no mundo. O ajuste vale para ambas as arenas, que usam o mesmo spriteDir.
+As imagens, regras de combate, drops, dados salvos, cidade e tema não foram
+substituídos nesta correção.
 
-CHROMIUM — INTERFACE REAL
-- Cidade e textura SVG com a arquitetura original carregaram.
-- Movimentação com WASD: a fonte parou o jogador em x=944, y=880, antes do sólido.
-- Aproximar-se do mercador e comprar/confirmar uma poção: OK.
-- Abrir M, entrar na caçada, combater e retornar: OK; oito abates observados.
-- Abrir I, revisar prévia e aplicar Equipar melhores: OK.
-- Aproximar-se do armazém e abrir seu painel: OK.
-- Título da loja e campos numéricos: texto escuro sobre marfim.
-- Fundo do retrato e grade do inventário adequados ao tema claro.
-- Desktop 1440x900 e celular 390x844: cidade e inventário conferidos.
-- Celular sem rolagem horizontal da página; painéis podem rolar internamente.
-- Nenhuma exceção JavaScript. Sem requisições HTTP para origem externa no ciclo.
+TESTES AUTOMATIZADOS: 16 testes, nenhum pulado, com o ZIP real.
+- Novo teste confere que o pivô é proporcional e que a projeção do quadro
+  permanece perto das três posições de nascimento no mapa.
+- Integração HTTP verifica a animação realmente fornecida pelo servidor.
+- Integração WebSocket verifica nascimento, dano, habilidades, mortes, retorno,
+  drops, inventário, equipamentos, NPCs, vendas, armazém e retomada de sessão.
+- Reinício do processo confirma a conservação de ouro, EXP, poções e item guardado.
+- Demais testes: codec Protobuf, PNG, colisões da cidade, progressão, capacidade,
+  proteção de itens travados, ordenação e prevenção de duplicação de itens/ouro.
+
+COMPARAÇÃO VISUAL — CHROMIUM, 1440x900
+Executada a mesma hunt com o pivô anterior e depois com o pivô corrigido.
+- Antes: monstros sem imagem próxima ao personagem, apesar do combate ocorrer.
+- Depois: inimigos visíveis perto do personagem com nome e barra vermelha.
+- Observados ataques, perda de vida, mortes, desaparecimento e reaparecimento.
+- Na execução corrigida: nove abates e respawn confirmado pelo protocolo.
+- EXP, ouro e itens continuaram sendo recebidos; retorno à cidade funcionou.
+- Nenhuma exceção JavaScript e nenhum aviso de falha das imagens/animações.
 
 LIMITES
-Avatar, monstros e NPCs ainda usam a sombra provisória e suas poses adaptadas.
-As arenas ainda exibem o cenário capturado anterior; esta etapa transforma a
-cidade e a interface. Alguns efeitos/áudios do pacote original continuam ausentes.
-A arte da fonte é estática; as partículas ambientais são fornecidas pelo renderer.
-Valores de combate/progressão continuam sendo de teste. Esta versão permanece
-local, com uma conta, sem multiplayer ou implantação em VPS.
+Os inimigos ainda usam a sombra provisória disponível no pacote. Esta correção
+resolve sua posição na tela; não acrescenta artes completas de monstros.
+A cidade medieval e a interface branca/dourada da versão 0.5 permanecem.
+Servidor local para uma conta; sem implantação em VPS ou multiplayer.
 
-EXECUÇÃO
-Windows: manter recursos-publicos.zip junto de ABRIR_CLIENTE_COPIADO.bat ou em
-Downloads. Abrir o BAT. Node.js 22.12+ ou 24 LTS. Para conservar progresso,
-copiar .local-runtime da versão anterior, com ambos os servidores fechados.
-Testes executados no ambiente Linux/Chromium; sem máquina Windows física.
+ABRIR NO WINDOWS
+Encerre o servidor anterior, extraia o novo ZIP, mantenha recursos-publicos.zip
+junto de ABRIR_CLIENTE_COPIADO.bat ou em Downloads e execute o BAT.
+Para conservar o progresso, copie .local-runtime da versão anterior com ambos
+os servidores fechados. Node.js 22.12+ ou 24 LTS.
+Testes executados em Linux/Chromium; não foi usada máquina Windows física.

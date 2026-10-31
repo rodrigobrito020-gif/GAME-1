@@ -124,6 +124,11 @@ test(
         .value;
       assert.equal(scene.map.source.case, "atlasMapId");
       assert.equal(scene.map.source.value, "praca-da-coroa");
+      const monsterAnim = await (
+        await fetch(base + "/assets/monsters/local-treino/anim.json")
+      ).json();
+      assert.ok(monsterAnim.pivo.x >= 0 && monsterAnim.pivo.x <= 1);
+      assert.ok(monsterAnim.pivo.y >= 0 && monsterAnim.pivo.y <= 1);
       const cityMap = await (
         await fetch(base + "/assets/maps/praca-da-coroa/map.json")
       ).json();

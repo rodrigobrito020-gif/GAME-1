@@ -116,6 +116,7 @@ export class LocalFarm {
     this.now = now;
     this.random = random;
     account.bag ??= [];
+    account.warehouse ??= [];
     account.nextUid ??= 1;
     const c = this.character;
     c.equipment.slots ??= [];
@@ -154,6 +155,7 @@ export class LocalFarm {
     c.progress.mana = Math.min(c.progress.mana, c.derived.maxMana);
     c.progress.xpToNext = this.xpRequired(level);
     c.inventory.bagUsed = this.account.bag.length;
+    c.inventory.warehouseUsed = this.account.warehouse.length;
   }
   xpRequired(level) {
     return Math.floor(100 * Math.pow(level, 1.35));
@@ -484,7 +486,7 @@ export class LocalFarm {
   inventory(input) {
     if (![0, 1, 2, 3].includes(input.scope ?? 0))
       throw Error("local.invalid_inventory");
-    const bag = input.scope === 3 ? [] : this.account.bag;
+    const bag = input.scope === 3 ? this.account.warehouse : this.account.bag;
     const f = input.filter ?? {};
     let list = bag.filter((i) => {
       const d = ITEMS.find((d) => d.id === i.defId);
@@ -499,9 +501,31 @@ export class LocalFarm {
         f.equipped !== 1
       );
     });
-    list = [...list].sort((a, b) =>
-      input.sort === 2 ? b.power - a.power : Number(b.uid) - Number(a.uid),
-    );
+    const recent = (a, b) => Number(b.uid) - Number(a.uid);
+    const rarity = (i) =>
+      ({ comum: 0, incomum: 1, raro: 2, epico: 3, lendario: 4 })[i.rarity] ?? 0;
+    const organized = (a, b) => {
+      const ad = ITEMS.find((d) => d.id === a.defId),
+        bd = ITEMS.find((d) => d.id === b.defId);
+      return (
+        ad.category - bd.category ||
+        rarity(b) - rarity(a) ||
+        (b.power ?? 0) - (a.power ?? 0) ||
+        a.defId.localeCompare(b.defId) ||
+        recent(a, b)
+      );
+    };
+    const order =
+      {
+        2: (a, b) => (b.power ?? 0) - (a.power ?? 0),
+        3: (a, b) => b.level - a.level,
+        4: (a, b) => rarity(b) - rarity(a),
+        5: (a, b) => (b.power ?? 0) - (a.power ?? 0),
+        6: (a, b) => (b.enchant ?? 0) - (a.enchant ?? 0),
+        7: (a, b) => (b.sockets?.length ?? 0) - (a.sockets?.length ?? 0),
+        8: organized,
+      }[input.sort] ?? recent;
+    list = [...list].sort((a, b) => order(a, b) || recent(a, b));
     const pageSize = Math.max(1, Math.min(100, input.pageSize || 30)),
       pages = Math.max(1, Math.ceil(list.length / pageSize));
     let page = Math.max(1, Math.min(pages, input.page || 1));
@@ -542,7 +566,12 @@ export class LocalFarm {
     if (index < 0) throw Error("local.invalid_item");
     const item = this.account.bag[index],
       def = ITEMS.find((d) => d.id === item.defId);
-    if (!def?.slot || item.level > this.character.progress.level)
+    if (
+      !def?.slot ||
+      item.level > this.character.progress.level ||
+      (def.classes?.length &&
+        !def.classes.includes(this.character.identity?.classId ?? "guerreiro"))
+    )
       throw Error("local.invalid_item");
     const old = this.character.equipment.slots.find((e) => e.slot === def.slot);
     this.account.bag.splice(index, 1);
@@ -578,6 +607,212 @@ export class LocalFarm {
     return {
       result: { slot, uid: entry.item.uid },
       delta: { added: [entry.item] },
+    };
+  }
+  bestEquipment(criterion = 0, apply = false) {
+    if (!Number.isInteger(criterion) || criterion < 0 || criterion > 6)
+      throw Error("local.invalid_item");
+    const score = (item) => {
+      const s = item.stats ?? {};
+      return criterion === 3
+        ? (s.atk ?? 0)
+        : criterion === 4
+          ? (s.def ?? 0)
+          : criterion === 5
+            ? (s.hp ?? 0)
+            : (s.atk ?? 0) * 2 + (s.def ?? 0) * 3 + (s.hp ?? 0) / 10;
+    };
+    const slots = new Map(
+      this.character.equipment.slots.map((e) => [e.slot, e.item]),
+    );
+    const currentPower = this.character.derived.power,
+      changes = [];
+    for (const item of this.account.bag) {
+      const d = ITEMS.find((d) => d.id === item.defId);
+      if (
+        !d?.slot ||
+        item.level > this.character.progress.level ||
+        (d.classes?.length &&
+          !d.classes.includes(this.character.identity?.classId ?? "guerreiro"))
+      )
+        continue;
+      const old = slots.get(d.slot);
+      if (score(item) > score(old ?? {})) slots.set(d.slot, item);
+    }
+    let newPower = currentPower;
+    const power = (i) => (i?.stats?.atk ?? 0) * 2 + (i?.stats?.def ?? 0) * 3;
+    for (const [slot, item] of slots) {
+      const current = this.character.equipment.slots.find(
+        (e) => e.slot === slot,
+      )?.item;
+      if (item.uid !== current?.uid) {
+        changes.push({
+          slot,
+          currentUid: current?.uid,
+          newUid: item.uid,
+          delta: score(item) - score(current ?? {}),
+        });
+        newPower += power(item) - power(current);
+      }
+    }
+    const result = {
+      alreadyBest: !changes.length,
+      currentPower,
+      newPower,
+      deltaPower: newPower - currentPower,
+      changes,
+    };
+    const items = changes.map((c) =>
+      this.account.bag.find((i) => i.uid === c.newUid),
+    );
+    if (!apply) return { ...result, items };
+    const added = [],
+      removed = [];
+    for (const item of items) {
+      const output = this.equip(item.uid);
+      added.push(...output.delta.added);
+      removed.push(...output.delta.removed);
+    }
+    return { result, delta: { added, removed } };
+  }
+  lock(uid, locked) {
+    const item = [
+      ...this.account.bag,
+      ...this.account.warehouse,
+      ...this.character.equipment.slots.map((e) => e.item),
+    ].find((i) => i.uid === String(uid));
+    if (!item) throw Error("local.invalid_item");
+    item.locked = !!locked;
+    const scope = this.account.warehouse.includes(item) ? 3 : 1;
+    return {
+      result: { uid: item.uid, locked: item.locked },
+      scope,
+      delta: { updated: [item] },
+    };
+  }
+  warehouseMove(uids, direction) {
+    if (
+      ![1, 2].includes(direction) ||
+      !Array.isArray(uids) ||
+      !uids.length ||
+      uids.length > 100
+    )
+      throw Error("local.invalid_item");
+    const from = direction === 1 ? this.account.bag : this.account.warehouse,
+      to = direction === 1 ? this.account.warehouse : this.account.bag;
+    const moved = [],
+      refused = [],
+      items = [];
+    for (const uid of new Set(uids.map(String))) {
+      const index = from.findIndex((i) => i.uid === uid);
+      if (index < 0 || to.length >= 100) {
+        refused.push(uid);
+        continue;
+      }
+      const [item] = from.splice(index, 1);
+      to.push(item);
+      moved.push(uid);
+      items.push(item);
+    }
+    this.recalculate();
+    return {
+      result: {
+        moved,
+        refused,
+        bagUsed: this.account.bag.length,
+        bagCapacity: 100,
+        warehouseUsed: this.account.warehouse.length,
+        warehouseCapacity: 100,
+      },
+      deltas: [
+        { scope: direction === 1 ? 1 : 3, removed: moved },
+        { scope: direction === 1 ? 3 : 1, added: items },
+      ],
+    };
+  }
+  sell(selection, confirmRare = false) {
+    let entries;
+    if (selection?.case === "uids") entries = selection.value?.entries;
+    else if (selection?.case === "bulk") {
+      const filter = selection.value ?? {};
+      if (!filter.categories?.length || !filter.rarities?.length)
+        throw Error("local.invalid_item");
+      entries = this.account.bag
+        .filter(
+          (i) =>
+            filter.categories.includes(
+              ITEMS.find((d) => d.id === i.defId)?.category,
+            ) && filter.rarities.includes(i.rarity),
+        )
+        .map((i) => ({ uid: i.uid, qty: i.qty }));
+    } else throw Error("local.invalid_item");
+    if (!Array.isArray(entries) || !entries.length || entries.length > 100)
+      throw Error("local.invalid_item");
+    // Validate and deduplicate the whole request before changing money or stock.
+    const selected = new Map();
+    let skipped = 0;
+    for (const entry of entries) {
+      const uid = String(entry.uid);
+      if (selected.has(uid)) throw Error("local.invalid_item");
+      const item = this.account.bag.find((i) => i.uid === uid);
+      const qty = entry.qty || item?.qty || 0;
+      if (!item || item.locked) {
+        skipped++;
+        selected.set(uid, null);
+        continue;
+      }
+      if (!Number.isInteger(qty) || qty < 1 || qty > item.qty)
+        throw Error("local.invalid_item");
+      selected.set(uid, { item, qty });
+    }
+    const rare = new Map();
+    for (const entry of selected.values())
+      if (entry && ["epico", "lendario", "monarca"].includes(entry.item.rarity))
+        rare.set(
+          entry.item.rarity,
+          (rare.get(entry.item.rarity) ?? 0) + entry.qty,
+        );
+    if (rare.size && !confirmRare)
+      return {
+        result: {
+          sold: 0,
+          units: 0,
+          gold: 0,
+          skipped,
+          needsRareConfirmation: true,
+          rarePending: [...rare].map(([rarity, qty]) => ({ rarity, qty })),
+        },
+        delta: {},
+      };
+    let gold = 0,
+      units = 0,
+      sold = 0;
+    const removed = [],
+      updated = [];
+    for (const entry of selected.values()) {
+      if (!entry) continue;
+      const { item, qty } = entry,
+        def = ITEMS.find((d) => d.id === item.defId);
+      if (!def) {
+        skipped++;
+        continue;
+      }
+      gold += Number(item.sellPrice ?? def.sellBase) * qty;
+      units += qty;
+      sold++;
+      if (qty === item.qty) {
+        this.account.bag.splice(this.account.bag.indexOf(item), 1);
+        removed.push(item.uid);
+      } else {
+        item.qty -= qty;
+        updated.push(item);
+      }
+    }
+    this.character.wallet.gold = Number(this.character.wallet.gold) + gold;
+    this.recalculate();
+    return {
+      result: { sold, units, gold, skipped },
+      delta: { removed, updated },
     };
   }
   automation(value) {

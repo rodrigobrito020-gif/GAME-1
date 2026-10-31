@@ -40,6 +40,8 @@ export function localAssets(byName, status) {
     potion_unavailable:
       "Poção indisponível: confira estoque, vida/mana e intervalo de uso.",
     no_gold: "Ouro insuficiente.",
+    npc_range:
+      "Aproxime-se do mercador ou do guardião do armazém para usar este serviço.",
   };
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;

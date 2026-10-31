@@ -1,6 +1,6 @@
-# Cliente capturado + servidor local — 0.3: teste de farm
+# Cliente capturado + servidor local — 0.4: cidade, inventário e economia
 
-Esta versão usa **o cliente do seu `recursos-publicos.zip` como base**, com um servidor local próprio. Já permite testar uma caçada funcional: movimento automático até os inimigos, ataques, quatro habilidades, dano recebido, mortes, respawn, EXP, ouro, drops, equipamentos e progresso salvo.
+Esta versão usa **o cliente do seu `recursos-publicos.zip` como base**, com um servidor local próprio. Estamos construindo nosso jogo com essa base. Esta etapa acrescenta serviços da cidade ao ciclo de farm. Já permite testar uma caçada funcional: movimento automático até os inimigos, ataques, quatro habilidades, dano recebido, mortes, respawn, EXP, ouro, drops, equipamentos e progresso salvo.
 
 ## Abrir no Windows
 
@@ -25,6 +25,20 @@ Na cidade: **WASD/setas** para andar, **I** inventário, **M** caçadas e **Esc*
 
 Ao morrer, o farm para e o personagem volta à cidade em três segundos, recuperado. Não há perda de EXP neste teste. Uma segunda janela autenticada encerra a conexão da primeira: existe **um único personagem local**, sem duplicar recompensas por abas abertas.
 
+## Serviços da cidade — novos nesta versão
+
+Perto do ponto onde o personagem aparece existem três NPCs com aparência provisória:
+
+- **Mercador**, à esquerda: aproxime-se e pressione **E** para abrir a loja. Compre poções, confirme em **Adquirir** e veja o estoque e o ouro atualizarem. **Vender itens** abre a seleção de drops para venda.
+- **Armazém**, à direita: aproxime-se e pressione **E**. Guarde itens da mochila e retire os itens do cofre usando as ações da interface. São cem espaços em cada inventário. Itens guardados continuam salvos ao reiniciar.
+- **Guia de caçadas**, acima: abre a lista das arenas. **M** continua sendo o atalho.
+
+O personagem começa perto dos três. Dê alguns passos na direção do NPC desejado antes de pressionar E, ou selecione o NPC com o mouse. O serviço só funciona dentro do alcance de 128 pixels e na cidade.
+
+Na mochila, **Equipar melhores** mostra uma prévia das trocas antes de aplicar. Os critérios de ataque, defesa, vida e poder usam os atributos implementados no servidor local. A ordenação por poder, nível, raridade ou tipo também funciona. O botão direito trava/destrava um item; equipamentos travados não são vendidos. Vendas de parte de uma pilha descontam apenas a quantidade escolhida. Transferências para o armazém preservam o item e recusam o que não couber.
+
+O nível sobre o personagem agora é atualizado ao evoluir, sem precisar sair da caçada. A aparência e as cores do cliente foram mantidas nesta etapa.
+
 ## Conteúdo e limites deste teste
 
 - O ZIP forneceu **um mapa completo da cidade**, seus sete tilesets e colisões. Não vieram os mapas das caçadas. As duas arenas são instâncias separadas que reutilizam esse cenário; a praça segura não recebe monstros.
@@ -33,7 +47,7 @@ Ao morrer, o farm para e o personagem volta à cidade em três segundos, recuper
 - Itens implementados: fragmento empilhável, espada e peitoral de treino. Cada abate dá fragmento se houver espaço; a cada três abates da caçada, uma espada ou peitoral. Com mochila cheia, não entram itens novos; o jogo continua concedendo EXP e ouro. Retirar equipamento com a mochila cheia é recusado.
 - Poções pequenas de vida/mana consomem estoque, recuperam 40% e têm intervalo de 1,5 segundo. O protocolo de compra funciona na cidade: dez ouros por poção, sem ouro ou itens gratuitos repetidos.
 - Números de dano, monstros, drops, progressão, cura na cidade e preços são **regras provisórias para testar a base**, não o balanceamento do jogo original nem decisões finais aprovadas.
-- Não há novos personagens/classes, todos os equipamentos originais, chefes, NPCs de serviço, negociação, guildas, rankings, talentos ou multiplayer implementados. Os menus capturados desses sistemas podem existir, mas suas operações continuam recusadas. Consultas de avisos/listas recebem estados vazios, sem criar eventos ou recompensas.
+- Ainda não há criação de personagens, novas classes, todos os equipamentos originais, chefes, negociação entre jogadores, guildas, rankings, talentos ou multiplayer implementados. Os três serviços locais descritos acima estão funcionais. Os menus capturados desses sistemas podem existir, mas suas operações continuam recusadas. Consultas de avisos/listas recebem estados vazios, sem criar eventos ou recompensas.
 
 ## Executar e testar pelo terminal
 
@@ -57,7 +71,7 @@ set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-São dez testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, capacidade, poções e integração real WebSocket com o protocolo capturado. A integração também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
+São catorze testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, capacidade, poções e integração real WebSocket com o protocolo capturado. A integração também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
 
 ## Dados e isolamento
 

@@ -39,7 +39,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-farm-1";
+  catalog.version = "local-economy-1";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -261,6 +261,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
   // inventing events, guilds, trades, rewards or successful write operations.
   const readResponses = {
     mailRequest: { list: "page" },
+    walletRequest: { config: "config", state: "state" },
     marketRequest: { config: "config", overview: "overview" },
     poolRequest: { get: "state" },
     tradeRequest: { getState: "idle" },
@@ -365,8 +366,48 @@ export function attachLocalGame(server, { build, map, root, status }) {
       });
     return result;
   };
+  const cityNpcs = [
+    {
+      entity: 201,
+      npcId: "mercador-local",
+      name: "Mercador",
+      skinId: "local-sombra",
+      pos: { x: 8480, y: 7200 },
+      facing: 2,
+      service: 2,
+    },
+    {
+      entity: 202,
+      npcId: "armazem-local",
+      name: "Armazém",
+      skinId: "local-sombra",
+      pos: { x: 10400, y: 7200 },
+      facing: 1,
+      service: 5,
+    },
+    {
+      entity: 203,
+      npcId: "guia-local",
+      name: "Guia de caçadas",
+      skinId: "local-sombra",
+      pos: { x: 9440, y: 6240 },
+      facing: 0,
+      service: 4,
+    },
+  ];
+  const requireService = (client, service) => {
+    if (client.hunt) throw Error("local.city_only");
+    const npc = cityNpcs.find(
+      (n) =>
+        n.service === service &&
+        Math.hypot(n.pos.x / 10 - client.x, n.pos.y / 10 - client.y) <= 128,
+    );
+    if (!npc) throw Error("local.npc_range");
+    return npc;
+  };
   const scene = {
     sceneId: "cidade-local",
+    npcs: cityNpcs,
     instanceId: 1,
     yourEntity: 1,
     map: {
@@ -422,8 +463,22 @@ export function attachLocalGame(server, { build, map, root, status }) {
     maxMana: account.character.derived.maxMana,
     target: client.hunt?.target ?? 0,
   });
+  const selfInfo = (client) => ({
+    state: actor(client),
+    name: account.character.identity.name,
+    level: account.character.progress.level,
+    skinId: "local-sombra",
+    classId: account.character.identity.classId,
+    scale: 1,
+    appearance: account.character.identity.appearance,
+  });
+  const refreshSelf = (client) => {
+    send(client, "entitySpawn", { tick, entities: [selfInfo(client)] });
+    client.displayedLevel = account.character.progress.level;
+  };
   const patch = (client) => {
     const c = account.character;
+    if (client.displayedLevel !== c.progress.level) refreshSelf(client);
     send(client, "characterPatch", {
       progress: c.progress,
       wallet: c.wallet,
@@ -441,9 +496,10 @@ export function attachLocalGame(server, { build, map, root, status }) {
     )
       return;
     send(client, "inventoryDelta", {
-      scope: 1,
+      scope: value.scope ?? 1,
       ...value,
-      usedSlots: account.bag.length,
+      usedSlots:
+        value.scope === 3 ? account.warehouse.length : account.bag.length,
       capacity: 100,
       reason,
     });
@@ -482,6 +538,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
       sceneId: hunt ? hunt.area.id : scene.sceneId,
       instanceId: hunt ? 2 : 1,
       kind: hunt ? 2 : 1,
+      npcs: hunt ? [] : cityNpcs,
       spawn: { x: Math.round(client.x * 10), y: Math.round(client.y * 10) },
     };
     if (hunt)
@@ -494,18 +551,11 @@ export function attachLocalGame(server, { build, map, root, status }) {
     send(client, "entitySpawn", {
       tick,
       entities: [
-        {
-          state: actor(client),
-          name: account.character.identity.name,
-          level: account.character.progress.level,
-          skinId: "local-sombra",
-          classId: "guerreiro",
-          scale: 1,
-          appearance: account.character.identity.appearance,
-        },
+        selfInfo(client),
         ...(hunt ? hunt.monsters.map((m) => monsterInfo(client, m)) : []),
       ],
     });
+    client.displayedLevel = account.character.progress.level;
     if (hunt) send(client, "huntSession", hunt.session);
   };
   const returnCity = (client) => {
@@ -686,10 +736,89 @@ export function attachLocalGame(server, { build, map, root, status }) {
             "buyConsumable",
             "dismissDeathReport",
             "resetHuntStats",
+            "interact",
+            "equipBestPreview",
+            "equipBestApply",
+            "sellItems",
+            "lockItem",
+            "warehouseMove",
           ].includes(kind)
         ) {
           try {
-            if (kind === "startHunt") {
+            if (kind === "interact") {
+              if (client.hunt) throw Error("local.city_only");
+              const candidates = cityNpcs
+                .filter(
+                  (n) =>
+                    (!value.entity || n.entity === value.entity) &&
+                    Math.hypot(
+                      n.pos.x / 10 - client.x,
+                      n.pos.y / 10 - client.y,
+                    ) <= 128,
+                )
+                .sort(
+                  (a, b) =>
+                    Math.hypot(
+                      a.pos.x / 10 - client.x,
+                      a.pos.y / 10 - client.y,
+                    ) -
+                    Math.hypot(
+                      b.pos.x / 10 - client.x,
+                      b.pos.y / 10 - client.y,
+                    ),
+                );
+              if (!candidates.length) throw Error("local.npc_range");
+              const npc = candidates[0];
+              send(
+                client,
+                "npcInteraction",
+                { entity: npc.entity, npcId: npc.npcId, service: npc.service },
+                message.requestId,
+              );
+            } else if (
+              kind === "equipBestPreview" ||
+              kind === "equipBestApply"
+            ) {
+              if (client.hunt) throw Error("local.city_only");
+              const apply = kind === "equipBestApply",
+                output = farm.bestEquipment(value.criterion, apply);
+              send(
+                client,
+                kind + "Result",
+                apply ? output.result : output,
+                message.requestId,
+              );
+              if (apply) {
+                delta(client, output.delta, 6);
+                patch(client);
+                persist();
+              }
+            } else if (kind === "sellItems") {
+              requireService(client, 2);
+              const output = farm.sell(value.selection, value.confirmRare);
+              send(client, "sellResult", output.result, message.requestId);
+              delta(client, output.delta, 3);
+              patch(client);
+              persist();
+            } else if (kind === "lockItem") {
+              const output = farm.lock(value.uid, value.locked);
+              send(client, "lockItemResult", output.result, message.requestId);
+              delta(client, { ...output.delta, scope: output.scope }, 10);
+              patch(client);
+              persist();
+            } else if (kind === "warehouseMove") {
+              requireService(client, 5);
+              const output = farm.warehouseMove(value.uids, value.direction);
+              send(
+                client,
+                "warehouseMoveResult",
+                output.result,
+                message.requestId,
+              );
+              for (const d of output.deltas) delta(client, d, 9);
+              patch(client);
+              persist();
+            } else if (kind === "startHunt") {
               const hunt = farm.start(client, value);
               send(
                 client,
@@ -907,7 +1036,16 @@ export function attachLocalGame(server, { build, map, root, status }) {
           serverTimeMs: now,
           entities: [
             actor(client),
-            ...(client.hunt ? client.hunt.monsters.map(monsterState) : []),
+            ...(client.hunt
+              ? client.hunt.monsters.map(monsterState)
+              : cityNpcs.map((n) => ({
+                  id: n.entity,
+                  kind: 4,
+                  x: n.pos.x,
+                  y: n.pos.y,
+                  facing: n.facing,
+                  anim: 0,
+                }))),
           ],
           full: true,
         });

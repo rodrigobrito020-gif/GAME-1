@@ -170,3 +170,145 @@ test("inventory filters paginate without mutation and potions consume real stock
   );
   assert.equal(account.bag.length, 0);
 });
+
+test("warehouse preserves item identities, survives reload, and refuses overflow without losing stock", () => {
+  const { farm, account, client } = setup();
+  farm.start(client, {
+    gateId: "treino-local",
+    tierMin: 1,
+    difficulty: "normal",
+  });
+  for (let n = 0; n < 3; n++)
+    farm.reward(client.hunt, client.hunt.monsters[0], farm.events());
+  const item = account.bag.find((i) => i.defId === "espada-local"),
+    original = structuredClone(item);
+  const transfer = farm.warehouseMove([item.uid, item.uid, "999999"], 1);
+  assert.deepEqual(transfer.result.moved, [item.uid]);
+  assert.deepEqual(transfer.result.refused, ["999999"]);
+  assert.equal(
+    account.bag.some((i) => i.uid === item.uid),
+    false,
+  );
+  assert.deepEqual(farm.inventory({ scope: 3 }).items[0], original);
+  const restored = new LocalFarm(JSON.parse(JSON.stringify(account)));
+  assert.deepEqual(restored.inventory({ scope: 3 }).items[0], original);
+  while (account.bag.length < 100)
+    account.bag.push({
+      uid: String(account.nextUid++),
+      defId: "fragmento-local",
+      qty: 999,
+    });
+  assert.deepEqual(farm.warehouseMove([item.uid], 2).result.refused, [
+    item.uid,
+  ]);
+  assert.equal(account.warehouse.length, 1);
+  account.bag.pop();
+  assert.deepEqual(farm.warehouseMove([item.uid], 2).result.moved, [item.uid]);
+  assert.equal(account.warehouse.length, 0);
+  assert.equal(account.bag.filter((i) => i.uid === item.uid).length, 1);
+});
+test("selling supports partial stacks, protects locked gear, and cannot pay twice or mutate malformed requests", () => {
+  const { farm, account, client } = setup();
+  farm.start(client, {
+    gateId: "treino-local",
+    tierMin: 1,
+    difficulty: "normal",
+  });
+  for (let n = 0; n < 3; n++)
+    farm.reward(client.hunt, client.hunt.monsters[0], farm.events());
+  const material = account.bag.find((i) => i.defId === "fragmento-local"),
+    sword = account.bag.find((i) => i.defId === "espada-local");
+  const choose = (entries) => ({ case: "uids", value: { entries } }),
+    before = farm.character.wallet.gold;
+  const sold = farm.sell(choose([{ uid: material.uid, qty: 2 }]));
+  assert.equal(sold.result.gold, 4);
+  assert.equal(material.qty, 1);
+  assert.equal(farm.character.wallet.gold, before + 4);
+  farm.lock(sword.uid, true);
+  assert.equal(farm.sell(choose([{ uid: sword.uid, qty: 1 }])).result.sold, 0);
+  assert.equal(account.bag.includes(sword), true);
+  const snapshot = JSON.stringify(account);
+  assert.throws(
+    () =>
+      farm.sell(
+        choose([
+          { uid: material.uid, qty: 1 },
+          { uid: material.uid, qty: 1 },
+        ]),
+      ),
+    /invalid_item/,
+  );
+  assert.equal(JSON.stringify(account), snapshot);
+  assert.throws(
+    () => farm.sell(choose([{ uid: material.uid, qty: 2 }])),
+    /invalid_item/,
+  );
+  assert.equal(JSON.stringify(account), snapshot);
+  const final = farm.sell(choose([{ uid: material.uid, qty: 1 }]));
+  assert.equal(final.result.gold, 2);
+  assert.equal(
+    farm.sell(choose([{ uid: material.uid, qty: 1 }])).result.gold,
+    0,
+  );
+  farm.lock(sword.uid, false);
+  sword.rarity = "epico";
+  const gold = farm.character.wallet.gold;
+  assert.equal(
+    farm.sell(choose([{ uid: sword.uid, qty: 1 }])).result
+      .needsRareConfirmation,
+    true,
+  );
+  assert.equal(farm.character.wallet.gold, gold);
+  assert.ok(account.bag.includes(sword));
+  assert.equal(
+    farm.sell(choose([{ uid: sword.uid, qty: 1 }]), true).result.gold,
+    25,
+  );
+});
+test("equip best previews without mutation, applies valid upgrades, and remains stable on repeated requests", () => {
+  const { farm, account, client } = setup();
+  farm.start(client, {
+    gateId: "treino-local",
+    tierMin: 1,
+    difficulty: "normal",
+  });
+  for (let n = 0; n < 6; n++)
+    farm.reward(client.hunt, client.hunt.monsters[0], farm.events());
+  const snapshot = JSON.stringify(account),
+    preview = farm.bestEquipment(2, false);
+  assert.equal(preview.changes.length, 1);
+  assert.equal(preview.deltaPower, 12);
+  assert.equal(JSON.stringify(account), snapshot);
+  const applied = farm.bestEquipment(2, true);
+  assert.equal(applied.result.newPower, farm.character.derived.power);
+  assert.equal(applied.delta.removed.length, 1);
+  assert.equal(farm.bestEquipment(2, true).result.alreadyBest, true);
+  const ids = [
+    ...account.bag,
+    ...farm.character.equipment.slots.map((e) => e.item),
+  ].map((i) => i.uid);
+  assert.equal(ids.length, new Set(ids).size);
+  assert.throws(() => farm.bestEquipment(99), /invalid_item/);
+});
+test("inventory applies category filters, requested page size, and power sorting to both bag and storage", () => {
+  const { farm, account } = setup();
+  account.bag = [
+    { uid: "1", defId: "espada-local", qty: 1, level: 1, power: 12 },
+    { uid: "2", defId: "peitoral-local", qty: 1, level: 2, power: 9 },
+    { uid: "3", defId: "espada-local", qty: 1, level: 3, power: 30 },
+  ];
+  const before = JSON.stringify(account.bag);
+  assert.equal(
+    farm.inventory({ scope: 1, sort: 2, pageSize: 1, page: 1 }).items[0].uid,
+    "3",
+  );
+  assert.equal(farm.inventory({ scope: 1, filter: { category: 1 } }).total, 2);
+  assert.equal(
+    farm.inventory({ scope: 1, filter: { slot: 4 } }).items[0].uid,
+    "2",
+  );
+  assert.equal(farm.inventory({ scope: 1, sort: 3 }).items[0].uid, "3");
+  assert.equal(JSON.stringify(account.bag), before);
+  farm.warehouseMove(["1", "2"], 1);
+  assert.equal(farm.inventory({ scope: 3, sort: 2 }).items[0].uid, "1");
+});

@@ -23,7 +23,7 @@ const source = [
   .filter(Boolean)
   .find(existsSync);
 test(
-  "real captured client protocol: authentication, movement, farm, skills, rewards, equipment, potions, resume and saved progress after restart",
+  "real captured client protocol: authentication, movement, farm, skills, rewards, equipment, potions, NPCs, selling, storage, level labels and saved progress after restart",
   { skip: !source, timeout: 45000 },
   async () => {
     const entries = readZip(readFileSync(source));
@@ -125,6 +125,10 @@ test(
       assert.equal(scene.map.source.case, "atlasMapId");
       assert.equal(scene.worldWidth, 19200);
       assert.equal(scene.walk.grid.blocked.length, 360);
+      assert.deepEqual(
+        scene.npcs.map((n) => n.service),
+        [2, 5, 4],
+      );
       const start = (await wait((m) => m.body?.case === "entitySpawn")).body
         .value.entities[0].state;
       send("moveDir", { dirX: 1000, dirY: 0, seq: 1 });
@@ -194,7 +198,7 @@ test(
         n < 1000 &&
         !messages.some(
           (m) =>
-            m.body?.case === "huntSession" && Number(m.body.value.kills) >= 3,
+            m.body?.case === "huntSession" && Number(m.body.value.kills) >= 6,
         );
         n++
       )
@@ -202,7 +206,7 @@ test(
       assert.ok(
         messages.some(
           (m) =>
-            m.body?.case === "huntSession" && Number(m.body.value.kills) >= 3,
+            m.body?.case === "huntSession" && Number(m.body.value.kills) >= 6,
         ),
         "must actually kill and respawn monsters",
       );
@@ -220,6 +224,21 @@ test(
         messages.some(
           (m) => m.body?.case === "inventoryDelta" && m.body.value.added.length,
         ),
+      );
+      assert.ok(
+        messages.some(
+          (m) =>
+            m.body?.case === "entitySpawn" &&
+            m.body.value.entities.some(
+              (e) => e.state.id === 1 && e.level === 2,
+            ),
+        ),
+        "level label metadata must refresh during the hunt",
+      );
+      id = send("warehouseMove", { uids: ["1"], direction: 1 });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.code,
+        "local.city_only",
       );
       id = send("equip", { uid: "999999" });
       assert.equal(
@@ -251,12 +270,59 @@ test(
         (await wait((m) => m.requestId === id)).body.value.goldCost,
         "20",
       );
+      id = send("interact", { entity: 201 });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.service,
+        2,
+      );
+      id = send("equipBestPreview", { criterion: 2 });
+      const preview = (await wait((m) => m.requestId === id)).body.value;
+      assert.ok(preview.changes.length);
+      id = send("lockItem", { uid: gear.uid, locked: true });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.locked,
+        true,
+      );
+      id = send("sellItems", {
+        selection: {
+          case: "uids",
+          value: { entries: [{ uid: gear.uid, qty: 1 }] },
+        },
+      });
+      assert.equal((await wait((m) => m.requestId === id)).body.value.sold, 0);
+      const material = earned.find((i) => i.defId === "fragmento-local");
+      id = send("sellItems", {
+        selection: {
+          case: "uids",
+          value: { entries: [{ uid: material.uid, qty: 1 }] },
+        },
+      });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.gold,
+        "2",
+      );
+      id = send("interact", { entity: 202 });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.service,
+        5,
+      );
+      id = send("warehouseMove", { uids: [gear.uid], direction: 1 });
+      assert.deepEqual(
+        (await wait((m) => m.requestId === id)).body.value.moved,
+        [gear.uid],
+      );
+      id = send("inventoryPage", { scope: 3, page: 1, pageSize: 30 });
+      assert.ok(
+        (await wait((m) => m.requestId === id)).body.value.items.some(
+          (i) => i.uid === gear.uid && i.locked,
+        ),
+      );
       const saved = JSON.parse(
         readFileSync(path.join(data, "account.json"), "utf8"),
       );
       assert.ok(saved.character.wallet.gold > 1000);
       assert.equal(
-        saved.bag.some((i) => i.uid === gear.uid),
+        saved.warehouse.some((i) => i.uid === gear.uid),
         true,
       );
       ws.close();
@@ -279,7 +345,7 @@ test(
       assert.equal(restored.wallet.gold, String(saved.character.wallet.gold));
       assert.equal(restored.progress.xp, String(saved.character.progress.xp));
       assert.equal(restored.consumables.hpPotions.pequena, 12);
-      id = send("inventoryPage", { scope: 1, page: 1, pageSize: 30 });
+      id = send("inventoryPage", { scope: 3, page: 1, pageSize: 30 });
       assert.ok(
         (await wait((m) => m.requestId === id)).body.value.items.some(
           (i) => i.uid === gear.uid,

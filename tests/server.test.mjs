@@ -123,6 +123,19 @@ test(
       const scene = (await wait((m) => m.body?.case === "sceneEnter")).body
         .value;
       assert.equal(scene.map.source.case, "atlasMapId");
+      assert.equal(scene.map.source.value, "praca-da-coroa");
+      const cityMap = await (
+        await fetch(base + "/assets/maps/praca-da-coroa/map.json")
+      ).json();
+      assert.equal(cityMap.name, "Praça da Coroa");
+      assert.equal(cityMap.tilesets[0].src, "tilesets/coroa.svg");
+      const texture = await fetch(
+        base + "/assets/maps/praca-da-coroa/tilesets/coroa.svg",
+      );
+      assert.match(texture.headers.get("content-type"), /image\/svg/);
+      assert.match(await texture.text(), /data:image\/png;base64,/);
+      const theme = await (await fetch(base + "/royal-theme.css")).text();
+      assert.match(theme, /--sl-texto:\s*#342c20/);
       assert.equal(scene.worldWidth, 19200);
       assert.equal(scene.walk.grid.blocked.length, 360);
       assert.deepEqual(
@@ -145,6 +158,14 @@ test(
       const blocked = await (await fetch(base + "/__diagnostic.json")).json();
       assert.equal(blocked.position.x, x);
       assert.equal(blocked.position.y, y);
+      // This plaza cell was walkable in the captured map; the new fountain must block it.
+      send("moveTo", { x: 9600, y: 9920 });
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      const fountainBlocked = await (
+        await fetch(base + "/__diagnostic.json")
+      ).json();
+      assert.equal(fountainBlocked.position.x, x);
+      assert.equal(fountainBlocked.position.y, y);
       id = send("inventoryPage", { scope: 1, page: 1, pageSize: 30 });
       const inventory = (await wait((m) => m.requestId === id)).body;
       assert.equal(inventory.case, "inventoryPage");
@@ -185,9 +206,13 @@ test(
         (await wait((m) => m.requestId === id)).body.case,
         "startHuntResult",
       );
-      await wait(
-        (m) => m.body?.case === "sceneEnter" && m.body.value.kind === 2,
-      );
+      const huntScene = (
+        await wait(
+          (m) => m.body?.case === "sceneEnter" && m.body.value.kind === 2,
+        )
+      ).body.value;
+      assert.equal(huntScene.map.source.value, "praca-local");
+      assert.notDeepEqual(huntScene.walk.grid.blocked, scene.walk.grid.blocked);
       await wait(
         (m) =>
           m.body?.case === "entitySpawn" &&

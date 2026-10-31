@@ -1,0 +1,426 @@
+/* Original ivory-and-gold theme. Gameplay/status and rarity colors retain meaning. */
+:root {
+  --sl-preto: #fffdf5;
+  --sl-grafite: #f7f0df;
+  --sl-grafite-2: #eee4cd;
+  --sl-elev: #fff9eb;
+  --sl-miolo: #faf5e8;
+  --sl-texto: #342c20;
+  --sl-texto-2: #65583f;
+  --sl-texto-3: #817257;
+  --sl-sistema: #b58b3c;
+  --sl-sistema-2: #94702c;
+  --sl-sistema-3: #70521f;
+  --sl-sistema-claro: #d4b66d;
+  --sl-sistema-texto: #77551d;
+  --sl-acento-suave: #b58b3c19;
+  --sl-acento-linha: #b58b3c75;
+  --sl-acento-brilho: #d2ae5c38;
+  --sl-sombra: #a47b30;
+  --sl-sombra-texto: #71511c;
+  --sl-sombra-suave: #b58b3c25;
+  --sl-sombra-fraca: #b58b3c12;
+  --sl-ouro: #8c631d;
+  --sl-perigo: #b34646;
+  --sl-perigo-texto: #9d3030;
+  --sl-aviso: #9b6719;
+  --sl-ok: #28754c;
+  --sl-diamante: #257391;
+  --sl-xp-1: #aa7c2c;
+  --sl-xp-2: #e0bc66;
+  --sl-vidro: #fffaf0f2;
+  --sl-vidro-forte: #fffaf6fc;
+  --sl-vidro-plano: #fbf5e7f5;
+  --sl-painel-2: #f4ead7ed;
+  --sl-painel-3: linear-gradient(90deg, #fff9ecef, #efe2c6eb);
+  --sl-trilho: #9e86562b;
+  --sl-borda: #b6a17470;
+  --sl-borda-fraca: #c3b28c59;
+  --sl-borda-forte: #a7894c99;
+  --sl-borda-ativa: #a57b2db8;
+  --sl-topo: radial-gradient(
+    ellipse 85% 65% at 50% 0%,
+    #e5ca8738,
+    transparent 70%
+  );
+  --sl-botao: linear-gradient(180deg, #e2c981, #b99043);
+  --sl-brilho-topo: inset 0 1px 0 #fffdf6d9;
+  --sl-sombra-caixa: 0 18px 56px #4b3b2440;
+  --sl-sombra-leve: 0 7px 20px #4b3b2426;
+  --sl-raio: 7px;
+  --sl-raio-p: 5px;
+  --sl-raio-janela: 9px;
+  --sl-raio-pilula: 5px;
+  --sl-r-comum: #655d51;
+  color-scheme: light;
+}
+body {
+  background: #e8dfca;
+}
+.local-city-badge {
+  position: fixed;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2147483647;
+  color: #735423;
+  background: #fffaebed;
+  border: 1px solid #bf9e5b9c;
+  padding: 4px 12px;
+  border-radius: 0 0 6px 6px;
+  font:
+    600 9px/1.2 Georgia,
+    serif;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  box-shadow: 0 2px 8px #49351b20;
+}
+#ui {
+  color: var(--sl-texto);
+}
+#ui
+  :is(
+    .slWin,
+    .slModal,
+    .slSheet,
+    .slHudDrawer,
+    .slHudPopup,
+    .slTooltip,
+    .slTip
+  ) {
+  color: var(--sl-texto);
+  background: var(--sl-topo), #fffbf2fa !important;
+  border-color: #b49452a6;
+  box-shadow:
+    0 14px 48px #4f3c2b38,
+    inset 0 1px #fffef9;
+}
+#ui
+  :is(
+    .slWinHead,
+    .slWinHeader,
+    .slModalTitle,
+    .slModalActions,
+    .slSheetHead,
+    .slSheetActions
+  ) {
+  background: linear-gradient(90deg, #f6ecd5, #fffaf0, #f0e1bd) !important;
+  color: #59431f;
+  border-color: #bca26a73;
+}
+#ui
+  :is(
+    .slHudCard,
+    .slHudBuff,
+    .slHudAh,
+    .slHudPing,
+    .slHudQuickBar,
+    .slChatBox,
+    .slChatMini,
+    .slHudTarget
+  ) {
+  background: linear-gradient(145deg, #fffdf6f7, #f0e5cef2) !important;
+  color: var(--sl-texto);
+  border: 1px solid #ba9a5db3;
+  box-shadow:
+    0 5px 20px #493b2629,
+    inset 0 1px #fff;
+}
+#ui
+  :is(
+    .slChatHead,
+    .slChatForm,
+    .slChatTabs,
+    .slInvDoll,
+    .slInvDetail,
+    .slInvBagHead,
+    .slInvStat,
+    .slInvLegend,
+    .slShopCard,
+    .slHuntOpsCard,
+    .slHuntOpsFilters,
+    .slHudPopupBody
+  ) {
+  background: linear-gradient(145deg, #fffcf5, #f4ead6) !important;
+  border-color: #c5ad7b80;
+}
+#ui
+  :is(
+    .slBtn,
+    .slInput,
+    .slSelect,
+    select,
+    input[type="search"],
+    input[type="text"],
+    input[type="password"],
+    .slChatInput
+  ) {
+  color: var(--sl-texto);
+  background-color: #fffaf0;
+  border-color: #bfa77191;
+}
+#ui :is(input, textarea)::placeholder {
+  color: #8c7e63;
+  opacity: 1;
+}
+#ui .slBtn-primary,
+#ui .slBtn-primary:hover,
+#ui .slChatSend {
+  background: linear-gradient(#ead598, #c5a052) !important;
+  color: #3e2b0e !important;
+  border-color: #9f7832;
+  box-shadow:
+    inset 0 1px #fff1c1,
+    0 3px 8px #8a622b22;
+}
+#ui .slBtn-danger {
+  color: #982e2c !important;
+  background: #f8e1d8 !important;
+  border-color: #b96254;
+}
+#ui
+  :is(
+    .slBtn-ghost,
+    .slBtn-secondary,
+    .slHudDockBtn,
+    .slHudQbLeave,
+    .slHudChannel,
+    .slChatTab,
+    .slTab
+  ) {
+  color: #66512b;
+}
+#ui
+  :is(
+    .slTab[aria-selected="true"],
+    .slChatTab[aria-selected="true"],
+    .slChatTab.slChatTabOn,
+    .slHudDockBtn[aria-expanded="true"]
+  ) {
+  background: #e9d5a5 !important;
+  color: #604518 !important;
+  border-color: #b48a3d;
+}
+#ui .slHudQuickBar:before {
+  border-color: #ae863d;
+}
+#ui
+  :is(
+    .slHudQbIco,
+    .slHudDockIco,
+    .slHudDrawerIco,
+    .slWinIco,
+    .slChatWiki img,
+    .slChatVotes img
+  ) {
+  filter: sepia(0.75) saturate(0.7) hue-rotate(353deg);
+}
+#ui
+  :is(
+    .slHudCardName,
+    .slHudCardClass,
+    .slHudCardChip,
+    .slHudCardFold,
+    .slHudCardUnfold,
+    .slHudLineK,
+    .slHudLineV,
+    .slHudAhHead,
+    .slHudAhTime,
+    .slChatName,
+    .slChatTab,
+    .slChatInput,
+    .slChatEmpty,
+    .slChatMini,
+    .slHudPopupLead,
+    .slHudDrawerName
+  ) {
+  color: var(--sl-texto);
+}
+#ui
+  :is(
+    .slHudCardPortrait,
+    .slHudCardFace,
+    .slHudCardChip,
+    .slHudBag,
+    .slHudOnline,
+    .slHudChannel,
+    .slHudAhIco,
+    .slHudPingMini
+  ) {
+  background: #f2e7cd !important;
+  border-color: #b89b60;
+  color: #6a5026;
+}
+#ui :is(.slHudSkill, .slHudPotion, .slSkillSlot, .slSlot, .slInvCell) {
+  background: linear-gradient(145deg, #faf4e5, #dfcfac) !important;
+  box-shadow: inset 0 1px #fff8df;
+}
+#ui :is(.slSlotFull, .slInvCell) {
+  color: #4e3b20;
+}
+#ui
+  :is(.slHudSkillKey, .slHudKey, .slHudSkillCost, .slHudPotionCount, .slInvLv) {
+  color: #44321a !important;
+  background: #f6ebccdf !important;
+  text-shadow: none !important;
+}
+#ui :is(.slHudSkillCd, .slHudSkillCooldown) {
+  color: #fff8e6;
+  text-shadow: 0 1px 3px #30200c;
+}
+#ui :is(.slBarLabel, .slHudBarLabel, .slHudHp, .slHudMp) {
+  text-shadow: 0 1px 2px #372b1d;
+}
+#ui .slMuted {
+  color: var(--sl-texto-2);
+}
+#ui .slGood {
+  color: #28704b;
+}
+#ui .slBad {
+  color: #a03d39;
+}
+#ui :is(.slToast, .slToast-banner, .slToast-success) {
+  background: #fff9ebf7 !important;
+  color: #634a20;
+  border-color: #bb9850;
+  box-shadow: 0 4px 20px #4f3c2b2b;
+}
+#ui
+  :is(
+    .slWinTitle,
+    .slModalTitle,
+    .slInvBlockLabel,
+    .slShopSection,
+    .slHudDrawerName
+  ) {
+  letter-spacing: 0.06em;
+}
+.slAuthShadow {
+  --a-bg: #e9dfc6;
+  --a-panel: #fffaf0;
+  --a-raised: #f2e5c8;
+  --a-field: #fffdf6;
+  --a-accent: #b48b3b;
+  --a-accent-deep: #805b21;
+  --a-accent-text: #6f501e;
+  --a-glow: #d4ae53;
+  --a-text: #3d3020;
+  --a-text-2: #776548;
+  --a-line: #b4965e88;
+  --a-line-soft: #b4965e44;
+  --a-cta: linear-gradient(#ead08b, #b88b39);
+}
+.slAuthStage {
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    #fffaf0,
+    #efe5c9 60%,
+    #d3bd87
+  ) !important;
+}
+.slAuthStage:before,
+.slBootScreen:before {
+  opacity: 0.18;
+  filter: sepia(1);
+}
+.slAuthStage:after {
+  background: radial-gradient(
+    at 50% 45%,
+    transparent 55%,
+    #9b793d25
+  ) !important;
+}
+.slBootScreen {
+  background: radial-gradient(at 50% 45%, #fffbef, #decfa9) !important;
+  color: #56401e;
+}
+.slBootPanel {
+  background: linear-gradient(#fffbed, #f0e2bd) !important;
+  border-color: #b89956;
+  color: #4b3a1d;
+}
+@media (max-width: 700px) {
+  .local-city-badge {
+    font-size: 8px;
+    padding: 3px 8px;
+    top: 0;
+  }
+}
+/* Readability corrections for controls with fixed colors in the supplied CSS. */
+#ui .slWinTitle,
+#ui .slModalTitle,
+#ui .slSheetTitle {
+  color: #59431f !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+}
+#ui .slChipOn,
+#ui .slTabOn {
+  color: #65471a !important;
+  background: #ead6a5 !important;
+  border-color: #ae8437;
+}
+#ui :is(.slNumInput, input[type="number"]) {
+  background: #fffaf0 !important;
+  color: #45351c !important;
+  border-color: #b99b5f !important;
+}
+#ui .slHudPower b {
+  color: #806028 !important;
+  text-shadow: none;
+}
+#ui .slHudSeal {
+  background: #ecdbb2 !important;
+  border-color: #b79a5c;
+  color: #59401b;
+}
+#ui .slHudSealK,
+#ui .slHudSealV {
+  color: #705321 !important;
+}
+#ui .slBarText {
+  color: #fffced !important;
+  text-shadow: 0 1px 1px #3e2e18;
+}
+#ui .slBar-xp .slBarText {
+  color: #45321a !important;
+  text-shadow: none;
+}
+#ui :is(.slChatDiscord, .slChatWiki, .slChatVotes, .slChatDaily) {
+  background: linear-gradient(#fff9e7, #e2c786) !important;
+  color: #60461d !important;
+  border: 1px solid #b89850;
+  box-shadow: inset 0 1px #fff;
+}
+#ui .slInvDollCenter {
+  background: radial-gradient(at 50% 20%, #fffdf6, #ecdcb6) !important;
+  border-color: #bda46b;
+  color: #44331b;
+}
+#ui .slInvDollName,
+#ui .slInvDollLevel,
+#ui .slInvDollPower b,
+#ui .slInvDollPower span {
+  color: #624820 !important;
+}
+#ui .slInvGrid {
+  background: #eddfc1 !important;
+  border-color: #c2aa72;
+}
+#ui :is(.slInvGridEmpty, .slInvEmpty) {
+  background: #f9f1df !important;
+  color: #75613d;
+}
+#ui :is(.slSelect, select) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23896a32' stroke-width='1.5'/%3E%3C/svg%3E") !important;
+}
+.slAuthShadow h1 :is(span, em, strong) {
+  color: #94702c !important;
+  background: none !important;
+  -webkit-text-fill-color: #94702c !important;
+}
+#ui .slChatAutoTr.on {
+  color: #785c2c;
+  background: #dfc88d66 !important;
+}

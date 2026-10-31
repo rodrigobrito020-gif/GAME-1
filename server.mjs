@@ -6,6 +6,7 @@ import path from "node:path";
 import { readZip } from "./zip-reader.mjs";
 import { attachLocalGame } from "./local-game.mjs";
 import { localAssets } from "./assets.mjs";
+import { createMedievalCity } from "./medieval-city.mjs";
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.CAPTURE_PORT ?? 5188);
 if (!Number.isInteger(port) || port < 1024 || port > 65535)
@@ -58,6 +59,7 @@ const status = {
   websocketAttempts: 0,
   apiAttempts: 0,
 };
+const medievalCity = createMedievalCity();
 const asset = localAssets(byName, status);
 const remember = (list, value) => {
   if (!list.includes(value)) {
@@ -76,7 +78,7 @@ const types = {
   ".woff2": "font/woff2",
   ".html": "text/html; charset=utf-8",
 };
-const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leveling — servidor local de teste</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" style="position:fixed;top:2px;left:50%;transform:translateX(-50%);z-index:2147483647;color:#cfb7e5;background:#171024db;padding:3px 10px;border-radius:3px;font:10px sans-serif;text-decoration:none">FARM LOCAL · ARTES PROVISÓRIAS</a><div id="game"></div><div id="ui"></div><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
+const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praça da Coroa — RPG local</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"><link rel="stylesheet" href="/royal-theme.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" class="local-city-badge">PRAÇA DA COROA · SERVIDOR LOCAL</a><div id="game"></div><div id="ui"></div><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
 const server = createServer((req, res) => {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -98,6 +100,20 @@ const server = createServer((req, res) => {
     res.writeHead(code, { "Content-Type": type });
     res.end(req.method === "HEAD" ? undefined : body);
   };
+  if (pathname === `/assets/maps/${medievalCity.id}/map.json`) {
+    remember(status.served, pathname);
+    return reply(200, types[".json"], JSON.stringify(medievalCity.map));
+  }
+  if (pathname === `/assets/maps/${medievalCity.id}/tilesets/coroa.svg`) {
+    remember(status.served, pathname);
+    return reply(200, types[".svg"], medievalCity.texture());
+  }
+  if (pathname === "/royal-theme.css")
+    return reply(
+      200,
+      types[".css"],
+      readFileSync(path.join(root, "royal-theme.css")),
+    );
   const local = asset(pathname);
   if (local) {
     remember(status.served, pathname);
@@ -149,7 +165,7 @@ const server = createServer((req, res) => {
     remember(status.missing, pathname);
     if (pathname.startsWith("/assets/ui/") && pathname.endsWith(".png")) {
       const placeholder =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><rect x="2" y="2" width="44" height="44" rx="5" fill="#1c1729" stroke="#67507e"/><path d="M24 9 36 24 24 39 12 24Z" fill="none" stroke="#9280a8" stroke-width="2"/><circle cx="24" cy="24" r="3" fill="#bba2d6"/></svg>';
+        '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><rect x="2" y="2" width="44" height="44" rx="5" fill="#f6ead0" stroke="#b99a5b"/><path d="M24 9 36 24 24 39 12 24Z" fill="none" stroke="#9b7a3d" stroke-width="2"/><circle cx="24" cy="24" r="3" fill="#ad883e"/></svg>';
       return reply(200, "image/svg+xml", placeholder);
     }
 
@@ -186,6 +202,9 @@ const localGame = attachLocalGame(server, {
   map: JSON.parse(byName.get("map.json")[0].read()),
   root,
   status,
+  cityMap: medievalCity.map,
+  cityMapId: medievalCity.id,
+  cityName: medievalCity.name,
 });
 for (const signal of ["SIGINT", "SIGTERM"])
   process.once(signal, () => {

@@ -10,7 +10,18 @@ import {
 import path from "node:path";
 import { Protocol } from "./protocol.mjs";
 import { LocalFarm, AREAS, ITEMS, SKILLS } from "./farm.mjs";
-export function attachLocalGame(server, { build, map, root, status }) {
+export function attachLocalGame(
+  server,
+  {
+    build,
+    map,
+    cityMap = map,
+    cityMapId = "praca-local",
+    cityName = "Praça local",
+    root,
+    status,
+  },
+) {
   const protocol = new Protocol(build),
     connections = new Set(),
     tokens = new Map();
@@ -39,7 +50,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-economy-1";
+  catalog.version = "local-medieval-1";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -87,10 +98,10 @@ export function attachLocalGame(server, { build, map, root, status }) {
   catalog.scenes = [
     {
       id: "cidade-local",
-      name: "Praça local",
+      name: cityName,
       kind: 1,
       map: {
-        source: { case: "atlasMapId", value: "praca-local" },
+        source: { case: "atlasMapId", value: cityMapId },
         scale: 1,
         viewScale: 1,
       },
@@ -167,12 +178,16 @@ export function attachLocalGame(server, { build, map, root, status }) {
       id: a.id,
       kind: 2,
       name: a.name + " (cenário provisório)",
-      map: catalog.scenes[0].map,
+      map: {
+        source: { case: "atlasMapId", value: "praca-local" },
+        scale: 1,
+        viewScale: 1,
+      },
     })),
   );
   catalog.appearance.skinTones = ["clara", "media", "escura"];
   catalog.rarities = [
-    { id: "comum", name: "Comum", color: "#aaaaaa", order: 0, statMult: 1 },
+    { id: "comum", name: "Comum", color: "#655d51", order: 0, statMult: 1 },
   ];
   const character = empty("CharacterState");
   character.accountId = 1;
@@ -323,22 +338,33 @@ export function attachLocalGame(server, { build, map, root, status }) {
       ].includes(origin),
   });
   let tick = 0;
-  const spawn = { x: map.spawn.x * 32 + 16, y: map.spawn.y * 32 + 16 };
-  const free = (x, y) => {
+  const spawn = { x: cityMap.spawn.x * 32 + 16, y: cityMap.spawn.y * 32 + 16 };
+  const free = (x, y, layout = map) => {
     for (const dx of [-8, 8])
       for (const dy of [-8, 8]) {
         const c = Math.floor((x + dx) / 32),
           r = Math.floor((y + dy) / 32);
-        if (c < 0 || r < 0 || c >= 60 || r >= 48 || map.collisions[r * 60 + c])
+        if (
+          c < 0 ||
+          r < 0 ||
+          c >= 60 ||
+          r >= 48 ||
+          layout.collisions[r * 60 + c]
+        )
           return false;
       }
     return true;
   };
-  const blockedBits = Buffer.alloc(360);
-  map.collisions.forEach((value, index) => {
-    if (value) blockedBits[index >> 3] |= 1 << (index & 7);
-  });
-  const route = (from, to) => {
+  const gridBits = (layout) => {
+    const bytes = Buffer.alloc(360);
+    layout.collisions.forEach((value, index) => {
+      if (value) bytes[index >> 3] |= 1 << (index & 7);
+    });
+    return bytes;
+  };
+  const blockedBits = gridBits(cityMap),
+    huntBlockedBits = gridBits(map);
+  const route = (from, to, layout = map) => {
     const origin = Math.floor(from.y / 32) * 60 + Math.floor(from.x / 32),
       target = Math.floor(to.y / 32) * 60 + Math.floor(to.x / 32),
       queue = [origin],
@@ -350,7 +376,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
           next < 0 ||
           next >= 2880 ||
           Math.abs((next % 60) - (queue[index] % 60)) > 1 ||
-          map.collisions[next] ||
+          layout.collisions[next] ||
           prev.has(next)
         )
           continue;
@@ -411,7 +437,7 @@ export function attachLocalGame(server, { build, map, root, status }) {
     instanceId: 1,
     yourEntity: 1,
     map: {
-      source: { case: "atlasMapId", value: "praca-local" },
+      source: { case: "atlasMapId", value: cityMapId },
       scale: 1,
       viewScale: 1,
     },
@@ -540,6 +566,19 @@ export function attachLocalGame(server, { build, map, root, status }) {
       kind: hunt ? 2 : 1,
       npcs: hunt ? [] : cityNpcs,
       spawn: { x: Math.round(client.x * 10), y: Math.round(client.y * 10) },
+      map: hunt
+        ? {
+            source: { case: "atlasMapId", value: "praca-local" },
+            scale: 1,
+            viewScale: 1,
+          }
+        : scene.map,
+      walk: hunt
+        ? {
+            ...scene.walk,
+            grid: { ...scene.walk.grid, blocked: huntBlockedBits },
+          }
+        : scene.walk,
     };
     if (hunt)
       localScene.hunt = {
@@ -716,8 +755,12 @@ export function attachLocalGame(server, { build, map, root, status }) {
         }
         if (kind === "moveTo") {
           if (client.hunt) return;
-          if (free(value.x / 10, value.y / 10)) {
-            client.route = route(client, { x: value.x / 10, y: value.y / 10 });
+          if (free(value.x / 10, value.y / 10, cityMap)) {
+            client.route = route(
+              client,
+              { x: value.x / 10, y: value.y / 10 },
+              cityMap,
+            );
             client.target = client.route.shift() ?? null;
           }
           return;
@@ -1011,8 +1054,8 @@ export function attachLocalGame(server, { build, map, root, status }) {
         const amount = client.target ? Math.min(8, len) : 8;
         const x = client.x + (dx / len) * amount,
           y = client.y + (dy / len) * amount;
-        if (free(x, client.y)) client.x = x;
-        if (free(client.x, y)) client.y = y;
+        if (free(x, client.y, cityMap)) client.x = x;
+        if (free(client.x, y, cityMap)) client.y = y;
         client.facing =
           Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 2 : 1) : dy > 0 ? 0 : 3;
       }

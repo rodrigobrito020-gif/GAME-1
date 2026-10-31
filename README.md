@@ -1,6 +1,8 @@
-# Cliente capturado + servidor local — 0.4: cidade, inventário e economia
+# Cliente capturado + servidor local — 0.5: cidade medieval e interface branca e dourada
 
-Esta versão usa **o cliente do seu `recursos-publicos.zip` como base**, com um servidor local próprio. Estamos construindo nosso jogo com essa base. Esta etapa acrescenta serviços da cidade ao ciclo de farm. Já permite testar uma caçada funcional: movimento automático até os inimigos, ataques, quatro habilidades, dano recebido, mortes, respawn, EXP, ouro, drops, equipamentos e progresso salvo.
+Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
+
+A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
 
 ## Abrir no Windows
 
@@ -25,7 +27,7 @@ Na cidade: **WASD/setas** para andar, **I** inventário, **M** caçadas e **Esc*
 
 Ao morrer, o farm para e o personagem volta à cidade em três segundos, recuperado. Não há perda de EXP neste teste. Uma segunda janela autenticada encerra a conexão da primeira: existe **um único personagem local**, sem duplicar recompensas por abas abertas.
 
-## Serviços da cidade — novos nesta versão
+## Serviços da cidade
 
 Perto do ponto onde o personagem aparece existem três NPCs com aparência provisória:
 
@@ -37,11 +39,11 @@ O personagem começa perto dos três. Dê alguns passos na direção do NPC dese
 
 Na mochila, **Equipar melhores** mostra uma prévia das trocas antes de aplicar. Os critérios de ataque, defesa, vida e poder usam os atributos implementados no servidor local. A ordenação por poder, nível, raridade ou tipo também funciona. O botão direito trava/destrava um item; equipamentos travados não são vendidos. Vendas de parte de uma pilha descontam apenas a quantidade escolhida. Transferências para o armazém preservam o item e recusam o que não couber.
 
-O nível sobre o personagem agora é atualizado ao evoluir, sem precisar sair da caçada. A aparência e as cores do cliente foram mantidas nesta etapa.
+O nível sobre o personagem é atualizado ao evoluir, sem precisar sair da caçada. Os NPCs e o personagem ainda usam a sombra provisória. A mudança desta etapa é na cidade e na interface.
 
 ## Conteúdo e limites deste teste
 
-- O ZIP forneceu **um mapa completo da cidade**, seus sete tilesets e colisões. Não vieram os mapas das caçadas. As duas arenas são instâncias separadas que reutilizam esse cenário; a praça segura não recebe monstros.
+- A cidade medieval é um mapa e arte próprios do projeto, com colisões correspondentes no cliente e no servidor. As duas arenas continuam usando o cenário capturado anterior e sua grade de colisões. A praça medieval permanece segura, sem monstros.
 - Não vieram os sprites completos de monstros nem as animações completas dos personagens. Avatar e inimigos usam **artes provisórias derivadas da sombra idle disponível**. Os GIFs de prévia não equivalem às folhas completas de animação. Não recuperamos as animações ausentes.
 - As habilidades usam eventos reais de combate no cliente, com dano e cura calculados no servidor. Alguns efeitos gráficos e áudios não vieram no pacote e continuam indisponíveis.
 - Itens implementados: fragmento empilhável, espada e peitoral de treino. Cada abate dá fragmento se houver espaço; a cada três abates da caçada, uma espada ou peitoral. Com mochila cheia, não entram itens novos; o jogo continua concedendo EXP e ouro. Retirar equipamento com a mochila cheia é recusado.
@@ -71,14 +73,14 @@ set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-São catorze testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, capacidade, poções e integração real WebSocket com o protocolo capturado. A integração também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
+São quinze testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, capacidade, poções e integração real WebSocket com o protocolo capturado. O teste da cidade confere caminhos até os três serviços e ao portão, passagem ao redor da fonte e bloqueio das construções. A integração confere a nova grade da cidade e a grade separada das arenas; também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
 
 ## Dados e isolamento
 
 Conta e progresso: **.local-runtime/account.json**. Não apague essa pasta para conservar os dados. Senha armazenada com scrypt; tokens locais duram até oito horas no processo. Ao reiniciar o servidor, a entrada automática faz novo login.
 
-Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. Scripts e estilos compilados do cliente permanecem sem alteração; nossos adaptadores leem o ZIP local e acrescentam o conteúdo de teste em memória.
+Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. Scripts e estilos compilados do cliente permanecem sem alteração; uma folha de estilo própria aplica o tema branco e dourado. O servidor fornece o novo mapa e compõe sua textura com a arte em `art/medieval-ivory-gold.png`. Os demais recursos continuam sendo lidos do ZIP local.
 
-O GitHub contém código próprio e adaptadores, sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
+O GitHub contém código próprio e adaptadores, com a nova arte medieval própria e sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
 
 Diagnóstico: **http://127.0.0.1:5188/diagnostico**.

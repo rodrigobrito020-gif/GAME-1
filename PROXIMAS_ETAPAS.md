@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.14: roupas redesenhadas nas próprias artes das poses; removida a substituição por máscaras da 0.6.13, rejeitada pelo jogador. Sem capa/saiote no corpo inicial. Preparação compacta preserva a escala do personagem; peitoral visível também nas costas.
+
 - 0.6.13: roupas simples sem peitoral equipado; armadura apenas com a peça equipada. Acima do personagem, somente a duração da Égide; recarga apenas na barra de habilidades.
 
 - 0.6.1: caminhada articulada e alternada, ataques com escala estável e combo, Pátio da Coroa próprio para as hunts e reaparecimento dos monstros com novas identidades para impedir invisibilidade após a morte.

@@ -1,54 +1,62 @@
-VERSAO 0.6.13 — ROUPAS INICIAIS E DURACAO DA EGIDE
+VERSAO 0.6.14 — ROUPAS REDESENHADAS NAS POSES
 Data: 01/11/2026
 
+PROBLEMA CORRIGIDO
+A roupa da 0.6.13 foi rejeitada pelo jogador: a substituição de cores por
+máscaras deixou blocos, contornos de placas e um corpo pouco natural.
+O processo de repintura das folhas prontas foi retirado.
+
 ALTERACOES
-- Guerreiro sem peitoral usa camisa de linho, calça de tecido e botas simples.
-  Removido o visual metálico do corpo inicial nas seis folhas de animação.
-- Peitoral de treino aparece somente com o item equipado. Retirar retorna às
-  roupas simples; saves antigos mantêm o equipamento que realmente possuem.
-- Um único círculo acima do personagem, somente durante o buff: DURAÇÃO.
-  Some ao expirar. A recarga continua na barra nativa de habilidades.
-- Três escudos orbitais, posição acima do nome e nível somente no painel do
-  jogador preservados. Nenhum item concedido e nenhum atributo alterado.
-- Registro dos sets do Lineage 2 já preparados no GAME-1 e graus aprovados
-  em LINEAGE_SETS.md. A adaptação de todos os sets 3D para esta base 2D ainda
-  está pendente; esta versão não apresenta o peitoral de treino como substituto.
+- Fontes próprias de roupa em source/novice: camisa de linho com gola,
+  mangas de tecido, cinto, calça comprida e botas baixas de couro.
+- Corpo desenhado com roupas nas poses de espada, salto/cravada, reações e
+  nas peças articuladas da caminhada. Sem placas, capa ou saiote no corpo inicial.
+- Corrigido o encontro da espada de uma linha da arte com a cabeça da linha seguinte.
+- Preparação compacta para dash/buff: o compositor não precisa miniaturizar o
+  personagem para encaixar uma espada estendida longe do corpo.
+- Peitoral de treino acompanha o novo tronco e aparece também nas costas,
+  agora que a roupa inicial não tem capa. Retirar restaura as roupas simples.
+- A adaptação completa dos sets do Lineage 2 continua pendente, conforme
+  LINEAGE_SETS.md. Nenhum equipamento ou atributo novo foi concedido.
 
 TESTES
-58 testes aprovados, zero falhas e zero ignorados, usando o ZIP real de recursos.
-- Roupas preservam transparência, silhuetas, pés e pixels do rosto aprovado.
-- Caminhada e suas direções espelhadas continuam consistentes.
-- Equipamento muda o tronco apenas com a peça no slot correto, sem alterar a
-  identidade salva nem conceder skins.
-- Reconstrução das seis folhas iniciais/equipadas produz os mesmos bytes, sem
-  degradação ao repetir o empacotamento.
-- Combate, habilidades, defesa, inventário, mapas, respawn, protocolo e
-  persistência continuam passando na suíte completa.
+57 testes aprovados, nenhum reprovado ou ignorado, com o ZIP real de recursos.
+- Mesmas dimensões, quadros, quatro direções, pivô dos pés e sequências do cliente.
+- Caminhada alternada, direções espelhadas e tronco estável nos apoios.
+- Transparência, margens e silhuetas sem manchas soltas nas poses de repouso.
+- Escala da preparação dentro de 5% da postura normal em todas as direções.
+- Peitoral altera somente a região do tronco, preservando o restante da roupa
+  e a transparência. Conferida a aparência equipada nas quatro direções.
+- Reconstrução das seis folhas iniciais/equipadas é determinística.
+- Combate, habilidades, defesa, inventário, mapa, respawn, protocolo e
+  persistência continuam aprovados na suíte completa.
 
-NAVEGADOR REAL (CHROMIUM/WEBGL)
-- Equipar e retirar peitoral obtido em drops no save isolado de teste.
-- Conferidas as roupas iniciais e a mudança do tronco no mapa e na mochila.
-- Outro processo do servidor carregou o save equipado e restaurou o peitoral.
-- Prévia /guerreiro alterna roupa/peitoral na frente e nas duas laterais.
-- Durante combate e zoom, apenas um indicador, acima do nome e da barra.
-- Três escudos orbitais durante a proteção, mínimo de 38 pixels na tela.
-- Depois do buff: nenhum escudo nem círculo acima da cabeça; a barra de skills
-  mantém a recarga. Trocar de cena também limpa o indicador.
-- Testado em 1920x1040 e janela 1000x760. Nenhum erro JavaScript e recursos
-  de aparência/proteção carregando por HTTP 200.
+CLIENTE REAL NO NAVEGADOR (CHROMIUM/WEBGL)
+- Caminhada com WASD e capturas das quatro direções na cidade.
+- Equipar e retirar peitoral obtido no save isolado de testes; roupa muda no
+  mapa e na mochila, sem criar outra identidade salva ou conceder uma skin.
+- Caçada com roupas simples e execução real das três habilidades aprovadas:
+  Avanço de Luz, Impacto de Luz e Égide de Luz.
+- Um único círculo de duração acima do nome, três escudos durante o buff,
+  mínimo de 38 pixels na tela, limpeza ao expirar e ao sair da caçada.
+- Janela 1920x1040 e 1000x760. Nenhum erro JavaScript; recursos por HTTP 200.
+- Gravação de aproximadamente 38 segundos usada para conferir transições
+  e aparência durante movimento/combate, além das imagens estáticas.
+- Prévia /guerreiro também alterna roupa/peitoral sem modificar o inventário.
 
 PRESERVADO
-Égide: +30% DEF (mínimo +2), duração 12s, mana 10, recarga 20s.
-Peitoral: +3 DEF e +25 HP. Dash e cravada, loot e progresso preservados.
-Nenhum reset de save. Servidor continua local/solo; equipes e múltiplas contas
-não foram implementadas nesta atualização.
+Tempos, custos e danos das habilidades aprovadas. A recarga fica somente na
+barra de habilidades; acima da cabeça fica a duração da proteção.
+Peitoral: +3 DEF e +25 HP. Saves, itens, ouro e regras de progressão preservados.
+O servidor continua local/solo. Nenhuma conta, equipe ou set completo novo
+foi implementado nesta revisão visual.
 
 WINDOWS
-1. Encerre o servidor anterior com Ctrl+C.
+1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
-3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
-   para manter o progresso. Copie também recursos-publicos.zip ou deixe-o em Downloads.
-4. Abra ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5 no navegador.
-5. Confira v0.6.13 no topo.
+3. Com o servidor fechado, copie .local-runtime da pasta anterior para manter
+   seu progresso. Copie também recursos-publicos.zip, ou deixe-o em Downloads.
+4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
+5. Confira v0.6.14 no topo.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa: http://127.0.0.1:5188/guerreiro

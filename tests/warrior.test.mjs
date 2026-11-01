@@ -110,6 +110,18 @@ test("warrior combat rig uses real exported poses and the server impact/recovery
   const manifest = JSON.parse(
     readFileSync(new URL("../art/warrior/manifest.json", import.meta.url)),
   );
+  for (let row = 0; row < 4; row++) {
+    const standing = manifest.sources.special.find(
+      (p) => p.row === row && p.col === 0,
+    );
+    const windup = manifest.sources.special.find(
+      (p) => p.row === row && p.col === 1,
+    );
+    assert.ok(
+      Math.abs(windup.scale / standing.scale - 1) < 0.05,
+      "preparing a dash or buff must not miniaturize the character to fit an extended sword",
+    );
+  }
   assert.equal(
     new Set(manifest.sources.weapon.map((pose) => pose.scale)).size,
     1,

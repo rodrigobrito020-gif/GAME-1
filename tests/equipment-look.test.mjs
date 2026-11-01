@@ -11,48 +11,6 @@ import { decodeRgba } from "../png.mjs";
 import vm from "node:vm";
 import { EventEmitter } from "node:events";
 
-test("starter garments keep all authored animation silhouettes and exposed face pixels", () => {
-  const poses = JSON.parse(
-    readFileSync(
-      new URL("../art/warrior/armored-reference/anchors.json", import.meta.url),
-    ),
-  ).poses;
-  for (const [name] of Object.entries(WARRIOR_SHEETS)) {
-    const original = decodeRgba(
-      readFileSync(
-        new URL(
-          `../art/warrior/armored-reference/${name}.png`,
-          import.meta.url,
-        ),
-      ),
-    );
-    const clothes = decodeRgba(
-      readFileSync(new URL(`../art/warrior/${name}.png`, import.meta.url)),
-    );
-    assert.equal(clothes.width, original.width);
-    assert.equal(clothes.height, original.height);
-    for (let i = 3; i < original.pixels.length; i += 4)
-      assert.equal(
-        clothes.pixels[i],
-        original.pixels[i],
-        "clothing must not clip limbs, feet or weapons",
-      );
-    for (const pose of poses.filter((p) => p.sheet === name)) {
-      const f = pose.face;
-      for (let y = f.y0; y <= f.y1; y++)
-        for (let x = f.x0; x <= f.x1; x++) {
-          const at =
-            ((pose.row * 64 + y) * clothes.width + pose.col * 64 + x) * 4;
-          assert.deepEqual(
-            clothes.pixels.subarray(at, at + 4),
-            original.pixels.subarray(at, at + 4),
-            `${name}: keep the approved face`,
-          );
-        }
-    }
-  }
-});
-
 test("equipment appearance derives from an actually equipped chest item without granting a cosmetic skin or changing saved identity", () => {
   const character = {
     identity: {
@@ -93,6 +51,7 @@ test("cuirass variants preserve original silhouettes and animation dimensions, f
     assert.equal(equipped.width, cols * 64);
     assert.equal(equipped.height, 256);
     let changed = 0;
+    const byDirection = [0, 0, 0, 0];
     for (let y = 0; y < base.height; y++)
       for (let x = 0; x < base.width; x++) {
         const i = (y * base.width + x) * 4;
@@ -104,6 +63,7 @@ test("cuirass variants preserve original silhouettes and animation dimensions, f
         )
           continue;
         changed++;
+        byDirection[Math.floor(y / 64)]++;
         const row = Math.floor(y / 64),
           col = Math.floor(x / 64),
           pose = manifest.poses.find(
@@ -121,6 +81,10 @@ test("cuirass variants preserve original silhouettes and animation dimensions, f
         );
       }
     assert.ok(changed > 100, `${name} needs a visible equipment variant`);
+    assert.ok(
+      byDirection.every((n) => n > 20),
+      `${name}: equipped chest must also appear from the back without a cape`,
+    );
   }
 });
 

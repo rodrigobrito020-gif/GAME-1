@@ -13,7 +13,7 @@ import { isolateParts } from "./sprite-cutout.mjs";
 const folder = new URL("../art/warrior/", import.meta.url);
 function load(name, columns, rows = 4) {
   const image = decodeRgba(
-    readFileSync(new URL("source/" + name + ".png", folder)),
+    readFileSync(new URL("source/novice/" + name + ".png", folder)),
   );
   const { width: w, height: h, pixels } = image;
   const seen = new Uint8Array(w * h),
@@ -222,7 +222,7 @@ function pack(name, source, columns, choose, mirror = () => false, anchor) {
 }
 const sources = {},
   parts = isolateParts(
-    decodeRgba(readFileSync(new URL("source/walk-parts.png", folder))),
+    decodeRgba(readFileSync(new URL("source/novice/walk-parts.png", folder))),
     WALK_PARTS.flatMap((p) => [p.body.rect, ...p.thighs, ...p.shins]),
   );
 for (const name of ["idle", "walk"]) {
@@ -293,7 +293,7 @@ writeFileSync(
     {
       character: "Guerreiro Humano",
       skinId: "humano-guerreiro",
-      version: 7,
+      version: 8,
       frame: [64, 64],
       feet: [32, 60],
       rows: ["south", "west", "east", "north"],
@@ -301,12 +301,12 @@ writeFileSync(
       walkStride: WALK_STRIDE,
       rig: "warrior-walk-rig.mjs",
       equipmentLooks: { "peitoral-local": "training" },
-      starterClothes: "source/starter-clothes.png",
+      starterSources: "source/novice/",
       notes: [
         "Corrida reutiliza o ciclo de caminhada.",
         "Grito de guerra vira de frente nas direções laterais.",
         "Escudo no braço esquerdo; espada na mão direita.",
-        "Sem peitoral equipado: roupas simples de linho e couro. Peitoral de treino aparece somente quando equipado.",
+        "Roupas iniciais desenhadas em todas as poses; sem pintura por máscaras e sem capa. Peitoral aparece somente equipado.",
       ],
       sources,
     },

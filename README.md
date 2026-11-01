@@ -1,8 +1,18 @@
-# Jogo local — 0.6.13: roupas iniciais e duração da Égide
+# Jogo local — 0.6.14: roupas redesenhadas nas poses do guerreiro
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Roupas redesenhadas nas próprias poses — 0.6.14
+
+O visual da 0.6.13 foi rejeitado pelo jogador: as substituições de cor por máscaras deixaram blocos e contornos de armadura nas roupas. Esse processo foi retirado. As novas fontes em `art/warrior/source/novice/` trazem o personagem desenhado de camisa de linho, calça de tecido, cinto e botas de couro, com ombros e braços de roupa e sem capa ou saiote de armadura. Caminhada, golpes, salto, reações e repouso são empacotados dessas artes; não são pintados sobre as folhas antigas.
+
+O corpo inicial continua sem armadura equipada. Equipar o peitoral existente modifica sua aparência e retirar restaura as roupas. Não há concessão de equipamentos nem reset de progresso. Cidade, mapas, inimigos, habilidades e seus tempos permanecem nas regras aprovadas. Acima da cabeça fica somente a duração da Égide; a recarga fica na barra.
+
+No Windows, atualizar com o servidor fechado, copiar `.local-runtime` e `recursos-publicos.zip`, abrir `ABRIR_CLIENTE_COPIADO.bat`, usar Ctrl+F5 e conferir **v0.6.14**.
+
+As seções abaixo são históricas. A técnica por máscaras descrita na 0.6.13 foi substituída nesta revisão.
 
 ## Roupas iniciais e um único indicador de duração — 0.6.13
 

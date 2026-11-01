@@ -1,5 +1,5 @@
 // Pack the original painted cuirass into each existing body pose. The source
-// character, face, limbs, sword, shield, cape and authored animation stay intact.
+// character, face, limbs, sword, shield and authored animation stay intact.
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { decodeRgba, encodeRgba } from "../png.mjs";
 import { WARRIOR_SHEETS } from "../warrior.mjs";
@@ -77,9 +77,20 @@ function faceOf(image, col, row) {
       }
       blobs.push({ x0, y0, x1, y1, count: queue.length });
     }
-  return blobs.sort(
-    (a, b) => b.count - (b.y0 > 40 ? 2 : 0) - (a.count - (a.y0 > 40 ? 2 : 0)),
-  )[0];
+  // Hands may now be bare: prefer skin beneath the brown hair rather than
+  // choosing the largest warm-coloured blob (which could be a raised hand).
+  const score = (f) => {
+    let hair = 0;
+    for (let y = Math.max(1, f.y0 - 7); y < f.y0; y++)
+      for (let x = Math.max(1, f.x0 - 2); x <= Math.min(62, f.x1 + 2); x++) {
+        const i = ((row * 64 + y) * image.width + col * 64 + x) * 4;
+        const [r, g, b, a] = image.pixels.subarray(i, i + 4);
+        if (a > 180 && r > 40 && r < 170 && g < 115 && r - g > 13 && g > b)
+          hair++;
+      }
+    return f.count + hair * 2 - (f.y0 > 40 ? 15 : 0);
+  };
+  return blobs.sort((a, b) => score(b) - score(a))[0];
 }
 const icon = Buffer.alloc(64 * 64 * 4),
   front = parts[0];
@@ -107,13 +118,11 @@ const manifest = {
 for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
   const image = decodeRgba(readFileSync(new URL(name + ".png", folder))),
     pixels = Buffer.from(image.pixels);
-  const reference = decodeRgba(
-    readFileSync(new URL("armored-reference/" + name + ".png", folder)),
-  );
+  const reference = image;
   for (let row = 0; row < 4; row++)
     for (let col = 0; col < cols; col++) {
-      const face = faceOf(reference, col, row);
-      if (!face || row === 3) continue; // The original cape conceals the back plate.
+      const face = faceOf(reference, col, row === 3 ? 0 : row);
+      if (!face) continue;
       const dead = name === "special" && col === 5;
       const cx = (face.x0 + face.x1) / 2;
       let box = dead
@@ -124,7 +133,7 @@ for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
             w: row === 0 ? 13 : 10,
             h: face.y1 > 30 ? 10 : 12,
           };
-      const part = parts[row === 0 ? 0 : row === 1 ? 1 : 2];
+      const part = parts[row === 0 ? 0 : row === 1 ? 1 : row === 2 ? 2 : 3];
       let changed = 0;
       for (let y = 0; y < box.h; y++)
         for (let x = 0; x < box.w; x++) {

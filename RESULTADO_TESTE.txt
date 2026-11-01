@@ -1,50 +1,43 @@
-VERSAO 0.6.8 — IMPACTO DE LUZ
+VERSAO 0.6.9 — AVANCO DE LUZ + IMPACTO DE LUZ
 Data: 01/11/2026
 
-Segunda habilidade: salto, espada com duas mãos, cravada no chão e dano
-em área ao redor do guerreiro. Escudo preso ao antebraço esquerdo.
+As duas habilidades aprovadas estão juntas no farm automático:
+1. Avanço de Luz aproxima o guerreiro de um inimigo distante (160–300 unidades).
+2. Depois da recuperação, Impacto de Luz salta/crava a espada perto do alvo,
+   atingindo os inimigos ao redor uma única vez na aterrissagem.
 
-CONFERENCIA AUTOMATIZADA
-- 44 testes aprovados, nenhum reprovado, com o recursos-publicos.zip real.
-- Dano único aos 550ms; recuperação do corpo até 950ms.
-- Círculo de 150 unidades centrado na posição inicial do personagem.
-- Verifica os inimigos vivos no instante da aterrissagem: entrada, saída,
-  borda da área e perda do alvo inicial cobertas por testes.
-- Morte e saída da hunt cancelam o dano pendente.
-- Tentativa fora do alcance, sem mana ou com alvo inválido não consome recursos.
-- Migração da ordem automática ocorre uma vez, sem conceder itens/atributos
-  ou reiniciar nível, EXP, ouro, mochila ou armazém. Ordem vazia é respeitada.
-- Avanço de Luz permanece no atalho 1. Impacto de Luz fica no atalho 2.
-  Só a segunda habilidade fica no automático durante a revisão inicial.
-- As cinco folhas aprovadas (idle, walk, run1, weapon, special) permanecem
-  byte a byte idênticas. O salto utiliza uma folha adicional de poses próprias.
+Cada habilidade conserva suas condições, recarga, custo, dano e animação.
+Não foi criado um combo obrigatório nem removida a restrição de distância
+do dash. Quando não pode usar uma habilidade, o guerreiro continua atacando
+normalmente. As teclas 1 e 2 continuam disponíveis para uso manual.
 
-CONFERENCIA NO NAVEGADOR
-Chromium/Playwright, cliente real com WebGL, conta local e mapa próprio.
-- Farm normal de 21 segundos: 3 ativações e 3 impactos da nova habilidade.
-- Seis poses renderizadas; salto realmente levanta o corpo, sem deslocar
-  a posição no chão. Recuperação e retomada dos ataques básicos verificadas.
-- Prévia nas quatro direções, incluindo salto e espada cravada.
-- Rastro do Avanço de Luz continua visível na prévia, limitado a cinco cópias.
-- Cenário adicional isolado de QA: 3 inimigos próximos com vida elevada.
-  Duas ativações atingiram os 3 alvos cada, totalizando 6 danos registrados.
-  Esse cenário não é distribuído nem altera os monstros/saves dos jogadores.
-- Nenhum erro JavaScript nem aviso de animação; novas folhas/efeitos HTTP 200.
-- O cliente ainda consulta sons antigos ausentes no ZIP capturado; esta versão
-  não adiciona uma trilha sonora própria para a habilidade.
+TESTES
+- 45 testes aprovados, nenhum reprovado, usando o recursos-publicos.zip real.
+- Teste da sequência automática: dash, recuperação, salto/impacto e retorno
+  aos ataques básicos, com os tempos de dano e recarga de cada habilidade.
+- Migração testada para saves antigos, inclusive a versão anterior que usava
+  somente Impacto de Luz. A ordem é alterada uma única vez para as duas skills.
+- Ordem vazia permanece desativada; escolhas posteriores são preservadas.
+- Testes existentes de alcance mínimo, colisão, cancelamento por morte/saída,
+  dano em área, respawn, inventário, armazém e persistência continuam aprovados.
 
-VALORES PROVISORIOS PARA AVALIACAO
-Alcance 75; área 150; dano 2,5x ataque; mana 12; recarga 7 segundos.
-A aparência do guerreiro continua fixa. Variações por equipamento ficam para
-uma etapa posterior. NPCs e inimigos continuam com suas artes provisórias.
+NAVEGADOR
+Chromium/Playwright, cliente real com WebGL, conta local, mapa e monstros normais.
+- 24 segundos de farm: 7 ativações com dano registrado.
+- 3 sequências consecutivas de Avanço de Luz + Impacto de Luz no mesmo inimigo.
+- Rastro do dash e pose de cravada conferidos visualmente.
+- Nenhum erro JavaScript ou aviso de animação.
+
+Cidade, hunt, monstros, artes, equipamentos, mochila, armazém, níveis, EXP,
+ouro e balanceamento das duas habilidades não receberam alterações.
+Os valores de balanceamento continuam provisórios para avaliação.
+O cliente ainda consulta sons antigos ausentes do ZIP capturado.
 
 WINDOWS
 1. Encerre o servidor anterior com Ctrl+C.
 2. Extraia o ZIP novo em uma pasta separada.
 3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
-   se quiser manter seu progresso. Copie também recursos-publicos.zip, ou deixe
-   esse arquivo em Downloads.
-4. Abra ABRIR_CLIENTE_COPIADO.bat. O iniciador prepara as dependências com Node.
-5. No navegador, use Ctrl+F5 para recarregar.
+   para manter o progresso. Copie também recursos-publicos.zip, ou deixe esse
+   arquivo em Downloads.
+4. Abra ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5 no navegador.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-Previa: http://127.0.0.1:5188/guerreiro

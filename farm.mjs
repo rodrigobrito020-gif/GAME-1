@@ -162,7 +162,7 @@ export class LocalFarm {
     const c = this.character;
     c.equipment.slots ??= [];
     if (!account.farmVersion) {
-      c.automation.skillOrder = [WARRIOR_GROUND_SLAM.id];
+      c.automation.skillOrder = ACTIVE_SKILLS.map((skill) => skill.id);
       c.consumables.hpPotions = { pequena: 10 };
       c.consumables.manaPotions = { pequena: 10 };
       account.farmVersion = 1;
@@ -171,12 +171,12 @@ export class LocalFarm {
     c.automation.skillOrder = (c.automation.skillOrder ?? [])
       .map((id) => (id === "corte-poderoso" ? WARRIOR_LIGHT_DASH.id : id))
       .filter((id) => ACTIVE_SKILLS.some((skill) => skill.id === id));
-    // Once per save, isolate the new skill for review. Respect a deliberately
-    // empty order and preserve any later player edits across future restarts.
-    if (account.skillReviewVersion !== 2) {
+    // Once per save, enable the approved dash + slam sequence. Respect a
+    // deliberately empty order and preserve later player edits on restart.
+    if (account.skillReviewVersion !== 3) {
       if (c.automation.skillOrder.length)
-        c.automation.skillOrder = [WARRIOR_GROUND_SLAM.id];
-      account.skillReviewVersion = 2;
+        c.automation.skillOrder = ACTIVE_SKILLS.map((skill) => skill.id);
+      account.skillReviewVersion = 3;
     }
     c.progress.hp ||= 250;
     c.progress.mana = Math.max(0, c.progress.mana);

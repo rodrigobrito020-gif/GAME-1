@@ -156,7 +156,7 @@ test("invalid, distant and unavailable slam casts consume no resources and reser
   }
 });
 
-test("second skill review migrates once, keeps manual slots and preserves disabled automation and earned progress", () => {
+test("combined skill review migrates once, keeps manual slots and preserves disabled automation and earned progress", () => {
   assert.deepEqual(
     ACTIVE_SKILLS.map((s) => [s.id, s.key]),
     [
@@ -165,7 +165,15 @@ test("second skill review migrates once, keeps manual slots and preserves disabl
     ],
   );
   const a = fixture({ order: ["corte-poderoso"], version: 1 });
-  assert.deepEqual(a.account.character.automation.skillOrder, [SLAM.id]);
+  assert.deepEqual(a.account.character.automation.skillOrder, [
+    "avanco-de-luz",
+    SLAM.id,
+  ]);
+  assert.deepEqual(
+    fixture({ order: [SLAM.id], version: 2 }).account.character.automation
+      .skillOrder,
+    ["avanco-de-luz", SLAM.id],
+  );
   assert.equal(a.account.character.wallet.gold, 1234);
   a.farm.automation({ skillOrder: ["avanco-de-luz", SLAM.id] });
   new LocalFarm(a.account);
@@ -179,7 +187,10 @@ test("second skill review migrates once, keeps manual slots and preserves disabl
   );
   delete a.account.farmVersion;
   new LocalFarm(a.account);
-  assert.deepEqual(a.account.character.automation.skillOrder, [SLAM.id]);
+  assert.deepEqual(a.account.character.automation.skillOrder, [
+    "avanco-de-luz",
+    SLAM.id,
+  ]);
 });
 
 test("two-handed plunge and ground wave agree on landing, recovery and render layer", () => {

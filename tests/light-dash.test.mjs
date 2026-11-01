@@ -301,3 +301,70 @@ test("nearby automatic combat keeps basic attacks and reserves the dash for the 
   );
   assert.equal(farm.character.progress.mana, 92);
 });
+
+test("approved automatic sequence closes with Avanço de Luz then lands Impacto de Luz without overlapping recovery", () => {
+  const a = fixture();
+  a.farm.automation({ skillOrder: [DASH.id, "impacto-de-luz"] });
+  const casts = [],
+    hits = [],
+    basics = [];
+  for (let elapsed = 50; elapsed <= 2400; elapsed += 50) {
+    const { events } = a.step(50);
+    casts.push(...events.casts.map((cast) => ({ ...cast, elapsed })));
+    hits.push(
+      ...events.damage
+        .filter((hit) => hit.source === 1)
+        .map((hit) => ({ ...hit, elapsed })),
+    );
+    basics.push(
+      ...events.moves
+        .filter((move) => move.entity === 1)
+        .map((move) => ({ ...move, elapsed })),
+    );
+  }
+  assert.deepEqual(
+    casts.map((cast) => cast.skillId),
+    [DASH.id, "impacto-de-luz"],
+  );
+  assert.equal(
+    casts[1].elapsed - casts[0].elapsed,
+    WARRIOR_ACTIONS[DASH.id].duration,
+  );
+  assert.ok(
+    Math.hypot(
+      casts[0].dest.x - casts[0].origin.x,
+      casts[0].dest.y - casts[0].origin.y,
+    ) >=
+      DASH.minRange * 10,
+  );
+  assert.deepEqual(
+    casts[1].dest,
+    casts[1].origin,
+    "slam stays centered on the landing position",
+  );
+  for (const cast of casts) {
+    const damage = hits.filter((hit) => hit.skillId === cast.skillId);
+    assert.equal(damage.length, 1);
+    assert.equal(damage[0].target, a.target.id);
+    assert.equal(
+      damage[0].elapsed - cast.elapsed,
+      WARRIOR_ACTIONS[cast.skillId].impact,
+    );
+  }
+  assert.ok(basics.length > 0, "ordinary attacks resume after both skills");
+  assert.ok(
+    basics.every(
+      (move) =>
+        move.elapsed >=
+        casts[1].elapsed + WARRIOR_ACTIONS["impacto-de-luz"].duration,
+    ),
+  );
+  assert.equal(
+    a.client.hunt.cooldowns[DASH.id],
+    10000 + casts[0].elapsed + 4000,
+  );
+  assert.equal(
+    a.client.hunt.cooldowns["impacto-de-luz"],
+    10000 + casts[1].elapsed + 7000,
+  );
+});

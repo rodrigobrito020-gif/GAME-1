@@ -1,8 +1,14 @@
-# Jogo local — 0.6.8: Impacto de Luz
+# Jogo local — 0.6.9: Avanço de Luz + Impacto de Luz
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Duas habilidades no automático — 0.6.9
+
+**Avanço de Luz (1)** e **Impacto de Luz (2)** agora funcionam juntos no farm. O guerreiro usa o dash contra um inimigo distante, respeita a recuperação e então salta/crava a espada em área quando está perto. Se uma habilidade estiver em recarga ou sem mana, os ataques básicos continuam normalmente. Não há nova regra de combo obrigatório: cada habilidade conserva seus requisitos, custo, recarga e animação aprovados.
+
+Ao carregar um save anterior com habilidades automáticas ativadas, a ordem passa uma única vez para Avanço de Luz → Impacto de Luz. Uma ordem vazia continua desativada, e escolhas posteriores do jogador continuam salvas. Cidade, hunt, monstros, itens e progresso são preservados. Rascunhos das outras habilidades continuam bloqueados.
 
 ## Segunda habilidade — Impacto de Luz (0.6.8)
 

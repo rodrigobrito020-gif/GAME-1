@@ -1,43 +1,57 @@
-VERSAO 0.6.11 — AURA CONTINUA E RECARGA DA EGIDE
+VERSAO 0.6.12 — ESCUDOS, INDICADORES E PEITORAL VISUAL
 Data: 01/11/2026
 
-CORRECOES
-- Aro dourado com três pequenos escudos/luzes circulando os pés.
-- Borda em ouro escuro para dar contraste no piso claro.
-- Loop visível enquanto a proteção está ativa; dissipa ao remover/expirar o buff.
-- Ícone circular acima do personagem, com arco de progresso e segundos restantes
-  da recarga real da Égide. Acompanha personagem, câmera e tamanho da janela.
-- Indicador não intercepta cliques nem substitui nome/barra de vida.
-- O buff dura 12 segundos e sua recarga dura 20 segundos. O indicador junto ao
-  painel mostra o buff; o círculo acima da cabeça mostra a recarga e continua
-  contando após a proteção terminar. Uma nova ativação reinicia a contagem.
-- Prévia mantém a aura pelos 12 segundos completos.
+CORRECOES E MELHORIAS
+- Três escudos pintados giram na altura do corpo, pela frente e por trás dele.
+  Tamanho mínimo legível em tela; duração segue o buff de 12 segundos.
+- Aro no chão preservado, com a órbita principal independente dos limites de
+  efeitos decorativos. Ao morrer, expirar ou sair da cena, os escudos somem.
+- Duração (12s) e recarga (20s) em dois círculos acima do nome e das barras,
+  com rótulos distintos. Não ficam sobre o texto do nome.
+- Nível removido da identificação do jogador e do anúncio numérico flutuante;
+  painel superior esquerdo continua mostrando o nível atual. Inimigos conservam
+  suas identificações de nível.
+- Peitoral de treino com desenho de aço azul: equipar/retirar muda o tronco no
+  mapa, na mochila e na foto, usando as mesmas poses e preservando o corpo base.
+- Ícone do item atualizado; prévia /guerreiro compara os dois visuais sem
+  conceder equipamento. Esta entrega cobre o peitoral de treino já existente;
+  outras peças de armadura ainda precisam de seus próprios modelos e itens.
+- v0.6.12 aparece no topo para identificar a atualização carregada.
 
 TESTES
-- 54 testes aprovados, nenhum reprovado, com recursos-publicos.zip real.
-- Novo teste verifica conteúdo visível e quadros diferentes durante todo o loop,
-  incluindo o último quadro: a aura não se dissipa como o efeito de ativação.
-- O teste de integração também verifica a sintaxe JavaScript do cliente adaptado.
-- Testes anteriores de dano, defesa, expiração, grupo, dash, cravada, inventário,
-  mapas, armazém, persistência e progresso continuam aprovados.
+57 testes aprovados, nenhum reprovado, com recursos-publicos.zip real.
+- Testes de aparência por equipamento real, sem conceder skin ou alterar a
+  identidade salva; peças em outros slots não ativam esse visual.
+- Todas as variantes mantêm dimensões, transparência, silhuetas e poses.
+  As diferenças ficam restritas às máscaras do tronco; corpo base não é editado.
+- Três escudos reais, posição em movimento, dimensão mínima, expiração e
+  limpeza ao mudar de cena verificados. A arte ocupa o quadro, evitando que
+  margens transparentes façam os escudos parecerem minúsculos.
+- Órbita calculada depois da atualização da câmera; indicadores posicionados
+  depois da renderização, utilizando os limites reais da identificação.
+- Testes anteriores de combate, defesa, grupo, inventário, armazém, mapas,
+  respawn, protocolo, persistência e progresso continuam aprovados.
 
-NAVEGADOR (Chromium/Playwright, cliente real com WebGL)
-- 32 quadros diferentes da aura em circulação, sem desaparecer durante o buff.
-- Contador inicia próximo de 20 segundos, continua após a expiração do buff
-  e desaparece ao chegar a zero. Renovação automática reinicia o contador.
-- Posição comparada com a câmera nativa: acompanha caminhada, salto, aproximação,
-  mudança de zoom e redimensionamento da janela.
-- Saída para a cidade limpa o indicador.
-- Prévia: aura visível aos 3,3s e 11,3s, removida aos 12,4s.
-- Nenhum erro JavaScript ou aviso de animação/efeito.
+NAVEGADOR
+Chromium/Playwright, cliente real com WebGL, 1920x1040 e janela menor:
+- Equipar e retirar um peitoral obtido em drops do save isolado de QA.
+- Modelo muda no mapa e na mochila e restaura o visual inicial ao retirar.
+- Um segundo processo do servidor carregou o save com peitoral equipado e
+  restaurou a aparência correta, mantendo a identidade base no arquivo.
+- Três escudos mantidos durante o buff, inclusive com zoom afastado.
+- Duração e recarga acima do nome/barra durante movimento, salto e zoom.
+- Depois da expiração, escudos/duração somem e a recarga continua contando.
+- Troca para a cidade limpa os indicadores. Identificação não mostra o nível
+  do próprio jogador; o painel superior esquerdo continua atualizado.
+- Prévia alterna o peitoral nas direções frente/esquerda/direita.
+- Nenhum erro JavaScript; novos modelos e ícones carregam por HTTP 200.
 
 PRESERVADO
-Defesa +30% (mínimo +2), duração 12s, mana 10, recarga 20s, dash e cravada,
-mapas, monstros, itens, níveis, EXP, ouro e automação. Nenhum item é concedido.
-Somente o PNG do loop da Égide mudou; PNGs dos efeitos anteriores e do personagem
-permanecem idênticos. O ZIP original de recursos permanece intacto.
-A partida continua local/solo; formação de equipes ainda não está disponível.
-Os valores de balanceamento continuam provisórios para avaliação.
+Peitoral continua dando +3 DEF e +25 HP, como antes. Égide continua +30% DEF
+(mínimo +2), duração 12s, mana 10, recarga 20s. Regras do dash, cravada, loot,
+mapas, monstros, níveis, EXP, ouro e inventários preservadas. Nenhum item concedido.
+O jogo continua local/solo. Equipamentos adicionais e formação de equipes ainda
+precisam ser implementados. O ZIP de recursos capturado não foi alterado.
 
 WINDOWS
 1. Encerre o servidor anterior com Ctrl+C.
@@ -46,5 +60,6 @@ WINDOWS
    para manter o progresso. Copie também recursos-publicos.zip, ou deixe esse
    arquivo em Downloads.
 4. Abra ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5 no navegador.
+5. Confira v0.6.12 no topo da tela.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa: http://127.0.0.1:5188/guerreiro

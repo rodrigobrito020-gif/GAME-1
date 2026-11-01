@@ -20,6 +20,15 @@ await Promise.all(
     );
   }),
 );
+const trainingImages = {};
+await Promise.all(
+  Object.keys(WARRIOR_SHEETS).map(async (name) => {
+    trainingImages[name] = await image(
+      `/assets/paperdoll/entities/humano-guerreiro-peitoral-treino/${name}.png`,
+    );
+  }),
+);
+let trainingArmor = false;
 const slamFx = await image(
   "/assets/fx/royal-warrior/guerreiro-impacto-luz.png",
 );
@@ -203,7 +212,7 @@ function render() {
         Math.pow(1 - (phase - stamp) / LIGHT_AFTERIMAGES.lifetimeMs, 1.25);
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(
-        images[pastSheet],
+        (trainingArmor ? trainingImages : images)[pastSheet],
         pastCol * 64,
         direction * 64,
         64,
@@ -220,7 +229,7 @@ function render() {
   canvas.dataset.afterimages = String(afterimages);
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(
-    images[sheet],
+    (trainingArmor ? trainingImages : images)[sheet],
     col * 64,
     direction * 64,
     64,
@@ -278,6 +287,10 @@ document.querySelector("#step").onclick = () => {
   paused = true;
   pause.textContent = "Continuar";
   elapsed += rig.stepMs;
+  render();
+};
+document.querySelector("#armor").onchange = (event) => {
+  trainingArmor = event.target.value === "training";
   render();
 };
 document.querySelector("#speed").onchange = (event) => {

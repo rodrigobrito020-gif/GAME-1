@@ -10,6 +10,11 @@ import {
 import path from "node:path";
 import { Protocol } from "./protocol.mjs";
 import { LocalFarm, AREAS, ITEMS, ACTIVE_SKILLS as SKILLS } from "./farm.mjs";
+import {
+  equipmentIdentity,
+  equipmentSkin,
+  TRAINING_ARMOR_LOOK,
+} from "./equipment-look.mjs";
 import { WARRIOR_SKIN } from "./warrior.mjs";
 import { ROYAL_HUNT_MAP_ID } from "./royal-hunt.mjs";
 export function attachLocalGame(
@@ -52,7 +57,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-10";
+  catalog.version = "local-human-warrior-11";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -104,6 +109,14 @@ export function attachLocalGame(
       kit: [],
     },
   ];
+  catalog.skins.push({
+    id: TRAINING_ARMOR_LOOK,
+    name: "Guerreiro Humano — peitoral de treino",
+    gender: 1,
+    classId: "guerreiro",
+    forSale: false,
+    kit: [],
+  });
   catalog.scenes = [
     {
       id: "cidade-local",
@@ -530,7 +543,7 @@ export function attachLocalGame(
     state: actor(client),
     name: account.character.identity.name,
     level: account.character.progress.level,
-    skinId: account.character.identity.skinId,
+    skinId: equipmentSkin(account.character),
     classId: account.character.identity.classId,
     scale: 1,
     appearance: account.character.identity.appearance,
@@ -538,11 +551,17 @@ export function attachLocalGame(
   const refreshSelf = (client) => {
     send(client, "entitySpawn", { tick, entities: [selfInfo(client)] });
     client.displayedLevel = account.character.progress.level;
+    client.displayedSkin = equipmentSkin(account.character);
   };
   const patch = (client) => {
     const c = account.character;
-    if (client.displayedLevel !== c.progress.level) refreshSelf(client);
+    if (
+      client.displayedLevel !== c.progress.level ||
+      client.displayedSkin !== equipmentSkin(c)
+    )
+      refreshSelf(client);
     send(client, "characterPatch", {
+      identity: equipmentIdentity(c),
       progress: c.progress,
       wallet: c.wallet,
       derived: c.derived,
@@ -632,6 +651,7 @@ export function attachLocalGame(
       ],
     });
     client.displayedLevel = account.character.progress.level;
+    client.displayedSkin = equipmentSkin(account.character);
     if (hunt) send(client, "huntSession", hunt.session);
   };
   const returnCity = (client) => {
@@ -673,7 +693,10 @@ export function attachLocalGame(
       requestId,
     );
     send(client, "contentCatalog", catalog);
-    send(client, "characterState", account.character);
+    send(client, "characterState", {
+      ...account.character,
+      identity: equipmentIdentity(account.character),
+    });
     enterScene(client);
     status.authenticated++;
   };

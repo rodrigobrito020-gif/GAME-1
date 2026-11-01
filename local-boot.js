@@ -30,89 +30,85 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
   setTimeout(() => observer.disconnect(), 30000);
 }
 
-// Status follows the draggable player card and disappears with the server buff.
+// Both server timers sit above the complete rendered nameplate: buff duration
+// and cooldown are different clocks, with explicit labels and separate arcs.
 {
-  const badge = document.createElement("div");
-  badge.className = "royal-defense-buff";
-  badge.hidden = true;
-  badge.setAttribute("role", "status");
-  badge.title = "Égide de Luz · Defesa +30% (mínimo +2). Não acumula.";
-  const icon = document.createElement("img");
-  icon.src = "/assets/ui/royal-warrior/egide-de-luz.svg";
-  icon.alt = "";
-  const label = document.createElement("span");
-  label.textContent = "Égide de Luz";
-  const remaining = document.createElement("strong");
-  badge.append(icon, label, remaining);
-  document.body.append(badge);
-  let until = 0;
-  const paint = () => {
-    const card = document.querySelector(".slHudCard"),
-      time = until - performance.now();
-    badge.hidden = !card || time <= 0;
-    if (badge.hidden) return;
-    const rect = card.getBoundingClientRect();
-    badge.style.left = `${rect.left}px`;
-    badge.style.top = `${rect.bottom + 8}px`;
-    remaining.textContent = `${Math.ceil(time / 1000)}s`;
-    badge.dataset.remainingMs = String(Math.max(0, Math.round(time)));
+  const header = document.createElement("div");
+  header.className = "royal-skill-statuses";
+  header.hidden = true;
+  const make = (className, label) => {
+    const node = document.createElement("div");
+    node.className = `royal-skill-orb ${className}`;
+    node.hidden = true;
+    node.setAttribute("role", "status");
+    node.setAttribute("aria-live", "off");
+    node.innerHTML =
+      '<svg viewBox="0 0 48 48" aria-hidden="true"><circle class="cooldown-track" cx="24" cy="24" r="21"/><circle class="cooldown-progress" cx="24" cy="24" r="21" pathLength="100"/></svg><img src="/assets/ui/royal-warrior/egide-de-luz.svg" alt=""><strong></strong><small></small>';
+    node.querySelector("small").textContent = label;
+    header.append(node);
+    return {
+      node,
+      ring: node.querySelector(".cooldown-progress"),
+      counter: node.querySelector("strong"),
+      until: 0,
+      total: 1,
+      label,
+    };
   };
-  window.addEventListener("royal-defense-buff", ({ detail }) => {
-    until = detail.removed ? 0 : performance.now() + detail.durationMs;
-    paint();
-  });
-  setInterval(paint, 125);
-}
-
-// This circle follows the rendered character, not the screen center or HUD card.
-// It shows the real 20-second recharge even after the 12-second buff expires.
-{
-  const marker = document.createElement("div");
-  marker.className = "royal-skill-cooldown";
-  marker.hidden = true;
-  marker.setAttribute("role", "status");
-  marker.setAttribute("aria-live", "off");
-  marker.innerHTML =
-    '<svg viewBox="0 0 48 48" aria-hidden="true"><circle class="cooldown-track" cx="24" cy="24" r="21"/><circle class="cooldown-progress" cx="24" cy="24" r="21" pathLength="100"/></svg><img src="/assets/ui/royal-warrior/egide-de-luz.svg" alt=""><strong></strong>';
-  document.body.append(marker);
-  const ring = marker.querySelector(".cooldown-progress"),
-    counter = marker.querySelector("strong");
-  let until = 0,
-    total = 0,
-    anchor = null;
+  const buff = make("royal-buff-duration", "DURAÇÃO"),
+    cooldown = make("royal-skill-cooldown", "RECARGA");
+  document.body.append(header);
+  let anchor = null;
   const paint = () => {
-    const now = performance.now(),
-      remaining = Math.max(0, until - now);
-    marker.hidden = remaining <= 0 || !anchor?.visible || now - anchor.at > 500;
-    if (remaining <= 0) window.__royalCooldownUntil = 0;
-    if (marker.hidden) return;
-    marker.style.left = `${anchor.x}px`;
-    marker.style.top = `${anchor.y}px`;
-    ring.style.strokeDasharray = `${Math.min(100, (100 * remaining) / total)} 100`;
-    counter.textContent = `${Math.ceil(remaining / 1000)}s`;
-    marker.setAttribute(
-      "aria-label",
-      `Égide de Luz: recarga ${Math.ceil(remaining / 1000)} segundos`,
-    );
-    marker.dataset.remainingMs = String(Math.round(remaining));
+    const now = performance.now();
+    for (const timer of [buff, cooldown]) {
+      const remaining = Math.max(0, timer.until - now);
+      timer.node.hidden = remaining <= 0;
+      timer.ring.style.strokeDasharray = `${Math.min(100, (100 * remaining) / timer.total)} 100`;
+      timer.counter.textContent = `${Math.ceil(remaining / 1000)}s`;
+      timer.node.dataset.remainingMs = String(Math.round(remaining));
+      timer.node.setAttribute(
+        "aria-label",
+        `Égide de Luz: ${timer.label.toLowerCase()} ${Math.ceil(remaining / 1000)} segundos`,
+      );
+    }
+    header.hidden =
+      (buff.node.hidden && cooldown.node.hidden) ||
+      !anchor?.visible ||
+      now - anchor.at > 500;
+    if (!header.hidden) {
+      header.style.left = `${anchor.x}px`;
+      header.style.top = `${anchor.y}px`;
+    }
+    window.__royalCooldownUntil = cooldown.until > now ? cooldown.until : 0;
+    window.__royalBuffUntil = buff.until > now ? buff.until : 0;
   };
-  window.addEventListener("royal-skill-cooldown", ({ detail }) => {
-    const remaining = Math.max(0, Number(detail.readyInMs) || 0);
-    total = Math.max(remaining, Number(detail.totalMs) || 0, 1);
-    until = performance.now() + remaining;
-    window.__royalCooldownEntity = detail.entity;
-    window.__royalCooldownUntil = until;
+  const start = (timer, entity, remaining, total) => {
+    const ms = Math.max(0, Number(remaining) || 0);
+    timer.total = Math.max(ms, Number(total) || 0, 1);
+    timer.until = performance.now() + ms;
+    window.__royalIndicatorEntity = entity;
     paint();
-  });
+  };
+  window.addEventListener("royal-defense-buff", ({ detail }) =>
+    start(
+      buff,
+      detail.entity,
+      detail.removed ? 0 : detail.durationMs,
+      detail.durationMs,
+    ),
+  );
+  window.addEventListener("royal-skill-cooldown", ({ detail }) =>
+    start(cooldown, detail.entity, detail.readyInMs, detail.totalMs),
+  );
   window.addEventListener("royal-skill-anchor", ({ detail }) => {
     anchor = { ...detail, at: performance.now() };
     paint();
   });
   window.addEventListener("royal-skill-scene-reset", () => {
-    until = 0;
+    buff.until = cooldown.until = 0;
     anchor = null;
-    window.__royalCooldownUntil = 0;
-    marker.hidden = true;
+    paint();
   });
   setInterval(paint, 100);
 }

@@ -2,6 +2,7 @@ import { adaptIdle } from "./png.mjs";
 import { readFileSync } from "node:fs";
 import { WARRIOR_SKIN, WARRIOR_SHEETS, warriorRig } from "./warrior.mjs";
 import { warriorEffects, warriorFx, warriorIcon } from "./warrior-fx.mjs";
+import { TRAINING_ARMOR_LOOK } from "./equipment-look.mjs";
 import { WARRIOR_VFX } from "./warrior-vfx.mjs";
 export function localAssets(byName, status) {
   const first = (name) => byName.get(name)?.[0]?.read();
@@ -23,6 +24,8 @@ export function localAssets(byName, status) {
   looks.looks["local-sombra"] = { entity: "local-sombra" };
   looks.entities[WARRIOR_SKIN] = Object.keys(WARRIOR_SHEETS);
   looks.looks[WARRIOR_SKIN] = { entity: WARRIOR_SKIN };
+  looks.entities[TRAINING_ARMOR_LOOK] = Object.keys(WARRIOR_SHEETS);
+  looks.looks[TRAINING_ARMOR_LOOK] = { entity: TRAINING_ARMOR_LOOK };
   const errors = JSON.parse(first("errors.json"));
   Object.assign(errors, {
     "errors.local.not_implemented":
@@ -73,16 +76,19 @@ export function localAssets(byName, status) {
       };
     }
     const hero =
-      /^\/assets\/paperdoll\/entities\/humano-guerreiro\/([a-z0-9]+)\.png$/.exec(
+      /^\/assets\/paperdoll\/entities\/(humano-guerreiro(?:-peitoral-treino)?)\/([a-z0-9]+)\.png$/.exec(
         pathname,
       );
-    if (hero && WARRIOR_SHEETS[hero[1]]) {
-      const key = "hero-" + hero[1];
+    if (hero && WARRIOR_SHEETS[hero[2]]) {
+      const key = hero[1] + "/" + hero[2];
       if (!sheets.has(key))
         sheets.set(
           key,
           readFileSync(
-            new URL(`./art/warrior/${hero[1]}.png`, import.meta.url),
+            new URL(
+              `./art/warrior/${hero[1] === TRAINING_ARMOR_LOOK ? "training/" : ""}${hero[2]}.png`,
+              import.meta.url,
+            ),
           ),
         );
       return { type: "image/png", bytes: sheets.get(key) };
@@ -103,6 +109,13 @@ export function localAssets(byName, status) {
         );
       return { type: "image/png", bytes: sheets.get(pathname) };
     }
+    if (pathname === "/assets/ui/royal-warrior/peitoral-treino.png")
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL("./art/warrior/training-cuirass-icon.png", import.meta.url),
+        ),
+      };
     const icon = /^\/assets\/ui\/royal-warrior\/([a-z-]+)\.svg$/.exec(pathname);
     if (effect || icon) {
       const key = pathname;

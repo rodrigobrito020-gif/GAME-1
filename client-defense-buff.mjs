@@ -11,7 +11,7 @@ export function withDefenseBuffUi(bytes) {
   code = replaceOnce(
     code,
     buff,
-    'buff(e,t=!1){if(e.entity===this.d.entities.own&&e.buffId==="egide-de-luz")window.dispatchEvent(new CustomEvent("royal-defense-buff",{detail:{durationMs:e.durationMs,removed:e.removed}}));let n=this.actor(e.entity);',
+    'buff(e,t=!1){if(e.buffId==="egide-de-luz")window.__royalAegisVisuals?.apply(this.actor(e.entity),e.durationMs,e.removed);if(e.entity===this.d.entities.own&&e.buffId==="egide-de-luz")window.dispatchEvent(new CustomEvent("royal-defense-buff",{detail:{entity:e.entity,durationMs:e.durationMs,removed:e.removed}}));let n=this.actor(e.entity);',
   );
   const cooldown = "r.on(`worldEvents`,e=>{for(let t of e.cooldowns)";
   code = replaceOnce(
@@ -25,15 +25,19 @@ export function withDefenseBuffUi(bytes) {
     scene,
     'r.on(`sceneEnter`,e=>{window.dispatchEvent(new CustomEvent("royal-skill-scene-reset"));this.enterScene(e)})',
   );
+  code = replaceOnce(
+    code,
+    "o.level&&t.level?Jr(`world.plate.level`",
+    "!r&&o.level&&t.level?Jr(`world.plate.level`",
+  );
+  code = replaceOnce(
+    code,
+    "this.d.floating.show(n.x,n.y-n.height-30,Jr(`world.fx.level_up`",
+    "e!==this.d.entities.own&&this.d.floating.show(n.x,n.y-n.height-30,Jr(`world.fx.level_up`",
+  );
   const anchor = "this.plate.setBar(this.hp,this.maxHp,this.shield)}tumble";
   const project = `
-if(this.id===window.__royalCooldownEntity&&performance.now()<window.__royalCooldownUntil){
-  const scene=this.root.scene,cam=scene.cameras.main,rect=scene.game.canvas.getBoundingClientRect();
-  const wx=this.x+this.body.x,wy=Math.min(this.y-this.height-this.plateLift-28,this.y+this.body.y-this.height-12);
-  const x=rect.left+(cam.x+(wx-cam.worldView.x)*cam.zoom)*rect.width/scene.scale.width;
-  const y=rect.top+(cam.y+(wy-cam.worldView.y)*cam.zoom)*rect.height/scene.scale.height;
-  window.dispatchEvent(new CustomEvent("royal-skill-anchor",{detail:{x,y,visible:this.alive&&!this.hidden&&this.root.visible&&x>=rect.left&&x<=rect.right&&y>=rect.top&&y<=rect.bottom}}));
-}
+window.__royalAegisVisuals?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);
   return Buffer.from(code);

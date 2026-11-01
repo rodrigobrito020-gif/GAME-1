@@ -115,7 +115,7 @@ export const ITEMS = [
     name: "Peitoral de treino",
     category: 2,
     slot: 4,
-    icon: "/assets/ui/v2/inventario.png",
+    icon: "/assets/ui/royal-warrior/peitoral-treino.png",
     classes: ["guerreiro"],
     baseRarity: "comum",
     base: { def: 3, hp: 25 },

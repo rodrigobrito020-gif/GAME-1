@@ -425,68 +425,37 @@ body {
   background: #dfc88d66 !important;
 }
 
-.royal-defense-buff {
-  position: fixed;
-  z-index: 45;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 7px 11px;
-  border: 1px solid #c6a460;
-  border-radius: 7px;
-  background: #fff6dfef;
-  color: #5b421d;
-  box-shadow: 0 3px 12px #49361825;
-  font:
-    600 12px system-ui,
-    sans-serif;
-  pointer-events: auto;
-}
-.royal-defense-buff[hidden] {
-  display: none;
-}
-.royal-defense-buff img {
-  width: 25px;
-  height: 25px;
-}
-.royal-defense-buff strong {
-  min-width: 24px;
-  color: #8b6327;
-}
-
-.royal-skill-cooldown {
-  position: fixed;
-  z-index: 30;
+.royal-skill-orb {
+  position: relative;
   width: 48px;
-  height: 57px;
-  transform: translate(-50%, -100%);
+  height: 72px;
   pointer-events: none;
   filter: drop-shadow(0 2px 3px #2b1e1355);
 }
-.royal-skill-cooldown[hidden] {
+.royal-skill-orb[hidden] {
   display: none;
 }
-.royal-skill-cooldown svg {
+.royal-skill-orb svg {
   position: absolute;
   inset: 0;
   width: 48px;
   height: 48px;
 }
-.royal-skill-cooldown circle {
+.royal-skill-orb circle {
   fill: #fff7e8f2;
   stroke-width: 3;
 }
-.royal-skill-cooldown .cooldown-track {
+.royal-skill-orb .cooldown-track {
   stroke: #685236;
 }
-.royal-skill-cooldown .cooldown-progress {
+.royal-skill-orb .cooldown-progress {
   fill: none;
   stroke: #e8b94d;
   stroke-linecap: round;
   transform: rotate(-90deg);
   transform-origin: 24px 24px;
 }
-.royal-skill-cooldown img {
+.royal-skill-orb img {
   position: absolute;
   left: 10px;
   top: 10px;
@@ -494,7 +463,7 @@ body {
   height: 28px;
   border-radius: 50%;
 }
-.royal-skill-cooldown strong {
+.royal-skill-orb strong {
   position: absolute;
   top: 38px;
   left: 50%;
@@ -511,4 +480,36 @@ body {
     700 12px/16px system-ui,
     sans-serif;
   font-variant-numeric: tabular-nums;
+}
+
+.royal-skill-statuses {
+  position: fixed;
+  z-index: 30;
+  display: flex;
+  gap: 10px;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+.royal-skill-statuses[hidden] {
+  display: none;
+}
+.royal-skill-orb small {
+  position: absolute;
+  top: 59px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: #fff7e8ef;
+  color: #563c1e;
+  white-space: nowrap;
+  font:
+    700 9px/11px system-ui,
+    sans-serif;
+}
+.royal-buff-duration .cooldown-progress {
+  stroke: #d7ab42;
+}
+.royal-skill-cooldown .cooldown-progress {
+  stroke: #6e91a4;
 }

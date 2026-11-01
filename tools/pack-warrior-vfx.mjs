@@ -124,7 +124,67 @@ function ring(pixels, radius, alpha, cy = 96) {
       if (glow > 0.02) blend(pixels, x, y, 101, 171, 212, glow * alpha);
     }
 }
+function shieldFrame() {
+  const w = aegisSource.width / 2,
+    h = aegisSource.height / 2;
+  const seen = new Uint8Array(w * h);
+  let largest = null;
+  for (let start = 0; start < seen.length; start++) {
+    const sx = start % w,
+      sy = Math.floor(start / w);
+    if (
+      seen[start] ||
+      aegisSource.pixels[(sy * aegisSource.width + sx) * 4 + 3] < 220
+    )
+      continue;
+    const queue = [start];
+    seen[start] = 1;
+    let x0 = sx,
+      y0 = sy,
+      x1 = sx,
+      y1 = sy;
+    for (let n = 0; n < queue.length; n++) {
+      const at = queue[n],
+        x = at % w,
+        y = Math.floor(at / w);
+      x0 = Math.min(x0, x);
+      x1 = Math.max(x1, x);
+      y0 = Math.min(y0, y);
+      y1 = Math.max(y1, y);
+      for (const next of [at - 1, at + 1, at - w, at + w]) {
+        const nx = next % w,
+          ny = Math.floor(next / w);
+        if (
+          next < 0 ||
+          next >= seen.length ||
+          seen[next] ||
+          Math.abs(nx - x) > 1 ||
+          aegisSource.pixels[(ny * aegisSource.width + nx) * 4 + 3] < 220
+        )
+          continue;
+        seen[next] = 1;
+        queue.push(next);
+      }
+    }
+    if (!largest || queue.length > largest.count)
+      largest = { x0, y0, x1, y1, count: queue.length };
+  }
+  if (!largest) throw Error("Escudo da Égide sem silhueta opaca.");
+  const { x0, y0, x1, y1 } = largest,
+    scale = Math.min(104 / (x1 - x0 + 1), 116 / (y1 - y0 + 1));
+  const pixels = Buffer.alloc(128 * 128 * 4);
+  for (let y = 1; y < 127; y++)
+    for (let x = 1; x < 127; x++) {
+      const sx = Math.floor((x - 64) / scale + (x0 + x1) / 2),
+        sy = Math.floor((y - 64) / scale + (y0 + y1) / 2);
+      if (sx < x0 - 1 || sx > x1 + 1 || sy < y0 - 1 || sy > y1 + 1) continue;
+      const at = (sy * aegisSource.width + sx) * 4;
+      aegisSource.pixels.copy(pixels, (y * 128 + x) * 4, at, at + 4);
+    }
+  return pixels;
+}
 function frame(fx, index) {
+  if (fx.kind === "aegis-shield") return shieldFrame();
   const pixels = Buffer.alloc(128 * 128 * 4),
     ms = (index * 1000) / fx.fps,
     t = index / (fx.frames - 1),
@@ -138,7 +198,10 @@ function frame(fx, index) {
   if (fx.kind.startsWith("aegis")) {
     const loop = fx.kind === "aegis-loop",
       finish = fx.kind === "aegis-fade";
-    if (loop) {
+    if (fx.kind === "aegis-shield") {
+      // Full painted crest for the three independent orbiting sprites.
+      paint(pixels, fx, { scaleX: 0.98, scaleY: 0.98, cy: 64, alpha: 1 });
+    } else if (loop) {
       // Keep a readable gold ring at the feet, with three moving light motes.
       // A full turn uses exactly one flipbook cycle; do not fade the loop away.
       paint(pixels, fx, {
@@ -157,17 +220,6 @@ function frame(fx, index) {
         }
       for (let i = 0; i < 3; i++) {
         const angle = (index / fx.frames) * Math.PI * 2 + (i * Math.PI * 2) / 3;
-        paint(
-          pixels,
-          { ...fx, cell: 0 },
-          {
-            scaleX: 0.2,
-            scaleY: 0.2,
-            cx: 64 + Math.cos(angle) * 48,
-            cy: 87 + Math.sin(angle) * 18,
-            alpha: 0.97,
-          },
-        );
         for (let tail = 6; tail >= 0; tail--) {
           const angle =
             (index / fx.frames) * Math.PI * 2 +

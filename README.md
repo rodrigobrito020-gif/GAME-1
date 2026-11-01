@@ -1,8 +1,21 @@
-# Jogo local — 0.6.11: aura da Égide e recarga acima do personagem
+# Jogo local — 0.6.12: escudos, indicadores e armadura equipada
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Escudos legíveis, tempos acima do nome e primeiro peitoral visual — 0.6.12
+
+- A Égide mantém **três escudos pintados orbitando na altura do corpo** durante a proteção. Eles acompanham caminhada, salto e ataque, passando pela frente e por trás do guerreiro. O tamanho mínimo na tela mantém a leitura mesmo com a câmera afastada. A órbita não depende do limite de efeitos decorativos do cliente. O aro no chão continua como complemento.
+- **DURAÇÃO** e **RECARGA** aparecem em dois círculos acima de toda a identificação do personagem. Duração conta os 12 segundos do buff; recarga conta os 20 segundos até o próximo uso. O indicador antigo junto ao painel foi transferido para essa faixa. A posição considera o nome/barra já renderizados e é atualizada depois da câmera, para evitar a sobreposição durante deslocamento/zoom.
+- O nível foi retirado da identificação acima do próprio jogador e do anúncio numérico flutuante de evolução. O nível no painel superior esquerdo, com foto e HP, continua atualizado. Níveis dos inimigos permanecem identificados.
+- **Peitoral de treino:** novo desenho de aço azul, couro e prata, aplicado somente ao tronco. Equipar a peça muda a aparência no mapa, na mochila e na foto; retirar restaura o visual inicial. O mesmo conjunto de poses continua sendo usado. Rosto, braços, pernas, capa, espada, escudo e silhuetas originais são preservados. A capa continua cobrindo o peitoral nas costas.
+- O visual deriva do item realmente equipado, sem conceder uma skin nem gravar uma aparência independente no save. A aparência retorna corretamente ao carregar o equipamento salvo. A peça conserva seus atributos existentes (+3 DEF e +25 HP); esta atualização não altera seus valores nem concede equipamentos.
+- Esta primeira entrega cobre o único peitoral de armadura já existente na base local. Outras peças/modelos poderão ser acrescentados ao mesmo mapeamento quando seus itens e artes forem criados.
+- Na prévia **/guerreiro**, a seleção de peitoral permite comparar o visual inicial com a peça de treino sem alterar o inventário da partida. O seletor é somente uma demonstração visual.
+- O topo da tela identifica **v0.6.12**, facilitando conferir se a versão nova está aberta. O vídeo recebido mostra uma barra contendo apenas a primeira habilidade; a versão atual mantém as três habilidades disponíveis.
+
+Defesa, custos e tempos da Égide, dash, cravada, loot, progressão e inventários mantêm as regras da versão anterior. Formação de equipes e múltiplas contas continuam pendentes nesta base local.
 
 ## Aura contínua e círculo de recarga — 0.6.11
 
@@ -110,7 +123,7 @@ As quatro habilidades têm movimentos e efeitos próprios: corte crescente de a�
 
 **Prévia interativa:** com o servidor aberto, acesse **http://127.0.0.1:5188/guerreiro**. É possível ver as quatro direções, pausar, avançar quadros e testar cada sequência. A prévia usa as mesmas folhas e sequências do jogo; o jogador também está integrado à cidade e às hunts.
 
-A atualização troca apenas a aparência do jogador. Não concede equipamentos, não substitui itens e não reinicia nível, ouro, EXP, mochila ou armazém. NPCs e monstros conservam os visuais provisórios atuais. A armadura, a espada e o escudo desenhados são uma aparência inicial fixa: trocar equipamentos ainda altera os atributos, mas não as peças do desenho.
+A atualização troca apenas a aparência do jogador. Não concede equipamentos, não substitui itens e não reinicia nível, ouro, EXP, mochila ou armazém. NPCs e monstros conservam os visuais provisórios atuais. A espada e o escudo desenhados continuam no visual básico. A partir da 0.6.12, equipar o peitoral de treino também muda o tronco; as demais peças aguardam modelos próprios.
 
 Fontes e contrato de animação estão em **art/warrior/README.md**, **manifest.json** e **warrior.mjs**. Servirão como base técnica para as próximas classes, que precisarão de suas próprias artes e ações.
 

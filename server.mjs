@@ -12,6 +12,9 @@ import { createMedievalCity } from "./medieval-city.mjs";
 import { createRoyalHunt } from "./royal-hunt.mjs";
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.CAPTURE_PORT ?? 5188);
+const version = JSON.parse(
+  readFileSync(path.join(root, "package.json"), "utf8"),
+).version;
 if (!Number.isInteger(port) || port < 1024 || port > 65535)
   throw Error("Porta inválida.");
 const candidates = [
@@ -58,6 +61,7 @@ const adaptedClient = withDefenseBuffUi(
 );
 const status = {
   mode: "captured-client-only",
+  version,
   originalBackend: false,
   ownGameLoaded: false,
   files: entries.size,
@@ -87,7 +91,7 @@ const types = {
   ".html": "text/html; charset=utf-8",
   ".mjs": "text/javascript; charset=utf-8",
 };
-const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praça da Coroa — RPG local</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"><link rel="stylesheet" href="/royal-theme.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" class="local-city-badge">PRAÇA DA COROA · SERVIDOR LOCAL</a><div id="game"></div><div id="ui"></div><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
+const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praça da Coroa — RPG local</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"><link rel="stylesheet" href="/royal-theme.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" class="local-city-badge">PRAÇA DA COROA · v${version}</a><div id="game"></div><div id="ui"></div><script src="/aegis-visuals.js" defer></script><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
 const server = createServer((req, res) => {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -173,6 +177,7 @@ const server = createServer((req, res) => {
       "/diagnostic.js",
       "/diagnostic.css",
       "/local-boot.js",
+      "/aegis-visuals.js",
       "/guerreiro",
       "/warrior-preview.js",
       "/warrior-preview.css",

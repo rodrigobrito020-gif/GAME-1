@@ -1,6 +1,6 @@
 {
   "name": "cliente-capturado-local",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,9 +9,10 @@
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "art:warrior": "node tools/pack-warrior.mjs && node tools/pack-training-armor.mjs",
+    "art:warrior": "node tools/pack-warrior.mjs && node tools/pack-starter-clothes.mjs --refresh-reference && node tools/pack-training-armor.mjs",
     "art:armor": "node tools/pack-training-armor.mjs",
-    "art:vfx": "node tools/pack-warrior-vfx.mjs"
+    "art:vfx": "node tools/pack-warrior-vfx.mjs",
+    "art:clothes": "node tools/pack-starter-clothes.mjs"
   },
   "dependencies": {
     "ws": "8.21.3"

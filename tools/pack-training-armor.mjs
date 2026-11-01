@@ -107,9 +107,12 @@ const manifest = {
 for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
   const image = decodeRgba(readFileSync(new URL(name + ".png", folder))),
     pixels = Buffer.from(image.pixels);
+  const reference = decodeRgba(
+    readFileSync(new URL("armored-reference/" + name + ".png", folder)),
+  );
   for (let row = 0; row < 4; row++)
     for (let col = 0; col < cols; col++) {
-      const face = faceOf(image, col, row);
+      const face = faceOf(reference, col, row);
       if (!face || row === 3) continue; // The original cape conceals the back plate.
       const dead = name === "special" && col === 5;
       const cx = (face.x0 + face.x1) / 2;

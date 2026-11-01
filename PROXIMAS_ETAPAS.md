@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.13: roupas simples sem peitoral equipado; armadura apenas com a peça equipada. Acima do personagem, somente a duração da Égide; recarga apenas na barra de habilidades.
+
 - 0.6.1: caminhada articulada e alternada, ataques com escala estável e combo, Pátio da Coroa próprio para as hunts e reaparecimento dos monstros com novas identidades para impedir invisibilidade após a morte.
 
 - 0.6.0: Guerreiro Humano original integrado ao jogador, folhas de repouso/caminhada/espada/reações, quatro habilidades com efeitos próprios, impacto sincronizado e prévia interativa. Progresso e equipamentos preservados.
@@ -20,7 +22,7 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 1. Refinar o Guerreiro Humano após a revisão visual do jogador. Criar variações visuais de equipamentos, corrida dedicada e artes distintas dos monstros e NPCs; o humano inicial já está integrado.
 2. Criação de personagens e classes, usando um catálogo próprio de habilidades e equipamentos.
 3. Ambientes de caça próprios, inimigos variados e chefes. Cidade e arena já têm mapas próprios; faltam novos ambientes e inimigos com artes distintas.
-4. Ampliar os equipamentos, raridades e progressão; balancear as recompensas com testes de jogo.
+4. Reaproveitar os sets do Lineage 2 já preparados no GAME-1: comum/No Grade, incomum/D, raro/C, épico/B e lendário/A. Adaptar os modelos/texturas 3D para as poses 2D e vincular cada peça ao slot equipado, com bônus de conjunto completo. Não substituir esse catálogo por equipamentos novos genéricos. Fontes e limites atuais em `LINEAGE_SETS.md`. Balancear recompensas com testes de jogo.
 5. Expandir os demais sistemas escolhidos para o nosso jogo. Menus existentes no cliente não significam que o servidor desses sistemas foi implementado.
 6. Ampliar a identidade visual aprovada: branco, marfim e dourado. A cidade e os painéis principais já seguem essa direção na 0.5.
 

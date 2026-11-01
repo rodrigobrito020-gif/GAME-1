@@ -486,7 +486,6 @@ body {
   position: fixed;
   z-index: 30;
   display: flex;
-  gap: 10px;
   transform: translate(-50%, -100%);
   pointer-events: none;
 }
@@ -509,7 +508,4 @@ body {
 }
 .royal-buff-duration .cooldown-progress {
   stroke: #d7ab42;
-}
-.royal-skill-cooldown .cooldown-progress {
-  stroke: #6e91a4;
 }

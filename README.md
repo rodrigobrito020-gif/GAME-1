@@ -1,8 +1,19 @@
-# Jogo local — 0.6.12: escudos, indicadores e armadura equipada
+# Jogo local — 0.6.13: roupas iniciais e duração da Égide
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Roupas iniciais e um único indicador de duração — 0.6.13
+
+- Sem peitoral equipado, o Guerreiro Humano usa camisa de linho, calça de tecido e botas simples, sem placas metálicas no corpo. As seis folhas de animação usam esse visual. Rosto, silhuetas, contato dos pés, espada, escudo e os movimentos aprovados continuam preservados.
+- Equipar o peitoral de treino existente muda o tronco; retirar restaura as roupas simples. Não é preciso criar personagem novo. Saves que já têm o peitoral equipado continuam com a peça, sem perda de equipamento ou alteração de atributos.
+- Acima do personagem aparece **somente DURAÇÃO**, em um círculo durante os 12 segundos da Égide. O círculo some ao terminar o buff. **A recarga permanece na barra nativa de habilidades**; não há segundo indicador nem contagem de recarga sobre a cabeça. Posição acima do nome e três escudos orbitais mantidos.
+- Os sets do Lineage 2 preparados no GAME-1 continuam sendo a referência aprovada, do comum ao lendário. Seus catálogos, modelos e texturas são 3D; ainda não estão convertidos em todas as aparências desta base 2D. O peitoral de treino é a peça de teste existente, não um substituto desses sets. Ver [LINEAGE_SETS.md](LINEAGE_SETS.md) para as fontes e a correspondência de graus.
+- `npm run art:clothes` reconstrói as roupas sem degradar as poses; `npm run art:armor` reconstrói a variante equipada. As referências anteriores ficam em `art/warrior/armored-reference` apenas para o empacotamento. A prévia `/guerreiro` identifica roupas iniciais e peitoral equipado.
+- No Windows: fechar o servidor, extrair o ZIP novo, copiar `.local-runtime` e `recursos-publicos.zip` da pasta anterior e abrir `ABRIR_CLIENTE_COPIADO.bat`. Usar Ctrl+F5 e conferir **v0.6.13** no topo.
+
+As seções abaixo são o histórico das versões; a regra atual dos indicadores é a descrita acima.
 
 ## Escudos legíveis, tempos acima do nome e primeiro peitoral visual — 0.6.12
 

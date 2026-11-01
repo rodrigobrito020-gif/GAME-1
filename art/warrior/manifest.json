@@ -1,7 +1,7 @@
 {
   "character": "Guerreiro Humano",
   "skinId": "humano-guerreiro",
-  "version": 6,
+  "version": 7,
   "frame": [
     64,
     64
@@ -30,7 +30,8 @@
     "Corrida reutiliza o ciclo de caminhada.",
     "Grito de guerra vira de frente nas direções laterais.",
     "Escudo no braço esquerdo; espada na mão direita.",
-    "Corpo base preservado; o peitoral de treino utiliza uma variante visual quando equipado."
+    "Sem peitoral equipado: camisa de linho, calça e botas simples. Sem armadura metálica no corpo.",
+    "Peitoral de treino altera o tronco somente quando o item está equipado."
   ],
   "sources": {
     "idle": [
@@ -2726,5 +2727,6 @@
   },
   "equipmentLooks": {
     "peitoral-local": "training"
-  }
+  },
+  "starterClothes": "source/starter-clothes.png"
 }

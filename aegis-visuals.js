@@ -26,8 +26,7 @@
   const project = (actor) => {
     if (
       !actor?.root.active ||
-      performance.now() >=
-        Math.max(window.__royalCooldownUntil || 0, window.__royalBuffUntil || 0)
+      performance.now() >= (window.__royalBuffUntil || 0)
     )
       return;
     const scene = actor.root.scene,

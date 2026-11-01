@@ -293,7 +293,7 @@ writeFileSync(
     {
       character: "Guerreiro Humano",
       skinId: "humano-guerreiro",
-      version: 6,
+      version: 7,
       frame: [64, 64],
       feet: [32, 60],
       rows: ["south", "west", "east", "north"],
@@ -301,11 +301,12 @@ writeFileSync(
       walkStride: WALK_STRIDE,
       rig: "warrior-walk-rig.mjs",
       equipmentLooks: { "peitoral-local": "training" },
+      starterClothes: "source/starter-clothes.png",
       notes: [
         "Corrida reutiliza o ciclo de caminhada.",
         "Grito de guerra vira de frente nas direções laterais.",
         "Escudo no braço esquerdo; espada na mão direita.",
-        "Corpo base preservado; o peitoral de treino utiliza uma variante visual quando equipado.",
+        "Sem peitoral equipado: roupas simples de linho e couro. Peitoral de treino aparece somente quando equipado.",
       ],
       sources,
     },

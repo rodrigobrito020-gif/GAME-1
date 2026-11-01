@@ -19,7 +19,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 76
+      "changed": 114
     },
     {
       "sheet": "idle",
@@ -38,7 +38,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 82
+      "changed": 112
     },
     {
       "sheet": "idle",
@@ -57,7 +57,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 76
+      "changed": 114
     },
     {
       "sheet": "idle",
@@ -76,7 +76,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 82
+      "changed": 114
     },
     {
       "sheet": "idle",
@@ -95,7 +95,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 72
     },
     {
       "sheet": "idle",
@@ -114,7 +114,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 46
+      "changed": 73
     },
     {
       "sheet": "idle",
@@ -133,7 +133,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 72
     },
     {
       "sheet": "idle",
@@ -152,7 +152,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 53
+      "changed": 75
     },
     {
       "sheet": "idle",
@@ -171,7 +171,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 73
     },
     {
       "sheet": "idle",
@@ -190,7 +190,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 48
+      "changed": 79
     },
     {
       "sheet": "idle",
@@ -209,7 +209,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 73
     },
     {
       "sheet": "idle",
@@ -228,7 +228,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 53
+      "changed": 79
     },
     {
       "sheet": "walk",
@@ -247,7 +247,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 76
+      "changed": 114
     },
     {
       "sheet": "walk",
@@ -266,7 +266,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 78
+      "changed": 114
     },
     {
       "sheet": "walk",
@@ -285,7 +285,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 76
+      "changed": 114
     },
     {
       "sheet": "walk",
@@ -304,7 +304,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 78
+      "changed": 114
     },
     {
       "sheet": "walk",
@@ -323,7 +323,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 72
     },
     {
       "sheet": "walk",
@@ -342,7 +342,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 73
     },
     {
       "sheet": "walk",
@@ -361,7 +361,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 72
     },
     {
       "sheet": "walk",
@@ -380,7 +380,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 73
     },
     {
       "sheet": "walk",
@@ -399,7 +399,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 73
     },
     {
       "sheet": "walk",
@@ -418,7 +418,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 79
     },
     {
       "sheet": "walk",
@@ -437,7 +437,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 73
     },
     {
       "sheet": "walk",
@@ -456,7 +456,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 79
     },
     {
       "sheet": "run1",
@@ -475,7 +475,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 76
+      "changed": 114
     },
     {
       "sheet": "run1",
@@ -494,7 +494,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 78
+      "changed": 114
     },
     {
       "sheet": "run1",
@@ -513,7 +513,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 76
+      "changed": 114
     },
     {
       "sheet": "run1",
@@ -532,7 +532,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 78
+      "changed": 114
     },
     {
       "sheet": "run1",
@@ -551,7 +551,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 72
     },
     {
       "sheet": "run1",
@@ -570,7 +570,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 73
     },
     {
       "sheet": "run1",
@@ -589,7 +589,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 72
     },
     {
       "sheet": "run1",
@@ -608,7 +608,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 73
     },
     {
       "sheet": "run1",
@@ -627,7 +627,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 73
     },
     {
       "sheet": "run1",
@@ -646,7 +646,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 79
     },
     {
       "sheet": "run1",
@@ -665,7 +665,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 49
+      "changed": 73
     },
     {
       "sheet": "run1",
@@ -684,7 +684,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 54
+      "changed": 79
     },
     {
       "sheet": "weapon",
@@ -703,7 +703,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 40
+      "changed": 105
     },
     {
       "sheet": "weapon",
@@ -722,7 +722,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 6
+      "changed": 45
     },
     {
       "sheet": "weapon",
@@ -741,7 +741,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 7
+      "changed": 47
     },
     {
       "sheet": "weapon",
@@ -760,7 +760,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 7
+      "changed": 54
     },
     {
       "sheet": "weapon",
@@ -779,7 +779,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 5
+      "changed": 44
     },
     {
       "sheet": "weapon",
@@ -798,7 +798,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 34
+      "changed": 105
     },
     {
       "sheet": "weapon",
@@ -817,7 +817,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 30
+      "changed": 65
     },
     {
       "sheet": "weapon",
@@ -836,7 +836,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 10
+      "changed": 54
     },
     {
       "sheet": "weapon",
@@ -855,7 +855,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 7
+      "changed": 61
     },
     {
       "sheet": "weapon",
@@ -874,7 +874,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 15
+      "changed": 52
     },
     {
       "sheet": "weapon",
@@ -893,7 +893,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 8
+      "changed": 15
     },
     {
       "sheet": "weapon",
@@ -912,7 +912,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 30
+      "changed": 61
     },
     {
       "sheet": "weapon",
@@ -931,7 +931,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 30
+      "changed": 65
     },
     {
       "sheet": "weapon",
@@ -950,7 +950,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 10
+      "changed": 50
     },
     {
       "sheet": "weapon",
@@ -969,7 +969,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 8
+      "changed": 56
     },
     {
       "sheet": "weapon",
@@ -988,7 +988,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 12
+      "changed": 55
     },
     {
       "sheet": "weapon",
@@ -1007,7 +1007,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 9
+      "changed": 13
     },
     {
       "sheet": "weapon",
@@ -1026,7 +1026,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 25
+      "changed": 64
     },
     {
       "sheet": "special",
@@ -1045,7 +1045,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 43
+      "changed": 106
     },
     {
       "sheet": "special",
@@ -1064,7 +1064,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 24
+      "changed": 66
     },
     {
       "sheet": "special",
@@ -1083,7 +1083,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 13
+      "changed": 58
     },
     {
       "sheet": "special",
@@ -1102,7 +1102,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 12
+      "changed": 77
     },
     {
       "sheet": "special",
@@ -1121,7 +1121,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 31
+      "changed": 87
     },
     {
       "sheet": "special",
@@ -1140,7 +1140,7 @@
         "w": 14,
         "h": 10
       },
-      "changed": 19
+      "changed": 60
     },
     {
       "sheet": "special",
@@ -1159,7 +1159,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 8
+      "changed": 38
     },
     {
       "sheet": "special",
@@ -1178,7 +1178,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 12
+      "changed": 28
     },
     {
       "sheet": "special",
@@ -1197,7 +1197,7 @@
         "w": 10,
         "h": 12
       },
-      "changed": 24
+      "changed": 83
     },
     {
       "sheet": "special",
@@ -1216,7 +1216,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 1
+      "changed": 31
     },
     {
       "sheet": "special",
@@ -1235,7 +1235,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 13
+      "changed": 64
     },
     {
       "sheet": "special",
@@ -1254,7 +1254,7 @@
         "w": 14,
         "h": 10
       },
-      "changed": 58
+      "changed": 95
     },
     {
       "sheet": "special",
@@ -1273,7 +1273,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 14
+      "changed": 39
     },
     {
       "sheet": "special",
@@ -1292,7 +1292,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 21
+      "changed": 57
     },
     {
       "sheet": "special",
@@ -1311,7 +1311,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 6
+      "changed": 40
     },
     {
       "sheet": "special",
@@ -1330,7 +1330,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 24
+      "changed": 42
     },
     {
       "sheet": "special",
@@ -1349,7 +1349,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 16
+      "changed": 64
     },
     {
       "sheet": "special",
@@ -1368,7 +1368,7 @@
         "w": 14,
         "h": 10
       },
-      "changed": 3
+      "changed": 46
     },
     {
       "sheet": "axeheavy",
@@ -1387,7 +1387,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 18
+      "changed": 111
     },
     {
       "sheet": "axeheavy",
@@ -1406,7 +1406,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 17
+      "changed": 72
     },
     {
       "sheet": "axeheavy",
@@ -1425,7 +1425,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 7
+      "changed": 26
     },
     {
       "sheet": "axeheavy",
@@ -1444,7 +1444,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 20
+      "changed": 75
     },
     {
       "sheet": "axeheavy",
@@ -1463,7 +1463,7 @@
         "w": 13,
         "h": 10
       },
-      "changed": 10
+      "changed": 48
     },
     {
       "sheet": "axeheavy",
@@ -1482,7 +1482,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 20
+      "changed": 99
     },
     {
       "sheet": "axeheavy",
@@ -1501,7 +1501,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 20
+      "changed": 99
     },
     {
       "sheet": "axeheavy",
@@ -1520,7 +1520,7 @@
         "w": 13,
         "h": 12
       },
-      "changed": 20
+      "changed": 99
     },
     {
       "sheet": "axeheavy",
@@ -1539,7 +1539,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 6
+      "changed": 44
     },
     {
       "sheet": "axeheavy",
@@ -1558,7 +1558,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 10
+      "changed": 32
     },
     {
       "sheet": "axeheavy",
@@ -1577,7 +1577,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 5
+      "changed": 50
     },
     {
       "sheet": "axeheavy",
@@ -1596,7 +1596,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 13
+      "changed": 44
     },
     {
       "sheet": "axeheavy",
@@ -1615,7 +1615,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 7
+      "changed": 27
     },
     {
       "sheet": "axeheavy",
@@ -1634,7 +1634,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 12
+      "changed": 49
     },
     {
       "sheet": "axeheavy",
@@ -1653,7 +1653,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 12
+      "changed": 49
     },
     {
       "sheet": "axeheavy",
@@ -1672,7 +1672,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 12
+      "changed": 49
     },
     {
       "sheet": "axeheavy",
@@ -1691,7 +1691,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 6
+      "changed": 45
     },
     {
       "sheet": "axeheavy",
@@ -1710,7 +1710,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 11
+      "changed": 27
     },
     {
       "sheet": "axeheavy",
@@ -1729,7 +1729,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 4
+      "changed": 43
     },
     {
       "sheet": "axeheavy",
@@ -1748,7 +1748,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 11
+      "changed": 31
     },
     {
       "sheet": "axeheavy",
@@ -1767,7 +1767,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 7
+      "changed": 27
     },
     {
       "sheet": "axeheavy",
@@ -1786,7 +1786,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 14
+      "changed": 47
     },
     {
       "sheet": "axeheavy",
@@ -1805,7 +1805,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 14
+      "changed": 47
     },
     {
       "sheet": "axeheavy",
@@ -1824,7 +1824,7 @@
         "w": 10,
         "h": 10
       },
-      "changed": 14
+      "changed": 47
     }
   ]
 }

@@ -11,6 +11,48 @@ import { decodeRgba } from "../png.mjs";
 import vm from "node:vm";
 import { EventEmitter } from "node:events";
 
+test("starter garments keep all authored animation silhouettes and exposed face pixels", () => {
+  const poses = JSON.parse(
+    readFileSync(
+      new URL("../art/warrior/armored-reference/anchors.json", import.meta.url),
+    ),
+  ).poses;
+  for (const [name] of Object.entries(WARRIOR_SHEETS)) {
+    const original = decodeRgba(
+      readFileSync(
+        new URL(
+          `../art/warrior/armored-reference/${name}.png`,
+          import.meta.url,
+        ),
+      ),
+    );
+    const clothes = decodeRgba(
+      readFileSync(new URL(`../art/warrior/${name}.png`, import.meta.url)),
+    );
+    assert.equal(clothes.width, original.width);
+    assert.equal(clothes.height, original.height);
+    for (let i = 3; i < original.pixels.length; i += 4)
+      assert.equal(
+        clothes.pixels[i],
+        original.pixels[i],
+        "clothing must not clip limbs, feet or weapons",
+      );
+    for (const pose of poses.filter((p) => p.sheet === name)) {
+      const f = pose.face;
+      for (let y = f.y0; y <= f.y1; y++)
+        for (let x = f.x0; x <= f.x1; x++) {
+          const at =
+            ((pose.row * 64 + y) * clothes.width + pose.col * 64 + x) * 4;
+          assert.deepEqual(
+            clothes.pixels.subarray(at, at + 4),
+            original.pixels.subarray(at, at + 4),
+            `${name}: keep the approved face`,
+          );
+        }
+    }
+  }
+});
+
 test("equipment appearance derives from an actually equipped chest item without granting a cosmetic skin or changing saved identity", () => {
   const character = {
     identity: {

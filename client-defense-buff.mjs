@@ -1,5 +1,5 @@
 // Version-checked bridges from the native renderer to our own small HUD.
-// Timers use authoritative cooldown events, independently of the 12-second buff.
+// The overhead timer uses the authoritative buff lifetime. Native recharge UI stays intact.
 function replaceOnce(code, needle, replacement) {
   if (code.split(needle).length !== 2)
     throw Error("Cliente incompatível com os indicadores da Égide de Luz.");
@@ -12,12 +12,6 @@ export function withDefenseBuffUi(bytes) {
     code,
     buff,
     'buff(e,t=!1){if(e.buffId==="egide-de-luz")window.__royalAegisVisuals?.apply(this.actor(e.entity),e.durationMs,e.removed);if(e.entity===this.d.entities.own&&e.buffId==="egide-de-luz")window.dispatchEvent(new CustomEvent("royal-defense-buff",{detail:{entity:e.entity,durationMs:e.durationMs,removed:e.removed}}));let n=this.actor(e.entity);',
-  );
-  const cooldown = "r.on(`worldEvents`,e=>{for(let t of e.cooldowns)";
-  code = replaceOnce(
-    code,
-    cooldown,
-    'r.on(`worldEvents`,e=>{for(const cd of e.cooldowns)if(cd.skillId==="egide-de-luz")window.dispatchEvent(new CustomEvent("royal-skill-cooldown",{detail:{entity:this.entities.own,readyInMs:cd.readyInMs,totalMs:cd.totalMs}}));for(let t of e.cooldowns)',
   );
   const scene = "r.on(`sceneEnter`,e=>this.enterScene(e))";
   code = replaceOnce(

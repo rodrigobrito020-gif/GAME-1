@@ -276,6 +276,8 @@ test("the active skill lands at its impact frame, reserves recovery and cancels 
       target = client.hunt.monsters[0];
     const hp = target.hp,
       health = farm.character.progress.hp;
+    client.x = target.x - 200;
+    client.y = target.y;
     const cast = farm.cast(client, id, target.id);
     assert.equal(cast.events.casts.length, 1);
     assert.equal(cast.events.damage.length, 0);
@@ -296,6 +298,8 @@ test("the active skill lands at its impact frame, reserves recovery and cancels 
       assert.equal(farm.character.progress.hp, health + 25);
   }
   const { farm, client, step } = scenario();
+  client.x = client.hunt.monsters[0].x - 200;
+  client.y = client.hunt.monsters[0].y;
   farm.cast(client, "avanco-de-luz", 100);
   const gold = farm.character.wallet.gold;
   farm.stop(client);
@@ -311,11 +315,16 @@ test("the active skill lands at its impact frame, reserves recovery and cancels 
     tierMin: 1,
     difficulty: "normal",
   });
-  client.x = client.hunt.monsters[0].x;
-  client.y = client.hunt.monsters[0].y - 16;
+  client.x = client.hunt.monsters[0].x - 200;
+  client.y = client.hunt.monsters[0].y;
   farm.character.progress.hp = 1;
   farm.cast(client, "avanco-de-luz", 100);
-  client.hunt.monsters[0].nextAttack = 0;
+  Object.assign(client.hunt.monsters[1], {
+    x: client.x,
+    y: client.y,
+    home: { x: client.x, y: client.y },
+    nextAttack: 0,
+  });
   assert.equal(step(50).died, true);
   assert.equal(step(1000).events.damage.length, 0);
   assert.equal(farm.character.wallet.gold, gold);

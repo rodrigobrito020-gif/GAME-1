@@ -1,43 +1,45 @@
-JOGO LOCAL — 0.6.5: SOMENTE AVANÇO DE LUZ
+JOGO LOCAL — 0.6.6: DASH SOMENTE PARA INIMIGOS DISTANTES
 Data: 01/11/2026
 
 ALTERAÇÃO
-Somente Avanço de Luz (tecla 1) está disponível na barra, no uso manual,
-na automação e na prévia. Investida, Golpe Destruidor e Fúria ficam desativadas.
-As definições e artes anteriores são preservadas no código para revisão futura.
+Avanço de Luz exige distância de 160 a 300 unidades no início da ativação.
+Perto do inimigo, o farm continua com ataques básicos e reserva o dash para
+outra aproximação. O mínimo também vale para uso manual pela tecla 1.
 
-Ao carregar um progresso anterior, a ordem automática é filtrada para a única
-habilidade ativa. Uma ordem vazia continua desligada. Tentativas de usar ou
-reativar as outras três habilidades recebem local.invalid_skill.
+Tentativa perto demais recebe local.target_too_close, com mensagem em português,
+sem gastar mana, iniciar recarga, preparar dano ou deslocar o personagem.
+A validação ocorre no servidor, inclusive para a referência antiga da habilidade.
+Somente Avanço de Luz continua disponível; as outras três permanecem desativadas.
+Movimento, efeito visual, dano, custo e recarga do dash não foram alterados.
+Progresso, itens, nível e moedas são preservados.
 
-Ataques básicos, deslocamento, poções, inventário e progresso continuam ativos.
-O dash mantém os parâmetros, movimento, efeitos, custo e recarga da 0.6.4.
+TESTES
+39 aprovados, nenhum pulado, com recursos-publicos.zip real.
+- Distâncias 0, 50, 120, 159,99 e diagonal próxima recusadas sem custo/recarga.
+- Limite exato de 160, diagonal de comprimento 160 e máximo 300 aceitos.
+- Acima de 300 recusado como alvo fora do alcance.
+- Combate próximo por mais de quatro segundos não dispara dash parado,
+  mantém ataques básicos e conserva mana/recarga para um alvo distante.
+- Movimento em oito direções, chegada, dano, obstáculos e cancelamentos.
+- Catálogo com apenas uma habilidade e bloqueio manual/automático das demais.
+- Regressões de inventário, progressão, reaparecimento e persistência.
+- Integração HTTP/WebSocket com o cliente real.
 
-VERIFICAÇÃO
-37 testes aprovados, nenhum pulado, usando recursos-publicos.zip real.
-- Catálogo de rede contém apenas avanco-de-luz.
-- Servidor recusa uso manual das outras três habilidades e tentativa de
-  reativá-las com setAutomation; não consome mana nem dispara efeitos.
-- Preferências antigas não conseguem disparar habilidades desativadas.
-- Migração mantém progresso, moedas, itens e automação vazia.
-- Regressões do dash em oito direções, colisões, cancelamentos, dano e recarga.
-- Movimento, farm, reaparecimento, inventário e persistência após reinício.
-
-Chromium, 1440x900, ensaio de 23 segundos além da entrada/capturas:
-- 7 usos do Avanço de Luz e 6 abates.
-- Todos os eventos de habilidade recebidos pertenciam a avanco-de-luz.
-- Teclas 2, 3 e 4 não dispararam outra habilidade.
-- Ícone, rastro e impacto responderam 200; sem exceção JavaScript ou avisos
-  de falha de arte/animação/mapa.
-- Prévia conferida com apenas o Avanço de Luz entre os botões de habilidades.
+CHROMIUM — 1440x900
+Ensaio de 23 segundos além da entrada/capturas:
+- 4 usos do dash, todos com distância inicial de pelo menos 160 unidades.
+  Distâncias observadas: aproximadamente 193, 293, 300 e 299 unidades.
+- 7 abates, com ataques básicos observados entre as aproximações.
+- Nenhum evento de outra habilidade; teclas 2, 3 e 4 continuam sem dispará-las.
+- Ícone, rastro e impacto carregados; sem exceção JavaScript nem avisos de falha
+  de arte/animação/mapa. Prévia também aberta sem erros.
 
 LIMITES
-Ataques básicos continuam para manter o farm. Os sprites e demais sistemas
-não foram modificados nesta atualização. Testado em Linux/Chromium, sem
-execução em Windows físico. Servidor local para uma conta.
+Este ajuste trata a distância de uso; não redesenha a pose nem o rastro da skill.
+Servidor local para uma conta. Testado em Linux/Chromium, não em Windows físico.
 
 WINDOWS
-Feche a versão antiga, extraia o ZIP em outra pasta e copie recursos-publicos.zip
-mais .local-runtime, com os servidores fechados, para preservar seu progresso.
-Execute ABRIR_CLIENTE_COPIADO.bat e atualize a página com Ctrl+F5.
+Feche o servidor antigo, extraia em outra pasta e copie recursos-publicos.zip e
+.local-runtime da versão anterior, com os servidores fechados, para manter o
+progresso. Execute ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5 no navegador.
 http://127.0.0.1:5188/jogar?demo=1

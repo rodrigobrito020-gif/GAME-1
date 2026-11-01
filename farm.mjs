@@ -10,7 +10,7 @@ export const SKILLS = [
     id: WARRIOR_LIGHT_DASH.id,
     name: "Avanço de Luz",
     description:
-      "Avança em linha reta até o inimigo e atinge na chegada. Respeita obstáculos.",
+      "Avança em linha reta até um inimigo distante e atinge na chegada. Não pode ser usado perto demais do alvo.",
     icon: "/assets/ui/royal-warrior/avanco-de-luz.svg",
     key: "1",
     manaCost: 8,
@@ -391,7 +391,9 @@ export class LocalFarm {
     let dash = null;
     if (id === WARRIOR_LIGHT_DASH.id) {
       const distance = Math.hypot(target.x - client.x, target.y - client.y);
-      const travel = Math.max(0, distance - WARRIOR_LIGHT_DASH.stopDistance);
+      if (distance < WARRIOR_LIGHT_DASH.minRange)
+        throw Error("local.target_too_close");
+      const travel = distance - WARRIOR_LIGHT_DASH.stopDistance;
       const from = { x: client.x, y: client.y },
         to = {
           x: client.x + ((target.x - client.x) / (distance || 1)) * travel,
@@ -609,7 +611,13 @@ export class LocalFarm {
         c.derived.attackRange
       ) {
         let dashed = false;
-        if ((c.automation.skillOrder ?? []).includes(WARRIOR_LIGHT_DASH.id)) {
+        if (
+          (c.automation.skillOrder ?? []).includes(WARRIOR_LIGHT_DASH.id) &&
+          Math.hypot(target.x - client.x, target.y - client.y) >=
+            WARRIOR_LIGHT_DASH.minRange &&
+          Math.hypot(target.x - client.x, target.y - client.y) <=
+            WARRIOR_LIGHT_DASH.range
+        ) {
           try {
             this.cast(
               client,
@@ -640,6 +648,12 @@ export class LocalFarm {
               ? 0
               : 3;
         for (const id of c.automation.skillOrder ?? []) {
+          if (
+            id === WARRIOR_LIGHT_DASH.id &&
+            Math.hypot(target.x - client.x, target.y - client.y) <
+              WARRIOR_LIGHT_DASH.minRange
+          )
+            continue;
           try {
             this.cast(client, id, target.id, events, deltas, { free });
             break;

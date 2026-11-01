@@ -13,6 +13,7 @@ export const WARRIOR_LIGHT_DASH = {
   start: 50,
   end: 300,
   range: 300,
+  minRange: 160,
   stopDistance: 52,
   hitRange: 75,
 };

@@ -218,3 +218,86 @@ test("existing saves migrate the first skill without changing inventory, progres
   assert.equal(SKILLS[0].name, "Avanço de Luz");
   assert.ok(WARRIOR_ACTIONS[DASH.id].duration <= 600);
 });
+
+test("dash requires a distant target and rejects nearby manual attempts without spending mana or cooldown", () => {
+  for (const [dx, dy] of [
+    [0, 0],
+    [50, 0],
+    [120, 0],
+    [159.99, 0],
+    [112, 112],
+  ]) {
+    const { farm, client, target } = fixture(dx, dy);
+    const state = {
+      x: client.x,
+      y: client.y,
+      mana: farm.character.progress.mana,
+      actionUntil: client.hunt.actionUntil,
+    };
+    assert.throws(
+      () => farm.cast(client, DASH.id, target.id),
+      /target_too_close/,
+    );
+    assert.equal(farm.character.progress.mana, state.mana);
+    assert.equal(client.hunt.cooldowns[DASH.id], undefined);
+    assert.equal(client.hunt.actionUntil, state.actionUntil);
+    assert.equal(client.hunt.impacts.length, 0);
+    assert.ok(!client.hunt.dash);
+    assert.deepEqual({ x: client.x, y: client.y }, { x: state.x, y: state.y });
+  }
+  for (const [dx, dy] of [
+    [160, 0],
+    [96, 128],
+    [300, 0],
+  ]) {
+    const { farm, client, target } = fixture(dx, dy);
+    assert.equal(farm.cast(client, DASH.id, target.id).events.casts.length, 1);
+    assert.equal(farm.character.progress.mana, 92);
+  }
+  const far = fixture(301, 0);
+  assert.throws(
+    () => far.farm.cast(far.client, DASH.id, far.target.id),
+    /invalid_target/,
+  );
+});
+
+test("nearby automatic combat keeps basic attacks and reserves the dash for the next distant enemy", () => {
+  const { farm, client, target, step } = fixture(120, 0);
+  farm.character.automation.skillOrder = [DASH.id];
+  const events = [];
+  for (let i = 0; i < 90; i++) events.push(step().events);
+  assert.equal(
+    events.flatMap((e) => e.casts).length,
+    0,
+    "no stationary dash when its cooldown becomes ready",
+  );
+  assert.ok(
+    events.some((e) =>
+      e.moves.some(
+        (m) => m.move === "humano-espada" || m.move === "humano-retorno",
+      ),
+    ),
+  );
+  assert.ok(
+    events.some((e) => e.damage.some((d) => d.source === 1 && !d.skillId)),
+  );
+  assert.equal(farm.character.progress.mana, 100);
+  assert.equal(client.hunt.cooldowns[DASH.id], undefined);
+  Object.assign(target, {
+    x: client.x + 220,
+    y: client.y,
+    home: { x: client.x + 220, y: client.y },
+  });
+  let cast;
+  for (let i = 0; i < 20 && !cast; i++)
+    cast = step().events.casts.find((c) => c.skillId === DASH.id);
+  assert.ok(
+    cast,
+    "the reserved dash can be used when there is a real approach distance",
+  );
+  assert.ok(
+    Math.hypot(cast.dest.x - cast.origin.x, cast.dest.y - cast.origin.y) / 10 >=
+      DASH.minRange,
+  );
+  assert.equal(farm.character.progress.mana, 92);
+});

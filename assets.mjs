@@ -35,6 +35,8 @@ export function localAssets(byName, status) {
     level_required: "Você ainda não tem o nível necessário para esta caçada.",
     already_hunting: "Retorne à cidade antes de iniciar outra caçada.",
     invalid_target: "Selecione um monstro vivo ao alcance da habilidade.",
+    target_too_close:
+      "Alvo muito próximo. Use o Avanço de Luz para alcançar inimigos distantes.",
     not_hunting: "Entre em uma caçada para usar habilidades de combate.",
     invalid_skill: "Habilidade inválida para este personagem local.",
     cooldown: "A habilidade ainda está recarregando.",

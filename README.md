@@ -1,8 +1,14 @@
-# Jogo local — 0.6.5: somente Avanço de Luz
+# Jogo local — 0.6.6: Avanço de Luz somente à distância
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Dash reservado para inimigos distantes — 0.6.6
+
+O Avanço de Luz exige um alvo a **160–300 unidades**. Perto do inimigo, o guerreiro continua com ataques básicos e guarda o dash para outra aproximação. A tecla **1** também respeita o alcance mínimo e mostra um aviso de alvo próximo demais. A tentativa recusada não gasta mana nem inicia recarga, deslocamento ou efeito da habilidade.
+
+O limite é validado pelo servidor, inclusive ao usar a referência antiga da primeira habilidade. A regra mede a distância entre as posições do personagem e do alvo no instante da ativação. Movimento, efeitos e parâmetros restantes do dash foram mantidos; só o Avanço de Luz continua ativo.
 
 ## Teste isolado da habilidade — 0.6.5
 
@@ -14,7 +20,7 @@ Ao carregar um progresso antigo, a ordem automática é filtrada para a habilida
 
 A habilidade **1** agora é **Avanço de Luz**: avanço real em linha reta na direção do inimigo, rastro branco/dourado e golpe na chegada. Ela funciona na aproximação automática e pelo atalho **1**, com alvo válido na hunt. As outras três habilidades continuam como antes, aguardando definição individual.
 
-- Alcance de ativação: 300 unidades. O deslocamento termina 52 unidades antes da posição inicial do alvo, sem atravessá-lo. Se já estiver próximo, o guerreiro golpeia no lugar.
+- Alcance de ativação: 300 unidades. O deslocamento termina 52 unidades antes da posição inicial do alvo, sem atravessá-lo. Na versão atual, alvos próximos demais impedem a ativação.
 - Preparação de 50ms, dash até 300ms e recuperação até 550ms. O dano acontece uma vez aos 300ms, somente se o alvo ainda estiver vivo e ao alcance de contato (75 unidades).
 - Dano 2× ataque, oito de mana e recarga de quatro segundos preservam os valores da primeira habilidade anterior. São valores provisórios para testar esta habilidade.
 - O servidor valida o corredor inteiro antes de consumir mana/recarga e verifica colisões durante o movimento. Caminho bloqueado recusa o dash; a caça automática continua pela navegação normal. Um obstáculo surgido durante o avanço interrompe o movimento e cancela o dano.
@@ -134,7 +140,7 @@ set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-São **37 testes automatizados**: protocolo, PNG, combate, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, cidade e integração real WebSocket. Os novos testes verificam quadros distintos, transparência, ausência de corte das armas, alinhamento dos pés, efeitos locais e sincronização dos golpes. Também verificam apoio alternado dos pés, tronco estável, escala constante dos golpes e 50 ciclos consecutivos de reaparecimento (600 novas vidas). A integração também migra uma aparência antiga e verifica ouro, EXP, poções e item guardado após reiniciar o processo. Sem o ZIP, a integração é explicitamente pulada. O jogo e a prévia também são verificados no Chromium. Consulte **RESULTADO_TESTE.txt**.
+São **39 testes automatizados**: protocolo, PNG, combate, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, cidade e integração real WebSocket. Os novos testes verificam quadros distintos, transparência, ausência de corte das armas, alinhamento dos pés, efeitos locais e sincronização dos golpes. Também verificam apoio alternado dos pés, tronco estável, escala constante dos golpes e 50 ciclos consecutivos de reaparecimento (600 novas vidas). A integração também migra uma aparência antiga e verifica ouro, EXP, poções e item guardado após reiniciar o processo. Sem o ZIP, a integração é explicitamente pulada. O jogo e a prévia também são verificados no Chromium. Consulte **RESULTADO_TESTE.txt**.
 
 Para reempacotar as fontes originais do guerreiro (não é necessário para jogar):
 

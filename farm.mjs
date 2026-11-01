@@ -1,14 +1,21 @@
 // Own local gameplay rules. These are test values, not the original server rules.
-import { WARRIOR_ACTIONS, WARRIOR_BASIC, WARRIOR_RETURN } from "./warrior.mjs";
+import {
+  WARRIOR_ACTIONS,
+  WARRIOR_BASIC,
+  WARRIOR_RETURN,
+  WARRIOR_LIGHT_DASH,
+} from "./warrior.mjs";
 export const SKILLS = [
   {
-    id: "corte-poderoso",
-    name: "Corte Poderoso",
-    icon: "/assets/ui/royal-warrior/corte-poderoso.svg",
+    id: WARRIOR_LIGHT_DASH.id,
+    name: "Avanço de Luz",
+    description:
+      "Avança em linha reta até o inimigo e atinge na chegada. Respeita obstáculos.",
+    icon: "/assets/ui/royal-warrior/avanco-de-luz.svg",
     key: "1",
     manaCost: 8,
     cooldownMs: 4000,
-    range: 75,
+    range: WARRIOR_LIGHT_DASH.range,
     multiplier: 2,
   },
   {
@@ -141,6 +148,10 @@ export class LocalFarm {
       c.consumables.manaPotions = { pequena: 10 };
       account.farmVersion = 1;
     }
+    // Rename the first skill without enabling disabled slots or resetting saves.
+    c.automation.skillOrder = (c.automation.skillOrder ?? []).map((id) =>
+      id === "corte-poderoso" ? WARRIOR_LIGHT_DASH.id : id,
+    );
     c.progress.hp ||= 250;
     c.progress.mana = Math.max(0, c.progress.mana);
     this.recalculate();
@@ -348,7 +359,15 @@ export class LocalFarm {
       deltas.push(this.reward(hunt, monster, events));
     }
   }
-  cast(client, id, targetId, events = this.events(), deltas = []) {
+  cast(
+    client,
+    id,
+    targetId,
+    events = this.events(),
+    deltas = [],
+    { free = () => true } = {},
+  ) {
+    if (id === "corte-poderoso") id = WARRIOR_LIGHT_DASH.id;
     const h = client.hunt,
       c = this.character,
       now = this.now();
@@ -364,11 +383,43 @@ export class LocalFarm {
       Math.hypot(target.x - client.x, target.y - client.y) > skill.range
     )
       throw Error("local.invalid_target");
+    let dash = null;
+    if (id === WARRIOR_LIGHT_DASH.id) {
+      const distance = Math.hypot(target.x - client.x, target.y - client.y);
+      const travel = Math.max(0, distance - WARRIOR_LIGHT_DASH.stopDistance);
+      const from = { x: client.x, y: client.y },
+        to = {
+          x: client.x + ((target.x - client.x) / (distance || 1)) * travel,
+          y: client.y + ((target.y - client.y) / (distance || 1)) * travel,
+        };
+      // Sample the complete swept body corridor before charging mana/cooldown.
+      const samples = Math.max(1, Math.ceil(travel / 4));
+      for (let i = 0; i <= samples; i++)
+        if (
+          !free(
+            from.x + ((to.x - from.x) * i) / samples,
+            from.y + ((to.y - from.y) * i) / samples,
+          )
+        )
+          throw Error("local.invalid_target");
+      dash = {
+        from,
+        to,
+        target: target.id,
+        startsAt: now + WARRIOR_LIGHT_DASH.start,
+        endsAt: now + WARRIOR_LIGHT_DASH.end,
+        blocked: false,
+      };
+    }
     c.progress.mana -= skill.manaCost;
     h.cooldowns[id] = now + skill.cooldownMs;
     const action = WARRIOR_ACTIONS[id];
     h.nextCast = h.actionUntil = now + action.duration;
     client.combatAnimUntil = h.actionUntil;
+    if (dash) {
+      h.dash = dash;
+      h.target = target.id;
+    }
     const dx = target.x - client.x,
       dy = target.y - client.y;
     if (Math.hypot(dx, dy) > 0.01)
@@ -400,6 +451,7 @@ export class LocalFarm {
       amount: c.derived.atk * skill.multiplier,
       skillId: id,
       heal: skill.heal ?? 0,
+      ...(dash ? { dash: true } : {}),
       ...(skill.radius
         ? { area: { x: target.x, y: target.y, radius: skill.radius } }
         : {}),
@@ -423,6 +475,39 @@ export class LocalFarm {
         despawned,
         returnCity: now >= h.deadAt + 3000,
       };
+    let dashMoved = false;
+    if (h.dash) {
+      const dash = h.dash;
+      if (!h.monsters.some((m) => m.id === dash.target && m.hp > 0)) {
+        h.dash = null;
+        h.impacts = h.impacts.filter((p) => !p.dash);
+        h.actionUntil = h.nextCast = now;
+        client.combatAnimUntil = 0;
+      } else if (now >= dash.startsAt && !dash.blocked) {
+        const t = Math.min(
+          1,
+          (now - dash.startsAt) / (dash.endsAt - dash.startsAt),
+        );
+        const x = dash.from.x + (dash.to.x - dash.from.x) * t,
+          y = dash.from.y + (dash.to.y - dash.from.y) * t;
+        const origin = { x: client.x, y: client.y },
+          samples = Math.max(
+            1,
+            Math.ceil(Math.hypot(x - origin.x, y - origin.y) / 4),
+          );
+        for (let i = 1; i <= samples; i++) {
+          const nx = origin.x + ((x - origin.x) * i) / samples,
+            ny = origin.y + ((y - origin.y) * i) / samples;
+          if (!free(nx, ny)) {
+            dash.blocked = true;
+            break;
+          }
+          dashMoved ||= nx !== client.x || ny !== client.y;
+          client.x = nx;
+          client.y = ny;
+        }
+      }
+    }
     for (const impact of h.impacts.filter((p) => p.at <= now)) {
       const targets = impact.area
         ? h.monsters
@@ -436,7 +521,13 @@ export class LocalFarm {
         : impact.targets;
       for (const id of targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
-        if (monster)
+        if (
+          monster &&
+          (!impact.dash ||
+            (!h.dash?.blocked &&
+              Math.hypot(monster.x - client.x, monster.y - client.y) <=
+                WARRIOR_LIGHT_DASH.hitRange))
+        )
           this.hit(h, monster, impact.amount, impact.skillId, events, deltas);
       }
       const amount = Math.min(impact.heal, c.derived.maxHp - c.progress.hp);
@@ -446,6 +537,7 @@ export class LocalFarm {
       }
     }
     h.impacts = h.impacts.filter((p) => p.at > now);
+    if (h.dash && now >= h.dash.endsAt) h.dash = null;
     const move = (unit, target, speed) => {
       const dx = target.x - unit.x,
         dy = target.y - unit.y,
@@ -505,14 +597,32 @@ export class LocalFarm {
     )
       h.manualTarget = 0;
     h.target = target?.id ?? 0;
-    client.moving = false;
+    client.moving = dashMoved;
     if (target && now >= h.actionUntil) {
       if (
         Math.hypot(target.x - client.x, target.y - client.y) >
         c.derived.attackRange
       ) {
-        const way = route(client, target)[0] ?? target;
-        client.moving = move(client, way, c.derived.moveSpeed);
+        let dashed = false;
+        if ((c.automation.skillOrder ?? []).includes(WARRIOR_LIGHT_DASH.id)) {
+          try {
+            this.cast(
+              client,
+              WARRIOR_LIGHT_DASH.id,
+              target.id,
+              events,
+              deltas,
+              { free },
+            );
+            dashed = true;
+          } catch {
+            /* A blocked/unavailable dash falls back to normal navigation. */
+          }
+        }
+        if (!dashed) {
+          const way = route(client, target)[0] ?? target;
+          client.moving = move(client, way, c.derived.moveSpeed);
+        }
       } else {
         const faceX = target.x - client.x,
           faceY = target.y - client.y;
@@ -526,7 +636,7 @@ export class LocalFarm {
               : 3;
         for (const id of c.automation.skillOrder ?? []) {
           try {
-            this.cast(client, id, target.id, events, deltas);
+            this.cast(client, id, target.id, events, deltas, { free });
             break;
           } catch {
             /* An unavailable skill must not stall basic attacks. */
@@ -602,6 +712,8 @@ export class LocalFarm {
         }
         if (!c.progress.hp) {
           h.deadAt = now;
+          h.dash = null;
+          h.impacts = [];
           client.moving = false;
           events.deaths.push({ entity: 1, killer: m.id });
           c.hunt.lastDeath = {

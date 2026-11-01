@@ -52,7 +52,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-4";
+  catalog.version = "local-human-warrior-5";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -122,7 +122,8 @@ export function attachLocalGame(
     classId: "guerreiro",
     kind: "damage",
     source: "physical",
-    description: "Habilidade local de teste. Valores provisórios.",
+    description:
+      skill.description ?? "Habilidade local de teste. Valores provisórios.",
   }));
   catalog.consumables = [1, 2].map((kind) => ({
     kind,
@@ -927,6 +928,9 @@ export function attachLocalGame(
                 client,
                 value.skillId,
                 value.target || client.hunt?.target,
+                undefined,
+                undefined,
+                { free },
               );
               send(client, "worldEvents", { tick, ...output.events });
               for (const d of output.deltas) delta(client, d);

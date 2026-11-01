@@ -8,8 +8,16 @@ export const WARRIOR_SHEETS = {
   weapon: 6,
   special: 6,
 };
+export const WARRIOR_LIGHT_DASH = {
+  id: "avanco-de-luz",
+  start: 50,
+  end: 300,
+  range: 300,
+  stopDistance: 52,
+  hitRange: 75,
+};
 export const WARRIOR_ACTIONS = {
-  "corte-poderoso": { move: "humano-corte", duration: 650, impact: 250 },
+  "avanco-de-luz": { move: "humano-avanco-luz", duration: 550, impact: 300 },
   investida: { move: "humano-investida", duration: 600, impact: 250 },
   "golpe-destruidor": { move: "humano-destruidor", duration: 850, impact: 400 },
   "furia-guerreiro": { move: "humano-furia", duration: 600, impact: 250 },
@@ -60,7 +68,23 @@ export function warriorRig(original) {
       hit: "faisca-lamina",
       motion: { lunge: { windup: 2, reach: 8, lift: -1, tilt: -2 } },
     },
-    "humano-corte": sword([1, 2, 2, 2, 3, 3], 250, 10),
+    "humano-avanco-luz": {
+      frames: [
+        ...hold("special", 1, 1),
+        ...hold("run1", 0, 1),
+        ...hold("run1", 1, 1),
+        ...hold("run1", 2, 1),
+        ...hold("run1", 3, 1),
+        ...hold("weapon", 2, 1),
+        ...hold("weapon", 3, 2),
+        ...hold("weapon", 4, 1),
+        ...hold("weapon", 5, 2),
+      ],
+      impacts: [300],
+      // World-space translation is authoritative on the server. Do not add a
+      // second, cosmetic dash that would snap the body back after landing.
+      motion: { trail: { at: [50, 300], color: "#fff0b4" } },
+    },
     "humano-investida": {
       frames: [
         ...hold("special", 1, 1),

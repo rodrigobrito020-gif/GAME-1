@@ -131,7 +131,31 @@ function frame(fx, index) {
     after = clamp((ms - impact) / Math.max(1, fx.end - impact)),
     fade = 1 - smooth((after - 0.15) / 0.85);
   if (fx.cast && ms < fx.start) return pixels;
-  if (fx.kind === "slash") {
+  if (fx.kind === "light-dash") {
+    // A low ribbon of white/gold wind, followed by sparse light motes. It
+    // spans the path at cast time and fades independently after landing.
+    const dashTime = Math.max(0, Math.min(1, (ms - 50) / 250));
+    paint(pixels, fx, {
+      scaleX: 0.6 + dashTime * 0.5,
+      scaleY: 0.55,
+      cx: 56 + dashTime * 8,
+      cy: 66,
+      alpha: before * fade * 0.88,
+      phase: t,
+      shimmer: true,
+    });
+    for (let i = 0; i < 9; i++) {
+      const x = 23 + i * 9 + dashTime * 10;
+      glint(
+        pixels,
+        x,
+        66 + Math.sin(i * 2.4 + t * 5) * 13,
+        1.4 + (i % 2),
+        before * fade * 0.7,
+        false,
+      );
+    }
+  } else if (fx.kind === "slash") {
     const size = ms < impact ? 0.55 + 0.32 * before : 0.87 + 0.08 * after;
     paint(pixels, fx, {
       scaleX: size,

@@ -1,77 +1,67 @@
-JOGO LOCAL — 0.6.3: NITIDEZ, COMBATE ÁGIL E HUNT DISTRIBUÍDA
+JOGO LOCAL — 0.6.4: PRIMEIRA HABILIDADE, AVANÇO DE LUZ
 Data: 01/11/2026
 
-PROBLEMAS VERIFICADOS NO VÍDEO
-- Fundo semitransparente e fragmentos de linhas vizinhas entravam nos recortes
-  do personagem, aparecendo como manchas na cidade.
-- Redução com média de várias amostras suavizava olhos e contornos pequenos.
-- Preparações/recuperações longas prendiam o herói e davam ritmo cinematográfico.
-- Três monstros pequenos concentrados perto da entrada, com respawn de 3 segundos.
-
-CORREÇÕES
-- Fontes revisadas com cabeça/rosto maiores e contornos mais claros.
-- Máscaras individuais de torso/pernas descartam névoa e poses vizinhas.
-  Componentes anormalmente altos são separados antes de empacotar as reações.
-- Amostragem pontual preserva olhos/linhas no contrato de 64px. A textura usa
-  filtro NEAREST no renderer nativo; não há mudança no código compilado capturado.
-- Espada direita e escudo esquerdo preservados.
-- Corpo: básico/retorno 400ms, impacto 150ms; Corte 650/250ms;
-  Investida 600/250ms; Destruidor 850/400ms; Fúria 600/250ms.
-- Efeitos independentes persistem após o golpe sem prolongar a imobilização.
-  Tremores removidos dessas ações; salto do Destruidor reduzido a 8 unidades.
-- Doze monstros espalhados pelo pátio. Altura de exibição 104, parte desenhada
-  calibrada em 64px (antes: altura 80 sobre quadro de 112, com grande margem vazia).
-- Respawn de 20 a 28 segundos, escalonado e com nova identidade a cada vida.
-- Farm escolhe o vivo mais próximo entre ações; mantém o golpe já iniciado.
-  Seleção manual permanece até morte/remoção. Sem vivos, o personagem patrulha.
-- Monstros distantes não correm todos para a entrada. Região de reação e limite
-  de afastamento fazem cada um defender seu setor e voltar à origem.
-- Piso livre é atravessado diretamente, com corredor de colisão verificado.
-  Navegação pela grade continua disponível quando há obstáculo.
-- Custos, dano, cura, recargas e dados salvos preservados. A cadência mais ágil
-  naturalmente altera a velocidade prática de combate.
+IMPLEMENTAÇÃO
+- Habilidade 1: Avanço de Luz, com ícone próprio e rastro de luz branco/dourado.
+- O servidor desloca o personagem em linha reta até ficar próximo do alvo.
+  Não é apenas animação nem teleporte instantâneo; existem posições intermediárias.
+- Alcance 300 unidades; termina 52 unidades antes da posição inicial do alvo.
+  Se já estiver ao alcance, o golpe acontece no lugar, sem atravessar o inimigo.
+- Preparação 50ms, chegada/impacto aos 300ms, recuperação até 550ms.
+- Dano único 2x ataque, 8 de mana, recarga de 4s. Valores da primeira habilidade
+  anterior preservados para teste. Sem novo atordoamento, cura ou dano em área.
+- Funciona pelo atalho 1 e na aproximação automática, quando habilitada.
+- Corredor validado antes do custo/recarga, com colisões verificadas durante
+  o avanço. Obstáculo novo interrompe o dash e cancela o impacto.
+- Alvo morto/perdido, morte do jogador ou saída da hunt cancelam o avanço.
+  Se o alvo fugir do alcance de chegada, não recebe dano remoto.
+- Sem segundo deslocamento cosmético ou retorno do corpo para a origem.
+- Migração da ordem salva: corte-poderoso -> avanco-de-luz, mantendo a posição
+  na ordem e os slots desabilitados. Nenhum item, nível, ouro ou atributo resetado.
+- As três demais habilidades, a cidade e a hunt distribuída continuam preservadas.
 
 TESTES AUTOMATIZADOS
-30 aprovados, nenhum pulado, usando o recursos-publicos.zip real.
-- Silhueta do repouso sem fragmentos desconectados/manchas nas quatro direções.
-- Pés, margens, poses, escala dos ataques, apoio alternado e quadril estável.
-- Sincronização dos quatro golpes, recuperação, mana, recargas e cancelamento.
-- Efeitos independentes: antecipação, impacto, dissipação e margens transparentes.
-- Área atrasada considera os ocupantes presentes no instante do dano.
-- Monstros espalhados em piso conectado, alvo mais próximo e reação local.
-- Simulação de um minuto atravessa mais de 1000 unidades em X e 500 em Y,
-  mata pelo menos dez inimigos e respeita o limite de afastamento da origem.
-- Sem inimigos: patrulha, intervalo mínimo de 20s e grupos de respawn escalonados.
-- 50 ciclos de respawn: 600 novas vidas, sem reaproveitar identidade antiga.
-- Integração HTTP/WebSocket real: autenticação, movimento/colisões, farm, seis
-  abates com deslocamento, progressão, drops, inventário, equipamento, poções,
-  vendas, armazém e preservação após reinício.
-- Protocolo, PNG, capacidade, vendas parciais e proteção de itens travados.
+37 aprovados, nenhum pulado, com o recursos-publicos.zip real.
+- Movimento em oito direções com posições intermediárias e sem ultrapassar o alvo.
+- Dano uma única vez aos 300ms; mana, recarga e recuperação compartilhados com o rig.
+- Parede no corredor recusa antes de cobrar; obstáculo surgido depois interrompe
+  o trajeto e impede atingir o alvo através dele.
+- Alvo que sai do alcance não é atingido à distância.
+- Cancelamento por perda do alvo, saída da hunt e morte.
+- Dash automático antes do corpo a corpo, respeito à automação desligada e
+  navegação normal quando o dash é bloqueado/indisponível.
+- Migração preserva ordem, slots desligados, progresso, moedas e inventário.
+- Regressões de arte/recortes, sincronia das três outras habilidades, colisões,
+  área atrasada, navegação distribuída e 600 novas vidas de monstros.
+- Integração HTTP/WebSocket real: autenticação, movimento, farm, drops, nível,
+  equipamentos, poções, vendas, armazém e persistência após reinício.
 
-NAVEGADOR — VERSÃO FINAL
-Chromium, 1440x900, ensaio de 45 segundos de amostragem além da entrada/capturas:
-- Pátio da Coroa, 18 abates, 23 vidas/identidades observadas, todas com arte visível.
-- Deslocamento do herói durante o combate: 1185,2 unidades em X e 587,2 em Y.
-- Nenhuma amostra com todos os inimigos vivos invisíveis.
-- Caminhada nas quatro direções, básico/retorno e as quatro habilidades observados.
-- Sem exceção JavaScript nem aviso de falha de arte/animação/mapa.
-- Cidade conferida visualmente com recortes limpos e nova amostragem.
-- Prévia: 44 combinações direção/ação, pausa e avanço de quadros, sem erros.
-- Tela 390x844: personagem carregado, sem exceção JavaScript.
+NAVEGADOR — CHROMIUM, 1440x900
+Ensaio de 23 segundos além da entrada e capturas:
+- 6 usos do Avanço de Luz e 8 abates.
+- Quatro usos observados a partir de distâncias superiores a 120 unidades.
+  Os snapshots registraram deslocamentos reais de 140 a 196 unidades durante
+  os avanços amostrados; não são apenas offsets de animação.
+- 52 amostras do movimento humano-avanco-luz, incluindo quadros de corrida.
+  Corpo visível, sem segundo deslocamento cosmético ou recuo à origem.
+- Ícone, rastro e impacto próprios responderam 200.
+- Sem exceção JavaScript nem avisos de falha de arte/animação/mapa.
+- Prévia /guerreiro: 44 combinações de ação/direção, pausa e passo a passo.
+- Tela 390x844: personagem carregado sem exceção JavaScript.
+- Código compilado capturado entregue sem alteração. Observação de atores
+  usada no teste é somente de leitura e não é distribuída.
 
 LIMITES
-O personagem continua em sprites de 64px; afastar a câmera reduz detalhes do
-rosto. Armadura, espada e escudo são aparência inicial fixa, sem nova defesa ou
-itens concedidos. Corrida reutiliza caminhada. Grito vira de frente nas laterais.
-NPCs e monstros conservam a sombra provisória; não foram criadas artes novas de
-inimigos nesta atualização. Servidor local, uma conta, sem multiplayer/VPS.
-Testes em Linux/Chromium; não houve execução em Windows físico.
+Primeira habilidade do novo conjunto. As outras três aguardam definição
+individual do usuário e conservam seu comportamento anterior.
+Sprites do herói continuam em 64px com aparência fixa; NPCs/monstros provisórios.
+Servidor local para uma conta, sem multiplayer/VPS. Testado em Linux/Chromium,
+sem execução em Windows físico.
 
 WINDOWS
-Encerre o servidor antigo com Ctrl+C. Extraia o novo ZIP em outra pasta.
-Copie recursos-publicos.zip e .local-runtime da versão antiga para essa pasta,
-com ambos os servidores fechados, para preservar o progresso.
-Execute ABRIR_CLIENTE_COPIADO.bat e mantenha o terminal aberto.
-Requer Node.js 22.12+ ou 24 LTS. Atualize o navegador com Ctrl+F5.
+Feche o servidor antigo com Ctrl+C e extraia o novo ZIP em outra pasta.
+Copie recursos-publicos.zip e .local-runtime da versão anterior, com ambos os
+servidores fechados, para manter o progresso. Execute ABRIR_CLIENTE_COPIADO.bat.
+Requer Node.js 22.12+ ou 24 LTS. Use Ctrl+F5 no navegador.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Prévia: http://127.0.0.1:5188/guerreiro

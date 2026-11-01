@@ -1,4 +1,8 @@
-import { WARRIOR_SHEETS, WARRIOR_ACTIONS } from "/warrior.mjs";
+import {
+  WARRIOR_SHEETS,
+  WARRIOR_ACTIONS,
+  WARRIOR_LIGHT_DASH,
+} from "/warrior.mjs";
 const rig = await (await fetch("/data/paperdoll.json")).json();
 const effects = await (await fetch("/data/effects.json")).json();
 const images = {};
@@ -16,7 +20,7 @@ await Promise.all(
   }),
 );
 const fxNames = [
-  "guerreiro-corte-crescente",
+  "guerreiro-avanco-luz",
   "guerreiro-investida-rastro",
   "guerreiro-destruidor-fenda",
   "guerreiro-furia-explosao",
@@ -54,16 +58,14 @@ function render() {
       ctx.stroke();
     }
   }
-  ctx.fillStyle = "#60513828";
-  ctx.beginPath();
-  ctx.ellipse(300, 332, 68, 15, 0, 0, Math.PI * 2);
-  ctx.fill();
+
   let sheet = action,
     col = 0,
     phase = elapsed,
     total = 0,
     lift = 0,
-    offset = 0;
+    offset = 0,
+    offsetY = 0;
   const move = rig.moves[WARRIOR_ACTIONS[action]?.move ?? action];
   if (action === "death") {
     sheet = "special";
@@ -105,6 +107,28 @@ function render() {
                 ? rig.loops.walk.fps
                 : rig.loops.run.fps)),
       ) % 4;
+  if (action === WARRIOR_LIGHT_DASH.id) {
+    const progress = Math.max(
+      0,
+      Math.min(
+        1,
+        (phase - WARRIOR_LIGHT_DASH.start) /
+          (WARRIOR_LIGHT_DASH.end - WARRIOR_LIGHT_DASH.start),
+      ),
+    );
+    const axis = [
+      [0, 1],
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+    ][direction];
+    offset = axis[0] * (progress - 0.5) * 130;
+    offsetY = axis[1] * (progress - 0.5) * 100;
+  }
+  ctx.fillStyle = "#60513828";
+  ctx.beginPath();
+  ctx.ellipse(300 + offset, 332 + offsetY, 68, 15, 0, 0, Math.PI * 2);
+  ctx.fill();
   const n = Object.keys(WARRIOR_ACTIONS).indexOf(action);
   const effect = n >= 0 ? fx[n] : null;
   const drawEffect = () => {
@@ -114,8 +138,9 @@ function render() {
     const size = def.alturaTela * 1.35;
     ctx.save();
     ctx.translate(
-      300 + offset,
-      def.camada === "chao" || def.camada === "atras" ? 332 : 268,
+      action === WARRIOR_LIGHT_DASH.id ? 300 : 300 + offset,
+      (def.camada === "chao" || def.camada === "atras" ? 332 : 268) +
+        (action === WARRIOR_LIGHT_DASH.id ? 0 : offsetY),
     );
     if (def.orientacao === "direita")
       ctx.rotate([Math.PI / 2, Math.PI, 0, -Math.PI / 2][direction]);
@@ -142,7 +167,7 @@ function render() {
     64,
     64,
     172 + offset,
-    92 - lift,
+    92 + offsetY - lift,
     256,
     256,
   );

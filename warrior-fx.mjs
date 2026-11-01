@@ -7,6 +7,10 @@ const particles = {
 };
 export function warriorEffects(original) {
   const effects = structuredClone(original);
+  effects.habilidades["avanco-de-luz"] = {
+    golpe: { efeito: "guerreiro-avanco-luz", distancia: 0.5 },
+    impacto: "guerreiro-avanco-impacto",
+  };
   for (const id of Object.keys(WARRIOR_VFX))
     effects.efeitos[id] = vfxDefinition(id);
   for (const [id, kind] of Object.entries(particles))
@@ -53,8 +57,8 @@ export function warriorFx(id) {
 }
 export function warriorIcon(id) {
   const shapes = {
-    "corte-poderoso":
-      '<path d="M15 35 35 12 38 16 19 38Z" fill="#fff4d2"/><path d="m12 29 11 11M12 40l5-5" stroke="#e4b355" stroke-width="4"/>',
+    "avanco-de-luz":
+      '<path d="M8 22h23l-7-8 7-2 13 14-14 12-6-3 8-8H8Z" fill="#fff4cf"/><path d="M4 15h13M2 32h12" stroke="#e4b355" stroke-width="3"/><path d="m17 5 2 4 4 1-4 2-2 4-1-4-4-2 4-1Z" fill="#ffda71"/>',
     investida:
       '<path d="m9 15 15 9-15 9m13-18 15 9-15 9" fill="none" stroke="#fff0be" stroke-width="5"/>',
     "golpe-destruidor":

@@ -1,16 +1,16 @@
 {
-  "guerreiro-corte-crescente": {
+  "guerreiro-avanco-luz": {
     "frames": 32,
     "fps": 20,
     "durationMs": 1600,
-    "impactMs": 250,
+    "impactMs": 300,
     "frame": [
       128,
       128
     ],
     "layer": "frente"
   },
-  "guerreiro-faisca-dourada": {
+  "guerreiro-avanco-impacto": {
     "frames": 24,
     "fps": 24,
     "durationMs": 1000,

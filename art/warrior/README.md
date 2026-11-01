@@ -27,7 +27,7 @@ Cada quadro tem **64 × 64 pixels**, pés em **(32,60)**, linhas **frente, esque
 | Ação                             | Duração | Impacto |
 | -------------------------------- | ------: | ------: |
 | Espada básica e golpe de retorno |  400 ms |  150 ms |
-| Corte Poderoso                   |  650 ms |  250 ms |
+| Avanço de Luz                    |  550 ms |  300 ms |
 | Investida                        |  600 ms |  250 ms |
 | Golpe Destruidor                 |  850 ms |  400 ms |
 | Fúria do Guerreiro               |  600 ms |  250 ms |
@@ -53,3 +53,9 @@ Armadura, espada e escudo são a aparência base. Não há item de escudo nem no
 Fontes revisadas com cabeça/rosto mais legíveis e contornos mais marcados. A montagem usa amostragem pontual para não dissolver olhos e contornos na redução para 64px. As máscaras são individuais por peça: um recorte não pode herdar pixels da espada ou cabeça da linha vizinha, mesmo que os retângulos se cruzem. A névoa semitransparente do fundo não é conteúdo de personagem. Componentes muito altos de poses adjacentes são separados antes do empacotamento.
 
 As ações do corpo agora duram 400–850ms, com efeito visual independente e mais longo. Não há tremores de câmera nessas ações; o salto usa altura discreta de 8 unidades. O desenho permanece uma base de 64px, sem troca visual de equipamentos. NPCs e monstros ainda usam sprites provisórios.
+
+## Primeira habilidade — Avanço de Luz (0.6.4)
+
+`WARRIOR_LIGHT_DASH` compartilha alcance, preparação, fim do avanço e distância de contato. `humano-avanco-luz` usa preparação, corrida, ataque na chegada e recuperação (550ms). A posição é deslocada no servidor; não usar `motion.dash`, pois o cliente adicionaria outro deslocamento visual e retorno. O rastro de luz é uma animação própria montada a partir da arte de vento, com partículas claras/douradas; o contato usa faíscas de luz. As demais três habilidades permanecem inalteradas.
+
+Prévia inclui uma travessia em sentido único para demonstrar a ação. Colisão, alcance e dano são testados no jogo e no servidor, não apenas na prévia.

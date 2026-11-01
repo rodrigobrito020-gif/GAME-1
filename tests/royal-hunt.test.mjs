@@ -122,6 +122,7 @@ test("hunt seeks the nearest living enemy between actions and keeps distant mons
     tierMin: 1,
     difficulty: "normal",
   });
+  farm.character.automation.skillOrder = []; // Test ordinary approach without a committed gap closer.
   const distance = (m) => Math.hypot(m.x - client.x, m.y - client.y);
   const expected = [...client.hunt.monsters].sort(
     (a, b) => distance(a) - distance(b),

@@ -95,7 +95,7 @@ test("warrior combat rig uses real exported poses and the server impact/recovery
   }
   for (const id of [
     "humano-espada",
-    "humano-corte",
+    "humano-avanco-luz",
     "humano-investida",
     "humano-destruidor",
   ]) {
@@ -288,7 +288,7 @@ test("all four skills land at their impact frame, reserve recovery and cancel pe
     assert.ok(impact.events.damage.some((e) => e.skillId === id));
     assert.ok(target.hp < hp);
     assert.throws(
-      () => farm.cast(client, "corte-poderoso", target.id),
+      () => farm.cast(client, "avanco-de-luz", target.id),
       /cooldown/,
     );
     if (id === "furia-guerreiro")

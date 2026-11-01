@@ -1,37 +1,41 @@
 # Personagem 01 — Guerreiro Humano
 
-Arte original criada em 01/11/2026 para este projeto com a ferramenta de geração de imagens da OpenAI. Homem adulto de cabelo castanho escuro, armadura de marfim com ouro, couro marrom, capa curta e espada de aço. Não usa capacete nem escudo nesta aparência inicial.
+Arte original criada em 01/11/2026 com a ferramenta de geração de imagens da OpenAI. Homem de cabelo escuro, rosto visível, armadura marfim/dourada, couro marrom, capa curta e espada de aço.
 
-## Folhas entregues
+## Correção de movimento — 0.6.1
 
-| Arquivo     | Quadros por direção | Uso                                                                                           |
-| ----------- | ------------------: | --------------------------------------------------------------------------------------------- |
-| idle.png    |                   4 | Repouso e respiração                                                                          |
-| walk.png    |                   4 | Ciclo de caminhada                                                                            |
-| run1.png    |                   4 | Mesmo ciclo de pernas, com cadência maior                                                     |
-| weapon.png  |                   6 | Preparação, elevação, corte, seguimento e recuperação; o último quadro sustenta a recuperação |
-| special.png |                   6 | Neutro, preparar salto, ferido, ajoelhar, grito de guerra, caído                              |
+A folha inicial continha poses com a mesma perna à frente e mudava o centro do corpo ao alinhar o pé que avançava. A correção substitui essa sequência por um pequeno esqueleto 2D: cada perna tem quadril, joelho e pé, com uma fase de apoio e outra de avanço. A fonte `source/walk-parts.png` contém as peças originais, e `warrior-walk-rig.mjs` compõe os quadros com transformações afins e articulação dos joelhos. Não depende de gerar separadamente cada pose de caminhada.
 
-Cada quadro mede **64 × 64 pixels**, com pés em **(32,60)** e linhas **frente, esquerda, direita, costas**. O renderer do cliente exibe o quadro em escala 2. Espada e capa pertencem à arte do corpo e seguem a mão/ombro; não há uma arma flutuante sobreposta.
+O eixo é o quadril em x=32, com oscilação vertical de até 0,7 pixel. As duas poses de contato mantêm o mesmo tronco. As pernas alternam apoio a cada meia passada. As direções laterais são espelhadas depois da composição, preservando escala, anatomia e cadência. A passada de 96 unidades no mundo considera a escala 2 do renderer e a compensação do pé de apoio na caminhada lateral. A cadência da prévia acompanha a definição do rig.
 
-As fontes de alta resolução estão em `source/`. `tools/pack-warrior.mjs` recorta as silhuetas conectadas para conservar as espadas/capas que ultrapassaram as divisões da folha, alinha o apoio dos pés e exporta PNGs RGBA com margens transparentes. A pose muito larga de extensão horizontal não é usada para evitar encolher o corpo. O grito de guerra volta de frente nas direções laterais. `manifest.json` registra dimensões, recortes, escala e espelhamento.
+Os ataques usam a nova fonte `source/sword-v2.png`. A escala de todos os quadros é constante, com eixo horizontal no quadril e apoio no chão. Erguer a espada não encolhe o corpo. O ataque básico alterna corte descendente e golpe de retorno, com preparação, impacto e recuperação. As habilidades usam sequências próprias desses quadros e as reações de `source/reactions.png`.
 
-## Contrato para as próximas classes
+## Contrato das folhas
 
-`warrior.mjs` concentra o identificador da aparência, as folhas e as sequências com passos de 50 ms. A mesma definição de duração e impacto é usada pelo servidor de combate; os efeitos ficam separados em `warrior-fx.mjs`. Não alterar o identificador do guerreiro para criar outra classe: cada classe receberá uma aparência e movimentos próprios usando este contrato de quadros, direção e pivô.
+Cada quadro tem **64 × 64 pixels**, pés em **(32,60)**, linhas **frente, esquerda, direita, costas** e escala 2 no renderer.
 
-| Ação               | Duração | Impacto |
-| ------------------ | ------: | ------: |
-| Espada básica      |  550 ms |  200 ms |
-| Corte Poderoso     |  700 ms |  350 ms |
-| Investida          |  650 ms |  400 ms |
-| Golpe Destruidor   |  900 ms |  600 ms |
-| Fúria do Guerreiro |  800 ms |  300 ms |
+| Folha       | Quadros por direção | Uso                                                                    |
+| ----------- | ------------------: | ---------------------------------------------------------------------- |
+| idle.png    |                   4 | Repouso com respiração discreta                                        |
+| walk.png    |                   4 | Contato esquerdo, passagem direita, contato direito, passagem esquerda |
+| run1.png    |                   4 | Mesmo ciclo com cadência maior                                         |
+| weapon.png  |                   6 | Guarda, preparação, espada alta, corte, seguimento, recuperação        |
+| special.png |                   6 | Neutro, preparar salto, ferido, ajoelhar, grito, caído                 |
 
-O servidor inicia a ação, reserva sua recuperação e só aplica dano no impacto. Não sobrepõe ataque básico e habilidade. Morte/saída da arena cancela os impactos pendentes. Reações leves a dano são usadas entre ações, sem interromper uma habilidade em andamento.
+`npm run art:warrior` reempacota as fontes em PNGs RGBA. `manifest.json` registra as poses articuladas, os recortes, as escalas e os espelhamentos. O servidor entrega apenas os PNGs prontos: não precisa montar o esqueleto durante o jogo.
 
-## Revisão
+| Ação                             | Duração | Impacto |
+| -------------------------------- | ------: | ------: |
+| Espada básica e golpe de retorno |  500 ms |  200 ms |
+| Corte Poderoso                   |  700 ms |  350 ms |
+| Investida                        |  650 ms |  400 ms |
+| Golpe Destruidor                 |  900 ms |  600 ms |
+| Fúria do Guerreiro               |  800 ms |  300 ms |
 
-Com o servidor aberto: `http://127.0.0.1:5188/guerreiro`. A prévia permite pausar, avançar quadros e conferir as quatro direções. Não substitui os testes no jogo: cidade, WASD, caça automática, habilidades, EXP e drops também foram exercitados no cliente.
+`warrior.mjs` compartilha durações/impactos com o servidor e fornece as sequências. `warrior-fx.mjs` mantém os efeitos separados da arte do corpo. As próximas classes devem receber identificadores e ações próprios seguindo o mesmo contrato.
 
-Esta é a primeira versão integrada para avaliação. Ainda faltam uma corrida com poses exclusivas, troca visual de peças ao equipar itens e variantes de aparência. Os quadros gerados podem receber refinamentos manuais de consistência nas próximas revisões. Os NPCs e monstros não foram substituídos por este personagem.
+## Verificar
+
+Com o servidor aberto: **http://127.0.0.1:5188/guerreiro**. A prévia permite ver direções, caminhada, os dois golpes básicos, habilidades, ferido e caído, com pausa e passo a passo. A verificação no cliente também cobre caminhada WASD, combate real e reaparecimento dos inimigos.
+
+Aparência inicial fixa: equipamentos alteram atributos, ainda não as peças desenhadas. Corrida sem poses exclusivas. O grito de guerra vira de frente nas direções laterais. NPCs e monstros conservam suas aparências provisórias. Ainda há espaço para refinamento artístico dos quadros.

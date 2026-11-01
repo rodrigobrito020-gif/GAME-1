@@ -7,6 +7,7 @@ import { readZip } from "./zip-reader.mjs";
 import { attachLocalGame } from "./local-game.mjs";
 import { localAssets } from "./assets.mjs";
 import { createMedievalCity } from "./medieval-city.mjs";
+import { createRoyalHunt } from "./royal-hunt.mjs";
 const root = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.CAPTURE_PORT ?? 5188);
 if (!Number.isInteger(port) || port < 1024 || port > 65535)
@@ -60,6 +61,7 @@ const status = {
   apiAttempts: 0,
 };
 const medievalCity = createMedievalCity();
+const royalHunt = createRoyalHunt();
 const asset = localAssets(byName, status);
 const remember = (list, value) => {
   if (!list.includes(value)) {
@@ -109,6 +111,26 @@ const server = createServer((req, res) => {
     remember(status.served, pathname);
     return reply(200, types[".svg"], medievalCity.texture());
   }
+  if (pathname === `/assets/maps/${royalHunt.id}/map.json`) {
+    remember(status.served, pathname);
+    return reply(200, types[".json"], JSON.stringify(royalHunt.map));
+  }
+  if (pathname === `/assets/maps/${royalHunt.id}/tilesets/patio.svg`) {
+    remember(status.served, pathname);
+    return reply(200, types[".svg"], royalHunt.texture());
+  }
+  if (
+    /^\/assets\/ui\/cacadas\/mapa-(patio-da-coroa|treino-local|elite-local)\.webp$/.test(
+      pathname,
+    )
+  ) {
+    remember(status.served, pathname);
+    return reply(
+      200,
+      "image/webp",
+      readFileSync(path.join(root, "art/royal-hunt-preview.webp")),
+    );
+  }
   if (pathname === "/royal-theme.css")
     return reply(
       200,
@@ -149,6 +171,7 @@ const server = createServer((req, res) => {
       "/warrior-preview.js",
       "/warrior-preview.css",
       "/warrior.mjs",
+      "/warrior-walk-rig.mjs",
     ].includes(pathname)
   ) {
     const file =
@@ -208,7 +231,7 @@ const server = createServer((req, res) => {
 });
 const localGame = attachLocalGame(server, {
   build: byName.get("overlays-CiSZXpkZ.js")[0].read().toString("utf8"),
-  map: JSON.parse(byName.get("map.json")[0].read()),
+  map: royalHunt.map,
   root,
   status,
   cityMap: medievalCity.map,

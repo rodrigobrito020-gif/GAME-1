@@ -1,4 +1,5 @@
 // Original Human Warrior animation contract. All timings are milliseconds.
+import { WALK_STRIDE } from "./warrior-walk-rig.mjs";
 export const WARRIOR_SKIN = "humano-guerreiro";
 export const WARRIOR_SHEETS = {
   idle: 4,
@@ -15,13 +16,22 @@ export const WARRIOR_ACTIONS = {
 };
 export const WARRIOR_BASIC = {
   move: "humano-espada",
-  duration: 550,
+  duration: 500,
+  impact: 200,
+};
+export const WARRIOR_RETURN = {
+  move: "humano-retorno",
+  duration: 500,
   impact: 200,
 };
 const hold = (sheet, col, steps) =>
   Array.from({ length: steps }, () => [sheet, col]);
 export function warriorRig(original) {
   const rig = structuredClone(original);
+  if (rig.loops) {
+    rig.loops.walk = { ...rig.loops.walk, stride: WALK_STRIDE, fps: 6.67 };
+    rig.loops.run = { ...rig.loops.run, stride: 144 };
+  }
   const sword = (counts) => ({
     sheet: "weapon",
     frames: counts.flatMap((n, col) => Array(n).fill(col)),
@@ -34,14 +44,30 @@ export function warriorRig(original) {
       impacts: [],
     },
     "humano-espada": {
-      ...sword([2, 2, 2, 2, 2, 1]),
+      ...sword([1, 2, 1, 2, 2, 2]),
       impacts: [200],
       hit: "faisca-lamina",
+      motion: {
+        lunge: { windup: 4, reach: 12, lift: -1, tilt: 5 },
+      },
+    },
+    "humano-retorno": {
+      frames: [
+        ...hold("weapon", 5, 1),
+        ...hold("weapon", 4, 2),
+        ...hold("weapon", 3, 1),
+        ...hold("weapon", 2, 2),
+        ...hold("weapon", 1, 2),
+        ...hold("weapon", 5, 2),
+      ],
+      impacts: [200],
+      hit: "faisca-lamina",
+      motion: { lunge: { windup: 3, reach: 11, lift: -1, tilt: -5 } },
     },
     "humano-corte": {
-      ...sword([3, 4, 2, 2, 2, 1]),
+      ...sword([1, 3, 3, 2, 3, 2]),
       motion: {
-        lunge: { windup: 5, reach: 11, lift: -2, tilt: 5 },
+        lunge: { windup: 6, reach: 17, lift: -2, tilt: 6 },
         trail: { at: [250, 470], color: "#ffe8ad" },
         shake: { at: 350, force: 0.3, ms: 100 },
       },
@@ -53,10 +79,9 @@ export function warriorRig(original) {
         ...hold("run1", 1, 1),
         ...hold("run1", 2, 1),
         ...hold("run1", 3, 1),
-        ...hold("weapon", 0, 2),
         ...hold("weapon", 2, 2),
-        ...hold("weapon", 3, 1),
-        ...hold("weapon", 4, 1),
+        ...hold("weapon", 3, 2),
+        ...hold("weapon", 4, 2),
         ...hold("weapon", 5, 1),
       ],
       impacts: [400],
@@ -70,8 +95,8 @@ export function warriorRig(original) {
     "humano-destruidor": {
       frames: [
         ...hold("special", 1, 3),
-        ...hold("weapon", 1, 7),
-        ...hold("weapon", 2, 2),
+        ...hold("weapon", 1, 4),
+        ...hold("weapon", 2, 5),
         ...hold("weapon", 3, 2),
         ...hold("weapon", 4, 2),
         ...hold("weapon", 5, 2),
@@ -99,7 +124,7 @@ export function warriorRig(original) {
     },
   });
   rig.basic.guerreiro = {
-    chain: [WARRIOR_BASIC.move],
+    chain: [WARRIOR_BASIC.move, WARRIOR_RETURN.move],
     heavy: WARRIOR_BASIC.move,
   };
   for (const [id, action] of Object.entries(WARRIOR_ACTIONS))

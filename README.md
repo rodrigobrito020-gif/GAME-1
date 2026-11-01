@@ -1,10 +1,19 @@
-# Jogo local — 0.6.0: Guerreiro Humano
+# Jogo local — 0.6.1: caminhada, ataques e hunt corrigidos
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
 
-## Guerreiro Humano — 0.6.0
+## Correções — 0.6.1
+
+- Caminhada refeita com pernas articuladas, apoio alternado e eixo no quadril. O tronco mantém posição e escala; os lados usam a mesma sequência espelhada. A passada lateral considera o deslocamento no chão em escala 2.
+- Ataques com novas poses, escala constante, preparação, corte e recuperação. O ataque básico alterna um golpe descendente com um golpe de retorno; ambos têm impacto aos 200 ms e recuperação total de 500 ms. As quatro habilidades mantêm seus valores de dano, mana e recarga.
+- Nova arena própria **Pátio da Coroa**, com pedra marfim, detalhes dourados, muralhas e vegetação. As duas caçadas deixaram de usar o mapa capturado antigo. A prévia do mapa também está disponível no menu de caçadas.
+- Reaparecimento dos monstros corrigido: cada nova vida tem um identificador diferente. Assim, a animação de morte/transparência anterior não se aplica ao inimigo que acabou de nascer. Retornam após três segundos, como antes, e aparecem maiores para facilitar a leitura.
+
+Nível, ouro, EXP, equipamentos, mochila e armazém são preservados. A atualização não concede nem substitui itens.
+
+## Guerreiro Humano
 
 O jogador agora usa um personagem humano original: cabelo escuro, rosto visível, armadura marfim com detalhes dourados, capa curta e espada de aço. As folhas próprias incluem repouso, caminhada, espada, preparação de habilidade, reação a dano e derrota, com quatro direções. A corrida reutiliza os quadros de caminhada em cadência maior.
 
@@ -33,7 +42,7 @@ Requer Node.js **22.12+ ou 24 LTS**. O iniciador instala a dependência `ws` na 
 ## Testar o farm
 
 1. Na cidade, pressione **M** para abrir **Caçadas**.
-2. Em **Arena local — treino**, clique em **Iniciar**. O personagem procura e ataca monstros automaticamente. A segunda arena exige nível 5.
+2. Em **Pátio da Coroa — treino**, clique em **Iniciar**. O personagem procura e ataca monstros automaticamente. A segunda arena exige nível 5.
 3. As quatro habilidades são usadas automaticamente por padrão. **1–4** também permitem acioná-las respeitando alvo, alcance, mana e recarga. **Z** usa uma poção de vida e **X**, de mana. Cada conta recebe dez pequenas de cada, uma única vez.
 4. Observe a vida dos inimigos, os números de dano, EXP, ouro, contador de abates e drops. Os inimigos reaparecem três segundos depois de morrer.
 5. Clique em **Sair da caçada** no canto superior direito e confirme. **I** abre a mochila. Selecione uma espada ou peitoral de treino recebido e use a opção de equipar. Equipamentos só são trocados na cidade.
@@ -55,11 +64,11 @@ O personagem começa perto dos três. Dê alguns passos na direção do NPC dese
 
 Na mochila, **Equipar melhores** mostra uma prévia das trocas antes de aplicar. Os critérios de ataque, defesa, vida e poder usam os atributos implementados no servidor local. A ordenação por poder, nível, raridade ou tipo também funciona. O botão direito trava/destrava um item; equipamentos travados não são vendidos. Vendas de parte de uma pilha descontam apenas a quantidade escolhida. Transferências para o armazém preservam o item e recusam o que não couber.
 
-O nível sobre o personagem é atualizado ao evoluir, sem precisar sair da caçada. Os NPCs e o personagem ainda usam a sombra provisória. A mudança desta etapa é na cidade e na interface.
+O nível sobre o personagem é atualizado ao evoluir, sem precisar sair da caçada. Os NPCs ainda usam a sombra provisória; o jogador já utiliza o Guerreiro Humano com animações próprias.
 
 ## Conteúdo e limites deste teste
 
-- A cidade medieval é um mapa e arte próprios do projeto, com colisões correspondentes no cliente e no servidor. As duas arenas continuam usando o cenário capturado anterior e sua grade de colisões. A praça medieval permanece segura, sem monstros.
+- A cidade medieval é um mapa e arte próprios do projeto, com colisões correspondentes no cliente e no servidor. As duas caçadas utilizam o novo Pátio da Coroa, com arte e grade próprias, separado da praça segura. A praça medieval permanece segura, sem monstros.
 - Não vieram os sprites completos de monstros nem as animações completas dos personagens. O jogador usa o Guerreiro Humano original desta versão. NPCs e inimigos ainda usam a sombra provisória disponível no pacote; suas novas artes ficam para outra etapa.
 - As habilidades usam eventos reais de combate no cliente, com dano e cura calculados no servidor. Os efeitos das quatro habilidades do guerreiro foram criados localmente. Alguns outros efeitos gráficos e áudios não vieram no pacote e continuam indisponíveis.
 - Itens implementados: fragmento empilhável, espada e peitoral de treino. Cada abate dá fragmento se houver espaço; a cada três abates da caçada, uma espada ou peitoral. Com mochila cheia, não entram itens novos; o jogo continua concedendo EXP e ouro. Retirar equipamento com a mochila cheia é recusado.
@@ -89,7 +98,7 @@ set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-São **21 testes automatizados**: protocolo, PNG, combate, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, cidade e integração real WebSocket. Os novos testes verificam quadros distintos, transparência, ausência de corte das armas, alinhamento dos pés, efeitos locais e sincronização dos golpes. A integração também migra uma aparência antiga e verifica ouro, EXP, poções e item guardado após reiniciar o processo. Sem o ZIP, a integração é explicitamente pulada. O jogo e a prévia também são verificados no Chromium. Consulte **RESULTADO_TESTE.txt**.
+São **24 testes automatizados**: protocolo, PNG, combate, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, cidade e integração real WebSocket. Os novos testes verificam quadros distintos, transparência, ausência de corte das armas, alinhamento dos pés, efeitos locais e sincronização dos golpes. Também verificam apoio alternado dos pés, tronco estável, escala constante dos golpes e 50 ciclos consecutivos de reaparecimento (150 novas vidas). A integração também migra uma aparência antiga e verifica ouro, EXP, poções e item guardado após reiniciar o processo. Sem o ZIP, a integração é explicitamente pulada. O jogo e a prévia também são verificados no Chromium. Consulte **RESULTADO_TESTE.txt**.
 
 Para reempacotar as fontes originais do guerreiro (não é necessário para jogar):
 
@@ -101,8 +110,8 @@ npm run art:warrior
 
 Conta e progresso: **.local-runtime/account.json**. Não apague essa pasta para conservar os dados. Senha armazenada com scrypt; tokens locais duram até oito horas no processo. Ao reiniciar o servidor, a entrada automática faz novo login.
 
-Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. Scripts e estilos compilados do cliente permanecem sem alteração; uma folha de estilo própria aplica o tema branco e dourado. O servidor fornece o novo mapa e compõe sua textura com a arte em `art/medieval-ivory-gold.png`. Os demais recursos continuam sendo lidos do ZIP local.
+Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. Scripts e estilos compilados do cliente permanecem sem alteração; uma folha de estilo própria aplica o tema branco e dourado. O servidor fornece a cidade com `art/medieval-ivory-gold.png` e a arena com `art/royal-hunt.png`, cada uma com sua grade de colisão. Os demais recursos continuam sendo lidos do ZIP local.
 
-O GitHub contém código próprio e adaptadores, com as artes próprias da cidade e do guerreiro e sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
+O GitHub contém código próprio e adaptadores, com as artes próprias da cidade, da arena e do guerreiro e sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
 
 Diagnóstico: **http://127.0.0.1:5188/diagnostico**.

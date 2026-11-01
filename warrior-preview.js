@@ -80,7 +80,13 @@ function render() {
   } else
     col =
       Math.floor(
-        elapsed / (action === "idle" ? 333 : action === "walk" ? 125 : 83.33),
+        elapsed /
+          (1000 /
+            (action === "idle"
+              ? rig.loops.idle.fps
+              : action === "walk"
+                ? rig.loops.walk.fps
+                : rig.loops.run.fps)),
       ) % 4;
   const n = Object.keys(WARRIOR_ACTIONS).indexOf(action);
   ctx.imageSmoothingEnabled = false;

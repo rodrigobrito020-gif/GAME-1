@@ -7,11 +7,13 @@ import {
   WARRIOR_SHEETS,
   WARRIOR_ACTIONS,
   WARRIOR_BASIC,
+  WARRIOR_RETURN,
   warriorRig,
 } from "../warrior.mjs";
 import { warriorEffects, warriorFx, warriorIcon } from "../warrior-fx.mjs";
 import { localAssets } from "../assets.mjs";
 import { LocalFarm } from "../farm.mjs";
+import { warriorWalkPose, WALK_STRIDE } from "../warrior-walk-rig.mjs";
 
 test("authored warrior poses have transparent gutters, stable feet and distinct movement/attack frames in all directions", () => {
   for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
@@ -56,7 +58,7 @@ test("authored warrior poses have transparent gutters, stable feet and distinct 
         hashes.add(createHash("sha256").update(frame).digest("hex"));
       }
       assert.ok(
-        hashes.size >= (cols === 6 ? 5 : 4),
+        hashes.size >= (name === "idle" ? 3 : cols === 6 ? 5 : 4),
         `${name}/${row} cannot reuse idle as every frame`,
       );
     }
@@ -74,7 +76,11 @@ test("warrior combat rig uses real exported poses and the server impact/recovery
   assert.deepEqual(rig.basic.mago, original.basic.mago);
   assert.deepEqual(rig.skills["bola-de-fogo"], original.skills["bola-de-fogo"]);
   assert.equal(original.moves[WARRIOR_BASIC.move], undefined);
-  for (const action of [WARRIOR_BASIC, ...Object.values(WARRIOR_ACTIONS)]) {
+  for (const action of [
+    WARRIOR_BASIC,
+    WARRIOR_RETURN,
+    ...Object.values(WARRIOR_ACTIONS),
+  ]) {
     const move = rig.moves[action.move];
     assert.equal(move.frames.length * rig.stepMs, action.duration);
     assert.deepEqual(move.impacts, [action.impact]);
@@ -84,6 +90,88 @@ test("warrior combat rig uses real exported poses and the server impact/recovery
         frame >= 0 && frame < WARRIOR_SHEETS[sheet],
         `invalid ${sheet}/${frame}`,
       );
+    }
+  }
+  for (const id of [
+    "humano-espada",
+    "humano-corte",
+    "humano-investida",
+    "humano-destruidor",
+  ]) {
+    const move = rig.moves[id],
+      entry = move.frames[move.impacts[0] / 50];
+    assert.equal(
+      Array.isArray(entry) ? entry[1] : entry,
+      3,
+      "the impact must use the committed cutting pose",
+    );
+  }
+  const manifest = JSON.parse(
+    readFileSync(new URL("../art/warrior/manifest.json", import.meta.url)),
+  );
+  assert.equal(
+    new Set(manifest.sources.weapon.map((pose) => pose.scale)).size,
+    1,
+    "raising the sword must not shrink the whole character to fit its bounds",
+  );
+});
+
+test("walking alternates planted legs around a stable pelvis, mirrors directions and keeps the contact-pose torso still", () => {
+  const image = decodeRgba(
+    readFileSync(new URL("../art/warrior/walk.png", import.meta.url)),
+  );
+  const torso = (row, frame) => {
+    const out = [];
+    for (let y = 0; y < 31; y++)
+      for (let x = 0; x < 64; x++) {
+        const at = ((row * 64 + y) * image.width + frame * 64 + x) * 4;
+        out.push(...image.pixels.subarray(at, at + 4));
+      }
+    return out;
+  };
+  for (let row = 0; row < 4; row++) {
+    const phases = [0, 1, 2, 3].map((phase) => warriorWalkPose(row, phase));
+    assert.ok(phases.every((p) => p.pelvis[0] === 32));
+    assert.ok(
+      Math.max(...phases.map((p) => p.pelvis[1])) -
+        Math.min(...phases.map((p) => p.pelvis[1])) <=
+        0.7 + 1e-8,
+    );
+    assert.deepEqual(
+      phases.map((p) => p.legs.map((l) => l.planted)),
+      [
+        [true, false],
+        [true, false],
+        [false, true],
+        [false, true],
+      ],
+    );
+    assert.deepEqual(
+      torso(row, 0),
+      torso(row, 2),
+      "opposite strides must not resize or move the torso sideways",
+    );
+    if (row === 1 || row === 2) {
+      assert.ok(phases[0].legs[0].foot[0] < phases[0].legs[1].foot[0]);
+      assert.ok(phases[2].legs[0].foot[0] > phases[2].legs[1].foot[0]);
+      assert.equal(
+        (phases[1].legs[0].foot[0] - phases[0].legs[0].foot[0]) * 2,
+        WALK_STRIDE / 4,
+        "a planted foot must compensate for ground travel at native scale2",
+      );
+      for (let frame = 0; frame < 4; frame++)
+        for (let y = 0; y < 64; y++)
+          for (let x = 0; x < 64; x++) {
+            const west = ((64 + y) * image.width + frame * 64 + x) * 4;
+            const east = ((128 + y) * image.width + frame * 64 + 63 - x) * 4;
+            assert.deepEqual(
+              image.pixels.subarray(west, west + 4),
+              image.pixels.subarray(east, east + 4),
+            );
+          }
+    } else {
+      assert.ok(phases[0].legs[0].foot[1] > phases[0].legs[1].foot[1]);
+      assert.ok(phases[2].legs[0].foot[1] < phases[2].legs[1].foot[1]);
     }
   }
 });
@@ -224,4 +312,9 @@ test("basic sword attack announces the authored animation before damage and cann
   assert.throws(() => farm.cast(client, "investida", 100), /cooldown/);
   assert.equal(step(199).events.damage.length, 0);
   assert.ok(step(1).events.damage.some((e) => e.source === 1 && !e.skillId));
+  const next = step(800);
+  assert.ok(
+    next.events.moves.some((e) => e.move === WARRIOR_RETURN.move),
+    "the combo must alternate into the return cut",
+  );
 });

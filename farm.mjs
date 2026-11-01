@@ -1,5 +1,5 @@
 // Own local gameplay rules. These are test values, not the original server rules.
-import { WARRIOR_ACTIONS, WARRIOR_BASIC } from "./warrior.mjs";
+import { WARRIOR_ACTIONS, WARRIOR_BASIC, WARRIOR_RETURN } from "./warrior.mjs";
 export const SKILLS = [
   {
     id: "corte-poderoso",
@@ -86,7 +86,7 @@ export const AREAS = [
     tier: 1,
     max: 4,
     required: 1,
-    name: "Arena local — treino",
+    name: "Pátio da Coroa — treino",
     hp: 48,
     damage: 4,
     xp: 18,
@@ -97,7 +97,7 @@ export const AREAS = [
     tier: 5,
     max: 10,
     required: 5,
-    name: "Arena local — desafio",
+    name: "Pátio da Coroa — desafio",
     hp: 180,
     damage: 18,
     xp: 44,
@@ -183,6 +183,8 @@ export class LocalFarm {
       nextCast: now,
       actionUntil: now,
       impacts: [],
+      nextMonsterId: 103,
+      basicChain: 0,
       nextRegen: now + 1000,
       cooldowns: {},
       target: 0,
@@ -388,10 +390,17 @@ export class LocalFarm {
       now = this.now(),
       events = this.events(),
       deltas = [],
-      spawned = [];
-    if (!h) return { events, deltas, spawned };
+      spawned = [],
+      despawned = [];
+    if (!h) return { events, deltas, spawned, despawned };
     if (h.deadAt)
-      return { events, deltas, spawned, returnCity: now >= h.deadAt + 3000 };
+      return {
+        events,
+        deltas,
+        spawned,
+        despawned,
+        returnCity: now >= h.deadAt + 3000,
+      };
     for (const impact of h.impacts.filter((p) => p.at <= now)) {
       for (const id of impact.targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
@@ -428,7 +437,11 @@ export class LocalFarm {
     };
     for (const m of h.monsters)
       if (!m.hp && now >= m.respawnAt) {
+        // A dying actor can still be in the client's delayed animation queues.
+        // A new life must not reuse that network identity.
+        despawned.push(m.id);
         Object.assign(m, m.home, {
+          id: h.nextMonsterId++,
           hp: m.maxHp,
           anim: 0,
           nextAttack: now + 1000,
@@ -473,21 +486,22 @@ export class LocalFarm {
         }
         if (target.hp > 0 && now >= h.nextAttack && now >= h.actionUntil) {
           h.nextAttack = now + 1000;
-          h.actionUntil = now + WARRIOR_BASIC.duration;
+          const basic = h.basicChain++ % 2 ? WARRIOR_RETURN : WARRIOR_BASIC;
+          h.actionUntil = now + basic.duration;
           client.combatAnimUntil = h.actionUntil;
           const dx = target.x - client.x,
             dy = target.y - client.y;
           const distance = Math.hypot(dx, dy) || 1;
           events.moves.push({
             entity: 1,
-            move: WARRIOR_BASIC.move,
+            move: basic.move,
             target: target.id,
             dirX: Math.round((dx / distance) * 1000),
             dirY: Math.round((dy / distance) * 1000),
-            durationMs: WARRIOR_BASIC.duration,
+            durationMs: basic.duration,
           });
           h.impacts.push({
-            at: now + WARRIOR_BASIC.impact,
+            at: now + basic.impact,
             targets: [target.id],
             amount: c.derived.atk,
             skillId: "",
@@ -534,7 +548,7 @@ export class LocalFarm {
             difficulty: "normal",
             xpLost: 0,
           };
-          return { events, deltas, spawned, died: true };
+          return { events, deltas, spawned, despawned, died: true };
         }
       }
     }
@@ -542,7 +556,7 @@ export class LocalFarm {
       h.nextRegen = now + 1000;
       c.progress.mana = Math.min(c.derived.maxMana, c.progress.mana + 3);
     }
-    return { events, deltas, spawned };
+    return { events, deltas, spawned, despawned };
   }
   inventory(input) {
     if (![0, 1, 2, 3].includes(input.scope ?? 0))

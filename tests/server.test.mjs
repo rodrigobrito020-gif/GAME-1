@@ -238,7 +238,16 @@ test(
           (m) => m.body?.case === "sceneEnter" && m.body.value.kind === 2,
         )
       ).body.value;
-      assert.equal(huntScene.map.source.value, "praca-local");
+      assert.equal(huntScene.map.source.value, "patio-da-coroa");
+      const huntMap = await (
+        await fetch(base + "/assets/maps/patio-da-coroa/map.json")
+      ).json();
+      assert.equal(huntMap.layers[0].data.length, 60 * 48);
+      assert.equal(
+        (await fetch(base + "/assets/maps/patio-da-coroa/tilesets/patio.svg"))
+          .status,
+        200,
+      );
       assert.notDeepEqual(huntScene.walk.grid.blocked, scene.walk.grid.blocked);
       await wait(
         (m) =>

@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.1: caminhada articulada e alternada, ataques com escala estável e combo, Pátio da Coroa próprio para as hunts e reaparecimento dos monstros com novas identidades para impedir invisibilidade após a morte.
+
 - 0.6.0: Guerreiro Humano original integrado ao jogador, folhas de repouso/caminhada/espada/reações, quatro habilidades com efeitos próprios, impacto sincronizado e prévia interativa. Progresso e equipamentos preservados.
 
 - 0.5.1: corrigido o pivô dos monstros para que sprites e barras de vida sejam desenhados dentro da tela na hunt.
@@ -17,7 +19,7 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 1. Refinar o Guerreiro Humano após a revisão visual do jogador. Criar variações visuais de equipamentos, corrida dedicada e artes distintas dos monstros e NPCs; o humano inicial já está integrado.
 2. Criação de personagens e classes, usando um catálogo próprio de habilidades e equipamentos.
-3. Ambientes de caça próprios, inimigos variados e chefes. As arenas conservam o mapa capturado anterior; a cidade medieval da versão 0.5 já é própria.
+3. Ambientes de caça próprios, inimigos variados e chefes. Cidade e arena já têm mapas próprios; faltam novos ambientes e inimigos com artes distintas.
 4. Ampliar os equipamentos, raridades e progressão; balancear as recompensas com testes de jogo.
 5. Expandir os demais sistemas escolhidos para o nosso jogo. Menus existentes no cliente não significam que o servidor desses sistemas foi implementado.
 6. Ampliar a identidade visual aprovada: branco, marfim e dourado. A cidade e os painéis principais já seguem essa direção na 0.5.

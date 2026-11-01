@@ -3,8 +3,13 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { decodeRgba, encodeRgba } from "../png.mjs";
+import {
+  renderWarriorWalkFrame,
+  warriorWalkPose,
+  WALK_STRIDE,
+} from "../warrior-walk-rig.mjs";
 const folder = new URL("../art/warrior/", import.meta.url);
-function load(name, columns) {
+function load(name, columns, rows = 4) {
   const image = decodeRgba(
     readFileSync(new URL("source/" + name + ".png", folder)),
   );
@@ -41,9 +46,9 @@ function load(name, columns) {
     }
     if (points.length > 500) components.push({ points, x0, y0, x1, y1 });
   }
-  const grid = Array.from({ length: 4 }, () => Array(columns));
+  const grid = Array.from({ length: rows }, () => Array(columns));
   for (const c of components) {
-    const row = Math.min(3, Math.floor((c.y0 + c.y1) / 2 / (h / 4)));
+    const row = Math.min(rows - 1, Math.floor((c.y0 + c.y1) / 2 / (h / rows)));
     const col = Math.min(
       columns - 1,
       Math.floor((c.x0 + c.x1) / 2 / (w / columns)),
@@ -52,10 +57,9 @@ function load(name, columns) {
   }
   return { ...image, grid };
 }
-const locomotion = load("locomotion", 8),
-  sword = load("sword", 6),
+const sword = load("sword-v2", 6, 3),
   reactions = load("reactions", 6);
-function pack(name, source, columns, choose, mirror = () => false) {
+function pack(name, source, columns, choose, mirror = () => false, anchor) {
   const width = columns * 64,
     height = 256,
     output = Buffer.alloc(width * height * 4);
@@ -76,15 +80,19 @@ function pack(name, source, columns, choose, mirror = () => false) {
       const floor = c.points.filter(
         (i) => Math.floor(i / source.width) >= c.y1 - 10,
       );
+      const fixed = anchor?.(row, col);
       const center =
-        name === "special" && col === 5
+        fixed?.center ??
+        (name === "special" && col === 5
           ? (sx0 + sx1) / 2
-          : floor.reduce((n, i) => n + (i % source.width), 0) / floor.length;
-      const scale = Math.min(
-        0.23,
-        29 / Math.max(center - sx0, sx1 - center),
-        56 / (c.y1 - sy0 + 1),
-      );
+          : floor.reduce((n, i) => n + (i % source.width), 0) / floor.length);
+      const scale =
+        fixed?.scale ??
+        Math.min(
+          0.23,
+          29 / Math.max(center - sx0, sx1 - center),
+          56 / (c.y1 - sy0 + 1),
+        );
       const flip = mirror(row, col);
       // 4x4 area samples produce alpha-correct antialiasing at the 64px export size.
       for (let y = 0; y < 64; y++)
@@ -98,7 +106,9 @@ function pack(name, source, columns, choose, mirror = () => false) {
               const px = Math.floor(
                 center + ((flip ? 63 - x : x) - 32 + (xx + 0.5) / 4) / scale,
               );
-              const py = Math.floor(c.y1 + (y - 59 + (yy + 0.5) / 4) / scale);
+              const py = Math.floor(
+                (fixed?.floor ?? c.y1) + (y - 59 + (yy + 0.5) / 4) / scale,
+              );
               if (px < sx0 || px > sx1 || py < sy0 || py > sy1) continue;
               const at = py * source.width + px;
               if (!mask.has(at)) continue;
@@ -122,6 +132,7 @@ function pack(name, source, columns, choose, mirror = () => false) {
         source: [sx0, sy0, sx1, sy1],
         scale,
         mirrored: flip,
+        ...(fixed ? { anchor: fixed } : {}),
       });
     }
   writeFileSync(
@@ -130,32 +141,48 @@ function pack(name, source, columns, choose, mirror = () => false) {
   );
   return rectangles;
 }
-const sources = {};
-sources.idle = pack(
-  "idle",
-  locomotion,
-  4,
-  (r, c) => locomotion.grid[r][c],
-  (r) => r === 1,
-);
-sources.walk = pack(
-  "walk",
-  locomotion,
-  4,
-  (r, c) => locomotion.grid[r][c + 4],
-  (r) => r === 1,
-);
+const sources = {},
+  parts = decodeRgba(readFileSync(new URL("source/walk-parts.png", folder)));
+for (const name of ["idle", "walk"]) {
+  const pixels = Buffer.alloc(256 * 256 * 4);
+  sources[name] = [];
+  for (let row = 0; row < 4; row++)
+    for (let col = 0; col < 4; col++) {
+      const frame = renderWarriorWalkFrame(parts, row, col, name === "idle");
+      for (let y = 0; y < 64; y++)
+        frame.copy(
+          pixels,
+          ((row * 64 + y) * 256 + col * 64) * 4,
+          y * 256,
+          (y + 1) * 256,
+        );
+      sources[name].push(warriorWalkPose(row, col, name === "idle"));
+    }
+  writeFileSync(new URL(name + ".png", folder), encodeRgba(256, 256, pixels));
+}
 // Running currently uses the same authored leg cycle with a faster cadence.
 writeFileSync(
   new URL("run1.png", folder),
   readFileSync(new URL("walk.png", folder)),
 );
-// The very wide extension pose is excluded to keep character scale consistent.
+const hips = [
+  [136, 394, 650, 904, 1152, 1390],
+  [130, 394, 654, 893, 1150, 1407],
+  [157, 408, 650, 899, 1150, 1402],
+];
+const rowOf = (r) => (r === 0 ? 0 : r === 3 ? 2 : 1);
+// Constant scale and pelvis X, shared ground plane. Never re-center on a sword or toe.
 sources.weapon = pack(
   "weapon",
   sword,
   6,
-  (r, c) => sword.grid[r][[0, 1, 2, 4, 5, 5][c]],
+  (r, c) => sword.grid[rowOf(r)][c],
+  (r) => r === 1,
+  (r, c) => ({
+    center: hips[rowOf(r)][c],
+    floor: sword.grid[rowOf(r)][c].y1,
+    scale: 0.17,
+  }),
 );
 sources.special = pack(
   "special",
@@ -170,11 +197,13 @@ writeFileSync(
     {
       character: "Guerreiro Humano",
       skinId: "humano-guerreiro",
-      version: 1,
+      version: 2,
       frame: [64, 64],
       feet: [32, 60],
       rows: ["south", "west", "east", "north"],
       sheets: { idle: 4, walk: 4, run1: 4, weapon: 6, special: 6 },
+      walkStride: WALK_STRIDE,
+      rig: "warrior-walk-rig.mjs",
       notes: [
         "Corrida reutiliza o ciclo de caminhada.",
         "Grito de guerra vira de frente nas direções laterais.",

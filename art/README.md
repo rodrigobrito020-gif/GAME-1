@@ -3,3 +3,7 @@
 `medieval-ivory-gold.png` é uma arte original criada para este projeto em 31/10/2026 com a ferramenta de geração de imagens da OpenAI. Contém palácio, comércio, tesouraria/armazém e fonte, em branco, marfim e dourado, com transparência.
 
 `medieval-city.mjs` compõe essas quatro peças em uma textura SVG de 1920 × 1536 junto das ruas, jardins, muralhas e detalhes próprios. As regiões do atlas são selecionadas pelo renderer sem modificar o PNG. A cidade não depende dos tilesets da cidade capturada; as arenas continuam usando seus recursos anteriores.
+
+## Pátio da Coroa — arena própria
+
+`royal-hunt.png` é uma arte original criada em 01/11/2026 para substituir o mapa antigo nas duas hunts locais. Mostra um pátio medieval de pedra marfim e ouro, cercado por muralhas, colunas, estandartes e vegetação. `royal-hunt.mjs` compõe a textura de 1920 × 1536 e define uma área central conectada, sem obstáculos, com bordas bloqueadas. `royal-hunt-preview.webp` é uma cópia reduzida para o menu de caçadas. A arena e a cidade têm grades independentes.

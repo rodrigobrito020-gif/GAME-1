@@ -11,6 +11,7 @@ import path from "node:path";
 import { Protocol } from "./protocol.mjs";
 import { LocalFarm, AREAS, ITEMS, SKILLS } from "./farm.mjs";
 import { WARRIOR_SKIN } from "./warrior.mjs";
+import { ROYAL_HUNT_MAP_ID } from "./royal-hunt.mjs";
 export function attachLocalGame(
   server,
   {
@@ -51,7 +52,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-1";
+  catalog.version = "local-human-warrior-2";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -158,7 +159,7 @@ export function attachLocalGame(
     category: "normal",
     role: "melee",
     spriteDir: "local-treino",
-    displayHeight: 64,
+    displayHeight: 80,
     artHeight: 112,
     tint: a.required === 1 ? 0xc090ff : 0xff7777,
     stats: {
@@ -185,9 +186,9 @@ export function attachLocalGame(
     ...AREAS.map((a) => ({
       id: a.id,
       kind: 2,
-      name: a.name + " (cenário provisório)",
+      name: a.name,
       map: {
-        source: { case: "atlasMapId", value: "praca-local" },
+        source: { case: "atlasMapId", value: ROYAL_HUNT_MAP_ID },
         scale: 1,
         viewScale: 1,
       },
@@ -583,7 +584,7 @@ export function attachLocalGame(
       spawn: { x: Math.round(client.x * 10), y: Math.round(client.y * 10) },
       map: hunt
         ? {
-            source: { case: "atlasMapId", value: "praca-local" },
+            source: { case: "atlasMapId", value: ROYAL_HUNT_MAP_ID },
             scale: 1,
             viewScale: 1,
           }
@@ -1026,7 +1027,7 @@ export function attachLocalGame(
         if (output.spawned.length) {
           send(client, "entityDespawn", {
             tick,
-            ids: output.spawned.map((m) => m.id),
+            ids: output.despawned,
           });
           send(client, "entitySpawn", {
             tick,

@@ -1,67 +1,77 @@
-JOGO LOCAL — 0.6.0: GUERREIRO HUMANO
+JOGO LOCAL — 0.6.1: CAMINHADA, ATAQUES, ARENA E REAPARECIMENTO
 Data: 01/11/2026 (America/Sao_Paulo)
 
-ENTREGUE
-Personagem original marfim/dourado integrado ao jogador, com rosto humano,
-cabelo escuro, capa curta e espada de aço. Folhas RGBA para repouso, caminhar,
-espada e reações, em quatro direções. A corrida usa a caminhada mais rápida.
-O catálogo, o estado da conta, o spawn do jogador e o retrato usam a nova arte.
-NPCs e monstros continuam usando as aparências provisórias anteriores.
+PROBLEMAS REPRODUZIDOS A PARTIR DOS DOIS VÍDEOS
+1. Caminhada com poses que repetiam a mesma perna à frente e mudavam o eixo
+   do corpo ao alinhar a ponta do pé. Os testes anteriores de arquivos/quadros
+   distintos não bastavam para validar um ciclo de caminhada correto.
+2. Ataques com redimensionamento entre poses e pouca preparação/recuperação.
+3. Hunt ainda usava o mapa capturado antigo.
+4. Monstros recebiam uma nova vida com a mesma identidade de uma entidade
+   cuja animação de morte/transparência ainda estava ativa no cliente.
 
-As habilidades Corte Poderoso, Investida, Golpe Destruidor e Fúria do Guerreiro
-têm movimentos e efeitos próprios, além de ícones locais. O servidor agenda
-o dano nos impactos de 350/400/600/300ms; a espada básica usa 200ms.
-Não há ataque básico sobreposto à recuperação de uma habilidade. Saída da
-hunt e morte cancelam impactos pendentes. Dano, mana, recargas e recompensas
-mantêm os valores de teste existentes. Reações leves a dano ocorrem entre ações.
-
-Prévia interativa: /guerreiro, com direção, pausa, passo a passo e velocidade.
-Usa as mesmas folhas e sequências do jogo; não substitui a integração jogável.
-Fontes e contrato para as próximas classes: art/warrior/README.md.
+CORREÇÕES
+- Caminhada com pernas articuladas em duas partes, apoio alternado, joelhos,
+  quadril estável e espelhamento lateral. Oscilação do tronco até 0,7 pixel.
+- Passada lateral de 96 unidades considera escala2 e deslocamento do pé de apoio.
+- Novos quadros de espada com escala constante, preparação, corte e recuperação.
+  Combo alterna golpe descendente e golpe de retorno: 500ms, impacto aos 200ms.
+- Quatro habilidades mantêm dano, mana e recarga; impacto continua sincronizado.
+- Pátio da Coroa: mapa e arte próprios em marfim/dourado, piso livre central,
+  bordas bloqueadas e prévia no menu. As duas hunts deixam de usar o mapa antigo.
+- Cada reaparecimento recebe uma nova identidade de rede. A morte anterior
+  não pode esconder o novo monstro. Intervalo de três segundos preservado.
+- Monstros maiores para facilitar a leitura. Suas artes continuam provisórias.
+- Nível, EXP, ouro, equipamento, mochila e armazém preservados; sem itens concedidos.
 
 TESTES AUTOMATIZADOS
-21 testes aprovados, nenhum pulado, com recursos-publicos.zip real.
-- Quatro direções e quadros realmente distintos de movimento/combate.
-- Transparência, margens sem corte de espada/capa e apoio dos pés consistente.
-- Sequências válidas e mesmos tempos de impacto no servidor e no rig.
-- Folhas e efeitos servidos localmente, com dimensão/pivô correspondentes.
-- Preparação e recuperação, dano retardado de cada habilidade e ataque básico.
-- Cancelamento após morte/saída e impossibilidade de sobrepor ações.
-- Integração HTTP/WebSocket com autenticação, movimento, combate, habilidades,
-  mortes, retorno, drops, EXP, itens, equipamento, NPCs, venda e armazém.
-- Reinício com aparência antiga migra o jogador para humano e conserva ouro,
-  EXP, poções e item guardado; NPCs conservam a aparência anterior.
-- Regressões de protocolo, PNG, capacidade, proteção de itens, ordenação e
-  grade da cidade medieval separada da grade das arenas.
+24 aprovados, nenhum pulado, usando o recursos-publicos.zip real.
+- Apoio alternado, pernas opostas nas poses de contato, tronco estável e espelhamento.
+- Compensação da passada lateral na escala do renderer.
+- Escala única dos ataques e pose de corte no instante do impacto.
+- Combo alternado, recuperação, mana, recargas e cancelamento por morte/saída.
+- 50 ciclos consecutivos de reaparecimento: 150 novas vidas sem reuso de identidade.
+- Piso da arena conectado e posições do jogador/monstros livres de obstáculos.
+- Folhas PNG, efeitos, pivôs e margens sem cortes.
+- Integração HTTP/WebSocket: autenticação, movimento, colisões, arena própria,
+  combate, habilidades, morte, retorno, drops, nível, inventário e serviços.
+- Reinício conserva ouro, EXP, poções e item guardado, inclusive ao migrar aparência.
+- Regressões de protocolo, capacidade, vendas, equipamentos, ordenação e armazém.
 
-CHROMIUM — JOGO
-Desktop 1440x900: caminhada WASD e snapshots das quatro direções; guerreiro
-visível na cidade e na hunt; as quatro habilidades utilizadas; seis abates,
-EXP/ouro/drops recebidos e retorno confirmado pela interface.
-Nenhuma exceção JavaScript ou aviso de falha da arte/animação do personagem.
-Todos os novos recursos solicitados do guerreiro responderam HTTP 200.
-Os áudios e outros recursos antigos ausentes do pacote continuam registrados
-pelo diagnóstico; não são apresentados como implementados nesta versão.
+COMPARAÇÃO NO CLIENTE REAL — CHROMIUM, 1440x900
+Executada a versão anterior c820a00 e depois a versão corrigida, com observação
+somente de leitura dos atores do renderer durante o ensaio.
+- Antes: 18 abates e 20 spawns usavam apenas três identidades. Após os primeiros
+  ciclos, monstros tinham HP no servidor, mas o ator permanecia inativo e com
+  transparência zero. Em 27 amostras, todos os inimigos vivos estavam invisíveis.
+- Corrigida, ensaio inicial: 28 abates, 30 identidades de spawn diferentes,
+  todos os 30 inimigos observados com a arte visível em algum momento da vida.
+- Versão final com combo: 19 abates, 21 spawns/identidades diferentes, 21 inimigos
+  vistos pelo renderer; nenhuma amostra com todos os vivos invisíveis.
+- Caminhada WASD observada nas quatro direções, com alternância dos quadros.
+- Ataques básico/retorno e as quatro habilidades vistos em execução no renderer.
+- A cena carregada foi patio-da-coroa. Textura, prévia e folhas humanas responderam 200.
+- Sem exceção JavaScript ou aviso de falha da arte/animação/mapa.
 
 PRÉVIA E TELA MENOR
-Quarenta combinações de direção/ação verificadas na prévia, incluindo ferido
-e derrotado. Pausa e avanço de quadro exercitados. Jogo aberto em 390x844,
-com folha humana carregada e sem exceção JavaScript. O HUD compacto do cliente
-oculta parte das informações nessa resolução; não confundir com falha do login.
+Prévia /guerreiro: 44 combinações de direção/ação, incluindo os dois golpes,
+pausa e avanço de quadros. Jogo também aberto em 390x844 com o avatar humano.
+O HUD compacto do cliente oculta parte dos textos nessa resolução.
 
-LIMITES DESTA PRIMEIRA VERSÃO
-Aparência de armadura/espada fixa; equipar muda atributos, ainda não o desenho.
-Corrida sem poses exclusivas. Grito de guerra vira de frente nas direções laterais.
-Há espaço para refinamento manual dos quadros e da consistência entre poses.
-Outras classes, monstros próprios e NPCs próprios não foram criados nesta etapa.
-O servidor permanece local e para uma conta. Não houve implantação na VPS.
-Testes executados em Linux/Chromium; não foi usada máquina Windows física.
+LIMITES
+Esta continua sendo uma primeira base artística para refinamento. A aparência
+de armadura/espada é fixa: equipar ainda muda atributos, não as peças desenhadas.
+Corrida usa o mesmo ciclo em cadência maior. Grito de guerra vira de frente nas
+laterais. NPCs e monstros conservam a sombra provisória. Outros áudios/recursos
+antigos ausentes no pacote continuam registrados pelo diagnóstico.
+Servidor local para uma conta, sem implantação na VPS. Testes executados em
+Linux/Chromium; não foi usada máquina Windows física.
 
-ABRIR NO WINDOWS
-Encerre o servidor anterior com Ctrl+C, extraia o novo ZIP e coloque o seu
-recursos-publicos.zip junto de ABRIR_CLIENTE_COPIADO.bat. Para manter o progresso,
-copie a pasta .local-runtime da versão anterior com ambos os servidores fechados.
-Abra o BAT e mantenha seu terminal aberto. Requer Node.js 22.12+ ou 24 LTS.
+WINDOWS
+Feche o servidor anterior com Ctrl+C, extraia o ZIP numa pasta nova e coloque
+seu recursos-publicos.zip junto de ABRIR_CLIENTE_COPIADO.bat. Copie .local-runtime
+da versão anterior para manter o progresso, com ambos os servidores fechados.
+Execute o BAT e mantenha o terminal aberto. Requer Node.js 22.12+ ou 24 LTS.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Prévia: http://127.0.0.1:5188/guerreiro
-Se necessário, atualize a aba com Ctrl+F5 para descartar a aparência em memória.
+Ctrl+F5 descarta a aparência anterior mantida em memória pela aba.

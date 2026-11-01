@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.16: espada de ferro simples e escudo de madeira; energia do Avatar adaptada às novas armas. Avatar automático também nos saves anteriores: 45s de duração, 60s de recarga e energia 100. Égide: 5min de duração e 120s de recarga, renovada após expirar, sem acumular defesa. Indicador único de duração em m:ss.
+
 - 0.6.15: Avatar da Luz na tecla/ícone 4, energia real de combate, transformação de 8s, ataque básico em pequena área e redução de dano. Manual por padrão; aura e armas de energia seguem as poses, indicador único de duração e recarga persistente. Valores iniciais para teste.
 
 - 0.6.14: roupas redesenhadas nas próprias artes das poses; removida a substituição por máscaras da 0.6.13, rejeitada pelo jogador. Sem capa/saiote no corpo inicial. Preparação compacta preserva a escala do personagem; peitoral visível também nas costas.
@@ -23,7 +25,7 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Próximas partes da construção
 
-1. Trocar a espada e o escudo iniciais por uma espada simples de treino e escudo de madeira, combinando com as roupas aprovadas. Alteração solicitada e pausada pelo jogador antes da implementação da ultimate; não foi executada na 0.6.15. Adaptar a energia visual do Avatar às novas armas. Refinar o Guerreiro Humano após a revisão visual do jogador. Criar variações visuais de equipamentos, corrida dedicada e artes distintas dos monstros e NPCs; o humano inicial já está integrado.
+1. Refinar o Guerreiro Humano após a revisão visual do jogador. Criar variações visuais de equipamentos, corrida dedicada e artes distintas dos monstros e NPCs; o humano inicial já está integrado.
 2. Criação de personagens e classes, usando um catálogo próprio de habilidades e equipamentos.
 3. Ambientes de caça próprios, inimigos variados e chefes. Cidade e arena já têm mapas próprios; faltam novos ambientes e inimigos com artes distintas.
 4. Reaproveitar os sets do Lineage 2 já preparados no GAME-1: comum/No Grade, incomum/D, raro/C, épico/B e lendário/A. Adaptar os modelos/texturas 3D para as poses 2D e vincular cada peça ao slot equipado, com bônus de conjunto completo. Não substituir esse catálogo por equipamentos novos genéricos. Fontes e limites atuais em `LINEAGE_SETS.md`. Balancear recompensas com testes de jogo.

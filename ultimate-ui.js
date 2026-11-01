@@ -105,13 +105,15 @@
       ? "ATIVO"
       : `${state.charge} / 100`;
     meter.querySelector("i").style.width =
-      `${active ? (100 * active) / 8000 : Math.max(0, Math.min(100, state.charge))}%`;
+      `${active ? (100 * active) / (state.durationMs || 45000) : Math.max(0, Math.min(100, state.charge))}%`;
     meter.querySelector("small").textContent = state.queued
       ? "Preparando Avatar…"
       : active
         ? `Transformado · ${Math.ceil(active / 1000)}s`
         : isReady
-          ? "Pronta · pressione 4"
+          ? state.automatic
+            ? "Pronta · ativação automática em combate"
+            : "Pronta · pressione 4"
           : cd
             ? `Recarga · ${Math.ceil(cd / 1000)}s · energia por combate`
             : "Carrega ao causar e receber dano";

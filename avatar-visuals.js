@@ -12,6 +12,29 @@
       .then(() => artwork.set(name, img))
       .catch(() => {});
   }
+  const weaponMasks = new Map();
+  for (const sheet of [
+    "idle",
+    "walk",
+    "run1",
+    "weapon",
+    "special",
+    "axeheavy",
+  ]) {
+    const img = new Image();
+    img.src = `/assets/fx/royal-warrior/avatar-weapons/${sheet}.png`;
+    img
+      .decode()
+      .then(() => {
+        const c = document.createElement("canvas");
+        c.width = img.width;
+        c.height = img.height;
+        const ctx = c.getContext("2d", { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0);
+        weaponMasks.set(sheet, ctx);
+      })
+      .catch(() => {});
+  }
   function remove(actor) {
     const state = states.get(actor);
     if (!state) return;
@@ -21,35 +44,20 @@
   function clear() {
     for (const actor of states.keys()) remove(actor);
   }
-  function maskPixels(pixels, w, h) {
-    const blue = [];
-    for (let y = 0; y < h; y++)
-      for (let x = 0; x < w; x++) {
-        const p = (y * w + x) * 4,
-          [r, g, b, a] = pixels.subarray(p, p + 4);
-        if (a > 80 && b > r + 12 && b > g + 2) blue.push([x, y]);
-      }
-    // Both the cold steel blade and blue shield crest seed their nearby trim.
-    for (let y = 0; y < h; y++)
-      for (let x = 0; x < w; x++) {
-        const p = (y * w + x) * 4,
-          [r, g, b, a] = pixels.subarray(p, p + 4);
-        const near = blue.some(
-          ([bx, by]) => Math.abs(x - bx) <= 4 && Math.abs(y - by) <= 4,
-        );
-        const metal =
-          b > r + 9 ||
-          (b >= r - 5 && g >= r - 10 && r > 145) ||
-          (b < 105 && r > 170 && g > 115 && g - b > 45);
-        if (!a || !near || !metal) {
-          pixels[p + 3] = 0;
-          continue;
-        }
-        pixels[p] = 255;
-        pixels[p + 1] = 231;
-        pixels[p + 2] = 143;
-        pixels[p + 3] = Math.round(a * 0.9);
-      }
+  function maskPixels(pixels, w, h, pose) {
+    const ctx = pose && weaponMasks.get(pose.sheet);
+    if (!ctx) {
+      for (let p = 3; p < pixels.length; p += 4) pixels[p] = 0;
+      return false;
+    }
+    const mask = ctx.getImageData(pose.col * 64, pose.row * 64, w, h).data;
+    for (let p = 0; p < pixels.length; p += 4) {
+      pixels[p] = 255;
+      pixels[p + 1] = 231;
+      pixels[p + 2] = 143;
+      pixels[p + 3] = mask[p + 3] ? Math.round(pixels[p + 3] * 0.9) : 0;
+    }
+    return true;
   }
   window.__royalAvatarMask = maskPixels;
   function weaponTexture(actor) {
@@ -57,6 +65,9 @@
       scene = actor.root.scene,
       frame = body.frame;
     if (!frame?.source?.image) return null;
+    const [sheet, row, col] = String(frame.name).split(":");
+    if (!weaponMasks.has(sheet)) return null;
+    const pose = { sheet, row: Number(row), col: Number(col) };
     const key = `royal-avatar-weapons:${body.texture.key}:${frame.name}`;
     if (scene.textures.exists(key)) return key;
     const w = frame.cutWidth,
@@ -67,7 +78,7 @@
     ctx.drawImage(frame.source.image, frame.cutX, frame.cutY, w, h, 0, 0, w, h);
     const image = ctx.getImageData(0, 0, w, h),
       pixels = image.data;
-    maskPixels(pixels, w, h);
+    maskPixels(pixels, w, h, pose);
     ctx.putImageData(image, 0, 0);
     tex.refresh();
     return key;

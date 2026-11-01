@@ -59,7 +59,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-14";
+  catalog.version = "local-human-warrior-15";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,

@@ -2,8 +2,8 @@
 export const LIGHT_AVATAR = Object.freeze({
   id: "avatar-da-luz",
   name: "Avatar da Luz",
-  durationMs: 8000,
-  cooldownMs: 45000,
+  durationMs: 45000,
+  cooldownMs: 60000,
   maxCharge: 100,
   damageReduction: 0.35,
   cleaveRadius: 100,
@@ -60,6 +60,7 @@ export class LightAvatar {
       version: 1,
       charge: this.saved.charge,
       maxCharge: 100,
+      durationMs: LIGHT_AVATAR.durationMs,
       cooldownMs: Math.max(0, this.saved.readyAt - this.now()),
       activeMs: Math.max(0, this.until - this.now()),
       automatic: (this.character.automation.skillOrder ?? []).includes(

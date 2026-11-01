@@ -1,60 +1,48 @@
-VERSAO 0.6.15 — AVATAR DA LUZ
+VERSAO 0.6.16 — ARMAS INICIAIS E TEMPOS APROVADOS
 Data: 01/11/2026
 
 ENTREGUE
-- Quarta habilidade do Guerreiro Humano: Avatar da Luz, manual por padrão.
-- Tecla 4 e clique no quarto ícone funcionam junto do combate automático.
-- Energia começa zerada, carrega ao causar/receber dano e derrotar inimigos.
-  Custo 100; +4 por impacto acertado, +2 por ataque recebido, +6 por inimigo
-  derrotado. Não carrega parada/cidade/mortos nem durante o próprio Avatar.
-- Ativação de 600ms, aplicação no quadro de 300ms. Por 8s: aura dourada,
-  espada/escudo de energia, ataques básicos em área pequena e 35% menos dano.
-  Não cura, não dá invulnerabilidade nem aumenta o dano do alvo principal.
-- Intervalo mínimo 45s, salvo com a energia para impedir reset por reconexão.
-- Pedido durante outro golpe fica na fila, sem cancelar o movimento aprovado.
-- Indicador único de duração acima do personagem: prioridade Avatar, depois
-  Égide restante. Recarga no quarto slot nativo, inclusive após reiniciar.
-- Prévia /guerreiro tem o botão 4 para revisão isolada, sem modificar a partida.
+- Espada de ferro simples e escudo de madeira nas seis folhas de animacao,
+  mantendo o corpo, rosto, roupas, escala e encaixes aprovados. Sem conceder
+  itens, atributos ou substituir equipamentos salvos.
+- Avatar da Luz: duracao 45s, recarga 60s desde o inicio da ativacao, custo 100
+  de energia. Automatico quando recarregado, com energia completa e alvo vivo.
+  Respeita a recuperacao do golpe atual. A energia continua sendo obtida em
+  combate e nao carrega durante a propria transformacao.
+- Saves existentes recebem o automatico da ultimate uma vez; escolhas das
+  outras habilidades e alteracoes posteriores de automacao sao preservadas.
+- Egide de Luz: duracao 5 minutos, recarga 120s. A automacao evita reaplicar
+  uma protecao ativa e renova depois que ela termina; nao acumula defesa.
+- Indicador unico acima do personagem mostra somente a duracao, em m:ss
+  quando necessario. Recargas permanecem nos slots da barra.
+- Energia visual da ultimate segue mascaras de espada/escudo por quadro e
+  funciona tanto com as roupas iniciais quanto com peitoral equipado.
 
-TESTES AUTOMATIZADOS
-64 testes aprovados, zero falhas e zero ignorados, com recursos-publicos.zip real.
-- Novos testes de energia, alvo morto/tempo ocioso, custo, quadro de aplicação,
-  expiração, prazo persistente, alvos vivos/próximos atingidos uma única vez,
-  redução de dano com Égide, morte, saída de cena, fila e automação opcional.
-- As habilidades 1/2/3 mantêm seus slots, tempos e regras. O quarto slot novo
-  substitui somente o espaço de rascunho anteriormente indisponível.
-- Protocolo do cliente real, inventário, save, loot, mapas, caminhada e respawn
-  continuam aprovados. A extensão opcional de estado usa um campo protobuf
-  desconhecido, ignorado normalmente pelo cliente base; não há outro login.
+TESTES
+- 67 testes automatizados passaram, zero falhas ou ignorados, com o ZIP real.
+- Cobertura dos novos tempos, expiracao, protecao de equipe, renovacao sem
+  desperdicio, migracao unica, energia, recarga, itens, progressao e combate.
+- Regressao de arte: pixels do corpo fora das mascaras permanecem iguais;
+  alpha/silhueta e animacoes preservados; peitoral nao repinta as armas.
+- Build completo de arte reproduz exatamente os mesmos hashes dos PNGs.
+- Chromium/WebGL, cliente nativo em portugues, save de QA separado: carga
+  obtida naturalmente, duas ativacoes automaticas sem tecla/clique, intervalo
+  observado de aproximadamente 61s; primeira permaneceu ativa por 45s reais.
+- Confirmados no cliente: Egide de 300000ms, Avatar de 45000ms, luz nas armas
+  com pixels visiveis, circulo unico e retorno da duracao da Egide em m:ss.
+- Efeitos limpos ao sair da cacada. Zero erros JavaScript.
+- Previa isolada da ultimate testada nas quatro direcoes.
 
-NAVEGADOR REAL — CHROMIUM/WEBGL
-- Partida com recursos enviados pelo jogador e save isolado de teste.
-- Barra carregada naturalmente em combate; nenhuma carga concedida pelo teste.
-- Primeira ativação pela tecla 4 e segunda pelo quarto ícone, após a recarga
-  real terminar e os 100 pontos terem sido novamente obtidos em combate.
-- Aura acompanha caminhada/ataques/saltos; luz usa os pixels reais da arma e
-  do escudo de cada quadro, com conteúdo visível e sem trocar a roupa base.
-- Confirmados um único círculo, consumo da carga, fim dos efeitos, recarga
-  continuando após expirar e limpeza ao voltar à cidade.
-- Um segundo processo do servidor carregou um save de QA com prazo de recarga
-  ainda vigente: contador restaurado no quarto slot, sem restaurar o buff.
-- Prévia da ultimate em quatro direções, com ativação, aura e ataques de energia.
-- Gravação de aproximadamente 77s para conferir as duas ativações/transições.
-- Nenhum erro JavaScript nos testes em português do cliente e da prévia.
-
-PRESERVADO / PENDENTE
-Roupas e rosto aprovados, equipamentos, itens, ouro, progressão e três habilidades
-anteriores preservados. A troca da espada/escudo iniciais por modelos simples
-continua pausada conforme a instrução do jogador. Sets do Lineage 2 e outras
-ultimates ainda dependem de suas etapas próprias. Servidor continua local/solo.
-Valores de balanceamento desta ultimate são iniciais para teste.
+LIMITES MANTIDOS
+Servidor local/solo. Sets do Lineage 2 e artes de outras classes continuam nas
+etapas registradas em LINEAGE_SETS.md e PROXIMAS_ETAPAS.md.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
-   para manter o progresso. Copie também recursos-publicos.zip ou deixe-o em Downloads.
-4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5.
-5. Confira v0.6.15 no topo.
+   para manter o progresso. Copie recursos-publicos.zip ou deixe-o em Downloads.
+4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
+5. Confira v0.6.16 no topo.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa: http://127.0.0.1:5188/guerreiro

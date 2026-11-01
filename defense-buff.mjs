@@ -3,11 +3,11 @@
 export const LIGHT_AEGIS = Object.freeze({
   id: "egide-de-luz",
   name: "Égide de Luz",
-  durationMs: 12000,
+  durationMs: 300000,
   defensePercent: 0.3,
   minimumBonus: 2,
   manaCost: 10,
-  cooldownMs: 20000,
+  cooldownMs: 120000,
   castMs: 650,
   applyAtMs: 300,
 });

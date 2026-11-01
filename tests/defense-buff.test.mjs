@@ -45,6 +45,7 @@ function solo({ order = [] } = {}) {
   let now = 10000;
   const account = {
     farmVersion: 1,
+    avatarAutomationVersion: 1,
     skillReviewVersion: 4,
     character: {
       progress: { hp: 250, mana: 100, level: 1, xp: 0 },
@@ -104,7 +105,10 @@ test("aegis protects self, distant party players and companions in the same inst
   );
   assert.ok(
     events.every(
-      (e) => e.buffId === AEGIS.id && e.durationMs === 12000 && !e.removed,
+      (e) =>
+        e.buffId === AEGIS.id &&
+        e.durationMs === AEGIS.durationMs &&
+        !e.removed,
     ),
   );
   for (const m of [caster, player, companion])
@@ -128,7 +132,7 @@ test("simultaneous aegis sources refresh a single bonus, expire once and never m
   buffs.apply(b, [a]);
   assert.equal(a.character.derived.def, 13);
   assert.equal(b.character.derived.def, 2);
-  assert.deepEqual(advance(11999), []);
+  assert.deepEqual(advance(AEGIS.durationMs - 1), []);
   const expired = advance(1);
   assert.deepEqual(expired.map((e) => e.entity).sort(), [1, 2]);
   assert.ok(expired.every((e) => e.removed));
@@ -189,7 +193,7 @@ test("aegis needs no enemy target, applies at the guard pose and actually reduce
     "defensive skill causes no damage",
   );
   enemy.nextAttack = Infinity;
-  const expired = step(12000);
+  const expired = step(AEGIS.durationMs);
   assert.ok(expired.events.buffs.some((e) => e.removed));
   assert.equal(farm.character.derived.def, 0);
 });
@@ -273,7 +277,11 @@ test("automatic defense activates before approach, avoids wasting recasts and re
   const before = a.farm.character.progress.mana;
   assert.throws(() => a.farm.cast(a.client, AEGIS.id, 0), /cooldown/);
   assert.equal(a.farm.character.progress.mana, before);
-  a.step(20000); // Cooldown expires while the automated refresh starts another cast.
+  assert.equal(AEGIS.durationMs, 300000);
+  assert.equal(AEGIS.cooldownMs, 120000);
+  assert.deepEqual(a.step(AEGIS.cooldownMs).events.casts, []);
+  assert.ok(a.farm.defenseBuffs.state(a.farm.character));
+  a.step(AEGIS.durationMs); // Expiration, rather than cooldown alone, permits renewal.
   a.step(300);
   assert.ok(a.farm.defenseBuffs.state(a.farm.character));
 });

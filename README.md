@@ -1,20 +1,29 @@
-# Jogo local — 0.6.15: Avatar da Luz, ultimate do Guerreiro Humano
+# Jogo local — 0.6.16: armas iniciais, ultimate automática e novos tempos
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
 
-## Quarta habilidade — Avatar da Luz (0.6.15)
+## Atualização 0.6.16
+
+- Espada inicial de ferro simples e escudo de madeira, preservando o corpo, roupas, rosto, encaixes e poses aprovados. Nenhum equipamento ou atributo foi concedido ao save.
+- Avatar da Luz: **45 segundos de duração e 60 segundos de recarga**, contados do início da ativação; exige também 100 de energia. Usa automaticamente na caçada quando tiver carga cheia, recarga concluída e um alvo vivo, respeitando o golpe em andamento.
+- Saves antigos recebem a automação da ultimate uma única vez. As escolhas das outras habilidades são preservadas; alterações posteriores da automação também ficam salvas.
+- Égide de Luz: **5 minutos de duração e 120 segundos de recarga**. Como a duração é maior que a recarga, não gasta mana reaplicando uma proteção ainda ativa: renova depois que ela termina, sem acumular bônus.
+- Sobre a cabeça aparece somente a duração ativa (minutos:segundos quando necessário). A recarga continua na barra de habilidades.
+- `npm run art:weapons` reconstrói as armas e a variante equipada. As máscaras de cada pose também são usadas pela energia visual da ultimate.
+
+## Quarta habilidade — Avatar da Luz
 
 **Avatar da Luz (4)** é uma transformação temporária. O guerreiro ergue a espada, recebe uma coroa de ativação e mantém uma aura dourada. A energia da espada e do escudo acompanha o quadro real da animação: rosto, roupa, equipamento e identidade do personagem não são substituídos. A ativação leva 600 ms; depois o guerreiro continua andando e usando as três habilidades anteriores durante a transformação.
 
-Valores iniciais para teste:
+Valores atuais:
 
 - **100 de energia** para ativar, sem gasto de mana. Começa em zero. Um impacto acertado dá +4, um ataque recebido +2 e cada inimigo derrotado +6. Um golpe em área não multiplica os +4 por quantidade de alvos. Não carrega na cidade, parado, contra um inimigo já morto ou durante a própria transformação.
-- **8 segundos** ativos: ataques básicos atingem também inimigos vivos a até 100 unidades do alvo principal, uma vez por inimigo no impacto. O dano do ataque primário mantém seu valor anterior. O guerreiro recebe **35% menos dano**, depois da defesa normal/Égide, com mínimo de 1. A ultimate não cura nem dá invulnerabilidade.
-- Intervalo mínimo de **45 segundos** entre ativações, além de precisar carregar novamente os 100 pontos. Energia e prazo da recarga ficam no save; sair/reentrar ou reiniciar não libera outra ativação. A transformação em si termina ao sair da caçada, morrer ou desconectar; morrer também zera a energia.
+- **45 segundos** ativos: ataques básicos atingem também inimigos vivos a até 100 unidades do alvo principal, uma vez por inimigo no impacto. O dano do ataque primário mantém seu valor anterior. O guerreiro recebe **35% menos dano**, depois da defesa normal/Égide, com mínimo de 1. A ultimate não cura nem dá invulnerabilidade.
+- Intervalo mínimo de **60 segundos** entre ativações, além de precisar carregar novamente os 100 pontos. Energia e prazo da recarga ficam no save; sair/reentrar ou reiniciar não libera outra ativação. A transformação em si termina ao sair da caçada, morrer ou desconectar; morrer também zera a energia.
 
-Na caçada, a barra acima das habilidades mostra a carga. Ao ficar pronta, **pressione 4 ou clique no quarto ícone**. A ativação manual funciona junto do combate automático das outras habilidades. Se houver um golpe em andamento, o Avatar aguarda a recuperação desse golpe, sem cancelar sua animação. A ultimate começa **manual por padrão**, preservando as escolhas anteriores de automação; o servidor também aceita adicioná-la à ordem automática quando o jogador escolher essa opção.
+Na caçada, a barra acima das habilidades mostra a carga. Ao ficar pronta, **pressione 4 ou clique no quarto ícone**. A ativação manual funciona junto do combate automático das outras habilidades. Se houver um golpe em andamento, o Avatar aguarda a recuperação desse golpe, sem cancelar sua animação. A ultimate é automática por padrão nesta atualização, inclusive em saves antigos, e preserva as escolhas anteriores das outras habilidades. Também pode ser acionada manualmente quando pronta.
 
 Acima da cabeça continua existindo **um único círculo de duração**: durante a transformação mostra o Avatar; ao terminar, volta à duração restante da Égide, caso ela ainda esteja ativa. A recarga fica na barra de habilidades e é restaurada corretamente ao recarregar o jogo. Aura e energia desaparecem na expiração, morte ou troca de cena.
 
@@ -25,6 +34,8 @@ No Windows: feche o servidor antigo, extraia o novo ZIP, copie `.local-runtime` 
 A implementação desta versão cobre o Guerreiro Humano. Os valores são provisórios para revisão jogando; as ultimates de outras classes ainda precisam de definição. A troca da espada e do escudo iniciais por modelos simples continua pendente: o jogador pediu para pausar essa alteração antes de aprovar a ultimate. Os sets do Lineage 2 continuam preservados como referência para adaptação 2D, conforme `LINEAGE_SETS.md`.
 
 As seções abaixo registram versões anteriores.
+
+> As seções de versões anteriores abaixo registram o histórico. Os tempos e indicadores vigentes são os da 0.6.16 descritos acima.
 
 ## Roupas redesenhadas nas próprias poses — 0.6.14
 

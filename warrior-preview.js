@@ -300,7 +300,11 @@ function render() {
         64,
       );
       const data = g.getImageData(0, 0, 64, 64);
-      window.__royalAvatarMask(data.data, 64, 64);
+      window.__royalAvatarMask(data.data, 64, 64, {
+        sheet,
+        row: direction,
+        col,
+      });
       g.putImageData(data, 0, 0);
       glowFrames.set(key, c);
     }

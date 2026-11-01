@@ -38,7 +38,7 @@ export const SKILLS = [
     id: LIGHT_AEGIS.id,
     name: LIGHT_AEGIS.name,
     description:
-      "Aumenta a defesa do guerreiro e de todos os jogadores e companheiros vivos do mesmo grupo na instância. DEF +30% (mínimo +2) por 12 segundos.",
+      "Aumenta a defesa do guerreiro e de todos os jogadores e companheiros vivos do mesmo grupo na instância. DEF +30% (mínimo +2) por 5 minutos. Recarga de 120 segundos.",
     icon: "/assets/ui/royal-warrior/egide-de-luz.svg",
     key: "3",
     kind: "buff",
@@ -53,7 +53,7 @@ export const SKILLS = [
     key: "4",
     kind: "buff",
     description:
-      "Ultimate: consome 100 de energia de combate. Por 8s, os ataques básicos atingem uma pequena área e o guerreiro recebe 35% menos dano. Intervalo mínimo de 45s.",
+      "Ultimate: consome 100 de energia de combate. Por 45s, os ataques básicos atingem uma pequena área e o guerreiro recebe 35% menos dano. Intervalo mínimo de 60s.",
     icon: "/assets/ui/royal-warrior/avatar-da-luz.png",
     manaCost: 0,
     cooldownMs: LIGHT_AVATAR.cooldownMs,
@@ -225,6 +225,11 @@ export class LocalFarm {
           (skill) => skill.id !== LIGHT_AVATAR.id,
         ).map((skill) => skill.id);
       account.skillReviewVersion = 4;
+    }
+    if (account.avatarAutomationVersion !== 1) {
+      if (!c.automation.skillOrder.includes(LIGHT_AVATAR.id))
+        c.automation.skillOrder.push(LIGHT_AVATAR.id);
+      account.avatarAutomationVersion = 1;
     }
     c.progress.hp ||= 250;
     c.progress.mana = Math.max(0, c.progress.mana);

@@ -8,6 +8,7 @@ function fixture({ order = [], version = 2 } = {}) {
   let now = 10000;
   const account = {
     farmVersion: 1,
+    avatarAutomationVersion: 1,
     skillReviewVersion: version,
     bag: [],
     warehouse: [],

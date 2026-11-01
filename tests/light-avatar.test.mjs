@@ -6,6 +6,7 @@ function setup() {
   let now = 10000;
   const account = {
     farmVersion: 1,
+    avatarAutomationVersion: 1,
     skillReviewVersion: 4,
     character: {
       progress: { level: 1, xp: 0, hp: 250, mana: 100 },
@@ -40,7 +41,7 @@ function setup() {
     },
   };
 }
-test("ultimate starts empty, cannot be cast without earned charge, gains nothing from idle or dead targets, and never auto-enables in an existing save", () => {
+test("ultimate starts empty, cannot be cast without earned charge, gains nothing from idle or dead targets, and preserves an explicitly disabled auto preference", () => {
   const s = setup(),
     { farm, client } = s;
   assert.equal(farm.avatar.saved.charge, 0);
@@ -99,7 +100,7 @@ test("activation consumes exactly 100, applies at the raised-sword frame, preser
   assert.equal(farm.avatar.active(), true);
   assert.equal(farm.character.progress.mana, mana);
   assert.deepEqual(farm.character.equipment, equipment);
-  assert.equal(s.step(7999).events.buffs.length, 0);
+  assert.equal(s.step(AVATAR.durationMs - 1).events.buffs.length, 0);
   assert.equal(s.step(1).events.buffs[0].removed, true);
   assert.equal(farm.avatar.active(), false);
   farm.stop(client);
@@ -107,9 +108,11 @@ test("activation consumes exactly 100, applies at the raised-sword frame, preser
   farm.avatar.saved.charge = 100;
   assert.throws(() => farm.cast(client, AVATAR.id, 0), /cooldown/);
   const saved = JSON.parse(JSON.stringify(account)),
-    restored = new LocalFarm(saved, { now: () => 18300 });
+    restored = new LocalFarm(saved, {
+      now: () => 10000 + 300 + AVATAR.durationMs,
+    });
   assert.equal(restored.avatar.active(), false);
-  assert.equal(restored.avatar.saved.readyAt, 55000);
+  assert.equal(restored.avatar.saved.readyAt, 10000 + AVATAR.cooldownMs);
   assert.equal(restored.avatar.saved.charge, 100);
 });
 test("avatar cleaves each nearby living enemy once at basic impact, does not hit distant enemies or recharge itself", () => {
@@ -189,7 +192,7 @@ test("manual ultimate queues behind a committed strike, consumes energy only on 
   const stopped = farm.stop(client);
   assert.ok(stopped.buffs.some((e) => e.buffId === AVATAR.id && e.removed));
   assert.equal(farm.avatar.active(), false);
-  assert.equal(farm.avatar.saved.readyAt, 55200);
+  assert.equal(farm.avatar.saved.readyAt, 10200 + AVATAR.cooldownMs);
   const other = setup();
   other.farm.avatar.saved.charge = 100;
   other.client.hunt.actionUntil = 10200;
@@ -200,7 +203,7 @@ test("manual ultimate queues behind a committed strike, consumes energy only on 
   assert.equal(other.farm.avatar.saved.readyAt, 0);
 });
 
-test("auto-ultimate is opt-in, does not stall when uncharged and uses a full bar before normal combat", () => {
+test("auto-ultimate can be toggled, does not stall when uncharged and uses a full bar before normal combat", () => {
   const s = setup(),
     { farm, client } = s;
   assert.ok(!farm.character.automation.skillOrder.includes(AVATAR.id));
@@ -220,4 +223,47 @@ test("auto-ultimate is opt-in, does not stall when uncharged and uses a full bar
   const cast = s.step(400);
   assert.equal(cast.events.casts[0].skillId, AVATAR.id);
   assert.equal(farm.avatar.saved.charge, 0);
+});
+
+test("existing saves enable Avatar once without changing other automatic choices", () => {
+  const s = setup();
+  delete s.account.avatarAutomationVersion;
+  s.account.character.automation.skillOrder = ["impacto-de-luz"];
+  const f = new LocalFarm(s.account);
+  assert.deepEqual(f.character.automation.skillOrder, [
+    "impacto-de-luz",
+    AVATAR.id,
+  ]);
+  assert.equal(s.account.avatarAutomationVersion, 1);
+  f.automation({ skillOrder: ["impacto-de-luz"] });
+  assert.deepEqual(new LocalFarm(s.account).character.automation.skillOrder, [
+    "impacto-de-luz",
+  ]);
+});
+test("approved durations are 45 seconds active and 60 seconds cooldown", () => {
+  assert.equal(AVATAR.durationMs, 45000);
+  assert.equal(AVATAR.cooldownMs, 60000);
+  const s = setup(),
+    { farm, client } = s;
+  farm.automation({ skillOrder: [AVATAR.id] });
+  const m = client.hunt.monsters[0];
+  Object.assign(m, {
+    hp: 100000,
+    maxHp: 100000,
+    x: client.x,
+    y: client.y + 30,
+    nextAttack: Infinity,
+  });
+  farm.avatar.saved.charge = 100;
+  assert.equal(s.step(1).events.casts[0].skillId, AVATAR.id);
+  s.step(300);
+  assert.equal(farm.avatar.active(), true);
+  s.step(AVATAR.durationMs - 1);
+  assert.equal(farm.avatar.active(), true);
+  s.step(1);
+  assert.equal(farm.avatar.active(), false);
+  farm.avatar.saved.charge = 100;
+  assert.equal(s.step(1000).events.casts.length, 0);
+  const cast = s.step(AVATAR.cooldownMs);
+  assert.equal(cast.events.casts[0].skillId, AVATAR.id);
 });

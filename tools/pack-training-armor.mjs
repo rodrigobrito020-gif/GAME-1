@@ -90,7 +90,29 @@ function faceOf(image, col, row) {
       }
     return f.count + hair * 2 - (f.y0 > 40 ? 15 : 0);
   };
-  return blobs.sort((a, b) => score(b) - score(a))[0];
+  const selected = blobs.sort((a, b) => score(b) - score(a))[0];
+  // A bare hand can touch the cheek in guard poses; locate the head beneath
+  // its hair instead of extending the chest box below the joined forearm.
+  if (selected && selected.y1 - selected.y0 > 9) {
+    const points = [];
+    for (let y = selected.y0; y <= selected.y0 + 7; y++)
+      for (let x = selected.x0; x <= selected.x1; x++) {
+        const i = ((row * 64 + y) * image.width + col * 64 + x) * 4;
+        if (
+          image.pixels[i + 3] > 200 &&
+          skin(...image.pixels.subarray(i, i + 3))
+        )
+          points.push([x, y]);
+      }
+    if (points.length)
+      return {
+        ...selected,
+        x0: Math.min(...points.map((p) => p[0])),
+        x1: Math.max(...points.map((p) => p[0])),
+        y1: Math.max(...points.map((p) => p[1])),
+      };
+  }
+  return selected;
 }
 const icon = Buffer.alloc(64 * 64 * 4),
   front = parts[0];
@@ -118,7 +140,12 @@ const manifest = {
 for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
   const image = decodeRgba(readFileSync(new URL(name + ".png", folder))),
     pixels = Buffer.from(image.pixels);
-  const reference = image;
+  const reference = decodeRgba(
+    readFileSync(new URL(`weapon-reference/${name}.png`, folder)),
+  );
+  const weaponMask = decodeRgba(
+    readFileSync(new URL(`weapon-masks/${name}.png`, folder)),
+  );
   for (let row = 0; row < 4; row++)
     for (let col = 0; col < cols; col++) {
       const face = faceOf(reference, col, row === 3 ? 0 : row);
@@ -143,7 +170,13 @@ for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
           const at = ((row * 64 + py) * image.width + col * 64 + px) * 4;
           const [r, g, b, a] = image.pixels.subarray(at, at + 4);
           // Preserve exposed skin, weapon/shield blue, dark glove occlusion and outlines.
-          if (a < 200 || skin(r, g, b) || b > r + 10 || Math.min(r, g, b) < 65)
+          if (
+            weaponMask.pixels[at + 3] ||
+            a < 200 ||
+            skin(r, g, b) ||
+            b > r + 10 ||
+            Math.min(r, g, b) < 65
+          )
             continue;
           let u = (x + 0.5) / box.w,
             v = (y + 0.5) / box.h;

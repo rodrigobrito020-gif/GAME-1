@@ -2,6 +2,10 @@
 
 Arte original criada em 01/11/2026 com a ferramenta de geração de imagens da OpenAI. Homem de cabelo escuro, rosto visível, armadura marfim/dourada, couro marrom, capa curta, espada de aço na direita e escudo no braço esquerdo.
 
+## Armas iniciais — 0.6.16
+
+O personagem inicial usa as roupas aprovadas na 0.6.14, uma espada simples de ferro e escudo de madeira com aro de ferro. `source/starter-equipment.png` contém a arte original dos materiais. `weapon-reference/` preserva as poses aprovadas antes da troca; `tools/pack-starter-weapons.mjs` aplica os materiais somente no equipamento, sem alterar o alpha ou pintar o corpo. `weapon-masks/` fornece as máscaras exatas para o brilho temporário do Avatar e impede que o peitoral repinte as armas. `npm run art:warrior` encadeia poses, materiais e peitoral; `npm run art:weapons` refaz apenas materiais e peitoral.
+
 ## Correção de movimento — 0.6.1
 
 A folha inicial continha poses com a mesma perna à frente e mudava o centro do corpo ao alinhar o pé que avançava. A correção substitui essa sequência por um pequeno esqueleto 2D: cada perna tem quadril, joelho e pé, com uma fase de apoio e outra de avanço. A fonte `source/walk-parts.png` contém as peças originais, e `warrior-walk-rig.mjs` compõe os quadros com transformações afins e articulação dos joelhos. Não depende de gerar separadamente cada pose de caminhada.

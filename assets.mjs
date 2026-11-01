@@ -60,6 +60,20 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const weaponMask =
+      /^\/assets\/fx\/royal-warrior\/avatar-weapons\/([a-z0-9]+)\.png$/.exec(
+        pathname,
+      );
+    if (weaponMask && WARRIOR_SHEETS[weaponMask[1]])
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(
+            `./art/warrior/weapon-masks/${weaponMask[1]}.png`,
+            import.meta.url,
+          ),
+        ),
+      };
     const ownAvatar = {
       "/assets/ui/royal-warrior/avatar-da-luz.png": "avatar-da-luz.png",
       "/assets/fx/royal-warrior/guerreiro-avatar-aura.png":

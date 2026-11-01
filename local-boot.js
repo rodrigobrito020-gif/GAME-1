@@ -67,7 +67,11 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
     node.dataset.mode = "duration";
     node.dataset.remainingMs = String(Math.round(remaining));
     ring.style.strokeDasharray = `${Math.min(100, (100 * remaining) / timer.total)} 100`;
-    counter.textContent = `${Math.ceil(remaining / 1000)}s`;
+    const seconds = Math.ceil(remaining / 1000);
+    counter.textContent =
+      seconds >= 60
+        ? `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`
+        : `${seconds}s`;
     label.textContent = name;
     node.setAttribute(
       "aria-label",

@@ -1,77 +1,58 @@
-JOGO LOCAL — 0.6.1: CAMINHADA, ATAQUES, ARENA E REAPARECIMENTO
-Data: 01/11/2026 (America/Sao_Paulo)
+JOGO LOCAL — 0.6.2: HABILIDADES E ESCUDO DO GUERREIRO
+Data: 01/11/2026
 
-PROBLEMAS REPRODUZIDOS A PARTIR DOS DOIS VÍDEOS
-1. Caminhada com poses que repetiam a mesma perna à frente e mudavam o eixo
-   do corpo ao alinhar a ponta do pé. Os testes anteriores de arquivos/quadros
-   distintos não bastavam para validar um ciclo de caminhada correto.
-2. Ataques com redimensionamento entre poses e pouca preparação/recuperação.
-3. Hunt ainda usava o mapa capturado antigo.
-4. Monstros recebiam uma nova vida com a mesma identidade de uma entidade
-   cuja animação de morte/transparência ainda estava ativa no cliente.
-
-CORREÇÕES
-- Caminhada com pernas articuladas em duas partes, apoio alternado, joelhos,
-  quadril estável e espelhamento lateral. Oscilação do tronco até 0,7 pixel.
-- Passada lateral de 96 unidades considera escala2 e deslocamento do pé de apoio.
-- Novos quadros de espada com escala constante, preparação, corte e recuperação.
-  Combo alterna golpe descendente e golpe de retorno: 500ms, impacto aos 200ms.
-- Quatro habilidades mantêm dano, mana e recarga; impacto continua sincronizado.
-- Pátio da Coroa: mapa e arte próprios em marfim/dourado, piso livre central,
-  bordas bloqueadas e prévia no menu. As duas hunts deixam de usar o mapa antigo.
-- Cada reaparecimento recebe uma nova identidade de rede. A morte anterior
-  não pode esconder o novo monstro. Intervalo de três segundos preservado.
-- Monstros maiores para facilitar a leitura. Suas artes continuam provisórias.
-- Nível, EXP, ouro, equipamento, mochila e armazém preservados; sem itens concedidos.
+ALTERAÇÕES
+- Escudo de marfim/ouro/aço azul no braço esquerdo nas folhas de repouso,
+  caminhada, corrida, espada, habilidades, ferimento e derrota. Espada na direita.
+- Nove efeitos pintados em PNG transparente: arco de espada, vento da investida,
+  fissuras/detritos, aura e partículas. Contraste azul-aço, branco e dourado.
+- Preparação, impacto, recuperação e dissipação mais longos e legíveis.
+  Corte: 1400ms / impacto 700ms. Investida: 1300ms / 750ms.
+  Destruidor: 1900ms / 1100ms. Fúria: 1700ms / 700ms.
+  Efeitos principais: 1600 a 2667ms. Contatos: 1000 a 1600ms.
+- Área do Destruidor atinge os inimigos dentro do círculo no impacto.
+- Dano, cura, mana, recargas e combo básico preservados. Não há dano contínuo.
+  A preparação maior naturalmente torna a sequência de ações mais cadenciada.
+- Escudo é aparência base: não cria item, defesa nem bloqueio novos.
+- Sem reiniciar ou substituir nível, ouro, EXP, mochila, equipamentos e armazém.
+  Praça da Coroa, Pátio da Coroa e IDs únicos de reaparecimento preservados.
 
 TESTES AUTOMATIZADOS
-24 aprovados, nenhum pulado, usando o recursos-publicos.zip real.
-- Apoio alternado, pernas opostas nas poses de contato, tronco estável e espelhamento.
-- Compensação da passada lateral na escala do renderer.
-- Escala única dos ataques e pose de corte no instante do impacto.
-- Combo alternado, recuperação, mana, recargas e cancelamento por morte/saída.
-- 50 ciclos consecutivos de reaparecimento: 150 novas vidas sem reuso de identidade.
-- Piso da arena conectado e posições do jogador/monstros livres de obstáculos.
-- Folhas PNG, efeitos, pivôs e margens sem cortes.
-- Integração HTTP/WebSocket: autenticação, movimento, colisões, arena própria,
-  combate, habilidades, morte, retorno, drops, nível, inventário e serviços.
-- Reinício conserva ouro, EXP, poções e item guardado, inclusive ao migrar aparência.
-- Regressões de protocolo, capacidade, vendas, equipamentos, ordenação e armazém.
+26 aprovados, nenhum pulado, com recursos-publicos.zip real.
+- Sincronização das quatro habilidades, recuperação e cancelamento por morte/saída.
+- Área considera entrada/saída dos inimigos durante a preparação.
+- Efeitos duram após o dano, dissipam gradualmente, mantêm margens transparentes
+  e a fissura não é encerrada pelo evento de impacto do cliente.
+- Folhas com poses distintas, pés no pivô comum, armas/capa sem corte.
+- Apoio alternado, quadril estável, passada lateral e escala dos golpes.
+- 50 ciclos de reaparecimento: 150 identidades novas, sem reutilização.
+- Integração HTTP/WebSocket com cliente real, autenticação, combate, farm, drops,
+  morte, retorno, inventário, equipamentos, poções, vendas e armazém.
+- Persistência após reinício e migração da aparência; protocolo/PNG/mapas.
 
-COMPARAÇÃO NO CLIENTE REAL — CHROMIUM, 1440x900
-Executada a versão anterior c820a00 e depois a versão corrigida, com observação
-somente de leitura dos atores do renderer durante o ensaio.
-- Antes: 18 abates e 20 spawns usavam apenas três identidades. Após os primeiros
-  ciclos, monstros tinham HP no servidor, mas o ator permanecia inativo e com
-  transparência zero. Em 27 amostras, todos os inimigos vivos estavam invisíveis.
-- Corrigida, ensaio inicial: 28 abates, 30 identidades de spawn diferentes,
-  todos os 30 inimigos observados com a arte visível em algum momento da vida.
-- Versão final com combo: 19 abates, 21 spawns/identidades diferentes, 21 inimigos
-  vistos pelo renderer; nenhuma amostra com todos os vivos invisíveis.
-- Caminhada WASD observada nas quatro direções, com alternância dos quadros.
-- Ataques básico/retorno e as quatro habilidades vistos em execução no renderer.
-- A cena carregada foi patio-da-coroa. Textura, prévia e folhas humanas responderam 200.
-- Sem exceção JavaScript ou aviso de falha da arte/animação/mapa.
-
-PRÉVIA E TELA MENOR
-Prévia /guerreiro: 44 combinações de direção/ação, incluindo os dois golpes,
-pausa e avanço de quadros. Jogo também aberto em 390x844 com o avatar humano.
-O HUD compacto do cliente oculta parte dos textos nessa resolução.
+NAVEGADOR — CHROMIUM
+- 1440x900: caminhada nas quatro direções, combo básico/retorno e quatro skills
+  observados no renderer nativo. Pátio da Coroa carregado.
+- Ensaio de 35s, além da inicialização/capturas: 17 abates, 19 novas vidas,
+  19 monstros vistos com arte ativa; nenhuma amostra com todos os vivos invisíveis.
+- Capturas de cada skill em combate real e na prévia para conferir efeitos e escudo.
+- Sete PNGs de efeitos usados no ensaio responderam 200; nenhuma exceção JS.
+- Prévia: 44 combinações de direção/ação, pausa e avanço de quadros, sem erros.
+- Tela 390x844: jogador humano carregado sem exceção JS.
+- Scripts compilados do cliente permanecem inalterados no servidor entregue.
+  A instrumentação de observação usada no ensaio não é distribuída.
 
 LIMITES
-Esta continua sendo uma primeira base artística para refinamento. A aparência
-de armadura/espada é fixa: equipar ainda muda atributos, não as peças desenhadas.
-Corrida usa o mesmo ciclo em cadência maior. Grito de guerra vira de frente nas
-laterais. NPCs e monstros conservam a sombra provisória. Outros áudios/recursos
-antigos ausentes no pacote continuam registrados pelo diagnóstico.
-Servidor local para uma conta, sem implantação na VPS. Testes executados em
-Linux/Chromium; não foi usada máquina Windows física.
+Armadura, espada e escudo ainda são aparência fixa; equipamentos alteram
+atributos, não o desenho. Corrida reutiliza caminhada. Grito vira de frente nas
+laterais. NPCs/monstros continuam provisórios. Não é uma versão multiplayer/VPS.
+Testado em Linux/Chromium, sem execução em máquina Windows física.
 
 WINDOWS
-Feche o servidor anterior com Ctrl+C, extraia o ZIP numa pasta nova e coloque
-seu recursos-publicos.zip junto de ABRIR_CLIENTE_COPIADO.bat. Copie .local-runtime
-da versão anterior para manter o progresso, com ambos os servidores fechados.
-Execute o BAT e mantenha o terminal aberto. Requer Node.js 22.12+ ou 24 LTS.
+Feche a versão anterior com Ctrl+C. Extraia o novo ZIP em outra pasta.
+Coloque recursos-publicos.zip junto de ABRIR_CLIENTE_COPIADO.bat.
+Copie a pasta .local-runtime da versão antiga com os servidores fechados para
+preservar o progresso. Execute o BAT e mantenha o terminal aberto.
+Requer Node.js 22.12+ ou 24 LTS. Use Ctrl+F5 no navegador.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Prévia: http://127.0.0.1:5188/guerreiro
-Ctrl+F5 descarta a aparência anterior mantida em memória pela aba.

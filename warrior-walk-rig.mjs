@@ -15,7 +15,7 @@ export const WALK_PARTS = [
   },
   {
     body: {
-      rect: [54, 337, 318, 696],
+      rect: [54, 337, 348, 696],
       hip: [230, 532],
       scale: 0.126,
       mirror: true,
@@ -30,7 +30,7 @@ export const WALK_PARTS = [
     ],
   },
   {
-    body: { rect: [87, 662, 398, 1018], hip: [220, 855], scale: 0.126 },
+    body: { rect: [62, 662, 398, 1018], hip: [220, 855], scale: 0.126 },
     thighs: [
       [519, 737, 631, 922],
       [1004, 736, 1116, 922],
@@ -71,8 +71,8 @@ export function warriorWalkPose(row, phase = 0, idle = false) {
   if (idle)
     feet = side
       ? [
-          [28, 59],
-          [36, 59],
+          [28, 58],
+          [36, 58],
         ]
       : [
           [28, 59],
@@ -186,7 +186,7 @@ function layer(target, source, rect, matrix, shade = 1) {
 function bone(target, source, rect, from, to, length, shade) {
   const x = (rect[0] + rect[2]) / 2,
     top = rect[1] + (rect[3] - rect[1]) * 0.1;
-  const bottom = rect[3] - 2,
+  const bottom = rect[3],
     original = bottom - top;
   const dx = to[0] - from[0],
     dy = to[1] - from[1],

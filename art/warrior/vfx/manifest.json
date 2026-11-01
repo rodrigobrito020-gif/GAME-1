@@ -1,0 +1,101 @@
+{
+  "guerreiro-corte-crescente": {
+    "frames": 32,
+    "fps": 20,
+    "durationMs": 1600,
+    "impactMs": 700,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "frente"
+  },
+  "guerreiro-faisca-dourada": {
+    "frames": 24,
+    "fps": 24,
+    "durationMs": 1000,
+    "impactMs": null,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "frente"
+  },
+  "guerreiro-investida-rastro": {
+    "frames": 32,
+    "fps": 20,
+    "durationMs": 1600,
+    "impactMs": 750,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "chao"
+  },
+  "guerreiro-atordoar": {
+    "frames": 24,
+    "fps": 24,
+    "durationMs": 1000,
+    "impactMs": null,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "frente"
+  },
+  "guerreiro-destruidor-fenda": {
+    "frames": 32,
+    "fps": 12,
+    "durationMs": 2667,
+    "impactMs": 1100,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "chao"
+  },
+  "guerreiro-destruidor-pilar": {
+    "frames": 32,
+    "fps": 20,
+    "durationMs": 1600,
+    "impactMs": null,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "frente"
+  },
+  "guerreiro-furia-explosao": {
+    "frames": 32,
+    "fps": 12,
+    "durationMs": 2667,
+    "impactMs": 700,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "atras"
+  },
+  "guerreiro-furia-aura": {
+    "frames": 32,
+    "fps": 16,
+    "durationMs": 2000,
+    "impactMs": null,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "atras"
+  },
+  "guerreiro-furia-brasas": {
+    "frames": 24,
+    "fps": 20,
+    "durationMs": 1200,
+    "impactMs": null,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "frente"
+  }
+}

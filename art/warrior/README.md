@@ -1,6 +1,6 @@
 # Personagem 01 — Guerreiro Humano
 
-Arte original criada em 01/11/2026 com a ferramenta de geração de imagens da OpenAI. Homem de cabelo escuro, rosto visível, armadura marfim/dourada, couro marrom, capa curta e espada de aço.
+Arte original criada em 01/11/2026 com a ferramenta de geração de imagens da OpenAI. Homem de cabelo escuro, rosto visível, armadura marfim/dourada, couro marrom, capa curta, espada de aço na direita e escudo no braço esquerdo.
 
 ## Correção de movimento — 0.6.1
 
@@ -27,10 +27,10 @@ Cada quadro tem **64 × 64 pixels**, pés em **(32,60)**, linhas **frente, esque
 | Ação                             | Duração | Impacto |
 | -------------------------------- | ------: | ------: |
 | Espada básica e golpe de retorno |  500 ms |  200 ms |
-| Corte Poderoso                   |  700 ms |  350 ms |
-| Investida                        |  650 ms |  400 ms |
-| Golpe Destruidor                 |  900 ms |  600 ms |
-| Fúria do Guerreiro               |  800 ms |  300 ms |
+| Corte Poderoso                   | 1400 ms |  700 ms |
+| Investida                        | 1300 ms |  750 ms |
+| Golpe Destruidor                 | 1900 ms | 1100 ms |
+| Fúria do Guerreiro               | 1700 ms |  700 ms |
 
 `warrior.mjs` compartilha durações/impactos com o servidor e fornece as sequências. `warrior-fx.mjs` mantém os efeitos separados da arte do corpo. As próximas classes devem receber identificadores e ações próprios seguindo o mesmo contrato.
 
@@ -39,3 +39,11 @@ Cada quadro tem **64 × 64 pixels**, pés em **(32,60)**, linhas **frente, esque
 Com o servidor aberto: **http://127.0.0.1:5188/guerreiro**. A prévia permite ver direções, caminhada, os dois golpes básicos, habilidades, ferido e caído, com pausa e passo a passo. A verificação no cliente também cobre caminhada WASD, combate real e reaparecimento dos inimigos.
 
 Aparência inicial fixa: equipamentos alteram atributos, ainda não as peças desenhadas. Corrida sem poses exclusivas. O grito de guerra vira de frente nas direções laterais. NPCs e monstros conservam suas aparências provisórias. Ainda há espaço para refinamento artístico dos quadros.
+
+## Habilidades e escudo — 0.6.2
+
+As fontes de torso, espada e reação agora incluem o escudo na esquerda. A separação das poses usa núcleos opacos e proximidade para preservar pontas de lâmina sem capturar a névoa entre as linhas da fonte. A calibração lateral de repouso mantém a sola no plano comum.
+
+`source/skills-vfx.png` contém quatro artes pintadas originais em transparência. `npm run art:vfx` monta nove flipbooks de 128px, com deformação, partículas, antecipação e dissipação. `warrior-vfx.mjs` centraliza os metadados e `warrior.mjs` compartilha os instantes de impacto com o servidor. Efeitos disparados no início da ação possuem quadros de preparação; os efeitos de contato iniciam no dano. A fissura usa `inteiro: true` para não ser encerrada prematuramente pelo evento de impacto do cliente.
+
+Armadura, espada e escudo são a aparência base. Não há item de escudo nem nova defesa/bloqueio concedidos por esta arte. A área atrasada é avaliada na posição marcada no chão, com os ocupantes presentes no impacto.

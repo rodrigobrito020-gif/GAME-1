@@ -11,6 +11,7 @@ import {
   warriorRig,
 } from "../warrior.mjs";
 import { warriorEffects, warriorFx, warriorIcon } from "../warrior-fx.mjs";
+import { WARRIOR_VFX } from "../warrior-vfx.mjs";
 import { localAssets } from "../assets.mjs";
 import { LocalFarm } from "../farm.mjs";
 import { warriorWalkPose, WALK_STRIDE } from "../warrior-walk-rig.mjs";
@@ -207,15 +208,28 @@ test("warrior assets and skill effects are served locally with matching flipbook
   for (const [id, effect] of Object.entries(effects.efeitos)) {
     if (id === "other") continue;
     const sprite = assets(effect.folha);
-    assert.equal(sprite.type, "image/svg+xml");
-    assert.match(sprite.bytes.toString(), /width="2048" height="128"/);
-    assert.equal(effect.frames * effect.quadro[0], 2048);
+    if (WARRIOR_VFX[id]) {
+      assert.equal(sprite.type, "image/png");
+      const image = decodeRgba(sprite.bytes);
+      assert.equal(image.width, effect.frames * effect.quadro[0]);
+      assert.equal(image.height, effect.quadro[1]);
+      assert.equal(
+        warriorFx(id),
+        null,
+        "painted skills must not fall back to the old geometric effect",
+      );
+    } else {
+      assert.equal(sprite.type, "image/svg+xml");
+      assert.match(sprite.bytes.toString(), /width="2048" height="128"/);
+      assert.equal(effect.frames * effect.quadro[0], 2048);
+      assert.ok(warriorFx(id));
+    }
     assert.ok(effect.pivo.every((value) => value >= 0 && value <= 1));
-    assert.doesNotMatch(
-      sprite.bytes.toString(),
-      /(?:href|src)="https?:|<script|foreignObject/,
-    );
-    assert.ok(warriorFx(id));
+    if (sprite.type === "image/svg+xml")
+      assert.doesNotMatch(
+        sprite.bytes.toString(),
+        /(?:href|src)="https?:|<script|foreignObject/,
+      );
   }
   for (const id of Object.keys(WARRIOR_ACTIONS)) assert.ok(warriorIcon(id));
   assert.equal(warriorFx("unknown"), null);
@@ -264,7 +278,11 @@ test("all four skills land at their impact frame, reserve recovery and cancel pe
     const cast = farm.cast(client, id, target.id);
     assert.equal(cast.events.casts.length, 1);
     assert.equal(cast.events.damage.length, 0);
-    assert.equal(step(action.impact - 1).events.damage.length, 0);
+    assert.equal(
+      step(action.impact - 1).events.damage.filter((e) => e.source === 1)
+        .length,
+      0,
+    );
     assert.equal(target.hp, hp);
     const impact = step(1);
     assert.ok(impact.events.damage.some((e) => e.skillId === id));
@@ -317,4 +335,62 @@ test("basic sword attack announces the authored animation before damage and cann
     next.events.moves.some((e) => e.move === WARRIOR_RETURN.move),
     "the combo must alternate into the return cut",
   );
+});
+
+test("painted cast effects leave time for anticipation, sustain after impact and fade with transparent gutters", () => {
+  const effects = warriorEffects({ efeitos: {}, habilidades: {} }).efeitos;
+  for (const [id, fx] of Object.entries(WARRIOR_VFX)) {
+    if (!fx.cast) continue;
+    const action = WARRIOR_ACTIONS[fx.skill];
+    assert.ok(action.duration >= 1300);
+    assert.ok((fx.frames / fx.fps) * 1000 >= action.impact + 700);
+    const image = decodeRgba(
+      readFileSync(new URL(`../art/warrior/vfx/${id}.png`, import.meta.url)),
+    );
+    const mass = [];
+    for (let f = 0; f < fx.frames; f++) {
+      let alpha = 0;
+      for (let y = 0; y < 128; y++)
+        for (let x = 0; x < 128; x++) {
+          const a = image.pixels[(y * image.width + f * 128 + x) * 4 + 3];
+          if (!x || !y || x === 127 || y === 127) assert.equal(a, 0);
+          alpha += a;
+        }
+      mass.push(alpha);
+    }
+    assert.equal(mass[0], 0, "no full impact flash at cast time");
+    assert.ok(Math.max(...mass) > 100000, "visible painted content");
+    assert.ok(
+      mass[Math.floor(((action.impact + 500) * fx.fps) / 1000)] > 50000,
+      "effect persists after damage",
+    );
+    assert.ok(
+      mass.at(-1) < Math.max(...mass) * 0.08,
+      "gradual fade before removal",
+    );
+  }
+  assert.equal(
+    effects["guerreiro-destruidor-fenda"].inteiro,
+    true,
+    "damage must not prematurely dissolve the ground effect",
+  );
+});
+
+test("delayed area strike hits the enemies inside the displayed circle at impact", () => {
+  const { farm, client, step } = scenario();
+  const [target, leaving, entering] = client.hunt.monsters;
+  leaving.x = target.x + 20;
+  leaving.y = target.y;
+  entering.x = target.x + 200;
+  entering.y = target.y;
+  farm.cast(client, "golpe-destruidor", target.id);
+  leaving.x += 400;
+  entering.x = target.x + 30;
+  const result = step(WARRIOR_ACTIONS["golpe-destruidor"].impact);
+  const hit = result.events.damage
+    .filter((e) => e.source === 1 && e.skillId === "golpe-destruidor")
+    .map((e) => e.target);
+  assert.ok(hit.includes(target.id));
+  assert.ok(hit.includes(entering.id));
+  assert.ok(!hit.includes(leaving.id));
 });

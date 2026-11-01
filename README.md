@@ -1,8 +1,16 @@
-# Jogo local — 0.6.1: caminhada, ataques e hunt corrigidos
+# Jogo local — 0.6.2: habilidades e escudo do guerreiro
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização — 0.6.2
+
+- Escudo de marfim, ouro e aço azul no braço esquerdo, acompanhando repouso, caminhada, espada, habilidades, ferimento e derrota. A espada continua na direita. O escudo faz parte da aparência inicial fixa; não concede item, defesa ou bloqueio novo.
+- Nove efeitos pintados em PNG transparente substituem os desenhos geométricos das habilidades. Arco de lâmina, vento da investida, fissuras com detritos e aura recebem contraste azul-aço, brilho branco/dourado, partículas e dissipação gradual.
+- Preparação e recuperação mais legíveis: Corte Poderoso 1,4 s (impacto 700 ms), Investida 1,3 s (750 ms), Golpe Destruidor 1,9 s (1100 ms) e Fúria 1,7 s (700 ms). Os efeitos principais duram entre 1,6 e 2,67 s, com antecipação antes do golpe. O dano continua aplicado uma única vez no impacto; não foi criado dano contínuo.
+- Dano, cura, mana e recargas preservados. A sequência de ações fica naturalmente mais cadenciada pela preparação maior. A área do Golpe Destruidor considera os inimigos que estão dentro do círculo no instante do impacto.
+- Prévia atualizada para usar as novas durações, camadas e dissipação. Praça da Coroa, Pátio da Coroa, inventários e reaparecimento dos monstros continuam preservados.
 
 ## Correções — 0.6.1
 
@@ -17,11 +25,11 @@ Nível, ouro, EXP, equipamentos, mochila e armazém são preservados. A atualiza
 
 O jogador agora usa um personagem humano original: cabelo escuro, rosto visível, armadura marfim com detalhes dourados, capa curta e espada de aço. As folhas próprias incluem repouso, caminhada, espada, preparação de habilidade, reação a dano e derrota, com quatro direções. A corrida reutiliza os quadros de caminhada em cadência maior.
 
-As quatro habilidades têm movimentos e efeitos próprios: corte crescente dourado, rastro da investida, impacto do golpe destruidor e aura da fúria. Cada golpe reserva sua preparação e recuperação; o servidor aplica o dano no quadro de impacto (350, 400, 600 e 300 ms, respectivamente). O ataque básico usa 200 ms. Sair da hunt ou morrer cancela os golpes pendentes. Valores de dano, custo de mana e recarga foram preservados.
+As quatro habilidades têm movimentos e efeitos próprios: corte crescente de aço e luz, rastro da investida, impacto do golpe destruidor e aura da fúria. Cada golpe reserva sua preparação e recuperação; o servidor aplica o dano no quadro de impacto (700, 750, 1100 e 700 ms, respectivamente). O ataque básico usa 200 ms. Sair da hunt ou morrer cancela os golpes pendentes. Valores de dano, custo de mana e recarga foram preservados.
 
 **Prévia interativa:** com o servidor aberto, acesse **http://127.0.0.1:5188/guerreiro**. É possível ver as quatro direções, pausar, avançar quadros e testar cada sequência. A prévia usa as mesmas folhas e sequências do jogo; o jogador também está integrado à cidade e às hunts.
 
-A atualização troca apenas a aparência do jogador. Não concede equipamentos, não substitui itens e não reinicia nível, ouro, EXP, mochila ou armazém. NPCs e monstros conservam os visuais provisórios atuais. A armadura e a espada desenhadas são uma aparência inicial fixa: trocar equipamentos ainda altera os atributos, mas não as peças do desenho.
+A atualização troca apenas a aparência do jogador. Não concede equipamentos, não substitui itens e não reinicia nível, ouro, EXP, mochila ou armazém. NPCs e monstros conservam os visuais provisórios atuais. A armadura, a espada e o escudo desenhados são uma aparência inicial fixa: trocar equipamentos ainda altera os atributos, mas não as peças do desenho.
 
 Fontes e contrato de animação estão em **art/warrior/README.md**, **manifest.json** e **warrior.mjs**. Servirão como base técnica para as próximas classes, que precisarão de suas próprias artes e ações.
 
@@ -98,12 +106,13 @@ set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-São **24 testes automatizados**: protocolo, PNG, combate, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, cidade e integração real WebSocket. Os novos testes verificam quadros distintos, transparência, ausência de corte das armas, alinhamento dos pés, efeitos locais e sincronização dos golpes. Também verificam apoio alternado dos pés, tronco estável, escala constante dos golpes e 50 ciclos consecutivos de reaparecimento (150 novas vidas). A integração também migra uma aparência antiga e verifica ouro, EXP, poções e item guardado após reiniciar o processo. Sem o ZIP, a integração é explicitamente pulada. O jogo e a prévia também são verificados no Chromium. Consulte **RESULTADO_TESTE.txt**.
+São **26 testes automatizados**: protocolo, PNG, combate, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, cidade e integração real WebSocket. Os novos testes verificam quadros distintos, transparência, ausência de corte das armas, alinhamento dos pés, efeitos locais e sincronização dos golpes. Também verificam apoio alternado dos pés, tronco estável, escala constante dos golpes e 50 ciclos consecutivos de reaparecimento (150 novas vidas). A integração também migra uma aparência antiga e verifica ouro, EXP, poções e item guardado após reiniciar o processo. Sem o ZIP, a integração é explicitamente pulada. O jogo e a prévia também são verificados no Chromium. Consulte **RESULTADO_TESTE.txt**.
 
 Para reempacotar as fontes originais do guerreiro (não é necessário para jogar):
 
 ```bat
 npm run art:warrior
+npm run art:vfx
 ```
 
 ## Dados e isolamento

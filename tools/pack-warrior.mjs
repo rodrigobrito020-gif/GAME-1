@@ -16,8 +16,10 @@ function load(name, columns, rows = 4) {
   const { width: w, height: h, pixels } = image;
   const seen = new Uint8Array(w * h),
     components = [];
+  // Soft matte can connect separate rows after an art edit. Segment opaque
+  // cores first, then assign detached blade/strap highlights to the nearest body.
   for (let start = 0; start < seen.length; start++) {
-    if (seen[start] || pixels[start * 4 + 3] < 96) continue;
+    if (seen[start] || pixels[start * 4 + 3] < 245) continue;
     const points = [start];
     seen[start] = 1;
     let x0 = w,
@@ -38,13 +40,13 @@ function load(name, columns, rows = 4) {
           next < seen.length &&
           !seen[next] &&
           Math.abs((next % w) - x) <= 1 &&
-          pixels[next * 4 + 3] >= 96
+          pixels[next * 4 + 3] >= 245
         ) {
           seen[next] = 1;
           points.push(next);
         }
     }
-    if (points.length > 500) components.push({ points, x0, y0, x1, y1 });
+    if (points.length >= 2) components.push({ points, x0, y0, x1, y1 });
   }
   const grid = Array.from({ length: rows }, () => Array(columns));
   for (const c of components) {
@@ -53,7 +55,53 @@ function load(name, columns, rows = 4) {
       columns - 1,
       Math.floor((c.x0 + c.x1) / 2 / (w / columns)),
     );
-    grid[row][col] = c;
+    if (c.points.length > (grid[row][col]?.points.length ?? 0))
+      grid[row][col] = c;
+  }
+  const bodies = grid.flat().filter(Boolean),
+    own = new Int16Array(w * h).fill(-1),
+    dist = new Uint16Array(w * h).fill(65535),
+    queue = new Int32Array(w * h);
+  let tail = 0;
+  bodies.forEach((body, label) =>
+    body.points.forEach((i) => {
+      own[i] = label;
+      dist[i] = 0;
+      queue[tail++] = i;
+    }),
+  );
+  for (let head = 0; head < tail; head++) {
+    const i = queue[head],
+      x = i % w;
+    for (const next of [i - 1, i + 1, i - w, i + w])
+      if (
+        next >= 0 &&
+        next < own.length &&
+        own[next] < 0 &&
+        Math.abs((next % w) - x) <= 1
+      ) {
+        own[next] = own[i];
+        dist[next] = dist[i] + 1;
+        queue[tail++] = next;
+      }
+  }
+  const bodySet = new Set(bodies);
+  for (const c of components) {
+    if (bodySet.has(c)) continue;
+    let nearest = -1,
+      distance = 65535;
+    for (const i of c.points)
+      if (dist[i] < distance) {
+        distance = dist[i];
+        nearest = own[i];
+      }
+    if (nearest < 0 || distance > (c.points.length > 200 ? 30 : 12)) continue;
+    const body = bodies[nearest];
+    body.points.push(...c.points);
+    body.x0 = Math.min(body.x0, c.x0);
+    body.x1 = Math.max(body.x1, c.x1);
+    body.y0 = Math.min(body.y0, c.y0);
+    body.y1 = Math.max(body.y1, c.y1);
   }
   return { ...image, grid };
 }
@@ -197,7 +245,7 @@ writeFileSync(
     {
       character: "Guerreiro Humano",
       skinId: "humano-guerreiro",
-      version: 2,
+      version: 3,
       frame: [64, 64],
       feet: [32, 60],
       rows: ["south", "west", "east", "north"],
@@ -207,6 +255,7 @@ writeFileSync(
       notes: [
         "Corrida reutiliza o ciclo de caminhada.",
         "Grito de guerra vira de frente nas direções laterais.",
+        "Escudo no braço esquerdo; espada na mão direita.",
         "Aparência inicial fixa; equipamentos ainda não trocam as peças desenhadas.",
       ],
       sources,

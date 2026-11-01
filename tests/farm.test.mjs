@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { LocalFarm, SKILLS } from "../farm.mjs";
+import { WARRIOR_ACTIONS } from "../warrior.mjs";
 function setup() {
   let clock = 10000;
   const account = {
@@ -93,10 +94,13 @@ test("skills validate target, range, mana and cooldown; basic attacks continue w
     "windup must not deal damage immediately",
   );
   const hp = target.hp;
-  assert.equal(advance(300).events.damage.length, 0);
+  assert.equal(
+    advance(WARRIOR_ACTIONS[SKILLS[0].id].impact - 50).events.damage.length,
+    0,
+  );
   assert.equal(target.hp, hp);
   assert.ok(advance(50).events.damage.some((e) => e.skillId === SKILLS[0].id));
-  assert.ok(target.hp < hp, "damage lands on the 350ms animation impact");
+  assert.ok(target.hp < hp, "damage lands on the shared animation impact");
   assert.throws(() => farm.cast(client, SKILLS[0].id, target.id), /cooldown/);
   farm.character.progress.mana = 0;
   for (let n = 0; n < 45; n++) advance();

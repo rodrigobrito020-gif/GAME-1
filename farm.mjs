@@ -381,6 +381,9 @@ export class LocalFarm {
       amount: c.derived.atk * skill.multiplier,
       skillId: id,
       heal: skill.heal ?? 0,
+      ...(skill.radius
+        ? { area: { x: target.x, y: target.y, radius: skill.radius } }
+        : {}),
     });
     return { events, deltas };
   }
@@ -402,7 +405,17 @@ export class LocalFarm {
         returnCity: now >= h.deadAt + 3000,
       };
     for (const impact of h.impacts.filter((p) => p.at <= now)) {
-      for (const id of impact.targets) {
+      const targets = impact.area
+        ? h.monsters
+            .filter(
+              (m) =>
+                m.hp > 0 &&
+                Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
+                  impact.area.radius,
+            )
+            .map((m) => m.id)
+        : impact.targets;
+      for (const id of targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
         if (monster)
           this.hit(h, monster, impact.amount, impact.skillId, events, deltas);

@@ -2,6 +2,7 @@ import { adaptIdle } from "./png.mjs";
 import { readFileSync } from "node:fs";
 import { WARRIOR_SKIN, WARRIOR_SHEETS, warriorRig } from "./warrior.mjs";
 import { warriorEffects, warriorFx, warriorIcon } from "./warrior-fx.mjs";
+import { WARRIOR_VFX } from "./warrior-vfx.mjs";
 export function localAssets(byName, status) {
   const first = (name) => byName.get(name)?.[0]?.read();
   const sheets = new Map(),
@@ -87,6 +88,19 @@ export function localAssets(byName, status) {
     const effect = /^\/assets\/fx\/royal-warrior\/([a-z-]+)\.svg$/.exec(
       pathname,
     );
+    const painted = /^\/assets\/fx\/royal-warrior\/([a-z-]+)\.png$/.exec(
+      pathname,
+    );
+    if (painted && WARRIOR_VFX[painted[1]]) {
+      if (!sheets.has(pathname))
+        sheets.set(
+          pathname,
+          readFileSync(
+            new URL(`./art/warrior/vfx/${painted[1]}.png`, import.meta.url),
+          ),
+        );
+      return { type: "image/png", bytes: sheets.get(pathname) };
+    }
     const icon = /^\/assets\/ui\/royal-warrior\/([a-z-]+)\.svg$/.exec(pathname);
     if (effect || icon) {
       const key = pathname;

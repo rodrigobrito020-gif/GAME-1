@@ -22,7 +22,10 @@ const fxNames = [
   "guerreiro-furia-explosao",
 ];
 const fx = await Promise.all(
-  fxNames.map((id) => image(effects.efeitos[id].folha)),
+  fxNames.map(async (id) => ({
+    image: await image(effects.efeitos[id].folha),
+    def: effects.efeitos[id],
+  })),
 );
 const canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d");
@@ -67,16 +70,30 @@ function render() {
     col = 5;
   } else if (move) {
     total = move.frames.length * rig.stepMs;
-    phase = elapsed % (total + 300);
+    const index = Object.keys(WARRIOR_ACTIONS).indexOf(action);
+    const tail =
+      index < 0 ? 0 : (fx[index].def.frames / fx[index].def.fps) * 1000;
+    phase = elapsed % (Math.max(total, tail) + 350);
     const entry =
       move.frames[
         Math.min(move.frames.length - 1, Math.floor(phase / rig.stepMs))
       ];
     [sheet, col] = Array.isArray(entry) ? entry : [move.sheet, entry];
-    if (action === "golpe-destruidor" && phase >= 150 && phase <= 600)
-      lift = Math.sin(((phase - 150) / 450) * Math.PI) * 50;
-    if (action === "investida" && phase >= 100 && phase <= 400)
-      offset = Math.sin(((phase - 100) / 300) * Math.PI) * 45;
+    if (phase > total) {
+      sheet = "idle";
+      col = 0;
+    }
+    const jump = move.motion?.jump;
+    if (jump && phase >= jump.at[0] && phase <= jump.at[1])
+      lift =
+        Math.sin(((phase - jump.at[0]) / (jump.at[1] - jump.at[0])) * Math.PI) *
+        jump.height *
+        2;
+    const dash = move.motion?.dash;
+    if (dash && phase >= dash.at[0] && phase <= dash.at[1])
+      offset =
+        Math.sin(((phase - dash.at[0]) / (dash.at[1] - dash.at[0])) * Math.PI) *
+        45;
   } else
     col =
       Math.floor(
@@ -89,6 +106,34 @@ function render() {
                 : rig.loops.run.fps)),
       ) % 4;
   const n = Object.keys(WARRIOR_ACTIONS).indexOf(action);
+  const effect = n >= 0 ? fx[n] : null;
+  const drawEffect = () => {
+    if (!effect || phase >= (effect.def.frames / effect.def.fps) * 1000) return;
+    const def = effect.def,
+      f = Math.floor((phase * def.fps) / 1000);
+    const size = def.alturaTela * 1.35;
+    ctx.save();
+    ctx.translate(
+      300 + offset,
+      def.camada === "chao" || def.camada === "atras" ? 332 : 268,
+    );
+    if (def.orientacao === "direita")
+      ctx.rotate([Math.PI / 2, Math.PI, 0, -Math.PI / 2][direction]);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(
+      effect.image,
+      f * 128,
+      0,
+      128,
+      128,
+      -size * def.pivo[0],
+      -size * def.pivo[1],
+      size,
+      size,
+    );
+    ctx.restore();
+  };
+  if (effect?.def.camada !== "frente") drawEffect();
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(
     images[sheet],
@@ -101,17 +146,7 @@ function render() {
     256,
     256,
   );
-  if (
-    n >= 0 &&
-    phase >= WARRIOR_ACTIONS[action].impact - 100 &&
-    phase <= WARRIOR_ACTIONS[action].impact + 480
-  ) {
-    const f = Math.min(
-      15,
-      Math.floor((phase - WARRIOR_ACTIONS[action].impact + 100) / 40),
-    );
-    ctx.drawImage(fx[n], f * 128, 0, 128, 128, 172, 140, 256, 256);
-  }
+  if (effect?.def.camada === "frente") drawEffect();
   readout.textContent = `${["Frente", "Esquerda", "Direita", "Costas"][direction]} · ${sheet} · quadro ${col + 1} / ${WARRIOR_SHEETS[sheet]}`;
   canvas.dataset.sheet = sheet;
   canvas.dataset.frame = String(col);

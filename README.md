@@ -1,8 +1,16 @@
-# Jogo local — 0.6.20: Arqueira Elfa, seis poções e buffs simultâneos
+# Jogo local — 0.6.21: pernas e caminhada corrigidas
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.21
+
+Corrigida a montagem das pernas do **Guerreiro Humano e da Arqueira Elfa**, inclusive na variante do guerreiro com peitoral equipado. A parte fixa da calça cobria as coxas e as partes móveis eram comprimidas sob o corpo. Agora o quadril, as coxas, os joelhos e as botas têm proporções completas, com encaixes contínuos. As bordas de couro usadas para separar as peças na arte-fonte não aparecem como cortes nos joelhos.
+
+A postura parada de lado mantém as pernas estendidas. A caminhada alterna o apoio dos pés, com menor elevação e passada compatível com a cadência e o deslocamento no chão. Folhas nativas de 64px, HD de 128px, corrida reutilizada, retratos e prévia foram reconstruídos. Rostos, roupas, arco, espada e escudo mantêm suas artes; golpes, habilidades e tempos de combate permanecem os anteriores.
+
+Atualize com o servidor fechado, copiando `.local-runtime` da pasta anterior e mantendo `recursos-publicos.zip` junto do jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, pressione **Ctrl+F5** e confira **v0.6.21** no topo. Nenhum item, ouro, nível ou configuração é reiniciado.
 
 ## Atualização 0.6.20
 

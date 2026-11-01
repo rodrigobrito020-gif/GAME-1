@@ -135,7 +135,8 @@ test("walking alternates planted legs around a stable pelvis, mirrors directions
   );
   const torso = (row, frame) => {
     const out = [];
-    for (let y = 0; y < 31; y++)
+    // The repaired hip is at y32; rows 29+ include articulated thighs.
+    for (let y = 0; y < 29; y++)
       for (let x = 0; x < 64; x++) {
         const at = ((row * 64 + y) * image.width + frame * 64 + x) * 4;
         out.push(...image.pixels.subarray(at, at + 4));

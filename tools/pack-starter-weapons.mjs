@@ -277,7 +277,7 @@ for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
   // Opposite contact strides share the same approved upper-body pixels.
   if (["walk", "run1"].includes(name))
     for (let row = 0; row < 4; row++)
-      for (let y = 0; y < 31; y++)
+      for (let y = 0; y < 29; y++)
         for (let x = 0; x < 64; x++)
           for (const buffer of [pixels, mask]) {
             const a = at(row, 0, y * 64 + x),

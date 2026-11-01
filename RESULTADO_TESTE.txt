@@ -1,46 +1,40 @@
-VERSAO 0.6.20 — ARQUEIRA ELFA, SEIS POCOES E BUFFS SIMULTANEOS
+VERSAO 0.6.21 — PERNAS E CAMINHADA CORRIGIDAS
 Data: 01/11/2026
 
-ENTREGUE
-- Arqueira Elfa com arte propria em 128px, caminhada articulada, arco e poses
-  de disparo nas quatro direcoes. Tiro Perfurante, Chuva de Flechas, Olhos da
-  Floresta e Espirito da Floresta, mais o Dash universal.
-- Combate basico a distancia, flechas com tempo de viagem e dano no impacto;
-  chuva com tres impactos reais e persistencia apos a morte do primeiro alvo.
-- Troca de classe na cidade preserva itens, equipamentos, armazem, ouro e EXP.
-  Escolhas AUTO/MANUAL de habilidades lembradas por classe.
-- Todos os buffs ativos aparecem juntos acima do personagem, com icones,
-  duracoes e cartas independentes. A recarga continua na barra.
-- Tres pocoes HP e tres mana: pequena nivel 1, media 55 e grande 150.
-  Configuracao individual Manual/Auto com limites 30%, 50% e 70%.
-  Recuperacao de 40%, 60% e 80% (valores iniciais); estoque e ouro reais;
-  intervalo compartilhado de 1,5s; nenhuma pocao nova concedida na migracao.
-- Guerreiro, tempos aprovados, roupas e itens anteriores preservados.
-  Equipamentos por peca aguardam as cinco classes iniciais, conforme pedido.
+CORRECAO
+- O torso fixo incluia partes da calca que cobriam as coxas articuladas.
+  As pernas tambem eram comprimidas e muito estreitas sob esse torso.
+- Quadril reposicionado e proporcao das pernas corrigida no guerreiro e na
+  arqueira. Coxas, joelhos e botas possuem encaixe continuo, com pequena
+  sobreposicao de tecido para evitar frestas nas articulacoes.
+- Retirados do recorte os aneis usados para separar as pecas na arte-fonte,
+  que pareciam cortes nos joelhos. Preservados dedos, espada, escudo e arco
+  quando passam diante do quadril.
+- Postura parada lateral com pernas estendidas, sem agachamento permanente.
+- Passada menos exagerada e menor elevacao dos pes. Cadencia compatibilizada
+  com o deslocamento: ciclo de 80 unidades, 8 quadros/s na velocidade normal.
+- Reconstruidas folhas nativas/HD, corrida compartilhada, variante com peitoral
+  de treino, mascaras das armas e retratos da selecao de classe.
+- Artes grandes originais e PNGs das poses de combate preservados byte a byte.
+  Habilidades, dano, recargas, buffs, pocoes, itens e progresso nao alterados.
 
 TESTES
-- 88 testes automatizados passaram, zero falhas ou ignorados, com ZIP real.
-- Regressao do guerreiro, farm, servidor/protobuf, morte, estoque, inventarios,
-  armazenamento, progressao, dash, animacoes e colisao.
-- Arqueira: troca/restauracao de classe sem perda de itens; dano so na chegada;
-  perfuracao em corredor sem duplicar acertos; chuva em tres tempos; buffs
-  independentes; expiracao, saida, morte; velocidade e reducao de dano da ultimate.
-- Pocoes: limites exatos 30/50/70, desbloqueios 54/55 e 149/150, configuracoes
-  independentes apos serializacao, cooldown compartilhado, estoque, ouro,
-  prioridades, recurso completo, personagem morto e quantidades invalidas.
-- Chromium/WebGL com cliente real em pt-BR e saves de QA separados:
-  troca de classe atualiza ator nativo, retrato e folhas HD; cinco habilidades;
-  combate com flechas, perfuracao e chuva; Olhos e Espirito simultaneos;
-  ultimate ativada automaticamente com energia conquistada em combate real.
-- Cartas dos dois buffs da arqueira abertas individualmente; troca de volta
-  para guerreiro preserva estoque, equipamentos, ouro, EXP e armazem.
-- Dois perfis isolados de QA, niveis 55 e 150: bloqueios visuais corretos,
-  compra e consumo efetivo de pocao de mana; estoque passa de 10 para 9;
-  configuracao do limite salva. Egide e Avatar juntos, sem sobrepor os icones.
-- Sem erros JavaScript nos testes de navegador. Sem novas requisicoes de
-  imagem em 1s de repintura dos atalhos; evita recarregar icones a cada quadro.
-- Ausencias de audio/FX preexistentes no ZIP capturado nao foram preenchidas
-  com arquivos ficticios. As novas artes proprias sao fornecidas neste projeto.
+- 90 testes automatizados aprovados, zero falhas ou ignorados, com o ZIP real.
+- Novos testes verificam proporcao das pernas, continuidade entre quadril,
+  joelho e sola nas quatro direcoes/fases, postura lateral e alcance dos ossos.
+- Mantidos os testes de silhueta, transparencias, espelhamento, apoio dos pes,
+  deslocamento da passada, variantes de equipamento e preservacao do corpo
+  durante a aplicacao de materiais nas armas.
+- Regressao: combate das duas classes, habilidades, inventario, armazem,
+  pocoes, morte, colisao, progressao, persistencia e protocolo do cliente.
+- Chromium/WebGL com cliente real em portugues e conta isolada de QA:
+  Guerreiro, Guerreiro com peitoral equipado e Arqueira, andando nas quatro
+  direcoes com WASD. Confirmados movimento, linha/quadros de caminhada e uma
+  unica camada HD sobre o ator nativo. Capturas de repouso e quatro direcoes.
+- Depois da caminhada, caçada da arqueira com combate, cinco habilidades e
+  seis atalhos de pocoes. Nenhum erro JavaScript nessa verificacao.
+- Dados de testes separados dos dados reais. Nenhum item ou nivel concedido
+  ao jogador. As ausencias preexistentes no ZIP capturado nao foram alteradas.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
@@ -48,12 +42,12 @@ WINDOWS
 3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
    para manter o progresso. Copie recursos-publicos.zip ou deixe-o em Downloads.
 4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
-5. Confira v0.6.20 no topo.
-6. Na cidade: botao Trocar classe. Pocoes: seis icones no canto inferior direito.
+5. Confira v0.6.21 no topo.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa do guerreiro: http://127.0.0.1:5188/guerreiro
 
-PENDENTE DE REVISAO
-- Aparencia e balanceamento inicial da arqueira; valores definitivos de pocoes.
-- Definir as outras tres classes antes de iniciar a adaptacao dos equipamentos.
-- Multiplayer continua fora deste servidor de uma conta local.
+DECISOES MANTIDAS
+- Equipamentos por peca aguardam as cinco classes iniciais.
+- Guerreiro e Arqueira sao as duas classes prontas; as outras tres ainda precisam
+  de definicao. Balanceamento novo da arqueira segue disponivel para revisao.
+- O servidor atual continua com uma conta local, sem multiplayer implementado.

@@ -63,8 +63,8 @@ const hold = (sheet, col, steps) =>
 export function warriorRig(original) {
   const rig = structuredClone(original);
   if (rig.loops) {
-    rig.loops.walk = { ...rig.loops.walk, stride: WALK_STRIDE, fps: 6.67 };
-    rig.loops.run = { ...rig.loops.run, stride: 144 };
+    rig.loops.walk = { ...rig.loops.walk, stride: WALK_STRIDE, fps: 8 };
+    rig.loops.run = { ...rig.loops.run, stride: WALK_STRIDE * 1.5 };
   }
   const sword = (counts, impact, reach = 8) => ({
     sheet: "weapon",

@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.21: corrigidos quadril, proporções e encaixe de coxas/joelhos/botas nos dois personagens e na variante com peitoral. Removida a sobreposição da calça fixa sobre as pernas móveis; postura lateral parada sem agachamento permanente e cadência ajustada à passada. Reconstruídas folhas HD/nativas e retratos, preservando o combate e os dados salvos.
+
 - 0.6.20: Arqueira Elfa com arte própria, disparos e quatro habilidades aprovadas, mais o Dash comum. Troca de classe na cidade preserva inventários/equipamentos/progresso e lembra automação por classe. Seis poções HP/mana, níveis 1/55/150, Manual/Auto e limites 30/50/70% independentes. Indicadores simultâneos de todos os buffs, cada um com duração e carta.
 
 - 0.6.19: retirada do modo manual global; caça automática com AUTO/MANUAL por habilidade e escolhas salvas. Dash universal na barra/Shift, manual por padrão e com evasão de marcações no AUTO. Ícones de efeitos ativos iguais aos da barra, com carta e tempo restante ao consultar.

@@ -25,7 +25,7 @@ const root = path.dirname(
     .filter(Boolean)
     .find(existsSync);
 test(
-  "repeated dash requests return gameplay errors without disconnecting or leaving the hunt, and right-click order attacks only its selected target",
+  "repeated dash requests return gameplay errors without disconnecting or leaving the hunt, and right-click selects the automatic hunt priority",
   { skip: !source || !existsSync(source), timeout: 20000 },
   async () => {
     const entries = readZip(readFileSync(source)),
@@ -107,20 +107,24 @@ test(
       await wait(
         (m) => m.requestId === req && m.body?.case === "startHuntResult",
       );
-      req = send("useSkill", { skillId: "modo-manual" });
+      req = send("setAutomation", { automation: { skillOrder: [] } });
       await wait(
-        (m) => m.body?.case === "characterPatch" && m.body.value.automation,
+        (m) => m.requestId === req && m.body?.case === "setAutomationResult",
       );
-      // Wait for the last automatic action before asking for an ordinary free dash.
-      await new Promise((r) => setTimeout(r, 1000));
-      let mark = messages.length;
-      send("roll", { dirX: 0, dirY: 1000 });
-      await wait(
-        (m) =>
-          messages.indexOf(m) >= mark &&
-          m.body?.case === "worldEvents" &&
-          m.body.value.cooldowns.some((c) => c.skillId === "rolamento"),
-      );
+      let mark = messages.length,
+        started = false;
+      for (let attempt = 0; attempt < 8 && !started; attempt++) {
+        send("roll", { dirX: 0, dirY: 1000 });
+        await new Promise((r) => setTimeout(r, 150));
+        started = messages
+          .slice(mark)
+          .some(
+            (m) =>
+              m.body?.case === "worldEvents" &&
+              m.body.value.cooldowns.some((c) => c.skillId === "dash"),
+          );
+      }
+      assert.ok(started);
       const sceneCount = messages.filter(
         (m) => m.body?.case === "sceneEnter",
       ).length;
@@ -154,18 +158,8 @@ test(
         .filter((m) => m.body?.case === "worldEvents")
         .flatMap((m) => m.body.value.damage)
         .filter((d) => d.source === 1);
-      assert.ok(hits.length >= 3);
-      assert.ok(hits.every((h) => h.target === 109));
-      const damageCount = hits.length;
-      await new Promise((r) => setTimeout(r, 1200));
-      assert.equal(
-        messages
-          .slice(mark)
-          .filter((m) => m.body?.case === "worldEvents")
-          .flatMap((m) => m.body.value.damage)
-          .filter((d) => d.source === 1).length,
-        damageCount,
-      );
+      assert.ok(hits.length >= 1);
+      assert.ok(hits.some((h) => h.target === 109));
       assert.equal(ws.readyState, 1);
       assert.equal(
         messages.filter((m) => m.body?.case === "sceneEnter").length,

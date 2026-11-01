@@ -1,34 +1,35 @@
-VERSAO 0.6.18 — SHIFT CORRIGIDO E BOTAO DIREITO
+VERSAO 0.6.19 — AUTOMACAO POR HABILIDADE E DASH COMUM
 Data: 01/11/2026
 
-CORRIGIDO
-O segundo pedido de dash, ainda em recarga, lancava local.cooldown fora do
-tratamento de erros de gameplay. O servidor interpretava como mensagem invalida,
-fechava o WebSocket e o cliente voltava para a cidade ao reconectar.
-Agora recusas de dash sao respondidas sem fechar a conexao. O cliente tambem
-filtra pressionamentos repetidos e consulta a recarga informada pelo servidor.
-
-ADICIONADO
-Botao direito em um monstro vivo seleciona o inimigo e ordena aproximar/atacar.
-No manual, usa somente ataques basicos contra esse alvo e para apos a morte.
-Movimento WASD/setas, outra ordem de movimento, dash bem-sucedido, troca de modo
-ou limpeza do alvo interrompem a ordem. No automatico, o alvo vira prioridade.
-Clique esquerdo/F, visuais, mapas, habilidades, tempos, itens e saves mantidos.
+ENTREGUE
+- Removido o modo manual global. Saves antigos retomam a caca automatica sem
+  perder progresso, itens ou selecoes de habilidades.
+- Botoes AUTO/MANUAL individuais acima dos cinco icones. MANUAL desativa apenas
+  o uso automatico da habilidade; clique/atalho continua disponivel. Golpes
+  basicos e movimento continuam automaticos mesmo com todas no MANUAL.
+- Dash comum no quinto slot, catalogo universal, novo icone ilustrado e Shift
+  esquerdo. Comeca manual; AUTO tenta sair de marcacoes inimigas iminentes.
+  Icone/Shift/automatico compartilham validacao, colisao e recarga de 2,5s.
+- Indicadores ativos de Egide/Avatar usam as mesmas artes novas da barra.
+  Hover, foco e pressionamento mostram a mesma carta e o tempo restante,
+  sem conjurar novamente. Acima do personagem permanece somente a duracao.
+- Avatar 45s/60s, Egide 5min/120s e correcao de Shift repetido mantidos.
 
 TESTES
-- 74 testes automatizados, com o ZIP real, incluindo regressao de WebSocket:
-  pedidos repetidos de dash recebem local.cooldown, a conexao permanece aberta,
-  ping continua respondendo e nenhuma transicao de cena e enviada.
-- Ordem de ataque validada no servidor: aproxima do alvo escolhido, mata com
-  impactos reais e nao passa para outro inimigo vivo no modo manual.
-- Cancelamento por dash/modo e alvo morto; validacao de alvos inexistentes.
-- Chromium/WebGL, cliente real em portugues e save de QA separado:
-  dois ShiftLeft reais seguidos geram um dash sem desconectar; pedidos brutos
-  adicionais durante a recarga tambem sao rejeitados sem desconectar; novo dash
-  funciona apos recarregar; botao direito real seleciona, aproxima e derrota o
-  inimigo escolhido; WASD interrompe a proxima ordem de ataque.
-- Nenhuma reconexao, retorno indevido a cidade, erro JavaScript ou erro de
-  protocolo nesses testes do navegador.
+- 75 testes automatizados passaram, zero falhas ou ignorados, com ZIP real.
+- Migracao do antigo modo manual sem alterar preferencias de habilidades;
+  automacao individual persistente; golpes basicos com todas em manual;
+  Dash manual/automatico e cooldown compartilhado; ataques inimigos reais.
+- Chromium/WebGL e cliente real em portugues, saves de QA separados:
+  cinco icones, Dash com classId universal, nenhum botao de modo manual global;
+  caca continua com todas as habilidades manuais; toggles rapidos independentes;
+  Egide ativa ao habilitar AUTO; Avatar com energia 100 aguarda uso manual e
+  ativa pela tecla 4 durante a caca automatica; Dash por icone e Shift repetido.
+- Cartas dos dois efeitos sobre a cabeca abertas por hover com artes corretas,
+  tempo restante e modo escolhido; escolhas mantidas ao recarregar a pagina.
+- Teste adicional: Dash em AUTO usado diante de ataque de monstro gerado na
+  propria partida, sem comando manual de dash. Outras habilidades manuais.
+- Nenhum erro JavaScript ou desconexao nesses testes.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
@@ -36,6 +37,6 @@ WINDOWS
 3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
    para manter o progresso. Copie recursos-publicos.zip ou deixe-o em Downloads.
 4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
-5. Confira v0.6.18 no topo.
+5. Confira v0.6.19 no topo.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa: http://127.0.0.1:5188/guerreiro

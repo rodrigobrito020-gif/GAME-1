@@ -604,3 +604,12 @@ body {
 .royal-skill-card>img{width:calc(100% + 32px);height:142px;object-fit:cover;object-position:50% 42%;margin:-16px -16px 13px;border-radius:12px 12px 0 0;border-bottom:2px solid #bd9443}
 .royal-skill-card>small{font-size:9px;letter-spacing:1.6px;color:#926c25;font-weight:800}.royal-skill-card h2{font:700 23px/1.2 Georgia,serif;margin:5px 0 9px}.royal-skill-card p{margin:0 0 12px}.royal-skill-card dl{display:grid;grid-template-columns:1fr 1fr;margin:0;padding:10px 0;border-top:1px solid #baa47266;gap:5px}.royal-skill-card dt{color:#7a6c50}.royal-skill-card dd{margin:0;text-align:right;font-weight:bold}.royal-skill-card footer{font-size:10px;color:#8c7850;border-top:1px solid #baa47266;padding-top:9px}
 @media(max-width:900px){.royal-combat-control{right:10px;bottom:118px;width:200px;font-size:10px}.royal-mode-toggle{font-size:10px}}
+
+/* Per-skill automation; the hunt has no global manual mode. */
+.royal-combat-control{display:none!important}
+.royal-skill-mode-switch{position:fixed;z-index:1100;box-sizing:border-box;height:21px;padding:0 3px;border:1px solid #b49048;border-radius:6px;background:#fff8e4;color:#765522;font:800 9px/19px system-ui;letter-spacing:.6px;box-shadow:0 2px 5px #30241445;cursor:pointer;}
+.royal-skill-mode-switch[data-automatic="true"]{background:#365c40;color:#f9f3d4;border-color:#9bae6f}
+.royal-skill-mode-switch[hidden]{display:none}.royal-skill-mode-switch:focus-visible{outline:2px solid #ffcb60;outline-offset:2px}
+.royal-skill-statuses .royal-skill-orb{pointer-events:auto;cursor:help}
+.royal-skill-orb:focus-visible{outline:2px solid #c49c47;outline-offset:3px;border-radius:8px}
+.royal-skill-orb img{object-fit:cover;image-rendering:auto}

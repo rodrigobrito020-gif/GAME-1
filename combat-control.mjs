@@ -1,18 +1,15 @@
-export const EVADE = { distance: 128, durationMs: 240, cooldownMs: 2500 };
-export const combatMode = (account) =>
-  account.combatMode === "manual" ? "manual" : "auto";
+export const EVADE = {
+  id: "dash",
+  name: "Dash",
+  distance: 128,
+  durationMs: 240,
+  cooldownMs: 2500,
+};
+// The hunt always moves and attacks automatically; only skill choices vary.
+export const combatMode = () => "auto";
 export function setCombatMode(account, client, mode) {
-  if (!["manual", "auto"].includes(mode)) throw Error("local.invalid_skill");
-  account.combatMode = mode;
-  client.dx = client.dy = 0;
-  client.until = 0;
-  client.route = [];
-  client.target = null;
-  if (client.hunt) {
-    client.hunt.attackOrder = 0;
-    client.hunt.manualTarget = 0;
-    client.hunt.avatarQueued = false;
-  }
+  if (mode !== "auto") throw Error("local.invalid_skill");
+  account.combatMode = "auto";
 }
 export function evade(client, { dirX = 0, dirY = 0 }, now, free = () => true) {
   if (client.hunt?.deadAt) throw Error("local.not_hunting");

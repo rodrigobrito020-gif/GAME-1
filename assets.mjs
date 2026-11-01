@@ -75,7 +75,7 @@ export function localAssets(byName, status) {
         ),
       };
     const skillIcon =
-      /^\/assets\/ui\/royal-warrior\/(avanco-de-luz|impacto-de-luz|egide-de-luz|avatar-da-luz)-card\.png$/.exec(
+      /^\/assets\/ui\/royal-warrior\/(avanco-de-luz|impacto-de-luz|egide-de-luz|avatar-da-luz|dash)-card\.png$/.exec(
         pathname,
       );
     if (skillIcon)

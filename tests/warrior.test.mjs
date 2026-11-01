@@ -287,7 +287,9 @@ function scenario() {
 }
 
 test("the active skill lands at its impact frame, reserves recovery and cancels pending damage on exit or death", () => {
-  for (const { id } of ACTIVE_SKILLS.filter((skill) => skill.kind !== "buff")) {
+  for (const { id } of ACTIVE_SKILLS.filter(
+    (skill) => skill.kind !== "buff" && skill.kind !== "movement",
+  )) {
     const action = WARRIOR_ACTIONS[id];
     const { farm, client, step } = scenario(),
       target = client.hunt.monsters[0];
@@ -417,7 +419,13 @@ test("draft skills cannot be cast or reenabled through automation", () => {
   const mana = farm.character.progress.mana;
   assert.deepEqual(
     ACTIVE_SKILLS.map((s) => s.id),
-    ["avanco-de-luz", "impacto-de-luz", "egide-de-luz", "avatar-da-luz"],
+    [
+      "avanco-de-luz",
+      "impacto-de-luz",
+      "egide-de-luz",
+      "avatar-da-luz",
+      "dash",
+    ],
   );
   for (const id of ["investida", "golpe-destruidor", "furia-guerreiro"]) {
     assert.throws(() => farm.cast(client, id, 100), /invalid_skill/);

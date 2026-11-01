@@ -39,10 +39,11 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
   const node = document.createElement("div");
   node.className = "royal-skill-orb royal-skill-status";
   node.hidden = true;
-  node.setAttribute("role", "status");
+  node.setAttribute("role", "button");
+  node.tabIndex = 0;
   node.setAttribute("aria-live", "off");
   node.innerHTML =
-    '<svg viewBox="0 0 48 48" aria-hidden="true"><circle class="cooldown-track" cx="24" cy="24" r="21"/><circle class="cooldown-progress" cx="24" cy="24" r="21" pathLength="100"/></svg><img src="/assets/ui/royal-warrior/egide-de-luz.svg" alt=""><strong></strong><small></small>';
+    '<svg viewBox="0 0 48 48" aria-hidden="true"><circle class="cooldown-track" cx="24" cy="24" r="21"/><circle class="cooldown-progress" cx="24" cy="24" r="21" pathLength="100"/></svg><img src="/assets/ui/royal-warrior/egide-de-luz-card.png" alt=""><strong></strong><small></small>';
   header.append(node);
   document.body.append(header);
   const ring = node.querySelector(".cooldown-progress"),
@@ -57,8 +58,8 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
     const skillName = timer === avatar ? "Avatar da Luz" : "Égide de Luz";
     node.querySelector("img").src =
       timer === avatar
-        ? "/assets/ui/royal-warrior/avatar-da-luz.png"
-        : "/assets/ui/royal-warrior/egide-de-luz.svg";
+        ? "/assets/ui/royal-warrior/avatar-da-luz-card.png"
+        : "/assets/ui/royal-warrior/egide-de-luz-card.png";
     node.dataset.skill = timer === avatar ? "avatar-da-luz" : "egide-de-luz";
     const remaining = Math.max(0, timer.until - now),
       name = "DURAÇÃO";

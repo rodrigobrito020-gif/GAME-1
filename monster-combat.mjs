@@ -61,7 +61,9 @@ export function skillHits(cast, point) {
 }
 export function combatState(account, client, now) {
   return {
-    combatMode: account.combatMode === "manual" ? "manual" : "auto",
+    combatMode: "auto",
+    skillOrder: [...(account.character.automation.skillOrder ?? [])],
+    skillOrderStrict: !!account.character.automation.skillOrderStrict,
     evadeCooldownMs: Math.max(0, (client.evadeReadyAt ?? 0) - now),
     monsterCasts: (client.hunt?.monsters ?? [])
       .filter((m) => m.hp > 0 && m.cast)

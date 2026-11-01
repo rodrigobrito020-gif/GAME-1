@@ -1,4 +1,4 @@
-import { combatMode } from "./combat-control.mjs";
+import { combatMode, evade, EVADE } from "./combat-control.mjs";
 import {
   MONSTER_ROLES,
   startMonsterSkill,
@@ -67,6 +67,19 @@ export const SKILLS = [
     durationMs: LIGHT_AVATAR.durationMs,
   },
   {
+    id: EVADE.id,
+    name: EVADE.name,
+    key: "SHIFT",
+    kind: "movement",
+    universal: true,
+    description:
+      "Esquiva direcional comum a todas as classes. Avança até 128 unidades, respeitando paredes, sem causar dano ou conceder invulnerabilidade. Em automático, tenta sair de ataques inimigos marcados no chão; em manual, use Shift esquerdo ou clique no ícone.",
+    icon: "/assets/ui/royal-warrior/dash-card.png",
+    manaCost: 0,
+    cooldownMs: EVADE.cooldownMs,
+    range: EVADE.distance,
+  },
+  {
     id: "investida",
     name: "Investida",
     icon: "/assets/ui/royal-warrior/investida.svg",
@@ -103,12 +116,13 @@ export const SKILLS = [
 // Unapproved draft skills remain unavailable to both manual and automatic use.
 export const ACTIVE_SKILLS = SKILLS.filter((skill) =>
   [
+    EVADE.id,
     WARRIOR_LIGHT_DASH.id,
     WARRIOR_GROUND_SLAM.id,
     LIGHT_AEGIS.id,
     LIGHT_AVATAR.id,
   ].includes(skill.id),
-).sort((a, b) => Number(a.key) - Number(b.key));
+).sort((a, b) => (Number(a.key) || 99) - (Number(b.key) || 99));
 export const ITEMS = [
   {
     id: "fragmento-local",
@@ -201,6 +215,7 @@ export class LocalFarm {
     } = {},
   ) {
     this.account = account;
+    account.combatMode = "auto";
     this.now = now;
     this.random = random;
     this.defenseBuffs = defenseBuffs ?? new TeamDefenseBuff({ now });
@@ -213,7 +228,7 @@ export class LocalFarm {
     c.equipment.slots ??= [];
     if (!account.farmVersion) {
       c.automation.skillOrder = ACTIVE_SKILLS.filter(
-        (skill) => skill.id !== LIGHT_AVATAR.id,
+        (skill) => skill.id !== LIGHT_AVATAR.id && skill.id !== EVADE.id,
       ).map((skill) => skill.id);
       c.consumables.hpPotions = { pequena: 10 };
       c.consumables.manaPotions = { pequena: 10 };
@@ -228,7 +243,7 @@ export class LocalFarm {
     if (account.skillReviewVersion !== 4) {
       if (c.automation.skillOrder.length)
         c.automation.skillOrder = ACTIVE_SKILLS.filter(
-          (skill) => skill.id !== LIGHT_AVATAR.id,
+          (skill) => skill.id !== LIGHT_AVATAR.id && skill.id !== EVADE.id,
         ).map((skill) => skill.id);
       account.skillReviewVersion = 4;
     }
@@ -525,6 +540,80 @@ export class LocalFarm {
     });
     return { events, deltas: [] };
   }
+  dash(
+    client,
+    direction = {},
+    events = this.events(),
+    { free = () => true } = {},
+  ) {
+    if (!this.character.progress.hp) throw Error("local.not_hunting");
+    const move = evade(client, direction, this.now(), free);
+    events.moves.push(move);
+    events.cooldowns.push(
+      ...[EVADE.id, "rolamento"].map((skillId) => ({
+        skillId,
+        readyInMs: EVADE.cooldownMs,
+        totalMs: EVADE.cooldownMs,
+      })),
+    );
+    return { events, deltas: [] };
+  }
+  autoDash(client, events, free) {
+    const h = client.hunt,
+      now = this.now();
+    if (
+      !(this.character.automation.skillOrder ?? []).includes(EVADE.id) ||
+      client.evade ||
+      now < (client.evadeReadyAt ?? 0) ||
+      now < h.actionUntil
+    )
+      return;
+    const threat = h.monsters.find(
+      (m) =>
+        m.hp > 0 &&
+        m.cast &&
+        m.cast.impact - now <= 550 &&
+        m.cast.impact > now &&
+        skillHits(m.cast, client),
+    );
+    if (!threat) return;
+    const c = threat.cast;
+    let dx = client.x - c.tx,
+      dy = client.y - c.ty;
+    if (Math.hypot(dx, dy) < 1) {
+      dx = -(c.ty - c.y) || 1;
+      dy = c.tx - c.x;
+    }
+    const candidates = Array.from({ length: 8 }, (_, i) => {
+      const angle = Math.atan2(dy, dx) + (i * Math.PI) / 4;
+      return {
+        dirX: Math.round(Math.cos(angle) * 1000),
+        dirY: Math.round(Math.sin(angle) * 1000),
+      };
+    });
+    for (const d of candidates) {
+      const x = client.x + (d.dirX / 1000) * EVADE.distance,
+        y = client.y + (d.dirY / 1000) * EVADE.distance;
+      if (Math.hypot(x - c.tx, y - c.ty) <= c.radius + 15) continue;
+      let clear = true;
+      for (let t = 0; t <= 1; t += 0.025)
+        if (
+          !free(client.x + (x - client.x) * t, client.y + (y - client.y) * t)
+        ) {
+          clear = false;
+          break;
+        }
+      if (!clear) continue;
+      try {
+        const selected = h.manualTarget;
+        this.dash(client, d, events, { free });
+        h.manualTarget = selected;
+        break;
+      } catch {
+        /* Unavailable dash never stalls normal combat. */
+      }
+    }
+  }
   cast(
     client,
     id,
@@ -538,6 +627,7 @@ export class LocalFarm {
       c = this.character,
       now = this.now();
     if (id === "ataque-basico") return this.basic(client, targetId, events);
+    if (id === EVADE.id) return this.dash(client, {}, events, { free });
     const skill = ACTIVE_SKILLS.find((s) => s.id === id);
     if (!h || h.deadAt || !c.progress.hp) throw Error("local.not_hunting");
     if (!skill) throw Error("local.invalid_skill");
@@ -709,6 +799,7 @@ export class LocalFarm {
         despawned,
         returnCity: now >= h.deadAt + 3000,
       };
+    this.autoDash(client, events, free);
     if (h.avatarQueued && now >= h.actionUntil && now >= h.nextCast) {
       try {
         this.cast(client, LIGHT_AVATAR.id, 0, events, deltas, { free });
@@ -948,6 +1039,7 @@ export class LocalFarm {
               ? 0
               : 3;
         for (const id of c.automation.skillOrder ?? []) {
+          if (id === EVADE.id) continue;
           if (
             id === WARRIOR_LIGHT_DASH.id &&
             Math.hypot(target.x - client.x, target.y - client.y) <
@@ -965,24 +1057,6 @@ export class LocalFarm {
           this.basic(client, target.id, events);
         }
       }
-    }
-    if (
-      !automatic &&
-      h.attackOrder &&
-      target &&
-      now >= h.actionUntil &&
-      !client.evade
-    ) {
-      if (
-        Math.hypot(target.x - client.x, target.y - client.y) >
-        c.derived.attackRange
-      ) {
-        client.moving = move(
-          client,
-          route(client, target)[0] ?? target,
-          c.derived.moveSpeed,
-        );
-      } else if (now >= h.nextAttack) this.basic(client, target.id, events);
     }
     if (automatic && !target && now >= h.actionUntil && !client.evade) {
       const waypoint = MONSTER_HOMES[h.patrolIndex % MONSTER_HOMES.length];

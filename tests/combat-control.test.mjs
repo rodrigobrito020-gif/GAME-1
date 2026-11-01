@@ -28,7 +28,7 @@ function setup() {
       equipment: { slots: [] },
       wallet: { gold: 0 },
       inventory: {},
-      automation: { skillOrder: ["egide-de-luz", "avatar-da-luz"] },
+      automation: { skillOrder: [] },
       consumables: {},
       hunt: {},
     },
@@ -53,39 +53,42 @@ function setup() {
     now: () => now,
   };
 }
-test("manual mode neither pursues, patrols, attacks nor casts automatically; selected attacks and auto restore share real impacts", () => {
+test("legacy manual save resumes automatic basic combat while per-skill manual choices remain preserved", () => {
   const s = setup(),
     { farm, client, account } = s,
     m = client.hunt.monsters[0];
+  assert.equal(account.combatMode, "auto");
+  assert.equal(combatMode(account), "auto");
+  assert.throws(
+    () => setCombatMode(account, client, "manual"),
+    /invalid_skill/,
+  );
   Object.assign(m, {
     hp: 1000,
     maxHp: 1000,
-    x: client.x,
-    y: client.y + 35,
+    x: client.x + 160,
+    y: client.y,
     nextAttack: Infinity,
     nextSkill: Infinity,
   });
-  const before = { x: client.x, y: client.y };
   farm.avatar.saved.charge = 100;
-  const manual = s.step(1000);
-  assert.deepEqual({ x: client.x, y: client.y }, before);
-  assert.equal(manual.events.casts.length, 0);
-  assert.equal(manual.events.moves.length, 0);
-  farm.basic(client, m.id);
-  assert.equal(s.step(150).events.damage[0].target, m.id);
-  assert.throws(() => farm.basic(client, m.id), /cooldown/);
-  const order = [...account.character.automation.skillOrder];
-  setCombatMode(account, client, "auto");
-  assert.deepEqual(account.character.automation.skillOrder, order);
-  assert.equal(combatMode(account), "auto");
+  const x = client.x,
+    output = s.step(50);
+  assert.ok(client.x > x);
+  assert.equal(output.events.casts.length, 0);
+  assert.deepEqual(account.character.automation.skillOrder, []);
+  farm.automation({ skillOrder: ["egide-de-luz"] });
   assert.ok(
-    s.step(1000).events.casts.some((c) => c.skillId === "avatar-da-luz"),
+    s.step(1000).events.casts.some((c) => c.skillId === "egide-de-luz"),
   );
-  setCombatMode(account, client, "manual");
   assert.equal(
-    new LocalFarm(JSON.parse(JSON.stringify(account))).account.combatMode,
-    "manual",
+    farm.avatar.saved.charge,
+    100,
+    "manual Avatar does not activate itself",
   );
+  const restored = new LocalFarm(JSON.parse(JSON.stringify(account)));
+  assert.deepEqual(restored.character.automation.skillOrder, ["egide-de-luz"]);
+  assert.equal(restored.account.combatMode, "auto");
 });
 test("directional dash normalizes input, uses current facing when stationary, enforces cooldown and sweeps obstacles at start and during travel", () => {
   const c = { x: 0, y: 0, facing: 2 };
@@ -190,10 +193,11 @@ test("128px warrior frames contain real original detail, not magnified 64px bloc
   assert.ok(different > 300);
 });
 
-test("explicit right-click order approaches its target without enabling skills, cancels on dash/mode changes and stops after target death", () => {
+test("right-click chooses the hunt target and automatic hunting resumes against another living enemy after its death", () => {
   const s = setup(),
-    { farm, client, account } = s,
-    m = client.hunt.monsters[0];
+    { farm, client } = s,
+    m = client.hunt.monsters[0],
+    other = client.hunt.monsters[1];
   Object.assign(m, {
     hp: 100,
     maxHp: 100,
@@ -203,7 +207,6 @@ test("explicit right-click order approaches its target without enabling skills, 
     nextAttack: Infinity,
     nextSkill: Infinity,
   });
-  const other = client.hunt.monsters[1];
   Object.assign(other, {
     hp: 100,
     maxHp: 100,
@@ -216,27 +219,60 @@ test("explicit right-click order approaches its target without enabling skills, 
   assert.throws(() => farm.orderAttack(client, 9999), /invalid_target/);
   farm.orderAttack(client, m.id);
   const x = client.x;
-  const output = s.step(50);
+  s.step(50);
   assert.ok(client.x > x);
   assert.equal(client.hunt.target, m.id);
-  assert.equal(output.events.casts.length, 0);
-  setCombatMode(account, client, "manual");
-  assert.equal(client.hunt.attackOrder, 0);
-  farm.orderAttack(client, m.id);
   evade(client, { dirY: 1000 }, s.now());
-  assert.equal(client.hunt.attackOrder, 0);
   assert.equal(client.hunt.manualTarget, 0);
   stepEvade(client, s.now() + 240);
   s.step(300);
   farm.orderAttack(client, m.id);
   m.hp = 0;
   m.respawnAt = Infinity;
-  const stopped = s.step(50);
-  assert.equal(client.hunt.attackOrder, 0);
-  assert.equal(stopped.events.moves.length, 0);
-  assert.equal(
-    client.hunt.target,
-    0,
-    "never switches automatically to the other living monster in manual mode",
-  );
+  s.step(1000);
+  assert.equal(client.hunt.target, other.id);
+});
+
+test("the common dash is manual by default, shares hotkey/icon cooldown and only evades a pending threat when automatic is enabled", () => {
+  for (const automatic of [false, true]) {
+    const s = setup(),
+      { farm, client } = s,
+      m = client.hunt.monsters[2];
+    farm.automation({ skillOrder: automatic ? [EVADE.id] : [] });
+    Object.assign(m, {
+      hp: 1000,
+      maxHp: 1000,
+      x: client.x + 300,
+      y: client.y,
+      nextAttack: Infinity,
+      nextSkill: Infinity,
+    });
+    m.cast = {
+      caster: m.id,
+      type: "meteor",
+      x: m.x,
+      y: m.y,
+      tx: client.x,
+      ty: client.y,
+      radius: 90,
+      start: s.now() - 800,
+      release: s.now() + 400,
+      impact: s.now() + 400,
+    };
+    const output = s.step(1);
+    assert.equal(
+      output.events.moves.some((e) => e.move === "humano-esquiva"),
+      automatic,
+    );
+    if (automatic) {
+      assert.ok(client.evade);
+      assert.ok(output.events.cooldowns.some((c) => c.skillId === EVADE.id));
+      assert.throws(() => farm.cast(client, EVADE.id, 0), /cooldown/);
+    }
+  }
+  const s = setup();
+  const before = s.farm.character.progress.mana;
+  s.farm.cast(s.client, EVADE.id, 0);
+  assert.equal(s.farm.character.progress.mana, before);
+  assert.throws(() => s.farm.dash(s.client, {}), /cooldown/);
 });

@@ -1,10 +1,5 @@
+// One card renderer for hotbar skills and active effects over the player.
 (() => {
-  const panel = document.createElement("section");
-  panel.className = "royal-combat-control";
-  panel.hidden = true;
-  panel.innerHTML =
-    '<button type="button" class="royal-mode-toggle"></button><div class="royal-mode-help"></div><span class="royal-evade-status"></span>';
-  document.body.append(panel);
   const card = document.createElement("aside");
   card.className = "royal-skill-card";
   card.hidden = true;
@@ -14,54 +9,34 @@
   let state = null,
     stateAt = 0,
     currentButton = null,
-    hold = null;
+    shownId = "",
+    hold = null,
+    pendingOrder = null,
+    pendingAt = 0;
+  const switches = new Map(),
+    keys = new Set();
+  let dashRequestAt = -Infinity;
   const send = (skillId) =>
     window.__royalCombatSend?.("useSkill", { skillId, target: 0 });
   const skills = () => window.__royalCombatCatalog?.() ?? [];
-  function find(button) {
-    return skills().find((s) => s.name === button?.getAttribute("aria-label"));
-  }
+  const order = () => pendingOrder ?? state?.skillOrder ?? [];
   const time = (ms) => (ms >= 60000 ? `${ms / 60000} min` : `${ms / 1000}s`);
   const text = (tag, value) => {
     const n = document.createElement(tag);
     n.textContent = value;
     return n;
   };
-  function show(button) {
-    const s = find(button);
-    if (!s) return;
-    currentButton = button;
-    card.replaceChildren();
-    const image = new Image();
-    image.src = s.icon;
-    image.alt = "";
-    card.append(
-      image,
-      text(
-        "small",
-        s.id === "avatar-da-luz"
-          ? "ULTIMATE · GUERREIRO HUMANO"
-          : "GUERREIRO HUMANO",
-      ),
-      text("h2", s.name),
-      text("p", s.description),
+  const overhead = (b) => b?.classList.contains("royal-skill-orb");
+  function find(button) {
+    return skills().find((s) =>
+      button?.dataset.skill
+        ? s.id === button.dataset.skill
+        : s.name === button?.getAttribute("aria-label"),
     );
-    const stats = document.createElement("dl");
-    for (const [label, value] of [
-      ["Atalho", s.key],
-      ["Custo", s.id === "avatar-da-luz" ? "100 energia" : `${s.manaCost} MP`],
-      ["Recarga", time(s.cooldownMs)],
-      ...(s.durationMs ? [["Duração", time(s.durationMs)]] : []),
-    ]) {
-      stats.append(text("dt", label), text("dd", value));
-    }
-    card.append(
-      stats,
-      text("footer", "Clique para usar · mantenha pressionado para consultar"),
-    );
-    card.hidden = false;
-    button.setAttribute("aria-describedby", card.id);
-    const box = button.getBoundingClientRect(),
+  }
+  function position() {
+    if (!currentButton) return;
+    const box = currentButton.getBoundingClientRect(),
       width = Math.min(300, innerWidth - 24);
     card.style.width = width + "px";
     card.style.left =
@@ -71,17 +46,104 @@
       ) + "px";
     card.style.top = Math.max(12, box.top - card.offsetHeight - 15) + "px";
   }
+  function show(button) {
+    const s = find(button);
+    if (!s) return;
+    currentButton = button;
+    shownId = s.id;
+    card.replaceChildren();
+    const image = new Image();
+    image.src = s.icon;
+    image.alt = "";
+    card.append(
+      image,
+      text(
+        "small",
+        s.classId === "universal"
+          ? "HABILIDADE COMUM · TODAS AS CLASSES"
+          : s.id === "avatar-da-luz"
+            ? "ULTIMATE · GUERREIRO HUMANO"
+            : "GUERREIRO HUMANO",
+      ),
+      text("h2", s.name),
+      text("p", s.description),
+    );
+    const stats = document.createElement("dl");
+    for (const [label, value] of [
+      ["Atalho", s.id === "dash" ? "Shift esquerdo" : s.key],
+      ["Custo", s.id === "avatar-da-luz" ? "100 energia" : `${s.manaCost} MP`],
+      ["Recarga", time(s.cooldownMs)],
+      ...(s.durationMs ? [["Duração", time(s.durationMs)]] : []),
+    ])
+      stats.append(text("dt", label), text("dd", value));
+    stats.append(
+      text("dt", "Uso"),
+      Object.assign(
+        text("dd", order().includes(s.id) ? "Automático" : "Manual"),
+        { className: "royal-card-mode" },
+      ),
+    );
+    if (overhead(button)) {
+      stats.append(
+        text("dt", "Restante"),
+        Object.assign(text("dd", ""), { className: "royal-card-remaining" }),
+      );
+    }
+    card.append(
+      stats,
+      text(
+        "footer",
+        overhead(button)
+          ? "Efeito ativo · duração acima do personagem"
+          : "Clique para usar · AUTO/MANUAL escolhe o uso automático",
+      ),
+    );
+    card.hidden = false;
+    button.setAttribute("aria-describedby", card.id);
+    position();
+    refreshCard();
+  }
   function hide() {
     card.hidden = true;
     currentButton?.removeAttribute("aria-describedby");
     currentButton = null;
+    shownId = "";
   }
-  const buttonOf = (e) => e.target.closest?.(".slHudSkill:not(.slHudRoll)");
+  function refreshCard() {
+    if (!currentButton || card.hidden) return;
+    if (!currentButton.checkVisibility()) {
+      hide();
+      return;
+    }
+    const s = find(currentButton);
+    if (s?.id !== shownId) {
+      show(currentButton);
+      return;
+    }
+    const mode = card.querySelector(".royal-card-mode");
+    if (mode)
+      mode.textContent = order().includes(s.id) ? "Automático" : "Manual";
+    const left = card.querySelector(".royal-card-remaining");
+    if (left) {
+      const seconds = Math.ceil(
+        Number(currentButton.dataset.remainingMs ?? 0) / 1000,
+      );
+      left.textContent =
+        seconds >= 60
+          ? `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`
+          : `${seconds}s`;
+    }
+    position();
+  }
+  const buttonOf = (e) =>
+    e.target.closest?.(
+      ".slHudSkill:not(.slHudRoll),.royal-skill-orb[data-skill]",
+    );
   document.addEventListener(
     "pointerover",
     (e) => {
       const b = buttonOf(e);
-      if (b) show(b);
+      if (b && b !== currentButton) show(b);
     },
     true,
   );
@@ -128,13 +190,14 @@
       clearTimeout(h.timer);
       e.preventDefault();
       e.stopImmediatePropagation();
-      if (performance.now() - h.start >= 350) {
+      if (overhead(h.button) || performance.now() - h.start >= 350) {
         show(h.button);
         return;
       }
       if (Math.hypot(e.clientX - h.x, e.clientY - h.y) > 12) return;
       const s = find(h.button);
       if (s?.id === "avatar-da-luz") window.__royalRequestAvatar?.();
+      else if (s?.id === "dash") window.__royalRequestDash?.();
       else if (s) send(s.id);
     },
     true,
@@ -144,10 +207,6 @@
     hold = null;
     hide();
   });
-  panel.querySelector("button").onclick = () =>
-    send(state?.combatMode === "manual" ? "modo-auto" : "modo-manual");
-  const keys = new Set();
-  let dashRequestAt = -Infinity;
   const typing = () =>
     document.activeElement?.matches(
       'input,textarea,select,[contenteditable="true"]',
@@ -155,6 +214,23 @@
     [...document.querySelectorAll('[role="dialog"]')].some((d) =>
       d.checkVisibility(),
     );
+  window.__royalRequestDash = () => {
+    const now = performance.now();
+    if (
+      !state?.alive ||
+      now - dashRequestAt < 250 ||
+      Math.max(0, (state.evadeCooldownMs ?? 0) - (now - stateAt)) > 0
+    )
+      return;
+    dashRequestAt = now;
+    let x =
+        (keys.has("KeyD") || keys.has("ArrowRight") ? 1 : 0) -
+        (keys.has("KeyA") || keys.has("ArrowLeft") ? 1 : 0),
+      y =
+        (keys.has("KeyS") || keys.has("ArrowDown") ? 1 : 0) -
+        (keys.has("KeyW") || keys.has("ArrowUp") ? 1 : 0);
+    window.__royalCombatSend?.("roll", { dirX: x * 1000, dirY: y * 1000 });
+  };
   window.addEventListener(
     "keydown",
     (e) => {
@@ -162,56 +238,93 @@
       keys.add(e.code);
       if (e.code === "ShiftLeft" && !e.repeat) {
         e.preventDefault();
-        const now = performance.now();
-        if (
-          !state?.alive ||
-          now - dashRequestAt < 250 ||
-          Math.max(0, (state.evadeCooldownMs ?? 0) - (now - stateAt)) > 0
-        )
-          return;
-        dashRequestAt = now;
-        let x =
-            (keys.has("KeyD") || keys.has("ArrowRight") ? 1 : 0) -
-            (keys.has("KeyA") || keys.has("ArrowLeft") ? 1 : 0),
-          y =
-            (keys.has("KeyS") || keys.has("ArrowDown") ? 1 : 0) -
-            (keys.has("KeyW") || keys.has("ArrowUp") ? 1 : 0);
-        window.__royalCombatSend?.("roll", { dirX: x * 1000, dirY: y * 1000 });
+        e.stopImmediatePropagation();
+        window.__royalRequestDash();
       }
-      if (e.code === "KeyF" && state?.inHunt && state.combatMode === "manual") {
+      if (
+        (e.code === "Enter" || e.code === "Space") &&
+        overhead(document.activeElement)
+      ) {
         e.preventDefault();
-        send("ataque-basico");
+        e.stopImmediatePropagation();
+        show(document.activeElement);
       }
     },
     true,
   );
   window.addEventListener("keyup", (e) => keys.delete(e.code));
   window.addEventListener("blur", () => keys.clear());
+  function toggle(skill) {
+    const next = [...order()];
+    const index = next.indexOf(skill.id);
+    if (index >= 0) next.splice(index, 1);
+    else next.push(skill.id);
+    pendingOrder = next;
+    pendingAt = performance.now();
+    window.__royalCombatSend?.("setAutomation", {
+      automation: {
+        skillOrder: next,
+        skillOrderStrict: !!state?.skillOrderStrict,
+      },
+    });
+    paint();
+  }
+  function paint() {
+    if (pendingOrder && performance.now() - pendingAt > 2000)
+      pendingOrder = null;
+    const seen = new Set();
+    for (const slot of document.querySelectorAll(
+      ".slHudSkill:not(.slHudRoll)",
+    )) {
+      const skill = find(slot);
+      if (!skill) continue;
+      seen.add(skill.id);
+      let button = switches.get(skill.id);
+      if (!button) {
+        button = document.createElement("button");
+        button.type = "button";
+        button.className = "royal-skill-mode-switch";
+        button.dataset.skill = skill.id;
+        button.onclick = () => toggle(skill);
+        document.body.append(button);
+        switches.set(skill.id, button);
+      }
+      const visible = state?.inHunt && slot.checkVisibility(),
+        automatic = order().includes(skill.id);
+      button.hidden = !visible;
+      button.textContent = automatic ? "AUTO" : "MANUAL";
+      button.dataset.automatic = String(automatic);
+      button.setAttribute("aria-pressed", String(automatic));
+      button.setAttribute(
+        "aria-label",
+        `${skill.name}: ${automatic ? "automático" : "manual"}. Alterar para ${automatic ? "manual" : "automático"}`,
+      );
+      slot.dataset.automatic = String(automatic);
+      if (visible) {
+        const box = slot.getBoundingClientRect();
+        button.style.left = box.left + "px";
+        button.style.top = box.top - 25 + "px";
+        button.style.width = box.width + "px";
+      }
+    }
+    for (const [id, button] of switches)
+      if (!seen.has(id) || !state?.inHunt) button.hidden = true;
+    refreshCard();
+  }
   window.addEventListener("royal-ultimate-state", (e) => {
     state = e.detail;
     stateAt = performance.now();
+    if (
+      pendingOrder &&
+      JSON.stringify(state.skillOrder) === JSON.stringify(pendingOrder)
+    )
+      pendingOrder = null;
     paint();
   });
-  window.addEventListener("royal-skill-scene-reset", hide);
-  function paint() {
-    panel.hidden = !state?.inHunt;
-    if (!state) return;
-    const manual = state.combatMode === "manual",
-      b = panel.querySelector("button");
-    b.textContent = manual
-      ? "MODO MANUAL · ativar automático"
-      : "MODO AUTOMÁTICO · assumir controle";
-    b.setAttribute("aria-pressed", String(!manual));
-    panel.querySelector(".royal-mode-help").textContent = manual
-      ? "WASD mover · botão direito perseguir/atacar · F atacar · Tab alvo · 1–4 habilidades"
-      : "Busca inimigos e usa as habilidades habilitadas.";
-    const cd = Math.max(
-      0,
-      (state.evadeCooldownMs ?? 0) - (performance.now() - stateAt),
-    );
-    panel.querySelector(".royal-evade-status").textContent = cd
-      ? `Shift esquerdo · dash em ${(cd / 1000).toFixed(1)}s`
-      : "Shift esquerdo · dash pronto";
-  }
+  window.addEventListener("royal-skill-scene-reset", () => {
+    hide();
+    keys.clear();
+    for (const b of switches.values()) b.hidden = true;
+  });
   setInterval(paint, 100);
 })();

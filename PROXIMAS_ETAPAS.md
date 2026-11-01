@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.19: retirada do modo manual global; caça automática com AUTO/MANUAL por habilidade e escolhas salvas. Dash universal na barra/Shift, manual por padrão e com evasão de marcações no AUTO. Ícones de efeitos ativos iguais aos da barra, com carta e tempo restante ao consultar.
+
 - 0.6.18: corrigido o fechamento indevido da conexão ao repetir o dash durante a recarga; adicionado botão direito para aproximar/atacar o inimigo escolhido, com interrupção por movimento/dash e parada após a morte do alvo no modo manual.
 
 - 0.6.17: personagem em 128px a partir das fontes originais, dash direcional no Shift esquerdo, alternância persistente manual/automático, inimigos maiores com preparação, flechas e ataque mágico em área, quatro ícones ilustrados e cartas de habilidade por hover/foco/pressionamento longo. Valores de ultimate e Égide mantidos.

@@ -1,10 +1,4 @@
-import {
-  combatMode,
-  setCombatMode,
-  evade,
-  stepEvade,
-  EVADE,
-} from "./combat-control.mjs";
+import { combatMode, setCombatMode, stepEvade } from "./combat-control.mjs";
 import { MONSTER_ROLES, combatState } from "./monster-combat.mjs";
 import { LIGHT_AVATAR } from "./light-avatar.mjs";
 import { withUltimateState } from "./ultimate-wire.mjs";
@@ -67,7 +61,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-17";
+  catalog.version = "local-human-warrior-19";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -142,7 +136,7 @@ export function attachLocalGame(
   catalog.items = ITEMS;
   catalog.skills = SKILLS.map((skill) => ({
     ...skill,
-    classId: "guerreiro",
+    classId: skill.universal ? "universal" : "guerreiro",
     kind: skill.kind ?? (skill.radius ? "area" : "damage"),
     source: "physical",
     description:
@@ -842,21 +836,10 @@ export function attachLocalGame(
         }
         if (kind === "roll") {
           try {
-            const move = evade(client, value, now, (x, y) =>
-              free(x, y, client.hunt ? map : cityMap),
-            );
-            send(client, "worldEvents", {
-              tick,
-              ...farm.events(),
-              moves: [move],
-              cooldowns: [
-                {
-                  skillId: "rolamento",
-                  readyInMs: EVADE.cooldownMs,
-                  totalMs: EVADE.cooldownMs,
-                },
-              ],
+            const output = farm.dash(client, value, undefined, {
+              free: (x, y) => free(x, y, client.hunt ? map : cityMap),
             });
+            send(client, "worldEvents", { tick, ...output.events });
           } catch (error) {
             if (!error.message?.startsWith("local.")) throw error;
             send(client, "error", { code: error.message }, message.requestId);

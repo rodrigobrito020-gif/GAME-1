@@ -1,8 +1,16 @@
-# Jogo local — 0.6.18: Shift corrigido e ataque com botão direito
+# Jogo local — 0.6.19: automação por habilidade e dash comum
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.19
+
+- O combate básico e a movimentação na caçada são **automáticos**. A seleção global de modo manual foi removida; saves anteriores que estavam no manual retomam a caça automática, mantendo as escolhas de habilidades e todo o progresso.
+- **Cada habilidade tem um botão AUTO/MANUAL acima do ícone.** AUTO permite que o servidor use a habilidade quando suas condições forem atendidas. MANUAL retira somente o uso automático: você continua usando por clique ou pelos atalhos 1–4. Mesmo com todas em MANUAL, o personagem continua andando e atacando com golpes básicos. As escolhas são salvas no servidor.
+- **Dash na barra:** quinto ícone, com atalho **Shift esquerdo**, compartilhado por todas as classes por meio do catálogo universal. Começa em MANUAL; clicar no ícone e apertar Shift usam a mesma recarga de 2,5s. Se habilitar AUTO, o personagem tenta usá-lo para escapar de marcações inimigas iminentes, quando houver espaço livre. Não concede invulnerabilidade e não cancela golpes já em execução.
+- **Indicadores sobre o personagem:** Égide e Avatar usam exatamente as novas ilustrações da barra. Passar o mouse, focar pelo teclado ou pressionar mostra a carta no mesmo padrão, com descrição, custo, recarga, duração, modo escolhido e tempo restante. Consultar o efeito não lança a habilidade. Acima da cabeça continua aparecendo somente a duração do efeito; recargas ficam na barra.
+- Mantidos os tempos aprovados: Avatar 45s/60s e Égide 5min/120s; dash 2,5s. Clique direito mantém a prioridade do inimigo escolhido na caçada automática.
 
 ## Atualização 0.6.18
 

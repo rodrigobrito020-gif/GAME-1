@@ -165,6 +165,7 @@ test("combined skill review migrates once, keeps manual slots and preserves disa
       [SLAM.id, "2"],
       ["egide-de-luz", "3"],
       ["avatar-da-luz", "4"],
+      ["dash", "SHIFT"],
     ],
   );
   const a = fixture({ order: ["corte-poderoso"], version: 1 });

@@ -58,6 +58,16 @@ export function withDefenseBuffUi(bytes) {
     "if(e.rightButtonDown()){let t=this.scene.cameras.main.getWorldPoint(e.x,e.y),n=this.hooks.pick(t.x,t.y);",
     'if(e.rightButtonDown()){let t=this.scene.cameras.main.getWorldPoint(e.x,e.y),n=this.hooks.pick(t.x,t.y);if(n?.kind===Ft.MONSTER&&n.alive){this.net.send(`useSkill`,{skillId:"ataque-direito",target:n.id});return;}',
   );
+  code = replaceOnce(
+    code,
+    "filter(e=>e.classId===t&&t!==``)",
+    "filter(e=>(e.classId===t||e.classId===`universal`)&&t!==``)",
+  );
+  code = replaceOnce(
+    code,
+    "let t=e.key.toLowerCase(),n=[`1`,`2`,`3`,`4`].indexOf(t)",
+    "let t=e.key.toLowerCase();if(t===`shift`)return;let n=[`1`,`2`,`3`,`4`].indexOf(t)",
+  );
   const scene = "r.on(`sceneEnter`,e=>this.enterScene(e))";
   code = replaceOnce(
     code,

@@ -11,3 +11,8 @@ for index, name in enumerate(['avanco-de-luz', 'impacto-de-luz', 'egide-de-luz',
     box = (col * image.width // 2, row * image.height // 2,
            (col + 1) * image.width // 2, (row + 1) * image.height // 2)
     image.crop(box).resize((256, 256), Image.Resampling.LANCZOS).save(root / 'icons' / (name + '.png'))
+
+# Common movement skill uses its own illustration rather than a class icon.
+dash_source = root / 'source' / 'dash-card.png'
+if dash_source.exists():
+    Image.open(dash_source).resize((256, 256), Image.Resampling.LANCZOS).save(root / 'icons' / 'dash.png')

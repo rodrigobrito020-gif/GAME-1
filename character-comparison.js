@@ -102,7 +102,9 @@ function render(now) {
     const move = rig.moves[moves[cl][action]];
     if (action === "walk") {
       sheet = "walk";
-      col = Math.floor(t / 125) % 4;
+      col =
+        Math.floor(t / (((ART.walkStride / 160) * 1000) / ART.walkFrames)) %
+        ART.walkFrames;
     } else if (move) {
       const total = move.frames.length * rig.stepMs,
         phase = t % (total + 700);
@@ -112,6 +114,7 @@ function render(now) {
             Math.min(move.frames.length - 1, Math.floor(phase / rig.stepMs))
           ];
         [sheet, col] = Array.isArray(entry) ? entry : [move.sheet, entry];
+        if (sheet === "walk" || sheet === "run1") col *= 2;
         if (
           action === "area" &&
           cl === "warrior" &&

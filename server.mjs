@@ -190,6 +190,7 @@ const server = createServer((req, res) => {
       "/ultimate-ui.js",
       "/character-hd.js",
       "/character-art.mjs",
+      "/character-locomotion.mjs",
       "/character-comparison.js",
       "/combat-visuals.js",
       "/combat-ui.js",

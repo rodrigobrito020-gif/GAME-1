@@ -1,60 +1,44 @@
-VERSAO 0.6.22 — FIGURAS COMPLETAS E ESCALA CORPORAL COMUM
+VERSAO 0.6.23 — REVISAO DA CAMINHADA
 Data: 01/11/2026
 
 MOTIVO
-A correcao 0.6.21 foi rejeitada na revisao visual. O encaixe tecnico das pernas
-nao resolveu a diferenca de proporcoes entre partes do corpo e personagens.
+A gravacao enviada mostrou deslocamento com as pernas quase sempre abertas,
+pouca passagem dos pes e mudanca brusca para a pose parada.
 
 ALTERACOES
-- Novas artes de corpo inteiro para guerreiro e arqueira, usando uma referencia
-  comum de anatomia, cabeca, tronco, pernas, roupas e iluminacao.
-- Novos desenhos de repouso, caminhada, espada, arco, salto/cravada, buffs,
-  reacoes e morte. A construcao atual nao utiliza as pecas antigas de pernas.
-- Quadros de 384px com corpo de referencia de 224px. Escala fixa no mundo:
-  corpo de 112 unidades. Espaco para armas erguidas sem miniaturizar a figura.
-- Rastro de Avanco de Luz passa a usar a figura HD completa, com coordenadas
-  e origem corretas. Brilho da ultimate acompanha as novas mascaras HD.
-- Retratos de classe com altura comum e peitoral existente nas novas poses.
-- Comparacao lado a lado em /personagens, com quatro direcoes e seis acoes.
-  Link disponivel no seletor de classe. Previa /guerreiro preservada.
-- Nenhum item, atributo ou nivel concedido. Regras e tempos das habilidades,
-  pocoes, progresso, mochila, armazem e preferencias permanecem os anteriores.
+- Novas fases laterais de contato, apoio, passagem e elevacao para guerreiro
+  e arqueira. Oito quadros HD; as poses verticais existentes foram preservadas
+  para evitar mudanca do desenho do corpo dentro do mesmo ciclo.
+- Cadencia comandada pela distancia real percorrida. Passada de 120 unidades
+  nas duas velocidades que usam o mesmo desenho; nao acelerar pernas paradas.
+- Conclusao curta do apoio ao parar/esbarrar, conservando a fase ao virar.
+- Proxy nativo permanece com quatro quadros; acao de habilidade tem prioridade
+  sobre caminhada. Rastro e brilho de armas recebem a pose HD realmente exibida.
+- Peitoral de treino processado em cada pose visivel, sem reutilizar uma
+  mascara de outro quadro. Previa individual e comparador atualizados.
+- Corpo inteiro e estatura comum mantidos. Nenhuma parte de perna recortada
+  ou esticada. Nenhuma mudanca em progresso, equipamento, combate ou habilidades.
 
 VERIFICACAO
-- 90 testes automatizados passaram com o ZIP capturado real, sem falhas ou
-  testes ignorados. Regressao de servidor, combate, duas classes, inventarios,
-  pocoes, progressao, morte, persistencia e protocolo.
-- Testes visuais de contrato foram atualizados para a construcao nova:
-  dimensoes HD/nativas, transparencia, mesma estatura/linha de chao nas duas
-  classes, cintura com pernas completas e continuidade ate as botas, escala
-  constante por animacao em vez de redimensionar cada pose.
-- Chromium/WebGL, cliente real pt-BR, contas isoladas de QA:
-  guerreiro, guerreiro equipado com peitoral e arqueira, nas quatro direcoes;
-  camada HD unica, combate real e barra com cinco habilidades/seis pocoes.
-- Avanco de Luz real em combate gerou rastros da folha HD completa, com
-  coordenadas proximas do ator. Sem duplicar sua posicao no mundo.
-- Egide e Avatar simultaneos; compra e uso de mana nos niveis 55 e 150.
-  Efeitos da ultimate e mascaras de armas carregados na nova resolucao.
-- Comparador e previa individual abrem sem erros JavaScript. Alternancia
-  rapida de acoes testada; corrigido primeiro quadro com tempo negativo.
-- Capturas do jogo e comparacoes em repouso/ataque/area/buff/ultimate revisadas.
-  Os testes tecnicos nao constituem aprovacao artistica: revisao do jogador
-  continua pendente.
+- 94 testes passaram com o ZIP capturado real, sem falhas ou ignorados.
+- Testes novos cobrem fases HD por distancia, direcao, parada, bloqueio,
+  teleporte, prioridade das habilidades e estreitamento da passada lateral.
+- Chromium/WebGL, cliente real pt-BR, dados isolados de QA: guerreiro,
+  peitoral equipado e arqueira caminhando nas quatro direcoes; uma unica
+  camada HD, cinco habilidades e seis controles de pocoes.
+- Avanco de Luz real em combate produziu rastros HD na posicao correta.
+- Gravacao do movimento feita no cliente real para revisao da sequencia.
+- A avaliacao artistica continua aberta para o jogador testar a atualizacao.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
-2. Extraia o ZIP em outra pasta.
-3. Copie .local-runtime da pasta anterior com os servidores fechados.
+2. Extraia o ZIP em uma nova pasta.
+3. Copie a pasta .local-runtime anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip na pasta do jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5; confira v0.6.22.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.23.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Comparacao: http://127.0.0.1:5188/personagens
-Previa individual: http://127.0.0.1:5188/guerreiro
 
-Para jogar: Node.js, como nas versoes anteriores. Python 3/Pillow sao usados
-somente na ferramenta opcional que reconstrui os PNGs ja entregues.
-
-DECISOES MANTIDAS
-Equipamentos completos aguardam as cinco classes iniciais. Guerreiro e Arqueira
-sao as duas prontas; as outras tres ainda precisam de definicao. O servidor
-continua com uma conta local, sem multiplayer implementado.
+Node.js continua suficiente para jogar. Python/Pillow sao opcionais para
+reconstruir as artes ja entregues. Equipamentos completos continuam para
+depois das cinco classes iniciais; o servidor continua de uma conta local.

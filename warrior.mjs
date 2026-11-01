@@ -2,7 +2,7 @@
 import { LIGHT_AFTERIMAGES } from "./light-afterimages.mjs";
 import { LIGHT_AVATAR } from "./light-avatar.mjs";
 import { LIGHT_AEGIS } from "./defense-buff.mjs";
-import { WALK_STRIDE } from "./warrior-walk-rig.mjs";
+import { CHARACTER_ART as ART } from "./character-art.mjs";
 export const WARRIOR_SKIN = "humano-guerreiro";
 export const WARRIOR_SHEETS = {
   idle: 4,
@@ -63,8 +63,10 @@ const hold = (sheet, col, steps) =>
 export function warriorRig(original) {
   const rig = structuredClone(original);
   if (rig.loops) {
-    rig.loops.walk = { ...rig.loops.walk, stride: WALK_STRIDE, fps: 8 };
-    rig.loops.run = { ...rig.loops.run, stride: WALK_STRIDE * 1.5 };
+    rig.loops.walk = { ...rig.loops.walk, stride: ART.walkStride, fps: 8 };
+    // Both loops display the same authored cycle. Changing speed changes its
+    // cadence through traveled distance, never the length of the planted step.
+    rig.loops.run = { ...rig.loops.run, stride: ART.walkStride };
   }
   const sword = (counts, impact, reach = 8) => ({
     sheet: "weapon",

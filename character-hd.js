@@ -1,9 +1,11 @@
 import { CHARACTER_ART as ART } from "/character-art.mjs";
+import { locomotionPose } from "/character-locomotion.mjs";
 // Higher detail display layer; native actors, hitboxes, rig and world positions
 // stay authoritative. Textures are rebuilt from the original large pose art.
 (() => {
   const art = new Map(),
     actors = new Map(),
+    locomotion = new WeakMap(),
     scenes = new Map();
   for (const look of ["base", "training"])
     for (const sheet of [
@@ -48,7 +50,21 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
       cleanup(a);
       return;
     }
-    const [sheet, row, col] = String(b.frame?.name).split(":"),
+    const [nativeSheet, nativeRow, nativeCol] = String(b.frame?.name).split(
+      ":",
+    );
+    if (!locomotion.has(a)) locomotion.set(a, {});
+    const pose = locomotionPose(locomotion.get(a), {
+      sheet: nativeSheet,
+      row: Number(nativeRow),
+      col: Number(nativeCol),
+      cycle: a.cycle,
+      action: !!(a.act || a.seat || a.dead),
+      x: a.x,
+      y: a.y,
+      now: scene.time.now,
+    });
+    const { sheet, row, col } = pose,
       look = elf
         ? "archer"
         : b.texture.key.includes("peitoral-treino")
@@ -88,6 +104,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
       .setDepth(a.root.depth + 0.015)
       .setVisible(a.root.visible && b.visible && !a.hidden);
     s.setAlpha(a.pose?.alpha ?? 1);
+    s.royalPose = pose;
     b.setAlpha(0);
   }
   window.__royalHD = {
@@ -127,6 +144,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         originY: s.originY,
         angle: s.angle,
         flipX: s.flipX,
+        pose: s.royalPose,
       };
     },
     clear() {

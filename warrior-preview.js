@@ -112,6 +112,7 @@ function render() {
         Math.min(move.frames.length - 1, Math.floor(phase / rig.stepMs))
       ];
     [sheet, col] = Array.isArray(entry) ? entry : [move.sheet, entry];
+    if (sheet === "walk" || sheet === "run1") col *= 2;
     if (phase > total) {
       sheet = "idle";
       col = 0;
@@ -134,7 +135,11 @@ function render() {
       offset =
         Math.sin(((phase - dash.at[0]) / (dash.at[1] - dash.at[0])) * Math.PI) *
         45;
-  } else
+  } else if (action === "walk" || action === "run1")
+    col =
+      Math.floor(elapsed / (((ART.walkStride / 160) * 1000) / ART.walkFrames)) %
+      ART.walkFrames;
+  else
     col =
       Math.floor(
         elapsed /

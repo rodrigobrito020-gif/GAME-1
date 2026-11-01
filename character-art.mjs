@@ -8,4 +8,6 @@ export const CHARACTER_ART = Object.freeze({
   nativeFrame: 64,
   nativeFeet: [32, 60],
   nativeSampleStep: 4,
+  walkFrames: 8,
+  walkStride: 120,
 });

@@ -3,9 +3,13 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { decodeRgba, encodeRgba } from "../png.mjs";
 import { WARRIOR_SHEETS } from "../warrior.mjs";
-const folder = new URL("../art/warrior/", import.meta.url);
+import { pathToFileURL } from "node:url";
+const canonical = new URL("../art/warrior/", import.meta.url);
+const folder = process.env.TRAINING_WORK_DIR
+  ? pathToFileURL(process.env.TRAINING_WORK_DIR + "/")
+  : canonical;
 const art = decodeRgba(
-  readFileSync(new URL("source/training-cuirass.png", folder)),
+  readFileSync(new URL("source/training-cuirass.png", canonical)),
 );
 const parts = [];
 for (let row = 0; row < 2; row++)
@@ -137,9 +141,10 @@ const manifest = {
   look: "humano-guerreiro-peitoral-treino",
   poses: [],
 };
-for (const [name, cols] of Object.entries(WARRIOR_SHEETS)) {
+for (const name of Object.keys(WARRIOR_SHEETS)) {
   const image = decodeRgba(readFileSync(new URL(name + ".png", folder))),
-    pixels = Buffer.from(image.pixels);
+    pixels = Buffer.from(image.pixels),
+    cols = image.width / 64;
   const reference = decodeRgba(
     readFileSync(new URL(`weapon-reference/${name}.png`, folder)),
   );

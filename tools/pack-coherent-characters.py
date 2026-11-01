@@ -61,7 +61,8 @@ def frame(part, reference, mirror=False, dead=False, breath=1, flight=False):
     return out, {'sourceScale':scale,'scale':scale,'source':part['box'],'sourceFloor':part['floor'],'center':cx,'mirrored':mirror,'bounds':bbox,'sourceBodyHeight':reference['floor']-reference['box'][1]}
 
 def save_sheet(cl, name, rows):
-    cols=len(rows[0]);hd=Image.new('RGBA',(cols*FRAME,4*FRAME));native=Image.new('RGBA',(cols*64,256));poses=[]
+    cols=len(rows[0]);sample=2 if name in ['walk','run1'] else 1
+    hd=Image.new('RGBA',(cols*FRAME,4*FRAME));native=Image.new('RGBA',(cols//sample*64,256));poses=[]
     for row,frames in enumerate(rows):
         for col,(im,meta) in enumerate(frames):
             hd.alpha_composite(im,(col*FRAME,row*FRAME))
@@ -71,22 +72,32 @@ def save_sheet(cl, name, rows):
             # Guard transparent native gutters, including off-frame weapon tips.
             for x in range(64):proxy.putpixel((x,0),(0,0,0,0))
             for y in range(64):proxy.putpixel((0,y),(0,0,0,0));proxy.putpixel((63,y),(0,0,0,0))
-            native.alpha_composite(proxy,(col*64,row*64));poses.append(dict(row=row,col=col,**meta))
+            if col%sample==0:native.alpha_composite(proxy,(col//sample*64,row*64))
+            poses.append(dict(row=row,col=col,**meta))
     folder=ROOT/'art'/cl;(folder/'hd').mkdir(exist_ok=True)
     hd.save(folder/'hd'/f'{name}.png');native.save(folder/f'{name}.png')
     return poses
 
 manifests={}
 for cl,modelrow in [('warrior',0),('archer',1)]:
-    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':22,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
     idle=[];walk=[]
     for row in range(4):
         modelcol=2 if cl=='warrior' and row==1 else row
         ref=cell('model',2,4,modelrow,modelcol)
         idle.append([frame(ref,ref,cl=='warrior' and row==1,breath=b) for b in [1,1.006,1,.994]])
-        srcrow=2 if cl=='warrior' and row==1 else row
-        wr=cell(cl+'-walk',4,4,srcrow,0)
-        walk.append([frame(cell(cl+'-walk',4,4,srcrow,col),wr,cl=='warrior' and row==1) for col in range(4)])
+        axis='front' if row==0 else 'back' if row==3 else 'side'
+        name=cl+'-walk-'+axis
+        if row in [1,2]:
+            wr=cell(name,1,8,0,0)
+            walk.append([frame(cell(name,1,8,0,col),wr,row==1) for col in range(8)])
+        else:
+            # Preserve the existing vertical whole-figure art. Its four poses
+            # already alternate support; the defect in the recording was most
+            # visible in profile, where all previous poses held a wide stance.
+            # Do not mix independently redrawn bodies within one gait cycle.
+            name=cl+'-walk';wr=cell(name,4,4,row,0)
+            walk.append([frame(cell(name,4,4,row,col//2),wr) for col in range(8)])
     manifest['sources']['idle']=save_sheet(cl,'idle',idle)
     manifest['sources']['walk']=save_sheet(cl,'walk',walk)
     manifest['sources']['run1']=save_sheet(cl,'run1',walk)

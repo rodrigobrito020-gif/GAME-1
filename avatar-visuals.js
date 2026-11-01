@@ -84,7 +84,7 @@
     if (!frame?.source?.image) return null;
     const [sheet, row, col] = String(actor.body.frame.name).split(":");
     if (!weaponMasks.has(sheet)) return null;
-    const pose = { sheet, row: Number(row), col: Number(col) };
+    const pose = body.pose ?? { sheet, row: Number(row), col: Number(col) };
     const key = `royal-avatar-weapons:${body.texture.key}:${frame.name}`;
     if (scene.textures.exists(key)) return key;
     const w = frame.cutWidth,

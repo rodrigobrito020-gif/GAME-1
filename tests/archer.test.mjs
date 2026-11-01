@@ -274,7 +274,10 @@ test("elf sheets provide all four directions in native and HD sizes, transparent
           new URL(`../art/archer/${folder}${name}.png`, import.meta.url),
         ),
       );
-      assert.equal(im.width, cols * size);
+      assert.equal(
+        im.width,
+        cols * size * (folder && ["walk", "run1"].includes(name) ? 2 : 1),
+      );
       assert.equal(im.height, 4 * size);
       for (let row = 0; row < 4; row++)
         for (let col = 0; col < cols; col++) {

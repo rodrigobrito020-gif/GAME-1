@@ -1,8 +1,20 @@
-# Jogo local — 0.6.22: personagens redesenhados de corpo inteiro
+# Jogo local — 0.6.23: revisão da caminhada
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.23
+
+A gravação mostrou o personagem deslizando com as pernas quase sempre abertas. A revisão da caminhada inclui fases laterais de contato, apoio, passagem e elevação, com oito quadros de exibição e passada de 120 unidades. A cadência usa a distância percorrida pelo ator: parar ou esbarrar em um obstáculo não mantém o personagem caminhando no lugar.
+
+- Parada com conclusão curta do apoio antes de voltar ao repouso; mudança de direção conserva a fase da passada.
+- Mantidas as poses verticais existentes para conservar o desenho do corpo; a revisão das poses concentra-se nos perfis esquerdo e direito. Figuras completas, escala corporal comum e identidade das roupas/equipamentos preservadas.
+- As referências nativas continuam com quatro quadros de compatibilidade. A camada de exibição usa os oito quadros e informa a pose correta aos rastros e às máscaras de energia da ultimate.
+- Peitoral de treino preparado para cada pose visível, incluindo as fases intermediárias. Comparador `/personagens` e prévia `/guerreiro` acompanham a caminhada revisada.
+- Combate, tempos das habilidades e dados da conta mantidos. A revisão de movimento fica disponível para teste do jogador.
+
+**Windows:** feche o servidor antigo; extraia o ZIP; copie a pasta `.local-runtime` da versão anterior; mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, pressione Ctrl+F5 e confira **v0.6.23** no topo.
 
 ## Atualização 0.6.22
 

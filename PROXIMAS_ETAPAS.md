@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.23: revisão da caminhada após o vídeo: fases laterais de contato/passagem, poses verticais existentes preservadas, cadência por distância e conclusão da parada. Camada HD com oito quadros, peitoral e efeitos alinhados à pose visível. Revisão do movimento pelo jogador pendente.
+
 - 0.6.22: substituída a montagem rejeitada de tronco/pernas por figuras completas com referência corporal comum, novas poses para as duas classes e escala constante no mapa. Artes em quadros de 384px, rastro e máscaras da ultimate compatíveis, retratos uniformes e comparação interativa em `/personagens`. Revisão visual do jogador pendente: os testes de código não significam aprovação da arte.
 
 - 0.6.21: corrigidos quadril, proporções e encaixe de coxas/joelhos/botas nos dois personagens e na variante com peitoral. Removida a sobreposição da calça fixa sobre as pernas móveis; postura lateral parada sem agachamento permanente e cadência ajustada à passada. Reconstruídas folhas HD/nativas e retratos, preservando o combate e os dados salvos.

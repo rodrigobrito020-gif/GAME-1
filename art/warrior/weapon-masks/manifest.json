@@ -125,49 +125,49 @@
       "sheet": "walk",
       "row": 1,
       "col": 0,
-      "weaponPixels": 86
+      "weaponPixels": 59
     },
     {
       "sheet": "walk",
       "row": 1,
       "col": 1,
-      "weaponPixels": 47
+      "weaponPixels": 40
     },
     {
       "sheet": "walk",
       "row": 1,
       "col": 2,
-      "weaponPixels": 56
+      "weaponPixels": 48
     },
     {
       "sheet": "walk",
       "row": 1,
       "col": 3,
-      "weaponPixels": 60
+      "weaponPixels": 50
     },
     {
       "sheet": "walk",
       "row": 2,
       "col": 0,
-      "weaponPixels": 85
+      "weaponPixels": 60
     },
     {
       "sheet": "walk",
       "row": 2,
       "col": 1,
-      "weaponPixels": 51
+      "weaponPixels": 40
     },
     {
       "sheet": "walk",
       "row": 2,
       "col": 2,
-      "weaponPixels": 54
+      "weaponPixels": 53
     },
     {
       "sheet": "walk",
       "row": 2,
       "col": 3,
-      "weaponPixels": 53
+      "weaponPixels": 50
     },
     {
       "sheet": "walk",
@@ -221,49 +221,49 @@
       "sheet": "run1",
       "row": 1,
       "col": 0,
-      "weaponPixels": 86
+      "weaponPixels": 59
     },
     {
       "sheet": "run1",
       "row": 1,
       "col": 1,
-      "weaponPixels": 47
+      "weaponPixels": 40
     },
     {
       "sheet": "run1",
       "row": 1,
       "col": 2,
-      "weaponPixels": 56
+      "weaponPixels": 48
     },
     {
       "sheet": "run1",
       "row": 1,
       "col": 3,
-      "weaponPixels": 60
+      "weaponPixels": 50
     },
     {
       "sheet": "run1",
       "row": 2,
       "col": 0,
-      "weaponPixels": 85
+      "weaponPixels": 60
     },
     {
       "sheet": "run1",
       "row": 2,
       "col": 1,
-      "weaponPixels": 51
+      "weaponPixels": 40
     },
     {
       "sheet": "run1",
       "row": 2,
       "col": 2,
-      "weaponPixels": 54
+      "weaponPixels": 53
     },
     {
       "sheet": "run1",
       "row": 2,
       "col": 3,
-      "weaponPixels": 53
+      "weaponPixels": 50
     },
     {
       "sheet": "run1",

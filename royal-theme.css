@@ -626,3 +626,5 @@ body {
 @media(max-height:720px){.royal-potion-panel{bottom:140px;max-height:calc(100vh - 160px)}}
 
 .royal-skill-statuses{gap:10px}
+
+.royal-class-compare{display:block;text-align:center;margin-top:14px;color:#765624;font-size:12px}

@@ -1,8 +1,24 @@
-# Jogo local — 0.6.21: pernas e caminhada corrigidas
+# Jogo local — 0.6.22: personagens redesenhados de corpo inteiro
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.22
+
+O ajuste da 0.6.21 foi rejeitado na revisão visual: juntar peças de tronco e pernas continuava produzindo proporções incoerentes. Esta versão substitui essa montagem por **novas figuras completas**, desenhadas a partir de uma referência comum do Guerreiro Humano e da Arqueira Elfa.
+
+- Mesma escala corporal nas duas classes: cabeça, tronco, quadril, pernas e botas seguem uma anatomia adulta estilizada consistente. Rosto, cores das roupas iniciais e armas simples mantêm a identidade dos personagens.
+- Repouso, caminhada, espada, arco, salto/cravada, buffs, reações e morte têm novas poses de corpo inteiro. A construção atual não recorta nem estica partes das pernas.
+- Folhas de exibição com quadros de **384px e corpo de 224px**, desenhadas a partir das fontes grandes. A escala de exibição mantém **112 unidades de altura corporal no mapa**. O restante do quadro é espaço para armas erguidas e saltos; a habilidade não encolhe o personagem para caber nesse espaço.
+- Rastro do dash e luz das armas da ultimate acompanham a nova folha de alta resolução, com o mesmo ponto de apoio no chão. Mantidos os efeitos e tempos aprovados das habilidades.
+- Retratos da seleção de classe usam a mesma altura e linha de chão. O peitoral de treino existente também acompanha as novas poses quando está realmente equipado.
+
+**Comparação visual:** na seleção de classe, clique em **“Comparar animações dos personagens”**. Também é possível abrir http://127.0.0.1:5188/personagens . Os dois aparecem lado a lado em repouso, caminhada, ataque, área, buff e ultimate, nas quatro direções. A prévia não altera a conta. A prévia individual `/guerreiro` continua disponível.
+
+Os testes verificam contratos e funcionamento; a nova arte fica disponível para a revisão visual do jogador. Inventário, armazém, classes, níveis, ouro, configurações e regras de combate são preservados. Equipamentos por peça continuam para depois das cinco classes iniciais.
+
+**Windows:** feche o servidor antigo; extraia o novo ZIP; copie `.local-runtime` da pasta anterior e mantenha `recursos-publicos.zip` junto do jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.22** no topo. Somente Node.js é necessário para jogar. Para reconstruir as artes, opcionalmente use Python 3 com Pillow e `npm run art:characters`.
 
 ## Atualização 0.6.21
 

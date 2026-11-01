@@ -26,7 +26,7 @@ if(this.trailLeft>0){
   }
 }else this.royalLightTrail=false;
 }afterimage(){
-  const royal=this.royalLightTrail===true,body=this.body;
+  const royal=this.royalLightTrail===true,body=window.__royalHD?.capture(this)??this.body;
   if(royal&&this.ghosts.filter(g=>g.royalLight&&g.img.visible).length>=${FX.maxVisible})return;
   let ghost=this.ghosts.find(g=>!g.img.visible);
   if(ghost)ghost.img.setTexture(body.texture.key,body.frame.name);

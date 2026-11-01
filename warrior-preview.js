@@ -1,3 +1,7 @@
+import { CHARACTER_ART as ART } from "/character-art.mjs";
+const PSIZE = 320,
+  PX = 140,
+  PY = 332 - (PSIZE * ART.feet[1]) / ART.frame;
 import { LIGHT_AVATAR } from "/light-avatar.mjs";
 import { LIGHT_AEGIS } from "/defense-buff.mjs";
 import { LIGHT_AFTERIMAGES } from "/light-afterimages.mjs";
@@ -254,14 +258,14 @@ function render() {
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(
         (trainingArmor ? trainingImages : images)[pastSheet],
-        pastCol * 128,
-        direction * 128,
-        128,
-        128,
-        172 + axis[0] * (progress - 0.5) * 130,
-        92 + axis[1] * (progress - 0.5) * 100,
-        256,
-        256,
+        pastCol * ART.frame,
+        direction * ART.frame,
+        ART.frame,
+        ART.frame,
+        PX + axis[0] * (progress - 0.5) * 130,
+        PY + axis[1] * (progress - 0.5) * 100,
+        PSIZE,
+        PSIZE,
       );
       ctx.restore();
       afterimages++;
@@ -271,34 +275,34 @@ function render() {
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(
     (trainingArmor ? trainingImages : images)[sheet],
-    col * 128,
-    direction * 128,
-    128,
-    128,
-    172 + offset,
-    92 + offsetY - lift,
-    256,
-    256,
+    col * ART.frame,
+    direction * ART.frame,
+    ART.frame,
+    ART.frame,
+    PX + offset,
+    PY + offsetY - lift,
+    PSIZE,
+    PSIZE,
   );
   if (avatarActive) {
     const key = `${trainingArmor}:${sheet}:${direction}:${col}`;
     if (!glowFrames.has(key)) {
       const c = document.createElement("canvas");
-      c.width = c.height = 64;
+      c.width = c.height = ART.frame;
       const g = c.getContext("2d");
       g.drawImage(
         (trainingArmor ? trainingImages : images)[sheet],
-        col * 128,
-        direction * 128,
-        128,
-        128,
+        col * ART.frame,
+        direction * ART.frame,
+        ART.frame,
+        ART.frame,
         0,
         0,
-        64,
-        64,
+        ART.frame,
+        ART.frame,
       );
-      const data = g.getImageData(0, 0, 64, 64);
-      window.__royalAvatarMask(data.data, 64, 64, {
+      const data = g.getImageData(0, 0, ART.frame, ART.frame);
+      window.__royalAvatarMask(data.data, ART.frame, ART.frame, {
         sheet,
         row: direction,
         col,
@@ -309,7 +313,7 @@ function render() {
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     ctx.globalAlpha = 0.9;
-    ctx.drawImage(glowFrames.get(key), 172, 92, 256, 256);
+    ctx.drawImage(glowFrames.get(key), PX, PY, PSIZE, PSIZE);
     ctx.restore();
   }
   if (action === "egide-de-luz" && phase < 1600) {
@@ -370,7 +374,7 @@ document.querySelector("#speed").onchange = (event) => {
   speed = Number(event.target.value);
 };
 function tick(now) {
-  if (!paused) elapsed += Math.min(100, now - last) * speed;
+  if (!paused) elapsed += Math.max(0, Math.min(100, now - last)) * speed;
   last = now;
   render();
   requestAnimationFrame(tick);

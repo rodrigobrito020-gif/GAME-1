@@ -22,7 +22,7 @@
     "axeheavy",
   ]) {
     const img = new Image();
-    img.src = `/assets/fx/royal-warrior/avatar-weapons/${sheet}.png`;
+    img.src = `/assets/fx/royal-warrior/avatar-weapons-hd/${sheet}.png`;
     img
       .decode()
       .then(() => {
@@ -50,22 +50,39 @@
       for (let p = 3; p < pixels.length; p += 4) pixels[p] = 0;
       return false;
     }
-    const mask = ctx.getImageData(pose.col * 64, pose.row * 64, w, h).data;
+    const mask = ctx.getImageData(
+      pose.col * 384,
+      pose.row * 384,
+      384,
+      384,
+    ).data;
     for (let p = 0; p < pixels.length; p += 4) {
       pixels[p] = 255;
       pixels[p + 1] = 231;
       pixels[p + 2] = 143;
-      pixels[p + 3] = mask[p + 3] ? Math.round(pixels[p + 3] * 0.9) : 0;
+      const pixel = p / 4,
+        x = pixel % w,
+        y = Math.floor(pixel / w);
+      const mx = w === 384 ? x : 192 + (x - 32) * 4,
+        my = h === 384 ? y : 352 + (y - 60) * 4;
+      pixels[p + 3] =
+        mx >= 0 &&
+        mx < 384 &&
+        my >= 0 &&
+        my < 384 &&
+        mask[(my * 384 + mx) * 4 + 3]
+          ? Math.round(pixels[p + 3] * 0.9)
+          : 0;
     }
     return true;
   }
   window.__royalAvatarMask = maskPixels;
   function weaponTexture(actor) {
-    const body = actor.body,
+    const body = window.__royalHD?.capture(actor) ?? actor.body,
       scene = actor.root.scene,
       frame = body.frame;
     if (!frame?.source?.image) return null;
-    const [sheet, row, col] = String(frame.name).split(":");
+    const [sheet, row, col] = String(actor.body.frame.name).split(":");
     if (!weaponMasks.has(sheet)) return null;
     const pose = { sheet, row: Number(row), col: Number(col) };
     const key = `royal-avatar-weapons:${body.texture.key}:${frame.name}`;
@@ -92,7 +109,7 @@
       return;
     }
     const scene = actor.root.scene,
-      body = actor.body;
+      body = window.__royalHD?.capture(actor) ?? actor.body;
     if (!artwork.has("aura") || !artwork.has("ativacao")) return;
     for (const [name, img] of artwork)
       if (!scene.textures.exists(`royal-avatar-${name}`))
@@ -119,7 +136,7 @@
       css = canvas.width / scene.scale.width;
     const size = Math.max(actor.height * 1.4, 90 / (cam.zoom * css));
     const fade = Math.min(1, age / 180, (state.until - now) / 350),
-      visible = !actor.hidden && actor.root.visible && body.visible;
+      visible = !actor.hidden && actor.root.visible && actor.body.visible;
     aura
       .setPosition(x, y + 4)
       .setDisplaySize(size * 0.85, size)

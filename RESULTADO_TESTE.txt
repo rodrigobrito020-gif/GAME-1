@@ -1,53 +1,60 @@
-VERSAO 0.6.21 — PERNAS E CAMINHADA CORRIGIDAS
+VERSAO 0.6.22 — FIGURAS COMPLETAS E ESCALA CORPORAL COMUM
 Data: 01/11/2026
 
-CORRECAO
-- O torso fixo incluia partes da calca que cobriam as coxas articuladas.
-  As pernas tambem eram comprimidas e muito estreitas sob esse torso.
-- Quadril reposicionado e proporcao das pernas corrigida no guerreiro e na
-  arqueira. Coxas, joelhos e botas possuem encaixe continuo, com pequena
-  sobreposicao de tecido para evitar frestas nas articulacoes.
-- Retirados do recorte os aneis usados para separar as pecas na arte-fonte,
-  que pareciam cortes nos joelhos. Preservados dedos, espada, escudo e arco
-  quando passam diante do quadril.
-- Postura parada lateral com pernas estendidas, sem agachamento permanente.
-- Passada menos exagerada e menor elevacao dos pes. Cadencia compatibilizada
-  com o deslocamento: ciclo de 80 unidades, 8 quadros/s na velocidade normal.
-- Reconstruidas folhas nativas/HD, corrida compartilhada, variante com peitoral
-  de treino, mascaras das armas e retratos da selecao de classe.
-- Artes grandes originais e PNGs das poses de combate preservados byte a byte.
-  Habilidades, dano, recargas, buffs, pocoes, itens e progresso nao alterados.
+MOTIVO
+A correcao 0.6.21 foi rejeitada na revisao visual. O encaixe tecnico das pernas
+nao resolveu a diferenca de proporcoes entre partes do corpo e personagens.
 
-TESTES
-- 90 testes automatizados aprovados, zero falhas ou ignorados, com o ZIP real.
-- Novos testes verificam proporcao das pernas, continuidade entre quadril,
-  joelho e sola nas quatro direcoes/fases, postura lateral e alcance dos ossos.
-- Mantidos os testes de silhueta, transparencias, espelhamento, apoio dos pes,
-  deslocamento da passada, variantes de equipamento e preservacao do corpo
-  durante a aplicacao de materiais nas armas.
-- Regressao: combate das duas classes, habilidades, inventario, armazem,
-  pocoes, morte, colisao, progressao, persistencia e protocolo do cliente.
-- Chromium/WebGL com cliente real em portugues e conta isolada de QA:
-  Guerreiro, Guerreiro com peitoral equipado e Arqueira, andando nas quatro
-  direcoes com WASD. Confirmados movimento, linha/quadros de caminhada e uma
-  unica camada HD sobre o ator nativo. Capturas de repouso e quatro direcoes.
-- Depois da caminhada, caçada da arqueira com combate, cinco habilidades e
-  seis atalhos de pocoes. Nenhum erro JavaScript nessa verificacao.
-- Dados de testes separados dos dados reais. Nenhum item ou nivel concedido
-  ao jogador. As ausencias preexistentes no ZIP capturado nao foram alteradas.
+ALTERACOES
+- Novas artes de corpo inteiro para guerreiro e arqueira, usando uma referencia
+  comum de anatomia, cabeca, tronco, pernas, roupas e iluminacao.
+- Novos desenhos de repouso, caminhada, espada, arco, salto/cravada, buffs,
+  reacoes e morte. A construcao atual nao utiliza as pecas antigas de pernas.
+- Quadros de 384px com corpo de referencia de 224px. Escala fixa no mundo:
+  corpo de 112 unidades. Espaco para armas erguidas sem miniaturizar a figura.
+- Rastro de Avanco de Luz passa a usar a figura HD completa, com coordenadas
+  e origem corretas. Brilho da ultimate acompanha as novas mascaras HD.
+- Retratos de classe com altura comum e peitoral existente nas novas poses.
+- Comparacao lado a lado em /personagens, com quatro direcoes e seis acoes.
+  Link disponivel no seletor de classe. Previa /guerreiro preservada.
+- Nenhum item, atributo ou nivel concedido. Regras e tempos das habilidades,
+  pocoes, progresso, mochila, armazem e preferencias permanecem os anteriores.
+
+VERIFICACAO
+- 90 testes automatizados passaram com o ZIP capturado real, sem falhas ou
+  testes ignorados. Regressao de servidor, combate, duas classes, inventarios,
+  pocoes, progressao, morte, persistencia e protocolo.
+- Testes visuais de contrato foram atualizados para a construcao nova:
+  dimensoes HD/nativas, transparencia, mesma estatura/linha de chao nas duas
+  classes, cintura com pernas completas e continuidade ate as botas, escala
+  constante por animacao em vez de redimensionar cada pose.
+- Chromium/WebGL, cliente real pt-BR, contas isoladas de QA:
+  guerreiro, guerreiro equipado com peitoral e arqueira, nas quatro direcoes;
+  camada HD unica, combate real e barra com cinco habilidades/seis pocoes.
+- Avanco de Luz real em combate gerou rastros da folha HD completa, com
+  coordenadas proximas do ator. Sem duplicar sua posicao no mundo.
+- Egide e Avatar simultaneos; compra e uso de mana nos niveis 55 e 150.
+  Efeitos da ultimate e mascaras de armas carregados na nova resolucao.
+- Comparador e previa individual abrem sem erros JavaScript. Alternancia
+  rapida de acoes testada; corrigido primeiro quadro com tempo negativo.
+- Capturas do jogo e comparacoes em repouso/ataque/area/buff/ultimate revisadas.
+  Os testes tecnicos nao constituem aprovacao artistica: revisao do jogador
+  continua pendente.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
-2. Extraia o novo ZIP em outra pasta.
-3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
-   para manter o progresso. Copie recursos-publicos.zip ou deixe-o em Downloads.
-4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
-5. Confira v0.6.21 no topo.
+2. Extraia o ZIP em outra pasta.
+3. Copie .local-runtime da pasta anterior com os servidores fechados.
+4. Mantenha recursos-publicos.zip na pasta do jogo ou em Downloads.
+5. Abra ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5; confira v0.6.22.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-Previa do guerreiro: http://127.0.0.1:5188/guerreiro
+Comparacao: http://127.0.0.1:5188/personagens
+Previa individual: http://127.0.0.1:5188/guerreiro
+
+Para jogar: Node.js, como nas versoes anteriores. Python 3/Pillow sao usados
+somente na ferramenta opcional que reconstrui os PNGs ja entregues.
 
 DECISOES MANTIDAS
-- Equipamentos por peca aguardam as cinco classes iniciais.
-- Guerreiro e Arqueira sao as duas classes prontas; as outras tres ainda precisam
-  de definicao. Balanceamento novo da arqueira segue disponivel para revisao.
-- O servidor atual continua com uma conta local, sem multiplayer implementado.
+Equipamentos completos aguardam as cinco classes iniciais. Guerreiro e Arqueira
+sao as duas prontas; as outras tres ainda precisam de definicao. O servidor
+continua com uma conta local, sem multiplayer implementado.

@@ -1,6 +1,6 @@
 {
   "name": "cliente-capturado-local",
-  "version": "0.6.21",
+  "version": "0.6.22",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,14 +9,15 @@
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "art:warrior": "node tools/pack-warrior.mjs && node tools/pack-starter-weapons.mjs --refresh-reference && node tools/pack-training-armor.mjs",
-    "art:armor": "node tools/pack-training-armor.mjs",
+    "art:warrior": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
+    "art:armor": "node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
     "art:vfx": "node tools/pack-warrior-vfx.mjs && node tools/pack-avatar-vfx.mjs",
-    "art:clothes": "node tools/pack-starter-clothes.mjs",
+    "art:clothes": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
     "art:avatar": "node tools/pack-avatar-vfx.mjs",
-    "art:weapons": "node tools/pack-starter-weapons.mjs && node tools/pack-training-armor.mjs",
-    "art:hd": "node tools/pack-warrior.mjs --hd && node tools/pack-warrior-hd.mjs",
-    "art:archer": "node tools/pack-archer.mjs"
+    "art:weapons": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
+    "art:hd": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
+    "art:archer": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
+    "art:characters": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py"
   },
   "dependencies": {
     "ws": "8.21.3"

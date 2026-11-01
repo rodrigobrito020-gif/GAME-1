@@ -1,3 +1,4 @@
+import { CHARACTER_ART as ART } from "../character-art.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -266,7 +267,7 @@ test("elf sheets provide all four directions in native and HD sizes, transparent
   ])
     for (const [folder, size] of [
       ["", 64],
-      ["hd/", 128],
+      ["hd/", ART.frame],
     ]) {
       const im = decodeRgba(
         readFileSync(

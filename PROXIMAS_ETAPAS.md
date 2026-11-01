@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.22: substituída a montagem rejeitada de tronco/pernas por figuras completas com referência corporal comum, novas poses para as duas classes e escala constante no mapa. Artes em quadros de 384px, rastro e máscaras da ultimate compatíveis, retratos uniformes e comparação interativa em `/personagens`. Revisão visual do jogador pendente: os testes de código não significam aprovação da arte.
+
 - 0.6.21: corrigidos quadril, proporções e encaixe de coxas/joelhos/botas nos dois personagens e na variante com peitoral. Removida a sobreposição da calça fixa sobre as pernas móveis; postura lateral parada sem agachamento permanente e cadência ajustada à passada. Reconstruídas folhas HD/nativas e retratos, preservando o combate e os dados salvos.
 
 - 0.6.20: Arqueira Elfa com arte própria, disparos e quatro habilidades aprovadas, mais o Dash comum. Troca de classe na cidade preserva inventários/equipamentos/progresso e lembra automação por classe. Seis poções HP/mana, níveis 1/55/150, Manual/Auto e limites 30/50/70% independentes. Indicadores simultâneos de todos os buffs, cada um com duração e carta.

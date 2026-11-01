@@ -1,3 +1,4 @@
+import { CHARACTER_ART as ART } from "/character-art.mjs";
 // Higher detail display layer; native actors, hitboxes, rig and world positions
 // stay authoritative. Textures are rebuilt from the original large pose art.
 (() => {
@@ -59,8 +60,15 @@
     if (!scene.textures.exists(key)) {
       const tex = scene.textures.addImage(key, im);
       for (let r = 0; r < 4; r++)
-        for (let c = 0; c < im.width / 128; c++)
-          tex.add(`${r}:${c}`, 0, c * 128, r * 128, 128, 128);
+        for (let c = 0; c < im.width / ART.frame; c++)
+          tex.add(
+            `${r}:${c}`,
+            0,
+            c * ART.frame,
+            r * ART.frame,
+            ART.frame,
+            ART.frame,
+          );
       tex.setFilter(0);
     }
     let s = actors.get(a);
@@ -70,8 +78,11 @@
     }
     s.setTexture(key, `${row}:${col}`)
       .setPosition(a.x + b.x, a.y + b.y)
-      .setOrigin(b.originX, b.originY)
-      .setScale(b.scaleX / 2, b.scaleY / 2)
+      .setOrigin(ART.feet[0] / ART.frame, ART.feet[1] / ART.frame)
+      .setScale(
+        b.scaleX / ART.nativeSampleStep,
+        b.scaleY / ART.nativeSampleStep,
+      )
       .setAngle(b.angle)
       .setFlipX(b.flipX)
       .setDepth(a.root.depth + 0.015)
@@ -101,6 +112,22 @@
         /humano-guerreiro|elfa-arqueira/.test(String(a.body.texture?.key))
       )
         draw(a);
+    },
+    capture(a) {
+      const s = actors.get(a);
+      if (!s) return null;
+      return {
+        x: a.body.x,
+        y: a.body.y,
+        texture: s.texture,
+        frame: s.frame,
+        scaleX: s.scaleX,
+        scaleY: s.scaleY,
+        originX: s.originX,
+        originY: s.originY,
+        angle: s.angle,
+        flipX: s.flipX,
+      };
     },
     clear() {
       for (const a of actors.keys()) cleanup(a);

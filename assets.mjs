@@ -159,6 +159,20 @@ export function localAssets(byName, status) {
           new URL(`./art/warrior/icons/${skillIcon[1]}.png`, import.meta.url),
         ),
       };
+    const hdWeaponMask =
+      /^\/assets\/fx\/royal-warrior\/avatar-weapons-hd\/([a-z0-9]+)\.png$/.exec(
+        pathname,
+      );
+    if (hdWeaponMask && WARRIOR_SHEETS[hdWeaponMask[1]])
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(
+            `./art/warrior/hd/${hdWeaponMask[1]}-mask.png`,
+            import.meta.url,
+          ),
+        ),
+      };
     const weaponMask =
       /^\/assets\/fx\/royal-warrior\/avatar-weapons\/([a-z0-9]+)\.png$/.exec(
         pathname,

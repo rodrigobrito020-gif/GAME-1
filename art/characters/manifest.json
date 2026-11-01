@@ -1,0 +1,12 @@
+{
+  "frame": 384,
+  "feet": [
+    192,
+    352
+  ],
+  "bodyHeight": 224,
+  "classes": [
+    "warrior",
+    "archer"
+  ]
+}

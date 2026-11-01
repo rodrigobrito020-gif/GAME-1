@@ -66,6 +66,12 @@
       row.append(card);
     }
     panel.append(row);
+    const compare = el("a", "Comparar animações dos personagens");
+    compare.href = "/personagens";
+    compare.target = "_blank";
+    compare.rel = "noopener";
+    compare.className = "royal-class-compare";
+    panel.append(compare);
   }
   button.onclick = () => {
     render();

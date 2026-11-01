@@ -1,3 +1,4 @@
+import { CHARACTER_ART as ART } from "../character-art.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { LocalFarm } from "../farm.mjs";
@@ -172,15 +173,15 @@ test("enemy skill hit is delayed, dodgeable and cancelled when the caster dies; 
   assert.equal(s.step(1000).events.damage.length, 0);
   assert.equal(m.cast, null);
 });
-test("128px warrior frames contain real original detail, not magnified 64px blocks", () => {
+test("HD warrior frames contain original detail, not magnified native blocks", () => {
   const im = decodeRgba(
     readFileSync(new URL("../art/warrior/hd/idle.png", import.meta.url)),
   );
-  assert.equal(im.width, 512);
-  assert.equal(im.height, 512);
+  assert.equal(im.width, ART.frame * 4);
+  assert.equal(im.height, ART.frame * 4);
   let different = 0;
-  for (let y = 0; y < 128; y += 2)
-    for (let x = 0; x < 128; x += 2) {
+  for (let y = 0; y < ART.frame; y += 2)
+    for (let x = 0; x < ART.frame; x += 2) {
       const a = (y * im.width + x) * 4,
         b = (y * im.width + x + 1) * 4;
       if (

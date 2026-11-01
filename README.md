@@ -1,8 +1,14 @@
-# Jogo local — 0.6.4: Avanço de Luz
+# Jogo local — 0.6.5: somente Avanço de Luz
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Teste isolado da habilidade — 0.6.5
+
+Somente **Avanço de Luz (1)** está disponível para uso manual e automático. Investida, Golpe Destruidor e Fúria foram retiradas do catálogo jogável e da prévia, e o servidor recusa tentativas de usá-las ou reativá-las pela automação. As definições anteriores ficam guardadas no código para o trabalho futuro.
+
+Ao carregar um progresso antigo, a ordem automática é filtrada para a habilidade em revisão; uma ordem vazia continua desativada. Ataques básicos, movimentação, poções, inventário e progresso permanecem funcionando. O dash conserva seu comportamento, custo e recarga da 0.6.4.
 
 ## Primeira habilidade — Avanço de Luz (0.6.4)
 

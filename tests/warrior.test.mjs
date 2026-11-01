@@ -13,7 +13,7 @@ import {
 import { warriorEffects, warriorFx, warriorIcon } from "../warrior-fx.mjs";
 import { WARRIOR_VFX } from "../warrior-vfx.mjs";
 import { localAssets } from "../assets.mjs";
-import { LocalFarm } from "../farm.mjs";
+import { LocalFarm, ACTIVE_SKILLS } from "../farm.mjs";
 import { warriorWalkPose, WALK_STRIDE } from "../warrior-walk-rig.mjs";
 
 test("authored warrior poses have transparent gutters, stable feet and distinct movement/attack frames in all directions", () => {
@@ -269,8 +269,9 @@ function scenario() {
   };
 }
 
-test("all four skills land at their impact frame, reserve recovery and cancel pending damage on exit or death", () => {
-  for (const [id, action] of Object.entries(WARRIOR_ACTIONS)) {
+test("the active skill lands at its impact frame, reserves recovery and cancels pending damage on exit or death", () => {
+  for (const { id } of ACTIVE_SKILLS) {
+    const action = WARRIOR_ACTIONS[id];
     const { farm, client, step } = scenario(),
       target = client.hunt.monsters[0];
     const hp = target.hp,
@@ -295,7 +296,7 @@ test("all four skills land at their impact frame, reserve recovery and cancel pe
       assert.equal(farm.character.progress.hp, health + 25);
   }
   const { farm, client, step } = scenario();
-  farm.cast(client, "golpe-destruidor", 100);
+  farm.cast(client, "avanco-de-luz", 100);
   const gold = farm.character.wallet.gold;
   farm.stop(client);
   assert.equal(
@@ -313,7 +314,7 @@ test("all four skills land at their impact frame, reserve recovery and cancel pe
   client.x = client.hunt.monsters[0].x;
   client.y = client.hunt.monsters[0].y - 16;
   farm.character.progress.hp = 1;
-  farm.cast(client, "golpe-destruidor", 100);
+  farm.cast(client, "avanco-de-luz", 100);
   client.hunt.monsters[0].nextAttack = 0;
   assert.equal(step(50).died, true);
   assert.equal(step(1000).events.damage.length, 0);
@@ -327,7 +328,7 @@ test("basic sword attack announces the authored animation before damage and cann
   assert.equal(start.events.moves[0].dirY, 1000);
   assert.equal(client.facing, 0);
   assert.equal(start.events.damage.length, 0);
-  assert.throws(() => farm.cast(client, "investida", 100), /cooldown/);
+  assert.throws(() => farm.cast(client, "avanco-de-luz", 100), /cooldown/);
   assert.equal(step(WARRIOR_BASIC.impact - 1).events.damage.length, 0);
   assert.ok(step(1).events.damage.some((e) => e.source === 1 && !e.skillId));
   const next = step(1000 - WARRIOR_BASIC.impact);
@@ -383,23 +384,28 @@ test("painted cast effects leave time for anticipation, sustain after impact and
   );
 });
 
-test("delayed area strike hits the enemies inside the displayed circle at impact", () => {
+test("draft skills cannot be cast or reenabled through automation", () => {
   const { farm, client, step } = scenario();
-  const [target, leaving, entering] = client.hunt.monsters;
-  leaving.x = target.x + 20;
-  leaving.y = target.y;
-  entering.x = target.x + 200;
-  entering.y = target.y;
-  farm.cast(client, "golpe-destruidor", target.id);
-  leaving.x += 400;
-  entering.x = target.x + 30;
-  const result = step(WARRIOR_ACTIONS["golpe-destruidor"].impact);
-  const hit = result.events.damage
-    .filter((e) => e.source === 1 && e.skillId === "golpe-destruidor")
-    .map((e) => e.target);
-  assert.ok(hit.includes(target.id));
-  assert.ok(hit.includes(entering.id));
-  assert.ok(!hit.includes(leaving.id));
+  const mana = farm.character.progress.mana;
+  assert.deepEqual(
+    ACTIVE_SKILLS.map((s) => s.id),
+    ["avanco-de-luz"],
+  );
+  for (const id of ["investida", "golpe-destruidor", "furia-guerreiro"]) {
+    assert.throws(() => farm.cast(client, id, 100), /invalid_skill/);
+    assert.throws(() => farm.automation({ skillOrder: [id] }), /invalid_skill/);
+  }
+  assert.equal(farm.character.progress.mana, mana);
+  farm.character.automation.skillOrder = [
+    "investida",
+    "golpe-destruidor",
+    "furia-guerreiro",
+  ];
+  assert.equal(
+    step(50).events.casts.length,
+    0,
+    "even stale runtime preferences cannot cast a draft skill",
+  );
 });
 
 test("idle warrior cutouts contain one connected silhouette, without floating matte stains", () => {

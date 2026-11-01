@@ -51,6 +51,11 @@ export const SKILLS = [
     heal: 25,
   },
 ];
+// Only the ability currently under review is playable. Keep draft definitions
+// for later work, but do not expose, cast or automate them in this build.
+export const ACTIVE_SKILLS = SKILLS.filter(
+  (skill) => skill.id === WARRIOR_LIGHT_DASH.id,
+);
 export const ITEMS = [
   {
     id: "fragmento-local",
@@ -143,15 +148,15 @@ export class LocalFarm {
     const c = this.character;
     c.equipment.slots ??= [];
     if (!account.farmVersion) {
-      c.automation.skillOrder = SKILLS.map((s) => s.id);
+      c.automation.skillOrder = ACTIVE_SKILLS.map((s) => s.id);
       c.consumables.hpPotions = { pequena: 10 };
       c.consumables.manaPotions = { pequena: 10 };
       account.farmVersion = 1;
     }
     // Rename the first skill without enabling disabled slots or resetting saves.
-    c.automation.skillOrder = (c.automation.skillOrder ?? []).map((id) =>
-      id === "corte-poderoso" ? WARRIOR_LIGHT_DASH.id : id,
-    );
+    c.automation.skillOrder = (c.automation.skillOrder ?? [])
+      .map((id) => (id === "corte-poderoso" ? WARRIOR_LIGHT_DASH.id : id))
+      .filter((id) => ACTIVE_SKILLS.some((skill) => skill.id === id));
     c.progress.hp ||= 250;
     c.progress.mana = Math.max(0, c.progress.mana);
     this.recalculate();
@@ -371,7 +376,7 @@ export class LocalFarm {
     const h = client.hunt,
       c = this.character,
       now = this.now();
-    const skill = SKILLS.find((s) => s.id === id);
+    const skill = ACTIVE_SKILLS.find((s) => s.id === id);
     if (!h || h.deadAt || !c.progress.hp) throw Error("local.not_hunting");
     if (!skill) throw Error("local.invalid_skill");
     if ((h.cooldowns[id] ?? 0) > now || h.nextCast > now || h.actionUntil > now)
@@ -1069,9 +1074,9 @@ export class LocalFarm {
   automation(value) {
     const order = value.skillOrder ?? [];
     if (
-      order.length > SKILLS.length ||
+      order.length > ACTIVE_SKILLS.length ||
       new Set(order).size !== order.length ||
-      order.some((id) => !SKILLS.some((s) => s.id === id))
+      order.some((id) => !ACTIVE_SKILLS.some((s) => s.id === id))
     )
       throw Error("local.invalid_skill");
     // Other automation systems are not implemented; do not claim to enable them.

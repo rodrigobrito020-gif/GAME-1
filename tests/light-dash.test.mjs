@@ -196,7 +196,7 @@ test("automatic farming uses the dash from outside melee, honors disabled automa
   assert.ok(c.client.moving);
 });
 
-test("existing saves migrate the first skill without changing inventory, progress, order or disabled slots", () => {
+test("existing saves migrate the first skill without changing inventory, progress or disabled slots", () => {
   const { account } = fixture();
   account.character.automation.skillOrder = [
     "furia-guerreiro",
@@ -207,11 +207,7 @@ test("existing saves migrate the first skill without changing inventory, progres
     progress = structuredClone(account.character.progress),
     bag = structuredClone(account.bag);
   new LocalFarm(account);
-  assert.deepEqual(account.character.automation.skillOrder, [
-    "furia-guerreiro",
-    DASH.id,
-    "investida",
-  ]);
+  assert.deepEqual(account.character.automation.skillOrder, [DASH.id]);
   assert.equal(account.character.wallet.gold, gold);
   assert.deepEqual(account.character.progress, progress);
   assert.deepEqual(account.bag, bag);

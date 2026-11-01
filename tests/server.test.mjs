@@ -126,6 +126,13 @@ test(
       const auth = (await wait((m) => m.requestId === id)).body.value;
       assert.equal(auth.role, 1);
       assert.ok(auth.token);
+      const catalog = (await wait((m) => m.body?.case === "contentCatalog"))
+        .body.value;
+      assert.deepEqual(
+        catalog.skills.map((s) => s.id),
+        ["avanco-de-luz"],
+        "only the skill under review is exposed",
+      );
       const scene = (await wait((m) => m.body?.case === "sceneEnter")).body
         .value;
       assert.equal(scene.map.source.case, "atlasMapId");
@@ -253,6 +260,24 @@ test(
         (m) =>
           m.body?.case === "entitySpawn" &&
           m.body.value.entities.some((e) => e.state.kind === 2),
+      );
+      for (const skillId of [
+        "investida",
+        "golpe-destruidor",
+        "furia-guerreiro",
+      ]) {
+        id = send("useSkill", { skillId, target: 100 });
+        assert.equal(
+          (await wait((m) => m.requestId === id)).body.value.code,
+          "local.invalid_skill",
+        );
+      }
+      id = send("setAutomation", {
+        automation: { skillOrder: ["avanco-de-luz", "furia-guerreiro"] },
+      });
+      assert.equal(
+        (await wait((m) => m.requestId === id)).body.value.code,
+        "local.invalid_skill",
       );
       for (
         let n = 0;

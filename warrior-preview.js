@@ -19,12 +19,8 @@ await Promise.all(
     );
   }),
 );
-const fxNames = [
-  "guerreiro-avanco-luz",
-  "guerreiro-investida-rastro",
-  "guerreiro-destruidor-fenda",
-  "guerreiro-furia-explosao",
-];
+const previewSkills = ["avanco-de-luz"];
+const fxNames = ["guerreiro-avanco-luz"];
 const fx = await Promise.all(
   fxNames.map(async (id) => ({
     image: await image(effects.efeitos[id].folha),
@@ -72,7 +68,7 @@ function render() {
     col = 5;
   } else if (move) {
     total = move.frames.length * rig.stepMs;
-    const index = Object.keys(WARRIOR_ACTIONS).indexOf(action);
+    const index = previewSkills.indexOf(action);
     const tail =
       index < 0 ? 0 : (fx[index].def.frames / fx[index].def.fps) * 1000;
     phase = elapsed % (Math.max(total, tail) + 350);
@@ -129,7 +125,7 @@ function render() {
   ctx.beginPath();
   ctx.ellipse(300 + offset, 332 + offsetY, 68, 15, 0, 0, Math.PI * 2);
   ctx.fill();
-  const n = Object.keys(WARRIOR_ACTIONS).indexOf(action);
+  const n = previewSkills.indexOf(action);
   const effect = n >= 0 ? fx[n] : null;
   const drawEffect = () => {
     if (!effect || phase >= (effect.def.frames / effect.def.fps) * 1000) return;

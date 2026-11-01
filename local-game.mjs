@@ -9,7 +9,7 @@ import {
 } from "node:fs";
 import path from "node:path";
 import { Protocol } from "./protocol.mjs";
-import { LocalFarm, AREAS, ITEMS, SKILLS } from "./farm.mjs";
+import { LocalFarm, AREAS, ITEMS, ACTIVE_SKILLS as SKILLS } from "./farm.mjs";
 import { WARRIOR_SKIN } from "./warrior.mjs";
 import { ROYAL_HUNT_MAP_ID } from "./royal-hunt.mjs";
 export function attachLocalGame(
@@ -52,7 +52,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-5";
+  catalog.version = "local-human-warrior-6";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,

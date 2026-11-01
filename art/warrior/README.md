@@ -59,3 +59,7 @@ As ações do corpo agora duram 400–850ms, com efeito visual independente e ma
 `WARRIOR_LIGHT_DASH` compartilha alcance, preparação, fim do avanço e distância de contato. `humano-avanco-luz` usa preparação, corrida, ataque na chegada e recuperação (550ms). A posição é deslocada no servidor; não usar `motion.dash`, pois o cliente adicionaria outro deslocamento visual e retorno. O rastro de luz é uma animação própria montada a partir da arte de vento, com partículas claras/douradas; o contato usa faíscas de luz. As demais três habilidades permanecem inalteradas.
 
 Prévia inclui uma travessia em sentido único para demonstrar a ação. Colisão, alcance e dano são testados no jogo e no servidor, não apenas na prévia.
+
+## Teste isolado — 0.6.5
+
+A prévia mostra somente o Avanço de Luz como habilidade, junto das ações básicas do corpo. O catálogo jogável, a validação de uso manual e a automação usam `ACTIVE_SKILLS`, contendo apenas `avanco-de-luz`. Definições e artes das outras três habilidades permanecem guardadas para revisão futura, sem poderem ser utilizadas nesta versão.

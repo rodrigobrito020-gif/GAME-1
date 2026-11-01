@@ -7,6 +7,9 @@ const particles = {
 };
 export function warriorEffects(original) {
   const effects = structuredClone(original);
+  effects.habilidades["impacto-de-luz"] = {
+    indicador: "guerreiro-impacto-luz",
+  };
   effects.habilidades["avanco-de-luz"] = {
     impacto: "guerreiro-avanco-impacto",
   };
@@ -56,6 +59,8 @@ export function warriorFx(id) {
 }
 export function warriorIcon(id) {
   const shapes = {
+    "impacto-de-luz":
+      '<path d="M21 7h6v24l-3 6-3-6Z" fill="#fff4cf"/><path d="M16 15h16M24 4v7" stroke="#e4b355" stroke-width="3"/><path d="m7 37 9-3-3 8m28-5-9-3 3 8M18 41l6-4 6 4" fill="none" stroke="#ffda71" stroke-width="2"/>',
     "avanco-de-luz":
       '<path d="M8 22h23l-7-8 7-2 13 14-14 12-6-3 8-8H8Z" fill="#fff4cf"/><path d="M4 15h13M2 32h12" stroke="#e4b355" stroke-width="3"/><path d="m17 5 2 4 4 1-4 2-2 4-1-4-4-2 4-1Z" fill="#ffda71"/>',
     investida:

@@ -52,7 +52,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-8";
+  catalog.version = "local-human-warrior-9";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -120,7 +120,7 @@ export function attachLocalGame(
   catalog.skills = SKILLS.map((skill) => ({
     ...skill,
     classId: "guerreiro",
-    kind: "damage",
+    kind: skill.radius ? "area" : "damage",
     source: "physical",
     description:
       skill.description ?? "Habilidade local de teste. Valores provisórios.",

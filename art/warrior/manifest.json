@@ -1,7 +1,7 @@
 {
   "character": "Guerreiro Humano",
   "skinId": "humano-guerreiro",
-  "version": 4,
+  "version": 5,
   "frame": [
     64,
     64
@@ -21,7 +21,8 @@
     "walk": 4,
     "run1": 4,
     "weapon": 6,
-    "special": 6
+    "special": 6,
+    "axeheavy": 8
   },
   "walkStride": 96,
   "rig": "warrior-walk-rig.mjs",
@@ -1882,6 +1883,552 @@
         "anchor": {
           "center": 1402,
           "floor": 964,
+          "scale": 0.17
+        }
+      }
+    ],
+    "axeheavy": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": [
+          24,
+          98,
+          249,
+          343
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 128,
+          "floor": 341,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": [
+          269,
+          44,
+          504,
+          342
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 384,
+          "floor": 340,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": [
+          526,
+          7,
+          767,
+          278
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 640,
+          "floor": 276,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": [
+          780,
+          59,
+          1003,
+          353
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 896,
+          "floor": 351,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": [
+          1023,
+          134,
+          1272,
+          345
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1152,
+          "floor": 343,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": [
+          1296,
+          62,
+          1509,
+          346
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 344,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 6,
+        "source": [
+          1296,
+          62,
+          1509,
+          346
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 344,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "source": [
+          1296,
+          62,
+          1509,
+          346
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 344,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": [
+          21,
+          394,
+          250,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 128,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": [
+          266,
+          366,
+          489,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 384,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": [
+          531,
+          335,
+          737,
+          605
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 640,
+          "floor": 603,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": [
+          772,
+          387,
+          1015,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 896,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": [
+          1021,
+          460,
+          1259,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1152,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": [
+          1299,
+          372,
+          1513,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1408,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 6,
+        "source": [
+          1299,
+          372,
+          1513,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1408,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "source": [
+          1299,
+          372,
+          1513,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1408,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": [
+          21,
+          394,
+          250,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 128,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": [
+          266,
+          366,
+          489,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 384,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": [
+          531,
+          335,
+          737,
+          605
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 640,
+          "floor": 603,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": [
+          772,
+          387,
+          1015,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 896,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": [
+          1021,
+          460,
+          1259,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1152,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": [
+          1299,
+          372,
+          1513,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 6,
+        "source": [
+          1299,
+          372,
+          1513,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 7,
+        "source": [
+          1299,
+          372,
+          1513,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": [
+          31,
+          733,
+          249,
+          981
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 128,
+          "floor": 979,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": [
+          284,
+          683,
+          505,
+          978
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 384,
+          "floor": 976,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": [
+          526,
+          651,
+          762,
+          919
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 640,
+          "floor": 917,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": [
+          773,
+          709,
+          1001,
+          976
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 896,
+          "floor": 974,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": [
+          1024,
+          777,
+          1274,
+          982
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1152,
+          "floor": 980,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": [
+          1293,
+          709,
+          1508,
+          981
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 979,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 6,
+        "source": [
+          1293,
+          709,
+          1508,
+          981
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 979,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 7,
+        "source": [
+          1293,
+          709,
+          1508,
+          981
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 979,
           "scale": 0.17
         }
       }

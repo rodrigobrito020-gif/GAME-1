@@ -8,6 +8,9 @@ export const WARRIOR_SHEETS = {
   run1: 4,
   weapon: 6,
   special: 6,
+  // Compatibility sheet name understood by the captured compositor; these
+  // are dedicated two-handed sword plunge poses, not an axe animation.
+  axeheavy: 8,
 };
 export const WARRIOR_LIGHT_DASH = {
   id: "avanco-de-luz",
@@ -18,7 +21,16 @@ export const WARRIOR_LIGHT_DASH = {
   stopDistance: 52,
   hitRange: 75,
 };
+export const WARRIOR_GROUND_SLAM = {
+  id: "impacto-de-luz",
+  radius: 150,
+  range: 75,
+  duration: 950,
+  impact: 550,
+  jump: { at: [100, 550], height: 32 },
+};
 export const WARRIOR_ACTIONS = {
+  "impacto-de-luz": { move: "humano-impacto-luz", duration: 950, impact: 550 },
   "avanco-de-luz": { move: "humano-avanco-luz", duration: 550, impact: 300 },
   investida: { move: "humano-investida", duration: 600, impact: 250 },
   "golpe-destruidor": { move: "humano-destruidor", duration: 850, impact: 400 },
@@ -49,6 +61,18 @@ export function warriorRig(original) {
     motion: { lunge: { windup: 2, reach, lift: -1, tilt: 2 } },
   });
   Object.assign(rig.moves, {
+    "humano-impacto-luz": {
+      frames: [
+        ...hold("axeheavy", 0, 2),
+        ...hold("axeheavy", 1, 3),
+        ...hold("axeheavy", 2, 3),
+        ...hold("axeheavy", 3, 3),
+        ...hold("axeheavy", 4, 4),
+        ...hold("axeheavy", 5, 4),
+      ],
+      impacts: [WARRIOR_GROUND_SLAM.impact],
+      motion: { jump: structuredClone(WARRIOR_GROUND_SLAM.jump) },
+    },
     "humano-ferido": {
       frames: [...hold("special", 2, 1), ...hold("special", 0, 1)],
       impacts: [],

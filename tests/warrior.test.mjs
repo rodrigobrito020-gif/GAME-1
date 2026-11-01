@@ -281,7 +281,7 @@ test("the active skill lands at its impact frame, reserves recovery and cancels 
       target = client.hunt.monsters[0];
     const hp = target.hp,
       health = farm.character.progress.hp;
-    client.x = target.x - 200;
+    client.x = target.x - (id === "impacto-de-luz" ? 48 : 200);
     client.y = target.y;
     const cast = farm.cast(client, id, target.id);
     assert.equal(cast.events.casts.length, 1);
@@ -358,7 +358,8 @@ test("painted cast effects leave time for anticipation, sustain after impact and
     if (!fx.cast) continue;
     const action = WARRIOR_ACTIONS[fx.skill];
     assert.ok(
-      action.duration >= 400 && action.duration <= 900,
+      action.duration >= 400 &&
+        action.duration <= (fx.skill === "impacto-de-luz" ? 950 : 900),
       "combat actions should be brief",
     );
     assert.ok(
@@ -403,7 +404,7 @@ test("draft skills cannot be cast or reenabled through automation", () => {
   const mana = farm.character.progress.mana;
   assert.deepEqual(
     ACTIVE_SKILLS.map((s) => s.id),
-    ["avanco-de-luz"],
+    ["avanco-de-luz", "impacto-de-luz"],
   );
   for (const id of ["investida", "golpe-destruidor", "furia-guerreiro"]) {
     assert.throws(() => farm.cast(client, id, 100), /invalid_skill/);

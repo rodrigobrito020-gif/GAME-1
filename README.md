@@ -1,8 +1,19 @@
-# Jogo local — 0.6.7: rastro do personagem no dash
+# Jogo local — 0.6.8: Impacto de Luz
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Segunda habilidade — Impacto de Luz (0.6.8)
+
+**Impacto de Luz (2)**: o guerreiro salta, segura a espada com as duas mãos e crava a lâmina no chão. O escudo acompanha o antebraço esquerdo. A onda de luz, fissuras e partículas dissipam no piso sem travar o corpo durante toda a duração do efeito.
+
+- Preparação de 100ms, salto até 550ms, dano único na aterrissagem e recuperação até 950ms. A posição no chão permanece fixa; não há teleporte nem tremor de câmera.
+- Área de 150 unidades ao redor da posição inicial do guerreiro. O servidor verifica os inimigos vivos dentro do círculo no instante do impacto, inclusive quem entrar/sair durante o salto. A morte do alvo inicial não cancela o impacto nos demais.
+- Alcance de ativação 75, dano 2,5× ataque, custo 12 de mana e recarga 7s são **valores provisórios para avaliação**, ainda sujeitos à aprovação de balanceamento.
+- Para avaliar a segunda habilidade, a ordem automática antiga passa uma única vez a conter somente Impacto de Luz. Uma ordem vazia continua desativada; alterações posteriores do jogador são preservadas. Avanço de Luz permanece no atalho 1 com seu comportamento aprovado. Rascunhos das habilidades 3/4 seguem bloqueados.
+- Cidade, hunt, navegação, monstros, inventário e progresso são preservados. Nenhum item ou atributo é concedido. Morrer ou sair da hunt cancela dano pendente.
+- Prévia quadro a quadro e nas quatro direções em **http://127.0.0.1:5188/guerreiro**. A folha técnica `axeheavy` é o nome compatível com o renderizador e contém exclusivamente nossas novas poses de espada com duas mãos.
 
 ## Rastro do personagem — 0.6.7
 

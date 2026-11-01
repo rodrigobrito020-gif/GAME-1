@@ -278,5 +278,5 @@ writeFileSync(
   JSON.stringify(manifest, null, 2) + "\n",
 );
 console.log(
-  "Nove efeitos de habilidade empacotados, com preparação, impacto e dissipação.",
+  "Efeitos de habilidade empacotados, com preparação, impacto e dissipação.",
 );

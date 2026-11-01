@@ -19,7 +19,10 @@ await Promise.all(
     );
   }),
 );
-const previewSkills = ["avanco-de-luz"];
+const slamFx = await image(
+  "/assets/fx/royal-warrior/guerreiro-impacto-luz.png",
+);
+const previewSkills = ["avanco-de-luz", "impacto-de-luz"];
 const canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d");
 const readout = document.querySelector("output"),
@@ -62,7 +65,12 @@ function render() {
   } else if (move) {
     total = move.frames.length * rig.stepMs;
     const index = previewSkills.indexOf(action);
-    const tail = index < 0 ? 0 : total + LIGHT_AFTERIMAGES.lifetimeMs;
+    const tail =
+      action === "impacto-de-luz"
+        ? 2000
+        : index < 0
+          ? 0
+          : total + LIGHT_AFTERIMAGES.lifetimeMs;
     phase = elapsed % (Math.max(total, tail) + 350);
     const entry =
       move.frames[
@@ -117,6 +125,22 @@ function render() {
   ctx.beginPath();
   ctx.ellipse(300 + offset, 332 + offsetY, 68, 15, 0, 0, Math.PI * 2);
   ctx.fill();
+  if (action === "impacto-de-luz" && phase < 2000) {
+    const frame = Math.min(31, Math.floor((phase * 16) / 1000));
+    ctx.drawImage(
+      slamFx,
+      frame * 128,
+      0,
+      128,
+      128,
+      100,
+      332 - 400 * 0.72,
+      400,
+      400,
+    );
+  }
+  canvas.dataset.lift = String(lift);
+  canvas.dataset.phase = String(phase);
   let afterimages = 0;
   if (action === WARRIOR_LIGHT_DASH.id) {
     const axis = [

@@ -1,4 +1,15 @@
 {
+  "guerreiro-impacto-luz": {
+    "frames": 32,
+    "fps": 16,
+    "durationMs": 2000,
+    "impactMs": 550,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "chao"
+  },
   "guerreiro-avanco-luz": {
     "frames": 32,
     "fps": 20,

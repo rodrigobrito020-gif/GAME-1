@@ -4,6 +4,7 @@ import {
   WARRIOR_BASIC,
   WARRIOR_RETURN,
   WARRIOR_LIGHT_DASH,
+  WARRIOR_GROUND_SLAM,
 } from "./warrior.mjs";
 export const SKILLS = [
   {
@@ -17,6 +18,19 @@ export const SKILLS = [
     cooldownMs: 4000,
     range: WARRIOR_LIGHT_DASH.range,
     multiplier: 2,
+  },
+  {
+    id: WARRIOR_GROUND_SLAM.id,
+    name: "Impacto de Luz",
+    description:
+      "Salta e crava a espada no chão com as duas mãos. A aterrissagem atinge os inimigos ao redor do guerreiro.",
+    icon: "/assets/ui/royal-warrior/impacto-de-luz.svg",
+    key: "2",
+    manaCost: 12,
+    cooldownMs: 7000,
+    range: WARRIOR_GROUND_SLAM.range,
+    radius: WARRIOR_GROUND_SLAM.radius,
+    multiplier: 2.5,
   },
   {
     id: "investida",
@@ -51,10 +65,10 @@ export const SKILLS = [
     heal: 25,
   },
 ];
-// Only the ability currently under review is playable. Keep draft definitions
-// for later work, but do not expose, cast or automate them in this build.
-export const ACTIVE_SKILLS = SKILLS.filter(
-  (skill) => skill.id === WARRIOR_LIGHT_DASH.id,
+// Preserve the approved dash in slot 1; review the ground slam in slot 2.
+// Unapproved draft skills remain unavailable to both manual and automatic use.
+export const ACTIVE_SKILLS = SKILLS.filter((skill) =>
+  [WARRIOR_LIGHT_DASH.id, WARRIOR_GROUND_SLAM.id].includes(skill.id),
 );
 export const ITEMS = [
   {
@@ -148,7 +162,7 @@ export class LocalFarm {
     const c = this.character;
     c.equipment.slots ??= [];
     if (!account.farmVersion) {
-      c.automation.skillOrder = ACTIVE_SKILLS.map((s) => s.id);
+      c.automation.skillOrder = [WARRIOR_GROUND_SLAM.id];
       c.consumables.hpPotions = { pequena: 10 };
       c.consumables.manaPotions = { pequena: 10 };
       account.farmVersion = 1;
@@ -157,6 +171,13 @@ export class LocalFarm {
     c.automation.skillOrder = (c.automation.skillOrder ?? [])
       .map((id) => (id === "corte-poderoso" ? WARRIOR_LIGHT_DASH.id : id))
       .filter((id) => ACTIVE_SKILLS.some((skill) => skill.id === id));
+    // Once per save, isolate the new skill for review. Respect a deliberately
+    // empty order and preserve any later player edits across future restarts.
+    if (account.skillReviewVersion !== 2) {
+      if (c.automation.skillOrder.length)
+        c.automation.skillOrder = [WARRIOR_GROUND_SLAM.id];
+      account.skillReviewVersion = 2;
+    }
     c.progress.hp ||= 250;
     c.progress.mana = Math.max(0, c.progress.mana);
     this.recalculate();
@@ -429,6 +450,7 @@ export class LocalFarm {
     }
     const dx = target.x - client.x,
       dy = target.y - client.y;
+    const center = id === WARRIOR_GROUND_SLAM.id ? client : target;
     if (Math.hypot(dx, dy) > 0.01)
       client.facing =
         Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 2 : 1) : dy > 0 ? 0 : 3;
@@ -437,7 +459,7 @@ export class LocalFarm {
       skillId: id,
       target: target.id,
       origin: { x: Math.round(client.x * 10), y: Math.round(client.y * 10) },
-      dest: { x: Math.round(target.x * 10), y: Math.round(target.y * 10) },
+      dest: { x: Math.round(center.x * 10), y: Math.round(center.y * 10) },
       facing: client.facing,
     });
     events.cooldowns.push({
@@ -449,7 +471,7 @@ export class LocalFarm {
       ? h.monsters.filter(
           (m) =>
             m.hp > 0 &&
-            Math.hypot(m.x - target.x, m.y - target.y) <= skill.radius,
+            Math.hypot(m.x - center.x, m.y - center.y) <= skill.radius,
         )
       : [target];
     h.impacts.push({
@@ -460,7 +482,7 @@ export class LocalFarm {
       heal: skill.heal ?? 0,
       ...(dash ? { dash: true } : {}),
       ...(skill.radius
-        ? { area: { x: target.x, y: target.y, radius: skill.radius } }
+        ? { area: { x: center.x, y: center.y, radius: skill.radius } }
         : {}),
     });
     return { events, deltas };

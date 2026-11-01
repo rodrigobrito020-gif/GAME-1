@@ -134,8 +134,8 @@ test(
         .body.value;
       assert.deepEqual(
         catalog.skills.map((s) => s.id),
-        ["avanco-de-luz"],
-        "only the skill under review is exposed",
+        ["avanco-de-luz", "impacto-de-luz"],
+        "approved dash and new slam keep their native slots",
       );
       const scene = (await wait((m) => m.body?.case === "sceneEnter")).body
         .value;

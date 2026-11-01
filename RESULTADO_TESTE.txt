@@ -1,58 +1,50 @@
-JOGO LOCAL — 0.6.7: RASTRO DO PERSONAGEM NO DASH
+VERSAO 0.6.8 — IMPACTO DE LUZ
 Data: 01/11/2026
 
-ALTERAÇÃO
-O Avanço de Luz deixa imagens translúcidas do próprio guerreiro nas posições
-anteriores do avanço. Cada cópia preserva textura, quadro, direção, escala,
-espada e escudo, com tonalidade suave de luz e transparência decrescente.
+Segunda habilidade: salto, espada com duas mãos, cravada no chão e dano
+em área ao redor do guerreiro. Escudo preso ao antebraço esquerdo.
 
-- Intervalo nominal de 50ms, até cinco imagens visíveis e duração de 320ms.
-- Mistura normal preserva os detalhes sobre o piso marfim. O antigo modo
-  aditivo tendia a transformar as cópias em manchas brancas pouco legíveis.
-- Só emite durante o Avanço de Luz, com o corpo em movimento, vivo e dentro
-  da janela curta de emissão. Não deixa clones permanentes.
-- As imagens são visuais: não atacam, não recebem dano, não têm barras/nomes
-  e não alteram posição, colisão ou atributos do personagem.
-- O efeito comprido que parecia um projétil foi retirado da ativação;
-  as faíscas de contato permanecem na chegada.
-- Distância de 160–300, dano, custo, recarga, combate e progresso preservados.
-  Só o Avanço de Luz continua disponível.
+CONFERENCIA AUTOMATIZADA
+- 44 testes aprovados, nenhum reprovado, com o recursos-publicos.zip real.
+- Dano único aos 550ms; recuperação do corpo até 950ms.
+- Círculo de 150 unidades centrado na posição inicial do personagem.
+- Verifica os inimigos vivos no instante da aterrissagem: entrada, saída,
+  borda da área e perda do alvo inicial cobertas por testes.
+- Morte e saída da hunt cancelam o dano pendente.
+- Tentativa fora do alcance, sem mana ou com alvo inválido não consome recursos.
+- Migração da ordem automática ocorre uma vez, sem conceder itens/atributos
+  ou reiniciar nível, EXP, ouro, mochila ou armazém. Ordem vazia é respeitada.
+- Avanço de Luz permanece no atalho 1. Impacto de Luz fica no atalho 2.
+  Só a segunda habilidade fica no automático durante a revisão inicial.
+- As cinco folhas aprovadas (idle, walk, run1, weapon, special) permanecem
+  byte a byte idênticas. O salto utiliza uma folha adicional de poses próprias.
 
-ADAPTADOR LOCAL
-client-afterimages.mjs adapta um único trecho do renderer compatível para tornar
-as silhuetas legíveis e limitar seu tempo/quantidade. A versão é conferida antes
-de iniciar o servidor. O ZIP de recursos não é modificado ou redistribuído.
-Outros tipos de rastro conservam parâmetros anteriores. light-afterimages.mjs
-compartilha os parâmetros visuais com a prévia, que também mostra cópias de poses
-anteriores ao longo da trajetória.
+CONFERENCIA NO NAVEGADOR
+Chromium/Playwright, cliente real com WebGL, conta local e mapa próprio.
+- Farm normal de 21 segundos: 3 ativações e 3 impactos da nova habilidade.
+- Seis poses renderizadas; salto realmente levanta o corpo, sem deslocar
+  a posição no chão. Recuperação e retomada dos ataques básicos verificadas.
+- Prévia nas quatro direções, incluindo salto e espada cravada.
+- Rastro do Avanço de Luz continua visível na prévia, limitado a cinco cópias.
+- Cenário adicional isolado de QA: 3 inimigos próximos com vida elevada.
+  Duas ativações atingiram os 3 alvos cada, totalizando 6 danos registrados.
+  Esse cenário não é distribuído nem altera os monstros/saves dos jogadores.
+- Nenhum erro JavaScript nem aviso de animação; novas folhas/efeitos HTTP 200.
+- O cliente ainda consulta sons antigos ausentes no ZIP capturado; esta versão
+  não adiciona uma trilha sonora própria para a habilidade.
 
-VERIFICAÇÃO
-39 testes automatizados aprovados, nenhum pulado, com recursos-publicos.zip real.
-- Integração serve a adaptação esperada do script; os demais sistemas seguem
-  funcionando: autenticação, movimento, farm, inventário, progresso e persistência.
-- A ativação do dash não contém mais o efeito comprido de projétil.
-- Distância mínima, mana/recarga, dano, colisões e cancelamentos preservados.
-- O script adaptado foi verificado sintaticamente e executado no cliente real.
-
-CHROMIUM — 1440x900, ensaio de 25 segundos além da entrada/capturas
-- 4 usos do Avanço de Luz; nenhum evento de outra habilidade.
-- Três cópias simultâneas observadas nas amostras do renderer, dentro do limite.
-- As cópias usam a textura do herói e quadros reais de corrida; observadas
-  direções frente, costas e lateral.
-- Mistura normal, transparência decrescente e posições anteriores confirmadas.
-- Cópias mais antigas ficaram a mais de 40 unidades do corpo em movimento.
-- Nenhum clone permanente, exceção JavaScript ou aviso de falha de renderização.
-- O PNG do antigo projétil não foi solicitado durante o ensaio.
-- Prévia mostra cinco cópias no instante de chegada e nenhuma após a dissipação.
-
-LIMITES
-A pose e o desenho-base de 64px continuam iguais; este ajuste troca a leitura
-visual do avanço por cópias do personagem. Servidor local para uma conta.
-Testes em Linux/Chromium, sem execução em Windows físico.
+VALORES PROVISORIOS PARA AVALIACAO
+Alcance 75; área 150; dano 2,5x ataque; mana 12; recarga 7 segundos.
+A aparência do guerreiro continua fixa. Variações por equipamento ficam para
+uma etapa posterior. NPCs e inimigos continuam com suas artes provisórias.
 
 WINDOWS
-Feche o servidor antigo, extraia o ZIP em outra pasta e copie recursos-publicos.zip
-mais .local-runtime da versão anterior, com os servidores fechados, para preservar
-seu progresso. Execute ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5 no navegador.
-http://127.0.0.1:5188/jogar?demo=1
-Prévia: http://127.0.0.1:5188/guerreiro
+1. Encerre o servidor anterior com Ctrl+C.
+2. Extraia o ZIP novo em uma pasta separada.
+3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
+   se quiser manter seu progresso. Copie também recursos-publicos.zip, ou deixe
+   esse arquivo em Downloads.
+4. Abra ABRIR_CLIENTE_COPIADO.bat. O iniciador prepara as dependências com Node.
+5. No navegador, use Ctrl+F5 para recarregar.
+Jogo: http://127.0.0.1:5188/jogar?demo=1
+Previa: http://127.0.0.1:5188/guerreiro

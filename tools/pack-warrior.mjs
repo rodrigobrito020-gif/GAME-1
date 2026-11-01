@@ -136,6 +136,7 @@ function load(name, columns, rows = 4) {
   }
   return { ...image, grid };
 }
+const slam = load("ground-slam", 6, 3);
 const sword = load("sword-v2", 6, 3),
   reactions = load("reactions", 6);
 function pack(name, source, columns, choose, mirror = () => false, anchor) {
@@ -265,6 +266,20 @@ sources.weapon = pack(
     scale: 0.17,
   }),
 );
+// The renderer recognizes axeheavy (8 frames); use it for our sword slam.
+// Six authored poses plus repeated recovery frames keep the native schema.
+sources.axeheavy = pack(
+  "axeheavy",
+  slam,
+  8,
+  (r, c) => slam.grid[rowOf(r)][Math.min(c, 5)],
+  (r) => r === 1,
+  (r, c) => ({
+    center: ((Math.min(c, 5) + 0.5) * slam.width) / 6,
+    floor: slam.grid[rowOf(r)][Math.min(c, 5)].y1,
+    scale: 0.17,
+  }),
+);
 sources.special = pack(
   "special",
   reactions,
@@ -278,11 +293,11 @@ writeFileSync(
     {
       character: "Guerreiro Humano",
       skinId: "humano-guerreiro",
-      version: 4,
+      version: 5,
       frame: [64, 64],
       feet: [32, 60],
       rows: ["south", "west", "east", "north"],
-      sheets: { idle: 4, walk: 4, run1: 4, weapon: 6, special: 6 },
+      sheets: { idle: 4, walk: 4, run1: 4, weapon: 6, special: 6, axeheavy: 8 },
       walkStride: WALK_STRIDE,
       rig: "warrior-walk-rig.mjs",
       notes: [

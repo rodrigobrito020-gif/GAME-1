@@ -1,3 +1,4 @@
+import { LIGHT_AEGIS } from "/defense-buff.mjs";
 import { LIGHT_AFTERIMAGES } from "/light-afterimages.mjs";
 import {
   WARRIOR_SHEETS,
@@ -71,11 +72,14 @@ function render() {
   } else if (move) {
     total = move.frames.length * rig.stepMs;
     const index = previewSkills.indexOf(action);
-    const tail = ["impacto-de-luz", "egide-de-luz"].includes(action)
-      ? 2000
-      : index < 0
-        ? 0
-        : total + LIGHT_AFTERIMAGES.lifetimeMs;
+    const tail =
+      action === "egide-de-luz"
+        ? LIGHT_AEGIS.applyAtMs + LIGHT_AEGIS.durationMs + 800
+        : action === "impacto-de-luz"
+          ? 2000
+          : index < 0
+            ? 0
+            : total + LIGHT_AFTERIMAGES.lifetimeMs;
     phase = elapsed % (Math.max(total, tail) + 350);
     const entry =
       move.frames[
@@ -147,7 +151,10 @@ function render() {
   canvas.dataset.lift = String(lift);
   canvas.dataset.phase = String(phase);
   if (action === "egide-de-luz") {
-    if (phase >= 300 && phase < 2000) {
+    if (
+      phase >= LIGHT_AEGIS.applyAtMs &&
+      phase < LIGHT_AEGIS.applyAtMs + LIGHT_AEGIS.durationMs
+    ) {
       const frame = Math.floor(((phase - 300) * 16) / 1000) % 32;
       ctx.drawImage(
         aegisAura,
@@ -155,10 +162,10 @@ function render() {
         0,
         128,
         128,
-        184,
-        332 - 232 * 0.92,
-        232,
-        232,
+        150,
+        332 - 300 * 0.72,
+        300,
+        300,
       );
     }
   }

@@ -1,8 +1,16 @@
-# Jogo local — 0.6.10: Égide de Luz
+# Jogo local — 0.6.11: aura da Égide e recarga acima do personagem
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Aura contínua e círculo de recarga — 0.6.11
+
+A Égide agora mantém um **aro dourado com três pequenos escudos/luzes orbitando os pés**, em vez da cúpula discreta atrás do corpo. O efeito permanece em loop durante os 12 segundos de proteção, acompanha o deslocamento e se dissipa ao remover o buff. A borda em ouro escuro melhora a leitura sobre o piso claro do Pátio da Coroa. A ativação anterior foi preservada.
+
+Acima do personagem aparece o ícone circular da Égide com um arco de progresso e a contagem da **recarga real de 20 segundos**. Ele acompanha o personagem, os movimentos da câmera e as mudanças de tamanho da janela. Não cobre o nome/barra de vida e não recebe cliques. Some quando a recarga termina, ao morrer/sair da tela ou ao trocar de cena; uma nova ativação reinicia a contagem. O relógio vem dos eventos de recarga do servidor.
+
+O indicador de 12 segundos junto ao painel continua representando a **duração do buff**, e o círculo acima da cabeça representa a **recarga**. Portanto, a aura termina antes do círculo. A prévia também mantém a aura pelos 12 segundos reais. Defesa, custos, recarga, animações aprovadas, automação, progresso e inventários foram preservados. O adaptador local acrescenta apenas a comunicação dos indicadores de HUD; o ZIP capturado permanece intacto.
 
 ## Terceira habilidade — Égide de Luz (0.6.10)
 

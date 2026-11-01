@@ -11,7 +11,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:net";
 import { once } from "node:events";
 import { fileURLToPath } from "node:url";
@@ -86,6 +86,19 @@ test(
       assert.deepEqual(
         Buffer.from(original),
         withDefenseBuffUi(withLightAfterimages(read("main-Du8N-0Wf.js"))),
+      );
+      const syntax = spawnSync(
+        process.execPath,
+        ["--check", "--input-type=module"],
+        {
+          input: Buffer.from(original),
+          encoding: "utf8",
+        },
+      );
+      assert.equal(
+        syntax.status,
+        0,
+        "adapted native client must parse: " + syntax.stderr,
       );
       const messages = [];
       let requestId = 0;

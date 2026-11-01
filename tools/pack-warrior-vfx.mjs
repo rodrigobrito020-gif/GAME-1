@@ -138,31 +138,71 @@ function frame(fx, index) {
   if (fx.kind.startsWith("aegis")) {
     const loop = fx.kind === "aegis-loop",
       finish = fx.kind === "aegis-fade";
-    const alpha = loop
-      ? 0.34 + 0.055 * Math.sin(t * Math.PI * 2)
-      : finish
-        ? (1 - smooth(t)) * 0.55
-        : before * fade * 0.9;
-    const scale = loop
-      ? 0.98 + 0.025 * Math.sin(t * Math.PI * 2)
-      : finish
+    if (loop) {
+      // Keep a readable gold ring at the feet, with three moving light motes.
+      // A full turn uses exactly one flipbook cycle; do not fade the loop away.
+      paint(pixels, fx, {
+        scaleX: 1.08,
+        scaleY: 0.84,
+        cy: 92,
+        alpha: 0.87 + 0.06 * Math.sin(t * Math.PI * 2),
+        phase: t,
+      });
+      // A bronze edge remains readable on the courtyard's pale stone.
+      for (let y = 69; y < 115; y++)
+        for (let x = 12; x < 117; x++) {
+          const d = Math.hypot(x - 64, (y - 92) / 0.375);
+          const alpha = Math.exp(-Math.pow((d - 49) / 0.7, 2)) * 0.65;
+          if (alpha > 0.03) blend(pixels, x, y, 119, 76, 21, alpha);
+        }
+      for (let i = 0; i < 3; i++) {
+        const angle = (index / fx.frames) * Math.PI * 2 + (i * Math.PI * 2) / 3;
+        paint(
+          pixels,
+          { ...fx, cell: 0 },
+          {
+            scaleX: 0.2,
+            scaleY: 0.2,
+            cx: 64 + Math.cos(angle) * 48,
+            cy: 87 + Math.sin(angle) * 18,
+            alpha: 0.97,
+          },
+        );
+        for (let tail = 6; tail >= 0; tail--) {
+          const angle =
+            (index / fx.frames) * Math.PI * 2 +
+            (i * Math.PI * 2) / 3 -
+            tail * 0.065;
+          glint(
+            pixels,
+            64 + Math.cos(angle) * 48,
+            92 + Math.sin(angle) * 18,
+            tail === 0 ? 2.6 : 1.3,
+            tail === 0 ? 0.98 : 0.42 * (1 - tail / 7),
+          );
+        }
+      }
+    } else {
+      const alpha = finish ? (1 - smooth(t)) * 0.55 : before * fade * 0.9;
+      const scale = finish
         ? 0.9 + t * 0.18
         : 0.72 + before * 0.24 + after * 0.06;
-    paint(pixels, fx, {
-      scaleX: scale,
-      scaleY: scale,
-      cy: loop ? 68 : 61,
-      alpha,
-      phase: t,
-    });
-    for (let i = 0; i < 6; i++)
-      glint(
-        pixels,
-        64 + Math.sin(i * 2.4 + t * 2) * 35,
-        105 - ((t + i / 6) % 1) * 70,
-        1.2,
-        alpha * 0.55,
-      );
+      paint(pixels, fx, {
+        scaleX: scale,
+        scaleY: scale,
+        cy: 61,
+        alpha,
+        phase: t,
+      });
+      for (let i = 0; i < 6; i++)
+        glint(
+          pixels,
+          64 + Math.sin(i * 2.4 + t * 2) * 35,
+          105 - ((t + i / 6) % 1) * 70,
+          1.2,
+          alpha * 0.55,
+        );
+    }
   } else if (fx.kind === "light-dash") {
     // A low ribbon of white/gold wind, followed by sparse light motes. It
     // spans the path at cast time and fades independently after landing.

@@ -1,3 +1,7 @@
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { decodeRgba } from "../png.mjs";
+import { vfxDefinition } from "../warrior-vfx.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { LIGHT_AEGIS as AEGIS, TeamDefenseBuff } from "../defense-buff.mjs";
@@ -286,4 +290,37 @@ test("no mana and dead caster reject the buff without cooldown, and reloading a 
   const reloaded = new LocalFarm(JSON.parse(JSON.stringify(a.account)));
   assert.equal(reloaded.character.derived.def, 0);
   assert.equal(reloaded.character.wallet.gold, 1234);
+});
+
+test("aegis orbit keeps visible painted content throughout a moving, seamless ground loop", () => {
+  const def = vfxDefinition("guerreiro-egide-aura");
+  assert.equal(def.loop, true);
+  assert.equal(def.camada, "chao");
+  const image = decodeRgba(
+    readFileSync(
+      new URL("../art/warrior/vfx/guerreiro-egide-aura.png", import.meta.url),
+    ),
+  );
+  const masses = [],
+    hashes = new Set();
+  for (let frame = 0; frame < def.frames; frame++) {
+    const data = Buffer.alloc(128 * 128 * 4);
+    let alpha = 0;
+    for (let y = 0; y < 128; y++) {
+      const at = (y * image.width + frame * 128) * 4;
+      image.pixels.copy(data, y * 128 * 4, at, at + 128 * 4);
+    }
+    for (let at = 3; at < data.length; at += 4) alpha += data[at];
+    masses.push(alpha);
+    hashes.add(createHash("sha256").update(data).digest("hex"));
+  }
+  assert.ok(
+    Math.min(...masses) > 150000,
+    "visible ring in every frame, including the last frame",
+  );
+  assert.ok(
+    Math.min(...masses) > Math.max(...masses) * 0.75,
+    "active aura must not fade like the cast effect",
+  );
+  assert.ok(hashes.size > 24, "moving orbit rather than a still frame");
 });

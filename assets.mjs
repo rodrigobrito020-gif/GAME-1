@@ -1,4 +1,7 @@
 import { adaptIdle } from "./png.mjs";
+import { readFileSync } from "node:fs";
+import { WARRIOR_SKIN, WARRIOR_SHEETS, warriorRig } from "./warrior.mjs";
+import { warriorEffects, warriorFx, warriorIcon } from "./warrior-fx.mjs";
 export function localAssets(byName, status) {
   const first = (name) => byName.get(name)?.[0]?.read();
   const sheets = new Map(),
@@ -17,6 +20,8 @@ export function localAssets(byName, status) {
   const looks = JSON.parse(first("paperdoll-looks.json"));
   looks.entities["local-sombra"] = Object.keys(frames);
   looks.looks["local-sombra"] = { entity: "local-sombra" };
+  looks.entities[WARRIOR_SKIN] = Object.keys(WARRIOR_SHEETS);
+  looks.looks[WARRIOR_SKIN] = { entity: WARRIOR_SKIN };
   const errors = JSON.parse(first("errors.json"));
   Object.assign(errors, {
     "errors.local.not_implemented":
@@ -46,6 +51,50 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    if (
+      pathname === "/data/paperdoll.json" ||
+      pathname === "/data/effects.json"
+    ) {
+      const name = pathname.split("/").at(-1),
+        original = first(name);
+      if (!original) return null;
+      return {
+        type: "application/json",
+        bytes: Buffer.from(
+          JSON.stringify(
+            name === "paperdoll.json"
+              ? warriorRig(JSON.parse(original))
+              : warriorEffects(JSON.parse(original)),
+          ),
+        ),
+      };
+    }
+    const hero =
+      /^\/assets\/paperdoll\/entities\/humano-guerreiro\/([a-z0-9]+)\.png$/.exec(
+        pathname,
+      );
+    if (hero && WARRIOR_SHEETS[hero[1]]) {
+      const key = "hero-" + hero[1];
+      if (!sheets.has(key))
+        sheets.set(
+          key,
+          readFileSync(
+            new URL(`./art/warrior/${hero[1]}.png`, import.meta.url),
+          ),
+        );
+      return { type: "image/png", bytes: sheets.get(key) };
+    }
+    const effect = /^\/assets\/fx\/royal-warrior\/([a-z-]+)\.svg$/.exec(
+      pathname,
+    );
+    const icon = /^\/assets\/ui\/royal-warrior\/([a-z-]+)\.svg$/.exec(pathname);
+    if (effect || icon) {
+      const key = pathname;
+      if (!sheets.has(key))
+        sheets.set(key, effect ? warriorFx(effect[1]) : warriorIcon(icon[1]));
+      if (sheets.get(key))
+        return { type: "image/svg+xml", bytes: sheets.get(key) };
+    }
     if (pathname === "/assets/monsters/local-treino/anim.json")
       return {
         type: "application/json",

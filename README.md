@@ -1,8 +1,20 @@
-# Cliente capturado + servidor local — 0.5.1: cidade medieval e interface branca e dourada
+# Jogo local — 0.6.0: Guerreiro Humano
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Guerreiro Humano — 0.6.0
+
+O jogador agora usa um personagem humano original: cabelo escuro, rosto visível, armadura marfim com detalhes dourados, capa curta e espada de aço. As folhas próprias incluem repouso, caminhada, espada, preparação de habilidade, reação a dano e derrota, com quatro direções. A corrida reutiliza os quadros de caminhada em cadência maior.
+
+As quatro habilidades têm movimentos e efeitos próprios: corte crescente dourado, rastro da investida, impacto do golpe destruidor e aura da fúria. Cada golpe reserva sua preparação e recuperação; o servidor aplica o dano no quadro de impacto (350, 400, 600 e 300 ms, respectivamente). O ataque básico usa 200 ms. Sair da hunt ou morrer cancela os golpes pendentes. Valores de dano, custo de mana e recarga foram preservados.
+
+**Prévia interativa:** com o servidor aberto, acesse **http://127.0.0.1:5188/guerreiro**. É possível ver as quatro direções, pausar, avançar quadros e testar cada sequência. A prévia usa as mesmas folhas e sequências do jogo; o jogador também está integrado à cidade e às hunts.
+
+A atualização troca apenas a aparência do jogador. Não concede equipamentos, não substitui itens e não reinicia nível, ouro, EXP, mochila ou armazém. NPCs e monstros conservam os visuais provisórios atuais. A armadura e a espada desenhadas são uma aparência inicial fixa: trocar equipamentos ainda altera os atributos, mas não as peças do desenho.
+
+Fontes e contrato de animação estão em **art/warrior/README.md**, **manifest.json** e **warrior.mjs**. Servirão como base técnica para as próximas classes, que precisarão de suas próprias artes e ações.
 
 ## Correção da hunt — 0.5.1
 
@@ -48,8 +60,8 @@ O nível sobre o personagem é atualizado ao evoluir, sem precisar sair da caça
 ## Conteúdo e limites deste teste
 
 - A cidade medieval é um mapa e arte próprios do projeto, com colisões correspondentes no cliente e no servidor. As duas arenas continuam usando o cenário capturado anterior e sua grade de colisões. A praça medieval permanece segura, sem monstros.
-- Não vieram os sprites completos de monstros nem as animações completas dos personagens. Avatar e inimigos usam **artes provisórias derivadas da sombra idle disponível**. Os GIFs de prévia não equivalem às folhas completas de animação. Não recuperamos as animações ausentes.
-- As habilidades usam eventos reais de combate no cliente, com dano e cura calculados no servidor. Alguns efeitos gráficos e áudios não vieram no pacote e continuam indisponíveis.
+- Não vieram os sprites completos de monstros nem as animações completas dos personagens. O jogador usa o Guerreiro Humano original desta versão. NPCs e inimigos ainda usam a sombra provisória disponível no pacote; suas novas artes ficam para outra etapa.
+- As habilidades usam eventos reais de combate no cliente, com dano e cura calculados no servidor. Os efeitos das quatro habilidades do guerreiro foram criados localmente. Alguns outros efeitos gráficos e áudios não vieram no pacote e continuam indisponíveis.
 - Itens implementados: fragmento empilhável, espada e peitoral de treino. Cada abate dá fragmento se houver espaço; a cada três abates da caçada, uma espada ou peitoral. Com mochila cheia, não entram itens novos; o jogo continua concedendo EXP e ouro. Retirar equipamento com a mochila cheia é recusado.
 - Poções pequenas de vida/mana consomem estoque, recuperam 40% e têm intervalo de 1,5 segundo. O protocolo de compra funciona na cidade: dez ouros por poção, sem ouro ou itens gratuitos repetidos.
 - Números de dano, monstros, drops, progressão, cura na cidade e preços são **regras provisórias para testar a base**, não o balanceamento do jogo original nem decisões finais aprovadas.
@@ -77,7 +89,13 @@ set "TEST_CAPTURE_ZIP=C:\caminho\recursos-publicos.zip"
 npm test
 ```
 
-São dezesseis testes automatizados: codec, PNG, combate, respawn, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, capacidade, poções e integração real WebSocket com o protocolo capturado. O teste da cidade confere caminhos até os três serviços e ao portão, passagem ao redor da fonte e bloqueio das construções. A integração confere a nova grade da cidade e a grade separada das arenas; também reinicia o processo do servidor e verifica os dados restaurados. Sem o ZIP, a integração é explicitamente pulada; os testes das regras próprias continuam disponíveis. O cliente também foi aberto no Chromium para testar a interface e o ciclo de farm. Consulte **RESULTADO_TESTE.txt**.
+São **21 testes automatizados**: protocolo, PNG, combate, habilidades, morte, progressão, itens, equipamentos, vendas, armazém, cidade e integração real WebSocket. Os novos testes verificam quadros distintos, transparência, ausência de corte das armas, alinhamento dos pés, efeitos locais e sincronização dos golpes. A integração também migra uma aparência antiga e verifica ouro, EXP, poções e item guardado após reiniciar o processo. Sem o ZIP, a integração é explicitamente pulada. O jogo e a prévia também são verificados no Chromium. Consulte **RESULTADO_TESTE.txt**.
+
+Para reempacotar as fontes originais do guerreiro (não é necessário para jogar):
+
+```bat
+npm run art:warrior
+```
 
 ## Dados e isolamento
 
@@ -85,6 +103,6 @@ Conta e progresso: **.local-runtime/account.json**. Não apague essa pasta para 
 
 Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. Scripts e estilos compilados do cliente permanecem sem alteração; uma folha de estilo própria aplica o tema branco e dourado. O servidor fornece o novo mapa e compõe sua textura com a arte em `art/medieval-ivory-gold.png`. Os demais recursos continuam sendo lidos do ZIP local.
 
-O GitHub contém código próprio e adaptadores, com a nova arte medieval própria e sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
+O GitHub contém código próprio e adaptadores, com as artes próprias da cidade e do guerreiro e sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
 
 Diagnóstico: **http://127.0.0.1:5188/diagnostico**.

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Guerreiro Humano · Atelier da Coroa</title>
+    <link rel="stylesheet" href="/warrior-preview.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <p>ATELIER DA COROA · PERSONAGEM 01</p>
+        <h1>Guerreiro Humano</h1>
+        <span
+          >Armadura de marfim. Aço e ouro. Uma nova base para o nosso
+          mundo.</span
+        >
+      </header>
+      <section class="stage">
+        <canvas
+          width="600"
+          height="420"
+          aria-label="Prévia animada do Guerreiro Humano"
+        ></canvas
+        ><output id="frame" aria-live="off">Carregando arte…</output>
+      </section>
+      <nav aria-label="Direção">
+        <button data-direction="3">Costas ↑</button
+        ><button data-direction="1">← Esquerda</button
+        ><button data-direction="0" aria-pressed="true">Frente ↓</button
+        ><button data-direction="2">Direita →</button>
+      </nav>
+      <nav class="actions" aria-label="Animação">
+        <button data-action="idle" aria-pressed="true">Repouso</button
+        ><button data-action="walk">Caminhada</button
+        ><button data-action="run1">Corrida</button
+        ><button data-action="humano-espada">Espada</button
+        ><button data-action="corte-poderoso">1 · Corte Poderoso</button
+        ><button data-action="investida">2 · Investida</button
+        ><button data-action="golpe-destruidor">3 · Golpe Destruidor</button
+        ><button data-action="furia-guerreiro">4 · Fúria</button
+        ><button data-action="humano-ferido">Ferido</button
+        ><button data-action="death">Derrotado</button>
+      </nav>
+      <div class="playback">
+        <button id="pause">Pausar</button
+        ><button id="step">Avançar quadro</button
+        ><label
+          >Velocidade
+          <select id="speed">
+            <option value=".5">0,5×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.5">1,5×</option>
+          </select></label
+        >
+      </div>
+      <footer>
+        <a href="/jogar?demo=1">Entrar no jogo →</a>
+        <p>
+          Esta prévia usa as mesmas folhas e sequências do jogador. Corrida
+          reutiliza a caminhada com cadência maior. Aparência inicial fixa;
+          variações por equipamento ficam para a próxima etapa.
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="/warrior-preview.js"></script>
+  </body>
+</html>

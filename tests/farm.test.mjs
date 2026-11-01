@@ -87,10 +87,19 @@ test("skills validate target, range, mana and cooldown; basic attacks continue w
   const mp = farm.character.progress.mana;
   const cast = farm.cast(client, SKILLS[0].id, target.id);
   assert.equal(farm.character.progress.mana, mp - 8);
-  assert.ok(cast.events.damage.length);
+  assert.equal(
+    cast.events.damage.length,
+    0,
+    "windup must not deal damage immediately",
+  );
+  const hp = target.hp;
+  assert.equal(advance(300).events.damage.length, 0);
+  assert.equal(target.hp, hp);
+  assert.ok(advance(50).events.damage.some((e) => e.skillId === SKILLS[0].id));
+  assert.ok(target.hp < hp, "damage lands on the 350ms animation impact");
   assert.throws(() => farm.cast(client, SKILLS[0].id, target.id), /cooldown/);
   farm.character.progress.mana = 0;
-  for (let n = 0; n < 25; n++) advance();
+  for (let n = 0; n < 45; n++) advance();
   assert.ok(client.hunt.session.kills > 0);
 });
 test("death stops rewards and returns to city, while leaving ends simulation immediately", () => {

@@ -1,47 +1,67 @@
-JOGO LOCAL — 0.5.1: MONSTROS VISÍVEIS NA HUNT
-Data local: 30/10/2026
+JOGO LOCAL — 0.6.0: GUERREIRO HUMANO
+Data: 01/11/2026 (America/Sao_Paulo)
 
-PROBLEMA REPRODUZIDO
-Os monstros eram criados no servidor, recebiam ataques e concediam recompensas,
-mas suas imagens e barras de vida ficavam fora da tela. O pivô da animação usava
-coordenadas em pixels (48,100), enquanto o renderer aplica origens proporcionais
-à largura e altura do quadro.
+ENTREGUE
+Personagem original marfim/dourado integrado ao jogador, com rosto humano,
+cabelo escuro, capa curta e espada de aço. Folhas RGBA para repouso, caminhar,
+espada e reações, em quatro direções. A corrida usa a caminhada mais rápida.
+O catálogo, o estado da conta, o spawn do jogador e o retrato usam a nova arte.
+NPCs e monstros continuam usando as aparências provisórias anteriores.
 
-CORREÇÃO
-assets.mjs agora fornece pivo.x=0.5 e pivo.y=100/112 para o quadro de 96x112.
-As imagens ficam alinhadas aos pontos de nascimento e acompanham os monstros
-no mundo. O ajuste vale para ambas as arenas, que usam o mesmo spriteDir.
-As imagens, regras de combate, drops, dados salvos, cidade e tema não foram
-substituídos nesta correção.
+As habilidades Corte Poderoso, Investida, Golpe Destruidor e Fúria do Guerreiro
+têm movimentos e efeitos próprios, além de ícones locais. O servidor agenda
+o dano nos impactos de 350/400/600/300ms; a espada básica usa 200ms.
+Não há ataque básico sobreposto à recuperação de uma habilidade. Saída da
+hunt e morte cancelam impactos pendentes. Dano, mana, recargas e recompensas
+mantêm os valores de teste existentes. Reações leves a dano ocorrem entre ações.
 
-TESTES AUTOMATIZADOS: 16 testes, nenhum pulado, com o ZIP real.
-- Novo teste confere que o pivô é proporcional e que a projeção do quadro
-  permanece perto das três posições de nascimento no mapa.
-- Integração HTTP verifica a animação realmente fornecida pelo servidor.
-- Integração WebSocket verifica nascimento, dano, habilidades, mortes, retorno,
-  drops, inventário, equipamentos, NPCs, vendas, armazém e retomada de sessão.
-- Reinício do processo confirma a conservação de ouro, EXP, poções e item guardado.
-- Demais testes: codec Protobuf, PNG, colisões da cidade, progressão, capacidade,
-  proteção de itens travados, ordenação e prevenção de duplicação de itens/ouro.
+Prévia interativa: /guerreiro, com direção, pausa, passo a passo e velocidade.
+Usa as mesmas folhas e sequências do jogo; não substitui a integração jogável.
+Fontes e contrato para as próximas classes: art/warrior/README.md.
 
-COMPARAÇÃO VISUAL — CHROMIUM, 1440x900
-Executada a mesma hunt com o pivô anterior e depois com o pivô corrigido.
-- Antes: monstros sem imagem próxima ao personagem, apesar do combate ocorrer.
-- Depois: inimigos visíveis perto do personagem com nome e barra vermelha.
-- Observados ataques, perda de vida, mortes, desaparecimento e reaparecimento.
-- Na execução corrigida: nove abates e respawn confirmado pelo protocolo.
-- EXP, ouro e itens continuaram sendo recebidos; retorno à cidade funcionou.
-- Nenhuma exceção JavaScript e nenhum aviso de falha das imagens/animações.
+TESTES AUTOMATIZADOS
+21 testes aprovados, nenhum pulado, com recursos-publicos.zip real.
+- Quatro direções e quadros realmente distintos de movimento/combate.
+- Transparência, margens sem corte de espada/capa e apoio dos pés consistente.
+- Sequências válidas e mesmos tempos de impacto no servidor e no rig.
+- Folhas e efeitos servidos localmente, com dimensão/pivô correspondentes.
+- Preparação e recuperação, dano retardado de cada habilidade e ataque básico.
+- Cancelamento após morte/saída e impossibilidade de sobrepor ações.
+- Integração HTTP/WebSocket com autenticação, movimento, combate, habilidades,
+  mortes, retorno, drops, EXP, itens, equipamento, NPCs, venda e armazém.
+- Reinício com aparência antiga migra o jogador para humano e conserva ouro,
+  EXP, poções e item guardado; NPCs conservam a aparência anterior.
+- Regressões de protocolo, PNG, capacidade, proteção de itens, ordenação e
+  grade da cidade medieval separada da grade das arenas.
 
-LIMITES
-Os inimigos ainda usam a sombra provisória disponível no pacote. Esta correção
-resolve sua posição na tela; não acrescenta artes completas de monstros.
-A cidade medieval e a interface branca/dourada da versão 0.5 permanecem.
-Servidor local para uma conta; sem implantação em VPS ou multiplayer.
+CHROMIUM — JOGO
+Desktop 1440x900: caminhada WASD e snapshots das quatro direções; guerreiro
+visível na cidade e na hunt; as quatro habilidades utilizadas; seis abates,
+EXP/ouro/drops recebidos e retorno confirmado pela interface.
+Nenhuma exceção JavaScript ou aviso de falha da arte/animação do personagem.
+Todos os novos recursos solicitados do guerreiro responderam HTTP 200.
+Os áudios e outros recursos antigos ausentes do pacote continuam registrados
+pelo diagnóstico; não são apresentados como implementados nesta versão.
+
+PRÉVIA E TELA MENOR
+Quarenta combinações de direção/ação verificadas na prévia, incluindo ferido
+e derrotado. Pausa e avanço de quadro exercitados. Jogo aberto em 390x844,
+com folha humana carregada e sem exceção JavaScript. O HUD compacto do cliente
+oculta parte das informações nessa resolução; não confundir com falha do login.
+
+LIMITES DESTA PRIMEIRA VERSÃO
+Aparência de armadura/espada fixa; equipar muda atributos, ainda não o desenho.
+Corrida sem poses exclusivas. Grito de guerra vira de frente nas direções laterais.
+Há espaço para refinamento manual dos quadros e da consistência entre poses.
+Outras classes, monstros próprios e NPCs próprios não foram criados nesta etapa.
+O servidor permanece local e para uma conta. Não houve implantação na VPS.
+Testes executados em Linux/Chromium; não foi usada máquina Windows física.
 
 ABRIR NO WINDOWS
-Encerre o servidor anterior, extraia o novo ZIP, mantenha recursos-publicos.zip
-junto de ABRIR_CLIENTE_COPIADO.bat ou em Downloads e execute o BAT.
-Para conservar o progresso, copie .local-runtime da versão anterior com ambos
-os servidores fechados. Node.js 22.12+ ou 24 LTS.
-Testes executados em Linux/Chromium; não foi usada máquina Windows física.
+Encerre o servidor anterior com Ctrl+C, extraia o novo ZIP e coloque o seu
+recursos-publicos.zip junto de ABRIR_CLIENTE_COPIADO.bat. Para manter o progresso,
+copie a pasta .local-runtime da versão anterior com ambos os servidores fechados.
+Abra o BAT e mantenha seu terminal aberto. Requer Node.js 22.12+ ou 24 LTS.
+Jogo: http://127.0.0.1:5188/jogar?demo=1
+Prévia: http://127.0.0.1:5188/guerreiro
+Se necessário, atualize a aba com Ctrl+F5 para descartar a aparência em memória.

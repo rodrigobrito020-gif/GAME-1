@@ -1,9 +1,10 @@
 // Own local gameplay rules. These are test values, not the original server rules.
+import { WARRIOR_ACTIONS, WARRIOR_BASIC } from "./warrior.mjs";
 export const SKILLS = [
   {
     id: "corte-poderoso",
     name: "Corte Poderoso",
-    icon: "/assets/ui/v2/ataque_24.png",
+    icon: "/assets/ui/royal-warrior/corte-poderoso.svg",
     key: "1",
     manaCost: 8,
     cooldownMs: 4000,
@@ -13,7 +14,7 @@ export const SKILLS = [
   {
     id: "investida",
     name: "Investida",
-    icon: "/assets/ui/v2/agilidade.png",
+    icon: "/assets/ui/royal-warrior/investida.svg",
     key: "2",
     manaCost: 12,
     cooldownMs: 7000,
@@ -23,7 +24,7 @@ export const SKILLS = [
   {
     id: "golpe-destruidor",
     name: "Golpe Destruidor",
-    icon: "/assets/ui/v2/ataque_24.png",
+    icon: "/assets/ui/royal-warrior/golpe-destruidor.svg",
     key: "3",
     manaCost: 15,
     cooldownMs: 9000,
@@ -34,7 +35,7 @@ export const SKILLS = [
   {
     id: "furia-guerreiro",
     name: "Fúria do Guerreiro",
-    icon: "/assets/ui/v2/agilidade.png",
+    icon: "/assets/ui/royal-warrior/furia-guerreiro.svg",
     key: "4",
     manaCost: 10,
     cooldownMs: 14000,
@@ -180,6 +181,8 @@ export class LocalFarm {
       area,
       nextAttack: now,
       nextCast: now,
+      actionUntil: now,
+      impacts: [],
       nextRegen: now + 1000,
       cooldowns: {},
       target: 0,
@@ -214,6 +217,7 @@ export class LocalFarm {
   }
   stop(client) {
     client.hunt = null;
+    client.combatAnimUntil = 0;
     client.target = null;
     client.route = [];
     client.until = 0;
@@ -330,7 +334,7 @@ export class LocalFarm {
     const skill = SKILLS.find((s) => s.id === id);
     if (!h || h.deadAt || !c.progress.hp) throw Error("local.not_hunting");
     if (!skill) throw Error("local.invalid_skill");
-    if ((h.cooldowns[id] ?? 0) > now || h.nextCast > now)
+    if ((h.cooldowns[id] ?? 0) > now || h.nextCast > now || h.actionUntil > now)
       throw Error("local.cooldown");
     if (c.progress.mana < skill.manaCost) throw Error("local.no_mana");
     const target = h.monsters.find((m) => m.id === targetId && m.hp > 0);
@@ -341,8 +345,14 @@ export class LocalFarm {
       throw Error("local.invalid_target");
     c.progress.mana -= skill.manaCost;
     h.cooldowns[id] = now + skill.cooldownMs;
-    h.nextCast = now + 600;
-    client.combatAnimUntil = now + 450;
+    const action = WARRIOR_ACTIONS[id];
+    h.nextCast = h.actionUntil = now + action.duration;
+    client.combatAnimUntil = h.actionUntil;
+    const dx = target.x - client.x,
+      dy = target.y - client.y;
+    if (Math.hypot(dx, dy) > 0.01)
+      client.facing =
+        Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 2 : 1) : dy > 0 ? 0 : 3;
     events.casts.push({
       caster: 1,
       skillId: id,
@@ -363,13 +373,13 @@ export class LocalFarm {
             Math.hypot(m.x - target.x, m.y - target.y) <= skill.radius,
         )
       : [target];
-    for (const m of targets)
-      this.hit(h, m, c.derived.atk * skill.multiplier, id, events, deltas);
-    if (skill.heal) {
-      const amount = Math.min(skill.heal, c.derived.maxHp - c.progress.hp);
-      c.progress.hp += amount;
-      if (amount) events.heals.push({ source: 1, target: 1, amount });
-    }
+    h.impacts.push({
+      at: now + action.impact,
+      targets: targets.map((m) => m.id),
+      amount: c.derived.atk * skill.multiplier,
+      skillId: id,
+      heal: skill.heal ?? 0,
+    });
     return { events, deltas };
   }
   step(client, { free = () => true, route = () => [] } = {}) {
@@ -382,6 +392,19 @@ export class LocalFarm {
     if (!h) return { events, deltas, spawned };
     if (h.deadAt)
       return { events, deltas, spawned, returnCity: now >= h.deadAt + 3000 };
+    for (const impact of h.impacts.filter((p) => p.at <= now)) {
+      for (const id of impact.targets) {
+        const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
+        if (monster)
+          this.hit(h, monster, impact.amount, impact.skillId, events, deltas);
+      }
+      const amount = Math.min(impact.heal, c.derived.maxHp - c.progress.hp);
+      if (amount > 0) {
+        c.progress.hp += amount;
+        events.heals.push({ source: 1, target: 1, amount });
+      }
+    }
+    h.impacts = h.impacts.filter((p) => p.at > now);
     const move = (unit, target, speed) => {
       const dx = target.x - unit.x,
         dy = target.y - unit.y,
@@ -422,7 +445,7 @@ export class LocalFarm {
       )[0];
     h.target = target?.id ?? 0;
     client.moving = false;
-    if (target) {
+    if (target && now >= h.actionUntil) {
       if (
         Math.hypot(target.x - client.x, target.y - client.y) >
         c.derived.attackRange
@@ -430,7 +453,16 @@ export class LocalFarm {
         const way = route(client, target)[0] ?? target;
         client.moving = move(client, way, 160);
       } else {
-        client.facing = target.x < client.x ? 1 : 2;
+        const faceX = target.x - client.x,
+          faceY = target.y - client.y;
+        client.facing =
+          Math.abs(faceX) > Math.abs(faceY)
+            ? faceX > 0
+              ? 2
+              : 1
+            : faceY > 0
+              ? 0
+              : 3;
         for (const id of c.automation.skillOrder ?? []) {
           try {
             this.cast(client, id, target.id, events, deltas);
@@ -439,10 +471,28 @@ export class LocalFarm {
             /* An unavailable skill must not stall basic attacks. */
           }
         }
-        if (target.hp > 0 && now >= h.nextAttack) {
+        if (target.hp > 0 && now >= h.nextAttack && now >= h.actionUntil) {
           h.nextAttack = now + 1000;
-          client.combatAnimUntil = now + 350;
-          this.hit(h, target, c.derived.atk, "", events, deltas);
+          h.actionUntil = now + WARRIOR_BASIC.duration;
+          client.combatAnimUntil = h.actionUntil;
+          const dx = target.x - client.x,
+            dy = target.y - client.y;
+          const distance = Math.hypot(dx, dy) || 1;
+          events.moves.push({
+            entity: 1,
+            move: WARRIOR_BASIC.move,
+            target: target.id,
+            dirX: Math.round((dx / distance) * 1000),
+            dirY: Math.round((dy / distance) * 1000),
+            durationMs: WARRIOR_BASIC.duration,
+          });
+          h.impacts.push({
+            at: now + WARRIOR_BASIC.impact,
+            targets: [target.id],
+            amount: c.derived.atk,
+            skillId: "",
+            heal: 0,
+          });
         }
       }
     }
@@ -461,6 +511,17 @@ export class LocalFarm {
         );
         c.progress.hp -= amount;
         events.damage.push({ source: m.id, target: 1, amount });
+        if (c.progress.hp > 0 && now >= h.actionUntil) {
+          h.actionUntil = now + 300;
+          events.moves.push({
+            entity: 1,
+            move: "humano-ferido",
+            target: m.id,
+            dirX: 0,
+            dirY: 0,
+            durationMs: 300,
+          });
+        }
         if (!c.progress.hp) {
           h.deadAt = now;
           client.moving = false;

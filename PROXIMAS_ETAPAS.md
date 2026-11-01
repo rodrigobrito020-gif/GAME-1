@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.0: Guerreiro Humano original integrado ao jogador, folhas de repouso/caminhada/espada/reações, quatro habilidades com efeitos próprios, impacto sincronizado e prévia interativa. Progresso e equipamentos preservados.
+
 - 0.5.1: corrigido o pivô dos monstros para que sprites e barras de vida sejam desenhados dentro da tela na hunt.
 
 - 0.2: login local, cidade, movimento e colisões.
@@ -13,7 +15,7 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Próximas partes da construção
 
-1. Personagem próprio e animações de repouso, andar, ataque, habilidade e morte; monstros com aparência distinta.
+1. Refinar o Guerreiro Humano após a revisão visual do jogador. Criar variações visuais de equipamentos, corrida dedicada e artes distintas dos monstros e NPCs; o humano inicial já está integrado.
 2. Criação de personagens e classes, usando um catálogo próprio de habilidades e equipamentos.
 3. Ambientes de caça próprios, inimigos variados e chefes. As arenas conservam o mapa capturado anterior; a cidade medieval da versão 0.5 já é própria.
 4. Ampliar os equipamentos, raridades e progressão; balancear as recompensas com testes de jogo.
@@ -22,7 +24,7 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Decisões ainda em aberto
 
-- Nome final do jogo e artes próprias de personagens e monstros. A paleta branca/marfim/dourada e a cidade medieval foram aprovadas em 31/10/2026.
+- Nome final do jogo e artes das próximas classes/monstros. A paleta branca/marfim/dourada e a cidade medieval foram aprovadas em 31/10/2026. Começar pelo Guerreiro Humano e usá-lo como base das outras classes foi aprovado em 01/11/2026; a aparência inicial da 0.6 fica disponível para revisão visual.
 - Números definitivos de combate, progressão, preços e drops. Os atuais são de teste.
 - Quais sistemas do cliente serão mantidos ou removidos; não remover menus nesta etapa.
 - Regras de multiplayer e hospedagem desta nova base. O servidor atual serve somente uma conta local.

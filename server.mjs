@@ -77,6 +77,7 @@ const types = {
   ".ogg": "audio/ogg",
   ".woff2": "font/woff2",
   ".html": "text/html; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
 };
 const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praça da Coroa — RPG local</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"><link rel="stylesheet" href="/royal-theme.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" class="local-city-badge">PRAÇA DA COROA · SERVIDOR LOCAL</a><div id="game"></div><div id="ui"></div><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
 const server = createServer((req, res) => {
@@ -144,10 +145,18 @@ const server = createServer((req, res) => {
       "/diagnostic.js",
       "/diagnostic.css",
       "/local-boot.js",
+      "/guerreiro",
+      "/warrior-preview.js",
+      "/warrior-preview.css",
+      "/warrior.mjs",
     ].includes(pathname)
   ) {
     const file =
-      pathname === "/diagnostico" ? "diagnostic.html" : pathname.slice(1);
+      pathname === "/diagnostico"
+        ? "diagnostic.html"
+        : pathname === "/guerreiro"
+          ? "warrior-preview.html"
+          : pathname.slice(1);
     return reply(
       200,
       types[path.extname(file)],

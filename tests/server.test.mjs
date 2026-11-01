@@ -1,6 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, existsSync } from "node:fs";
+import {
+  mkdtempSync,
+  readFileSync,
+  writeFileSync,
+  rmSync,
+  existsSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
@@ -149,6 +155,22 @@ test(
       );
       const start = (await wait((m) => m.body?.case === "entitySpawn")).body
         .value.entities[0].state;
+      const spawnMessage = messages.find((m) => m.body?.case === "entitySpawn")
+        .body.value;
+      assert.equal(
+        spawnMessage.entities.find((e) => e.state.id === 1).skinId,
+        "humano-guerreiro",
+      );
+      assert.ok(
+        spawnMessage.entities
+          .filter((e) => e.state.kind === 4)
+          .every((e) => e.skinId === "local-sombra"),
+      );
+      const heroSheet = await fetch(
+        base + "/assets/paperdoll/entities/humano-guerreiro/weapon.png",
+      );
+      assert.equal(heroSheet.status, 200);
+      assert.match(heroSheet.headers.get("content-type"), /image\/png/);
       send("moveDir", { dirX: 1000, dirY: 0, seq: 1 });
       await new Promise((resolve) => setTimeout(resolve, 280));
       send("moveDir", { dirX: 0, dirY: 0, seq: 2 });
@@ -365,6 +387,10 @@ test(
       await once(ws, "close");
       child.kill("SIGTERM");
       await once(child, "exit");
+      const legacy = JSON.parse(readFileSync(path.join(data, "account.json")));
+      legacy.character.identity.skinId = "local-sombra";
+      legacy.character.identity.ownedSkins = ["local-sombra"];
+      writeFileSync(path.join(data, "account.json"), JSON.stringify(legacy));
       await startServer();
       messages.length = 0;
       ws = await connect();
@@ -372,6 +398,7 @@ test(
       assert.equal((await wait((m) => m.requestId === id)).body.case, "authOk");
       const restored = (await wait((m) => m.body?.case === "characterState"))
         .body.value;
+      assert.equal(restored.identity.skinId, "humano-guerreiro");
       assert.equal(restored.wallet.gold, String(saved.character.wallet.gold));
       assert.equal(restored.progress.xp, String(saved.character.progress.xp));
       assert.equal(restored.consumables.hpPotions.pequena, 12);

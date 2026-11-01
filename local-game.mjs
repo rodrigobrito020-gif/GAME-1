@@ -10,6 +10,7 @@ import {
 import path from "node:path";
 import { Protocol } from "./protocol.mjs";
 import { LocalFarm, AREAS, ITEMS, SKILLS } from "./farm.mjs";
+import { WARRIOR_SKIN } from "./warrior.mjs";
 export function attachLocalGame(
   server,
   {
@@ -50,7 +51,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-medieval-1";
+  catalog.version = "local-human-warrior-1";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -73,6 +74,13 @@ export function attachLocalGame(
     },
   ];
   catalog.skins = [
+    {
+      id: WARRIOR_SKIN,
+      name: "Guerreiro Humano — Coroa",
+      gender: 1,
+      classId: "guerreiro",
+      kit: [],
+    },
     {
       id: "local-sombra",
       name: "Sombra de teste local",
@@ -195,8 +203,8 @@ export function attachLocalGame(
     name: "Teste Local",
     gender: 1,
     classId: "guerreiro",
-    skinId: "local-sombra",
-    ownedSkins: ["local-sombra"],
+    skinId: WARRIOR_SKIN,
+    ownedSkins: [WARRIOR_SKIN],
     ownedHairStyles: ["curto"],
     appearance: {
       hairStyle: "curto",
@@ -261,8 +269,15 @@ export function attachLocalGame(
   if (!account.character.hunt.lastDeath?.diedAtMs)
     delete account.character.hunt.lastDeath;
   const farm = new LocalFarm(account);
-  account.character.identity.skinId = "local-sombra";
-  account.character.identity.ownedSkins = ["local-sombra"];
+  // Appearance migration only. Equipment, items, currency and progress stay intact.
+  const identity = account.character.identity;
+  if (identity.classId === "guerreiro") {
+    if (["", "local-sombra", "guerreiro-m"].includes(identity.skinId))
+      identity.skinId = WARRIOR_SKIN;
+    identity.ownedSkins = [
+      ...new Set([...(identity.ownedSkins ?? []), WARRIOR_SKIN]),
+    ];
+  }
   const persist = () => {
     writeFileSync(accountFile + ".tmp", JSON.stringify(account));
     renameSync(accountFile + ".tmp", accountFile);
@@ -493,7 +508,7 @@ export function attachLocalGame(
     state: actor(client),
     name: account.character.identity.name,
     level: account.character.progress.level,
-    skinId: "local-sombra",
+    skinId: account.character.identity.skinId,
     classId: account.character.identity.classId,
     scale: 1,
     appearance: account.character.identity.appearance,

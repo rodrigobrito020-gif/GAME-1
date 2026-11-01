@@ -592,3 +592,15 @@ body {
   background: #423321;
   border-radius: 50%;
 }
+
+/* Local combat controls and illustrated skill cards. */
+.royal-combat-control{position:fixed;right:18px;bottom:74px;width:260px;z-index:1000;padding:12px;background:linear-gradient(145deg,#fffbef,#f0e2bb);border:1px solid #b48b3a;border-radius:12px;color:#44351d;box-shadow:0 8px 30px #31241440;font:12px/1.45 system-ui;}
+.royal-combat-control[hidden],.royal-skill-card[hidden]{display:none}
+.royal-mode-toggle{width:100%;padding:10px 8px;background:#6b4c21;color:#fff6db;border:1px solid #c99d4c;border-radius:7px;font:bold 11px system-ui;cursor:pointer}
+.royal-mode-help{margin:8px 0 6px;color:#5a503b}.royal-evade-status{font-weight:700;color:#765515}
+.slHudRoll{display:none!important}.slHudSkillArt{object-fit:cover!important;image-rendering:auto!important}.slHudSkill:not(.slHudRoll){border:2px solid #be9a51!important;border-radius:9px!important;overflow:hidden;box-shadow:0 2px 8px #0008}
+.slHudSkillTip,:has(>.slHudSkillTip){display:none!important}
+.royal-skill-card{position:fixed;z-index:100000;box-sizing:border-box;padding:16px;background:linear-gradient(145deg,#fffcef,#f5e7c5);border:2px solid #bf984f;border-radius:14px;box-shadow:0 15px 50px #20180688;color:#332d21;pointer-events:none;font:13px/1.5 system-ui;}
+.royal-skill-card>img{width:calc(100% + 32px);height:142px;object-fit:cover;object-position:50% 42%;margin:-16px -16px 13px;border-radius:12px 12px 0 0;border-bottom:2px solid #bd9443}
+.royal-skill-card>small{font-size:9px;letter-spacing:1.6px;color:#926c25;font-weight:800}.royal-skill-card h2{font:700 23px/1.2 Georgia,serif;margin:5px 0 9px}.royal-skill-card p{margin:0 0 12px}.royal-skill-card dl{display:grid;grid-template-columns:1fr 1fr;margin:0;padding:10px 0;border-top:1px solid #baa47266;gap:5px}.royal-skill-card dt{color:#7a6c50}.royal-skill-card dd{margin:0;text-align:right;font-weight:bold}.royal-skill-card footer{font-size:10px;color:#8c7850;border-top:1px solid #baa47266;padding-top:9px}
+@media(max-width:900px){.royal-combat-control{right:10px;bottom:118px;width:200px;font-size:10px}.royal-mode-toggle{font-size:10px}}

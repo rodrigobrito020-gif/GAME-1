@@ -60,6 +60,31 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const hd =
+      /^\/assets\/fx\/royal-warrior\/hd\/(base|training)\/([a-z0-9]+)\.png$/.exec(
+        pathname,
+      );
+    if (hd && WARRIOR_SHEETS[hd[2]])
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(
+            `./art/warrior/hd/${hd[1] === "training" ? "training/" : ""}${hd[2]}.png`,
+            import.meta.url,
+          ),
+        ),
+      };
+    const skillIcon =
+      /^\/assets\/ui\/royal-warrior\/(avanco-de-luz|impacto-de-luz|egide-de-luz|avatar-da-luz)-card\.png$/.exec(
+        pathname,
+      );
+    if (skillIcon)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/warrior/icons/${skillIcon[1]}.png`, import.meta.url),
+        ),
+      };
     const weaponMask =
       /^\/assets\/fx\/royal-warrior\/avatar-weapons\/([a-z0-9]+)\.png$/.exec(
         pathname,

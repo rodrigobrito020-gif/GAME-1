@@ -37,7 +37,7 @@
           const length = read(),
             end = pos + length;
           if (end > bytes.length) return;
-          if (field === 2047 && length < 2048) {
+          if (field === 2047 && length < 32768) {
             const value = JSON.parse(
               new TextDecoder().decode(bytes.subarray(pos, end)),
             );

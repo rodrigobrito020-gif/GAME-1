@@ -337,6 +337,7 @@ test("the active skill lands at its impact frame, reserves recovery and cancels 
   farm.character.progress.hp = 1;
   farm.cast(client, "avanco-de-luz", 100);
   Object.assign(client.hunt.monsters[1], {
+    role: "melee",
     x: client.x,
     y: client.y,
     home: { x: client.x, y: client.y },

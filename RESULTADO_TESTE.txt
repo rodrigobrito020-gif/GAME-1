@@ -1,37 +1,35 @@
-VERSAO 0.6.16 — ARMAS INICIAIS E TEMPOS APROVADOS
+VERSAO 0.6.17 — NITIDEZ, CONTROLE MANUAL E COMBATE
 Data: 01/11/2026
 
 ENTREGUE
-- Espada de ferro simples e escudo de madeira nas seis folhas de animacao,
-  mantendo o corpo, rosto, roupas, escala e encaixes aprovados. Sem conceder
-  itens, atributos ou substituir equipamentos salvos.
-- Avatar da Luz: duracao 45s, recarga 60s desde o inicio da ativacao, custo 100
-  de energia. Automatico quando recarregado, com energia completa e alvo vivo.
-  Respeita a recuperacao do golpe atual. A energia continua sendo obtida em
-  combate e nao carrega durante a propria transformacao.
-- Saves existentes recebem o automatico da ultimate uma vez; escolhas das
-  outras habilidades e alteracoes posteriores de automacao sao preservadas.
-- Egide de Luz: duracao 5 minutos, recarga 120s. A automacao evita reaplicar
-  uma protecao ativa e renova depois que ela termina; nao acumula defesa.
-- Indicador unico acima do personagem mostra somente a duracao, em m:ss
-  quando necessario. Recargas permanecem nos slots da barra.
-- Energia visual da ultimate segue mascaras de espada/escudo por quadro e
-  funciona tanto com as roupas iniciais quanto com peitoral equipado.
+- Guerreiro em quadros de 128px, amostrados das fontes originais grandes,
+  preservando tamanho no mundo, roupas, equipamento, face e poses.
+- Modo manual/automatico persistente. WASD/setas, alvo por Tab/clique,
+  ataque por F/clique ao alcance e habilidades 1-4 no manual.
+- Dash direcional no Shift esquerdo: ate 128 unidades, 240ms, recarga 2,5s.
+  Respeita paredes, morte, recuperacao de golpes e estado do servidor.
+- Inimigos maiores: guardiao com golpe marcado em area, arqueiro com recuo
+  e flecha direcionada, feiticeiro com area marcada antes do impacto.
+- Quatro icones ilustrados e cartas de habilidade com efeito, custo, duracao,
+  recarga e atalho. Hover/foco consulta; pressionamento longo nao lanca.
+- Tempos aprovados mantidos: Avatar 45s/60s e Egide 5min/120s.
+- Saves, itens, ouro, equipamentos e escolhas das outras habilidades mantidos.
 
 TESTES
-- 67 testes automatizados passaram, zero falhas ou ignorados, com o ZIP real.
-- Cobertura dos novos tempos, expiracao, protecao de equipe, renovacao sem
-  desperdicio, migracao unica, energia, recarga, itens, progressao e combate.
-- Regressao de arte: pixels do corpo fora das mascaras permanecem iguais;
-  alpha/silhueta e animacoes preservados; peitoral nao repinta as armas.
-- Build completo de arte reproduz exatamente os mesmos hashes dos PNGs.
-- Chromium/WebGL, cliente nativo em portugues, save de QA separado: carga
-  obtida naturalmente, duas ativacoes automaticas sem tecla/clique, intervalo
-  observado de aproximadamente 61s; primeira permaneceu ativa por 45s reais.
-- Confirmados no cliente: Egide de 300000ms, Avatar de 45000ms, luz nas armas
-  com pixels visiveis, circulo unico e retorno da duracao da Egide em m:ss.
-- Efeitos limpos ao sair da cacada. Zero erros JavaScript.
-- Previa isolada da ultimate testada nas quatro direcoes.
+- 72 testes automatizados passaram, zero falhas ou ignorados, com ZIP real.
+- Cobertura de controle manual sem perseguicao/ataque automatico, retomada da
+  automacao, impacto manual, cooldown, dash com colisao ao iniciar e durante
+  trajeto, ataques inimigos com preparacao/dano desviado/cancelamento por morte.
+- Verificado que as folhas HD contem detalhes reais entre pixels vizinhos,
+  em vez de blocos ampliados da folha de 64px. Build HD reproduzivel por hash.
+- Chromium/WebGL com cliente real em portugues e save de QA separado:
+  camada HD de 128px na cidade, troca de modo, WASD na hunt, dash pelo teclado
+  Shift esquerdo e cooldown do servidor, carta por hover, pressionamento longo
+  sem conjurar, clique curto conjurando Egide e ataque basico manual por F.
+- Inimigos maiores confirmados no renderer nativo; marcacoes reais de flecha
+  e magia em area observadas antes do impacto; retorno ao automatico funcionando.
+- Saida da hunt limpa controles/efeitos. Zero erros JavaScript.
+- Previa isolada HD da ultimate nas quatro direcoes sem alterar a partida.
 
 LIMITES MANTIDOS
 Servidor local/solo. Sets do Lineage 2 e artes de outras classes continuam nas
@@ -43,6 +41,6 @@ WINDOWS
 3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
    para manter o progresso. Copie recursos-publicos.zip ou deixe-o em Downloads.
 4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
-5. Confira v0.6.16 no topo.
+5. Confira v0.6.17 no topo.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa: http://127.0.0.1:5188/guerreiro

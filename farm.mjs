@@ -1,3 +1,9 @@
+import { combatMode } from "./combat-control.mjs";
+import {
+  MONSTER_ROLES,
+  startMonsterSkill,
+  skillHits,
+} from "./monster-combat.mjs";
 // Own local gameplay rules. These are test values, not the original server rules.
 import {
   WARRIOR_ACTIONS,
@@ -14,7 +20,7 @@ export const SKILLS = [
     name: "Avanço de Luz",
     description:
       "Avança em linha reta até um inimigo distante e atinge na chegada. Não pode ser usado perto demais do alvo.",
-    icon: "/assets/ui/royal-warrior/avanco-de-luz.svg",
+    icon: "/assets/ui/royal-warrior/avanco-de-luz-card.png",
     key: "1",
     manaCost: 8,
     cooldownMs: 4000,
@@ -26,7 +32,7 @@ export const SKILLS = [
     name: "Impacto de Luz",
     description:
       "Salta e crava a espada no chão com as duas mãos. A aterrissagem atinge os inimigos ao redor do guerreiro.",
-    icon: "/assets/ui/royal-warrior/impacto-de-luz.svg",
+    icon: "/assets/ui/royal-warrior/impacto-de-luz-card.png",
     key: "2",
     manaCost: 12,
     cooldownMs: 7000,
@@ -39,7 +45,7 @@ export const SKILLS = [
     name: LIGHT_AEGIS.name,
     description:
       "Aumenta a defesa do guerreiro e de todos os jogadores e companheiros vivos do mesmo grupo na instância. DEF +30% (mínimo +2) por 5 minutos. Recarga de 120 segundos.",
-    icon: "/assets/ui/royal-warrior/egide-de-luz.svg",
+    icon: "/assets/ui/royal-warrior/egide-de-luz-card.png",
     key: "3",
     kind: "buff",
     manaCost: LIGHT_AEGIS.manaCost,
@@ -54,7 +60,7 @@ export const SKILLS = [
     kind: "buff",
     description:
       "Ultimate: consome 100 de energia de combate. Por 45s, os ataques básicos atingem uma pequena área e o guerreiro recebe 35% menos dano. Intervalo mínimo de 60s.",
-    icon: "/assets/ui/royal-warrior/avatar-da-luz.png",
+    icon: "/assets/ui/royal-warrior/avatar-da-luz-card.png",
     manaCost: 0,
     cooldownMs: LIGHT_AVATAR.cooldownMs,
     range: 0,
@@ -321,6 +327,9 @@ export class LocalFarm {
       },
       monsters: MONSTER_HOMES.map((p, index) => ({
         ...p,
+        role: MONSTER_ROLES[index % 3].role,
+        roleIndex: index % 3,
+        nextSkill: now + 5000 + index * 400,
         home: { ...p },
         id: 100 + index,
         hp: area.hp,
@@ -344,6 +353,7 @@ export class LocalFarm {
     events.buffs.push(...this.defenseBuffs.remove(this.character));
     events.buffs.push(...this.avatar.clear(client.entityId ?? 1));
     client.hunt = null;
+    client.evade = null;
     client.combatAnimUntil = 0;
     client.target = null;
     client.route = [];
@@ -458,6 +468,51 @@ export class LocalFarm {
       deltas.push(this.reward(hunt, monster, events));
     }
   }
+  basic(client, targetId, events = this.events()) {
+    const h = client.hunt,
+      c = this.character,
+      now = this.now();
+    if (!h || h.deadAt || !c.progress.hp) throw Error("local.not_hunting");
+    const target = h.monsters.find(
+      (m) =>
+        m.id === (typeof targetId === "object" ? targetId.id : targetId) &&
+        m.hp > 0,
+    );
+    if (
+      !target ||
+      Math.hypot(target.x - client.x, target.y - client.y) >
+        c.derived.attackRange
+    )
+      throw Error("local.invalid_target");
+    if (now < h.nextAttack || now < h.actionUntil || client.evade)
+      throw Error("local.cooldown");
+    h.nextAttack = now + 1000;
+    const basic = h.basicChain++ % 2 ? WARRIOR_RETURN : WARRIOR_BASIC;
+    h.actionUntil = now + basic.duration;
+    client.combatAnimUntil = h.actionUntil;
+    const dx = target.x - client.x,
+      dy = target.y - client.y;
+    const distance = Math.hypot(dx, dy) || 1;
+    client.facing =
+      Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 2 : 1) : dy > 0 ? 0 : 3;
+    events.moves.push({
+      entity: 1,
+      move: this.avatar.active() ? basic.move + "-avatar" : basic.move,
+      target: target.id,
+      dirX: Math.round((dx / distance) * 1000),
+      dirY: Math.round((dy / distance) * 1000),
+      durationMs: basic.duration,
+    });
+    h.impacts.push({
+      at: now + basic.impact,
+      basic: true,
+      targets: [target.id],
+      amount: c.derived.atk,
+      skillId: "",
+      heal: 0,
+    });
+    return { events, deltas: [] };
+  }
   cast(
     client,
     id,
@@ -470,6 +525,7 @@ export class LocalFarm {
     const h = client.hunt,
       c = this.character,
       now = this.now();
+    if (id === "ataque-basico") return this.basic(client, targetId, events);
     const skill = ACTIVE_SKILLS.find((s) => s.id === id);
     if (!h || h.deadAt || !c.progress.hp) throw Error("local.not_hunting");
     if (!skill) throw Error("local.invalid_skill");
@@ -624,6 +680,7 @@ export class LocalFarm {
     const h = client.hunt,
       c = this.character,
       now = this.now(),
+      automatic = combatMode(this.account) === "auto",
       events = this.events(),
       deltas = [],
       spawned = [],
@@ -779,6 +836,8 @@ export class LocalFarm {
           aggro: false,
           anim: 0,
           nextAttack: now + 1000,
+          nextSkill: now + 5000,
+          cast: null,
         });
         spawned.push(m);
       }
@@ -788,7 +847,7 @@ export class LocalFarm {
     let target = h.monsters.find(
       (m) => m.id === (locked ? h.target : h.manualTarget) && m.hp > 0,
     );
-    if (!target)
+    if (!target && automatic)
       target = h.monsters
         .filter((m) => m.hp > 0)
         .reduce(
@@ -808,6 +867,7 @@ export class LocalFarm {
     h.target = target?.id ?? 0;
     client.moving = dashMoved;
     if (
+      automatic &&
       target &&
       now >= h.actionUntil &&
       (c.automation.skillOrder ?? []).includes(LIGHT_AVATAR.id)
@@ -819,6 +879,7 @@ export class LocalFarm {
       }
     }
     if (
+      automatic &&
       target &&
       now >= h.actionUntil &&
       (c.automation.skillOrder ?? []).includes(LIGHT_AEGIS.id) &&
@@ -830,7 +891,7 @@ export class LocalFarm {
         /* A buff on cooldown must not stop movement or basic attacks. */
       }
     }
-    if (target && now >= h.actionUntil) {
+    if (automatic && target && now >= h.actionUntil && !client.evade) {
       if (
         Math.hypot(target.x - client.x, target.y - client.y) >
         c.derived.attackRange
@@ -887,33 +948,11 @@ export class LocalFarm {
           }
         }
         if (target.hp > 0 && now >= h.nextAttack && now >= h.actionUntil) {
-          h.nextAttack = now + 1000;
-          const basic = h.basicChain++ % 2 ? WARRIOR_RETURN : WARRIOR_BASIC;
-          h.actionUntil = now + basic.duration;
-          client.combatAnimUntil = h.actionUntil;
-          const dx = target.x - client.x,
-            dy = target.y - client.y;
-          const distance = Math.hypot(dx, dy) || 1;
-          events.moves.push({
-            entity: 1,
-            move: this.avatar.active() ? basic.move + "-avatar" : basic.move,
-            target: target.id,
-            dirX: Math.round((dx / distance) * 1000),
-            dirY: Math.round((dy / distance) * 1000),
-            durationMs: basic.duration,
-          });
-          h.impacts.push({
-            at: now + basic.impact,
-            basic: true,
-            targets: [target.id],
-            amount: c.derived.atk,
-            skillId: "",
-            heal: 0,
-          });
+          this.basic(client, target.id, events);
         }
       }
     }
-    if (!target && now >= h.actionUntil) {
+    if (automatic && !target && now >= h.actionUntil && !client.evade) {
       const waypoint = MONSTER_HOMES[h.patrolIndex % MONSTER_HOMES.length];
       if (Math.hypot(client.x - waypoint.x, client.y - waypoint.y) < 20)
         h.patrolIndex++;
@@ -925,17 +964,55 @@ export class LocalFarm {
         );
     }
     for (const m of h.monsters) {
-      if (!m.hp) continue;
+      if (!m.hp) {
+        m.cast = null;
+        continue;
+      }
+      let skillDamage = 0;
+      const casting = m.cast;
+      if (casting) {
+        m.anim = 2;
+        if (now < casting.impact) continue;
+        if (skillHits(casting, client))
+          skillDamage =
+            casting.type === "cleave"
+              ? 1.8
+              : casting.type === "meteor"
+                ? 2
+                : 1.35;
+        m.cast = null;
+        m.recoverUntil = now + 400;
+      }
+      if (!skillDamage && now < (m.recoverUntil ?? 0)) continue;
       const distance = Math.hypot(m.x - client.x, m.y - client.y);
       m.anim = 0;
       const fromHome = Math.hypot(m.x - m.home.x, m.y - m.home.y);
       if (distance <= AGGRO_RADIUS) m.aggro = true;
       if (fromHome > LEASH_RADIUS || distance > 300) m.aggro = false;
-      if (!m.aggro) {
+      if (!skillDamage && startMonsterSkill(m, client, now)) {
+        m.anim = 2;
+        continue;
+      }
+      if (skillDamage) {
+        /* Resolve the committed marked attack below. */
+      } else if (!m.aggro) {
         if (fromHome > 8 && move(m, m.home, 70)) m.anim = 1;
-      } else if (distance > 48) {
+      } else if (m.role && m.role !== "melee" && distance < 120) {
+        const away = { x: m.x + (m.x - client.x), y: m.y + (m.y - client.y) };
+        if (
+          Math.hypot(away.x - m.home.x, away.y - m.home.y) < LEASH_RADIUS &&
+          move(m, away, 85)
+        )
+          m.anim = 1;
+      } else if (distance > (m.role && m.role !== "melee" ? 230 : 48)) {
         if (move(m, client, 70)) m.anim = 1;
-      } else if (distance <= 55 && now >= m.nextAttack) {
+      }
+      if (
+        skillDamage ||
+        (distance <= 55 &&
+          now >= m.nextAttack &&
+          (!m.role || m.role === "melee"))
+      ) {
         m.nextAttack = now + 1400;
         m.anim = 2;
         const amount = Math.min(
@@ -943,7 +1020,7 @@ export class LocalFarm {
           Math.max(
             1,
             Math.round(
-              Math.max(1, h.area.damage - c.derived.def) *
+              Math.max(1, h.area.damage * (skillDamage || 1) - c.derived.def) *
                 (this.avatar.active() ? 1 - LIGHT_AVATAR.damageReduction : 1),
             ),
           ),
@@ -965,7 +1042,9 @@ export class LocalFarm {
         if (!c.progress.hp) {
           h.deadAt = now;
           h.dash = null;
+          client.evade = null;
           h.impacts = [];
+          for (const enemy of h.monsters) enemy.cast = null;
           events.buffs.push(...this.defenseBuffs.remove(c));
           events.buffs.push(...this.avatar.clear(client.entityId ?? 1, true));
           client.moving = false;

@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.17: personagem em 128px a partir das fontes originais, dash direcional no Shift esquerdo, alternância persistente manual/automático, inimigos maiores com preparação, flechas e ataque mágico em área, quatro ícones ilustrados e cartas de habilidade por hover/foco/pressionamento longo. Valores de ultimate e Égide mantidos.
+
 - 0.6.16: espada de ferro simples e escudo de madeira; energia do Avatar adaptada às novas armas. Avatar automático também nos saves anteriores: 45s de duração, 60s de recarga e energia 100. Égide: 5min de duração e 120s de recarga, renovada após expirar, sem acumular defesa. Indicador único de duração em m:ss.
 
 - 0.6.15: Avatar da Luz na tecla/ícone 4, energia real de combate, transformação de 8s, ataque básico em pequena área e redução de dano. Manual por padrão; aura e armas de energia seguem as poses, indicador único de duração e recarga persistente. Valores iniciais para teste.

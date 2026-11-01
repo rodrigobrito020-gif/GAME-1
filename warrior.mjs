@@ -95,6 +95,11 @@ export function warriorRig(original) {
       impacts: [WARRIOR_GROUND_SLAM.impact],
       motion: { jump: structuredClone(WARRIOR_GROUND_SLAM.jump) },
     },
+    "humano-esquiva": {
+      frames: [...hold("run1", 1, 2), ...hold("run1", 3, 2)],
+      impacts: [],
+      motion: { trail: { at: [0, 220], color: 0xffe4a0 } },
+    },
     "humano-ferido": {
       frames: [...hold("special", 2, 1), ...hold("special", 0, 1)],
       impacts: [],

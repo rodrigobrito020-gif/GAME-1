@@ -2,6 +2,10 @@
 
 Arte original criada em 01/11/2026 com a ferramenta de geração de imagens da OpenAI. Homem de cabelo escuro, rosto visível, armadura marfim/dourada, couro marrom, capa curta, espada de aço na direita e escudo no braço esquerdo.
 
+## Nitidez — 0.6.17
+
+`hd-reference/` contém as poses em 128px, reamostradas das fontes originais grandes por `npm run art:hd`. `hd/` recebe os materiais das armas e a variante equipada. O cliente desenha essa camada em escala compensada, conservando pés, dimensões do ator, hitboxes e animações existentes. As folhas básicas de 64px continuam sendo a referência de rig/máscaras e compatibilidade. As quatro ilustrações novas estão em `icons/` e sua fonte é `source/skill-cards.png`, criada originalmente nesta atualização.
+
 ## Armas iniciais — 0.6.16
 
 O personagem inicial usa as roupas aprovadas na 0.6.14, uma espada simples de ferro e escudo de madeira com aro de ferro. `source/starter-equipment.png` contém a arte original dos materiais. `weapon-reference/` preserva as poses aprovadas antes da troca; `tools/pack-starter-weapons.mjs` aplica os materiais somente no equipamento, sem alterar o alpha ou pintar o corpo. `weapon-masks/` fornece as máscaras exatas para o brilho temporário do Avatar e impede que o peitoral repinte as armas. `npm run art:warrior` encadeia poses, materiais e peitoral; `npm run art:weapons` refaz apenas materiais e peitoral.

@@ -165,6 +165,7 @@ test("a lost target, leaving the hunt or death cancels an unfinished dash withou
     farm.cast(client, DASH.id, target.id);
     const other = client.hunt.monsters[1];
     Object.assign(other, {
+      role: "melee",
       x: client.x,
       y: client.y,
       home: { x: client.x, y: client.y },

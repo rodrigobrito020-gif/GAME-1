@@ -1,8 +1,20 @@
-# Jogo local — 0.6.16: armas iniciais, ultimate automática e novos tempos
+# Jogo local — 0.6.17: nitidez, combate manual e inimigos com habilidades
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.17
+
+- **Personagem mais nítido:** folhas de 128×128 por quadro, reamostradas das artes grandes originais. Mantém o tamanho no mundo, as roupas aprovadas, armadura equipada e as poses. Não é uma ampliação do PNG de 64 pixels. A prévia `/guerreiro` também usa as imagens maiores.
+- **Modo manual ou automático:** botão no canto inferior direito da caçada. A escolha fica salva e não altera as habilidades que o jogador habilitou para automação. No manual, não há perseguição, patrulha ou uso automático de habilidades. No automático, as regras anteriores continuam funcionando, incluindo a ultimate com carga cheia e recarga concluída.
+- **Manual:** WASD/setas para mover, Tab para escolher alvo, clique no inimigo ou F para um ataque básico ao alcance; 1–4 usam as habilidades. Ande até o inimigo para atacar. Cada golpe tem impacto e recuperação reais, sem repetição instantânea por spam.
+- **Shift esquerdo:** dash direcional, separado do Avanço de Luz. Usa a direção de movimento ou a direção para a qual o personagem está olhando. Percorre até 128 unidades em 240ms, com intervalo de 2,5s; paredes encurtam ou bloqueiam o trajeto. Funciona na cidade e na caçada. Não concede invulnerabilidade nem atravessa colisões.
+- **Monstros maiores e com papéis distintos:** guardião com golpe em área, arqueiro que recua e dispara flechas, feiticeiro que marca uma área antes do impacto. Os ataques têm preparação e alvo fixado; sair da marcação pode evitar o dano. Matar o conjurador cancela seu ataque pendente. As artes de monstros ainda usam o sprite-base disponível, com tamanhos e tons por papel; modelos próprios continuam nas próximas etapas.
+- **Quatro ícones ilustrados novos:** linguagem visual marfim, luz e dourado sobre fundo azul escuro. Passar o mouse ou focar o botão mostra uma carta com efeito, custo, duração, recarga e atalho. Pressionar por 350ms consulta a carta sem lançar a habilidade; clique curto usa normalmente.
+- Mantidos **Avatar 45s/60s**, **Égide 5min/120s**, equipamentos, itens, progressão e dados salvos.
+
+Reconstruir as folhas maiores: `npm run art:hd`, depois de reconstruir as folhas básicas caso tenha alterado suas fontes. O jogo utiliza somente os PNGs já prontos. O recorte das novas ilustrações fica em `tools/pack-skill-icons.py` (ferramenta opcional de arte que usa Pillow).
 
 ## Atualização 0.6.16
 

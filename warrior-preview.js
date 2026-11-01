@@ -16,16 +16,14 @@ async function image(url) {
 }
 await Promise.all(
   Object.keys(WARRIOR_SHEETS).map(async (name) => {
-    images[name] = await image(
-      `/assets/paperdoll/entities/humano-guerreiro/${name}.png`,
-    );
+    images[name] = await image(`/assets/fx/royal-warrior/hd/base/${name}.png`);
   }),
 );
 const trainingImages = {};
 await Promise.all(
   Object.keys(WARRIOR_SHEETS).map(async (name) => {
     trainingImages[name] = await image(
-      `/assets/paperdoll/entities/humano-guerreiro-peitoral-treino/${name}.png`,
+      `/assets/fx/royal-warrior/hd/training/${name}.png`,
     );
   }),
 );
@@ -256,10 +254,10 @@ function render() {
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(
         (trainingArmor ? trainingImages : images)[pastSheet],
-        pastCol * 64,
-        direction * 64,
-        64,
-        64,
+        pastCol * 128,
+        direction * 128,
+        128,
+        128,
         172 + axis[0] * (progress - 0.5) * 130,
         92 + axis[1] * (progress - 0.5) * 100,
         256,
@@ -273,10 +271,10 @@ function render() {
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(
     (trainingArmor ? trainingImages : images)[sheet],
-    col * 64,
-    direction * 64,
-    64,
-    64,
+    col * 128,
+    direction * 128,
+    128,
+    128,
     172 + offset,
     92 + offsetY - lift,
     256,
@@ -290,10 +288,10 @@ function render() {
       const g = c.getContext("2d");
       g.drawImage(
         (trainingArmor ? trainingImages : images)[sheet],
-        col * 64,
-        direction * 64,
-        64,
-        64,
+        col * 128,
+        direction * 128,
+        128,
+        128,
         0,
         0,
         64,

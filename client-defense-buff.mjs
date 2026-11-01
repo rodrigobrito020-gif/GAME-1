@@ -21,7 +21,7 @@ export function withDefenseBuffUi(bytes) {
   code = replaceOnce(
     code,
     "function rte(e,t,n){let r=",
-    'function rte(e,t,n){window.__royalCastUltimate=()=>e.net.send(`useSkill`,{skillId:"avatar-da-luz",target:0});let r=',
+    'function rte(e,t,n){window.__royalCombatSend=(kind,value)=>e.net.send(kind,value);window.__royalCombatCatalog=()=>[...e.catalog.skills.values()];window.__royalCastUltimate=()=>e.net.send(`useSkill`,{skillId:"avatar-da-luz",target:0});let r=',
   );
   code = replaceOnce(
     code,
@@ -37,6 +37,21 @@ export function withDefenseBuffUi(bytes) {
     code,
     "d?J(`hud.skills.auto_hint`):r&&r!==t.key",
     '(d&&(n.id!=="avatar-da-luz"||window.__royalUltimateState?.automatic))?J(`hud.skills.auto_hint`):r&&r!==t.key',
+  );
+  code = replaceOnce(
+    code,
+    "autoCombat:()=>t.stores.world.autoCombat,",
+    'autoCombat:()=>window.__royalUltimateState?window.__royalUltimateState.inHunt&&window.__royalUltimateState.combatMode!=="manual":t.stores.world.autoCombat,',
+  );
+  code = replaceOnce(
+    code,
+    "e.stores.world.autoCombat!==d&&(d=e.stores.world.autoCombat,",
+    "false!==d&&(d=false,",
+  );
+  code = replaceOnce(
+    code,
+    "this.net.send(`setTarget`,{entity:n.id});return}break;case Ft.PLAYER",
+    'this.net.send(`setTarget`,{entity:n.id});if(window.__royalUltimateState?.combatMode==="manual")this.net.send(`useSkill`,{skillId:"ataque-basico",target:n.id});return}break;case Ft.PLAYER',
   );
   const scene = "r.on(`sceneEnter`,e=>this.enterScene(e))";
   code = replaceOnce(
@@ -58,6 +73,8 @@ export function withDefenseBuffUi(bytes) {
   const project = `
 window.__royalAegisVisuals?.update(this);
 window.__royalAvatarVisuals?.update(this);
+window.__royalHD?.update(this);
+window.__royalCombatVisuals?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);
   return Buffer.from(code);

@@ -1,3 +1,11 @@
+import {
+  combatMode,
+  setCombatMode,
+  evade,
+  stepEvade,
+  EVADE,
+} from "./combat-control.mjs";
+import { MONSTER_ROLES, combatState } from "./monster-combat.mjs";
 import { LIGHT_AVATAR } from "./light-avatar.mjs";
 import { withUltimateState } from "./ultimate-wire.mjs";
 import { WebSocketServer } from "ws";
@@ -59,7 +67,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-15";
+  catalog.version = "local-human-warrior-17";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -169,25 +177,27 @@ export function attachLocalGame(
       levelOffset: 0,
     },
   ];
-  catalog.monsters = AREAS.map((a) => ({
-    id: a.id + "-mob",
-    name: a.id === "treino-local" ? "Sombra de treino" : "Sombra veterana",
-    category: "normal",
-    role: "melee",
-    spriteDir: "local-treino",
-    displayHeight: 104,
-    artHeight: 64,
-    tint: a.required === 1 ? 0xc090ff : 0xff7777,
-    stats: {
-      level: a.required,
-      fixedHp: a.hp,
-      fixedDamage: a.damage,
-      speed: 70,
-      attackInterval: 1.4,
-      range: 55,
-    },
-    drops: [{ itemId: "fragmento-local", chance: 1, min: 1, max: 1 }],
-  }));
+  catalog.monsters = AREAS.flatMap((a) =>
+    MONSTER_ROLES.map((role, index) => ({
+      id: a.id + "-mob" + (index ? "-" + role.id : ""),
+      name: role.name,
+      category: "normal",
+      role: role.role,
+      spriteDir: "local-treino",
+      displayHeight: role.displayHeight,
+      artHeight: 64,
+      tint: role.tint,
+      stats: {
+        level: a.required,
+        fixedHp: a.hp,
+        fixedDamage: a.damage,
+        speed: 70,
+        attackInterval: 1.4,
+        range: role.role === "melee" ? 55 : 250,
+      },
+      drops: [{ itemId: "fragmento-local", chance: 1, min: 1, max: 1 }],
+    })),
+  );
   catalog.tiers = AREAS.map((a) => ({
     min: a.tier,
     max: a.max,
@@ -520,7 +530,15 @@ export function attachLocalGame(
         body: { case: kind, value },
       });
       if (["characterState", "characterPatch", "worldSnapshot"].includes(kind))
-        packet = withUltimateState(packet, farm.avatar.state(client));
+        packet = withUltimateState(packet, {
+          ...farm.avatar.state(client),
+          automatic:
+            combatMode(account) === "auto" &&
+            (account.character.automation.skillOrder ?? []).includes(
+              LIGHT_AVATAR.id,
+            ),
+          ...combatState(account, client, Date.now()),
+        });
       client.ws.send(packet);
     }
   };
@@ -603,9 +621,11 @@ export function attachLocalGame(
   });
   const monsterInfo = (client, m) => ({
     state: monsterState(m),
-    defId: client.hunt.area.id + "-mob",
-    name:
-      client.hunt.area.required === 1 ? "Sombra de treino" : "Sombra veterana",
+    defId:
+      client.hunt.area.id +
+      "-mob" +
+      (m.roleIndex ? "-" + MONSTER_ROLES[m.roleIndex].id : ""),
+    name: MONSTER_ROLES[m.roleIndex ?? 0].name,
     level: client.hunt.area.required,
     scale: 1,
   });
@@ -820,8 +840,26 @@ export function attachLocalGame(
           send(client, "logoutOk", {}, message.requestId);
           return;
         }
+        if (kind === "roll") {
+          const move = evade(client, value, now, (x, y) =>
+            free(x, y, client.hunt ? map : cityMap),
+          );
+          send(client, "worldEvents", {
+            tick,
+            ...farm.events(),
+            moves: [move],
+            cooldowns: [
+              {
+                skillId: "rolamento",
+                readyInMs: EVADE.cooldownMs,
+                totalMs: EVADE.cooldownMs,
+              },
+            ],
+          });
+          return;
+        }
         if (kind === "moveDir") {
-          if (client.hunt) return;
+          if (client.hunt && combatMode(account) === "auto") return;
           client.dx = Math.max(-1, Math.min(1, value.dirX / 1000));
           client.dy = Math.max(-1, Math.min(1, value.dirY / 1000));
           client.until = now + 350;
@@ -831,12 +869,12 @@ export function attachLocalGame(
           return;
         }
         if (kind === "moveTo") {
-          if (client.hunt) return;
-          if (free(value.x / 10, value.y / 10, cityMap)) {
+          if (client.hunt && combatMode(account) === "auto") return;
+          if (free(value.x / 10, value.y / 10, client.hunt ? map : cityMap)) {
             client.route = route(
               client,
               { x: value.x / 10, y: value.y / 10 },
-              cityMap,
+              client.hunt ? map : cityMap,
             );
             client.target = client.route.shift() ?? null;
           }
@@ -964,6 +1002,16 @@ export function attachLocalGame(
               );
             } else if (kind === "setTarget") farm.target(client, value.entity);
             else if (kind === "useSkill") {
+              if (["modo-manual", "modo-auto"].includes(value.skillId)) {
+                setCombatMode(
+                  account,
+                  client,
+                  value.skillId === "modo-manual" ? "manual" : "auto",
+                );
+                patch(client);
+                persist();
+                return;
+              }
               const output = farm.cast(
                 client,
                 value.skillId,
@@ -1126,9 +1174,17 @@ export function attachLocalGame(
         )
           persist();
       }
+      const evading = stepEvade(client, now, (x, y) =>
+        free(x, y, client.hunt ? map : cityMap),
+      );
+      const canMove =
+        (!client.hunt || combatMode(account) === "manual") &&
+        !evading &&
+        !client.hunt?.deadAt &&
+        now >= (client.combatAnimUntil ?? 0);
       let dx = 0,
         dy = 0;
-      if (!client.hunt && client.target) {
+      if (canMove && client.target) {
         dx = client.target.x - client.x;
         dy = client.target.y - client.y;
         if (Math.hypot(dx, dy) < 5) {
@@ -1136,22 +1192,22 @@ export function attachLocalGame(
           dx = 0;
           dy = 0;
         }
-      } else if (!client.hunt && client.until > now) {
+      } else if (canMove && client.until > now) {
         dx = client.dx;
         dy = client.dy;
       }
       const len = Math.hypot(dx, dy);
-      if (!client.hunt) client.moving = len > 0;
+      if (canMove) client.moving = len > 0;
       if (len) {
         const amount = client.target ? Math.min(8, len) : 8;
         const x = client.x + (dx / len) * amount,
           y = client.y + (dy / len) * amount;
-        if (free(x, client.y, cityMap)) client.x = x;
-        if (free(client.x, y, cityMap)) client.y = y;
+        if (free(x, client.y, client.hunt ? map : cityMap)) client.x = x;
+        if (free(client.x, y, client.hunt ? map : cityMap)) client.y = y;
         client.facing =
           Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 2 : 1) : dy > 0 ? 0 : 3;
       }
-      if (client.seq !== client.ackSeq) {
+      if (evading || client.seq !== client.ackSeq) {
         send(client, "moveAck", {
           seq: client.seq,
           x: client.x,

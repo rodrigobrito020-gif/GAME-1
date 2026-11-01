@@ -1,6 +1,6 @@
 // Cut and pack original sprite artwork. No runtime image processing is needed.
 // Connected silhouettes keep swords/capes that cross the source grid gutters.
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { decodeRgba, encodeRgba } from "../png.mjs";
 import {
@@ -11,6 +11,10 @@ import {
 } from "../warrior-walk-rig.mjs";
 import { isolateParts } from "./sprite-cutout.mjs";
 const folder = new URL("../art/warrior/", import.meta.url);
+const factor = process.argv.includes("--hd") ? 2 : 1,
+  cell = 64 * factor;
+const outputFolder = factor === 2 ? new URL("hd-reference/", folder) : folder;
+mkdirSync(outputFolder, { recursive: true });
 function load(name, columns, rows = 4) {
   const image = decodeRgba(
     readFileSync(new URL("source/novice/" + name + ".png", folder)),
@@ -140,8 +144,8 @@ const slam = load("ground-slam", 6, 3);
 const sword = load("sword-v2", 6, 3),
   reactions = load("reactions", 6);
 function pack(name, source, columns, choose, mirror = () => false, anchor) {
-  const width = columns * 64,
-    height = 256,
+  const width = columns * cell,
+    height = cell * 4,
     output = Buffer.alloc(width * height * 4);
   const rectangles = [];
   for (let row = 0; row < 4; row++)
@@ -175,18 +179,19 @@ function pack(name, source, columns, choose, mirror = () => false, anchor) {
         );
       const flip = mirror(row, col);
       // Point sampling preserves the small face and ink outlines at native 64px.
-      for (let y = 0; y < 64; y++)
-        for (let x = 0; x < 64; x++) {
+      for (let y = 0; y < cell; y++)
+        for (let x = 0; x < cell; x++) {
           let alpha = 0,
             red = 0,
             green = 0,
             blue = 0;
           {
             const px = Math.floor(
-              center + ((flip ? 63 - x : x) - 32 + 0.5) / scale,
+              center +
+                (((flip ? cell - 1 - x : x) + 0.5) / factor - 32) / scale,
             );
             const py = Math.floor(
-              (fixed?.floor ?? c.y1) + (y - 59 + 0.5) / scale,
+              (fixed?.floor ?? c.y1) + ((y + 0.5) / factor - 59) / scale,
             );
             if (px < sx0 || px > sx1 || py < sy0 || py > sy1) continue;
             const at = py * source.width + px;
@@ -197,7 +202,7 @@ function pack(name, source, columns, choose, mirror = () => false, anchor) {
             green += source.pixels[at * 4 + 1] * a;
             blue += source.pixels[at * 4 + 2] * a;
           }
-          const at = ((row * 64 + y) * width + col * 64 + x) * 4;
+          const at = ((row * cell + y) * width + col * cell + x) * 4;
           if (alpha) {
             output[at] = Math.round(red / alpha);
             output[at + 1] = Math.round(green / alpha);
@@ -215,7 +220,7 @@ function pack(name, source, columns, choose, mirror = () => false, anchor) {
       });
     }
   writeFileSync(
-    new URL(name + ".png", folder),
+    new URL(name + ".png", outputFolder),
     encodeRgba(width, height, output),
   );
   return rectangles;
@@ -226,26 +231,35 @@ const sources = {},
     WALK_PARTS.flatMap((p) => [p.body.rect, ...p.thighs, ...p.shins]),
   );
 for (const name of ["idle", "walk"]) {
-  const pixels = Buffer.alloc(256 * 256 * 4);
+  const pixels = Buffer.alloc(cell * 4 * cell * 4 * 4);
   sources[name] = [];
   for (let row = 0; row < 4; row++)
     for (let col = 0; col < 4; col++) {
-      const frame = renderWarriorWalkFrame(parts, row, col, name === "idle");
-      for (let y = 0; y < 64; y++)
+      const frame = renderWarriorWalkFrame(
+        parts,
+        row,
+        col,
+        name === "idle",
+        factor,
+      );
+      for (let y = 0; y < cell; y++)
         frame.copy(
           pixels,
-          ((row * 64 + y) * 256 + col * 64) * 4,
-          y * 256,
-          (y + 1) * 256,
+          ((row * cell + y) * cell * 4 + col * cell) * 4,
+          y * cell * 4,
+          (y + 1) * cell * 4,
         );
-      sources[name].push(warriorWalkPose(row, col, name === "idle"));
+      sources[name].push(warriorWalkPose(row, col, name === "idle", factor));
     }
-  writeFileSync(new URL(name + ".png", folder), encodeRgba(256, 256, pixels));
+  writeFileSync(
+    new URL(name + ".png", outputFolder),
+    encodeRgba(cell * 4, cell * 4, pixels),
+  );
 }
 // Running currently uses the same authored leg cycle with a faster cadence.
 writeFileSync(
-  new URL("run1.png", folder),
-  readFileSync(new URL("walk.png", folder)),
+  new URL("run1.png", outputFolder),
+  readFileSync(new URL("walk.png", outputFolder)),
 );
 const hips = [
   [136, 394, 650, 904, 1152, 1390],
@@ -288,14 +302,15 @@ sources.special = pack(
   (r) => r === 1,
 );
 writeFileSync(
-  new URL("manifest.json", folder),
+  new URL("manifest.json", outputFolder),
   JSON.stringify(
     {
       character: "Guerreiro Humano",
       skinId: "humano-guerreiro",
       version: 8,
-      frame: [64, 64],
-      feet: [32, 60],
+      frame: [cell, cell],
+      resolutionFactor: factor,
+      feet: [32 * factor, 60 * factor],
       rows: ["south", "west", "east", "north"],
       sheets: { idle: 4, walk: 4, run1: 4, weapon: 6, special: 6, axeheavy: 8 },
       walkStride: WALK_STRIDE,

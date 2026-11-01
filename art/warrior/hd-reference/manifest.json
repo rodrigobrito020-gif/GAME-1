@@ -1,0 +1,2732 @@
+{
+  "character": "Guerreiro Humano",
+  "skinId": "humano-guerreiro",
+  "version": 8,
+  "frame": [
+    128,
+    128
+  ],
+  "resolutionFactor": 2,
+  "feet": [
+    64,
+    120
+  ],
+  "rows": [
+    "south",
+    "west",
+    "east",
+    "north"
+  ],
+  "sheets": {
+    "idle": 4,
+    "walk": 4,
+    "run1": 4,
+    "weapon": 6,
+    "special": 6,
+    "axeheavy": 8
+  },
+  "walkStride": 96,
+  "rig": "warrior-walk-rig.mjs",
+  "equipmentLooks": {
+    "peitoral-local": "training"
+  },
+  "starterSources": "source/novice/",
+  "notes": [
+    "Corrida reutiliza o ciclo de caminhada.",
+    "Grito de guerra vira de frente nas direções laterais.",
+    "Escudo no braço esquerdo; espada na mão direita.",
+    "Roupas iniciais desenhadas em todas as poses; sem pintura por máscaras e sem capa. Peitoral aparece somente equipado."
+  ],
+  "sources": {
+    "idle": [
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.85
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              36.85
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              36.85
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.15
+        }
+      },
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37.15
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37.15
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37.15
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0.15
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              23.289815715955918,
+              42.70901690504027
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              26.58518251132271,
+              45.063183867160504
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.85
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              36.85
+            ],
+            "knee": [
+              23.377020188348688,
+              42.682426508710186
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              36.85
+            ],
+            "knee": [
+              26.688959545033434,
+              44.98829274668477
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.15
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              23.289815715955918,
+              42.70901690504027
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              26.58518251132271,
+              45.063183867160504
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37.15
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37.15
+            ],
+            "knee": [
+              23.205185689256187,
+              42.73534292145787
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37.15
+            ],
+            "knee": [
+              26.483634027800505,
+              45.13769932387042
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0.15
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              23.289815715955918,
+              42.70901690504027
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              26.58518251132271,
+              45.063183867160504
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          36.85
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              36.85
+            ],
+            "knee": [
+              23.377020188348688,
+              42.682426508710186
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              36.85
+            ],
+            "knee": [
+              26.688959545033434,
+              44.98829274668477
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.15
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              23.289815715955918,
+              42.70901690504027
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              26.58518251132271,
+              45.063183867160504
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          37.15
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37.15
+            ],
+            "knee": [
+              23.205185689256187,
+              42.73534292145787
+            ],
+            "foot": [
+              28,
+              58
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37.15
+            ],
+            "knee": [
+              26.483634027800505,
+              45.13769932387042
+            ],
+            "foot": [
+              36,
+              58
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0.15
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.85
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              36.85
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              36.85
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.15
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37.15
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37.15
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37.15
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0.15
+        }
+      }
+    ],
+    "walk": [
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              44
+            ],
+            "foot": [
+              36,
+              54
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              36.3
+            ],
+            "knee": [
+              28,
+              42.3
+            ],
+            "foot": [
+              28.5,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              36.3
+            ],
+            "knee": [
+              36,
+              41.3
+            ],
+            "foot": [
+              35.5,
+              52
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      },
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              44
+            ],
+            "foot": [
+              28,
+              54
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 0,
+        "source": 0,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              36.3
+            ],
+            "knee": [
+              28,
+              41.3
+            ],
+            "foot": [
+              28.5,
+              52
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              35.5,
+              36.3
+            ],
+            "knee": [
+              36,
+              42.3
+            ],
+            "foot": [
+              35.5,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              23.881951063634286,
+              43.47806532871792
+            ],
+            "foot": [
+              20,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              31.546610925757037,
+              46.95444871768971
+            ],
+            "foot": [
+              44,
+              57
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              36.3
+            ],
+            "knee": [
+              25.56733165160674,
+              44.350058774193684
+            ],
+            "foot": [
+              32,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              36.3
+            ],
+            "knee": [
+              22.64855909906405,
+              38.01729792853959
+            ],
+            "foot": [
+              32,
+              51
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              31.510008012827665,
+              46.9999949919827
+            ],
+            "foot": [
+              44,
+              57
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              25.247679445203516,
+              43.88504513932018
+            ],
+            "foot": [
+              20,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 1,
+        "source": 1,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              36.3
+            ],
+            "knee": [
+              21.78801551026864,
+              38.68272056087521
+            ],
+            "foot": [
+              32,
+              51
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              32.5,
+              36.3
+            ],
+            "knee": [
+              26.218629320070875,
+              44.0810270775346
+            ],
+            "foot": [
+              32,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              23.881951063634286,
+              43.47806532871792
+            ],
+            "foot": [
+              20,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              31.546610925757037,
+              46.95444871768971
+            ],
+            "foot": [
+              44,
+              57
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              36.3
+            ],
+            "knee": [
+              25.56733165160674,
+              44.350058774193684
+            ],
+            "foot": [
+              32,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              32.5,
+              36.3
+            ],
+            "knee": [
+              22.64855909906405,
+              38.01729792853959
+            ],
+            "foot": [
+              32,
+              51
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              37
+            ],
+            "knee": [
+              31.510008012827665,
+              46.9999949919827
+            ],
+            "foot": [
+              44,
+              57
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              32.5,
+              37
+            ],
+            "knee": [
+              25.247679445203516,
+              43.88504513932018
+            ],
+            "foot": [
+              20,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 2,
+        "source": 1,
+        "mirror": true,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              31.5,
+              36.3
+            ],
+            "knee": [
+              21.78801551026864,
+              38.68272056087521
+            ],
+            "foot": [
+              32,
+              51
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              32.5,
+              36.3
+            ],
+            "knee": [
+              26.218629320070875,
+              44.0810270775346
+            ],
+            "foot": [
+              32,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              46
+            ],
+            "foot": [
+              28,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              44
+            ],
+            "foot": [
+              36,
+              54
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              36.3
+            ],
+            "knee": [
+              28,
+              42.3
+            ],
+            "foot": [
+              28.5,
+              59
+            ],
+            "planted": true
+          },
+          {
+            "hip": [
+              35.5,
+              36.3
+            ],
+            "knee": [
+              36,
+              41.3
+            ],
+            "foot": [
+              35.5,
+              52
+            ],
+            "planted": false
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          37
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              37
+            ],
+            "knee": [
+              28,
+              44
+            ],
+            "foot": [
+              28,
+              54
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              35.5,
+              37
+            ],
+            "knee": [
+              36,
+              46
+            ],
+            "foot": [
+              36,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": 0
+        }
+      },
+      {
+        "row": 3,
+        "source": 2,
+        "mirror": false,
+        "pelvis": [
+          32,
+          36.3
+        ],
+        "legs": [
+          {
+            "hip": [
+              28.5,
+              36.3
+            ],
+            "knee": [
+              28,
+              41.3
+            ],
+            "foot": [
+              28.5,
+              52
+            ],
+            "planted": false
+          },
+          {
+            "hip": [
+              35.5,
+              36.3
+            ],
+            "knee": [
+              36,
+              42.3
+            ],
+            "foot": [
+              35.5,
+              59
+            ],
+            "planted": true
+          }
+        ],
+        "torso": {
+          "scale": 0.126,
+          "bob": -0.7
+        }
+      }
+    ],
+    "weapon": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": [
+          32,
+          53,
+          245,
+          341
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 136,
+          "floor": 339,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": [
+          303,
+          39,
+          501,
+          341
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 394,
+          "floor": 339,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": [
+          548,
+          5,
+          738,
+          341
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 650,
+          "floor": 339,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": [
+          784,
+          92,
+          1023,
+          342
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 904,
+          "floor": 340,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": [
+          1037,
+          103,
+          1279,
+          343
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1152,
+          "floor": 341,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": [
+          1288,
+          54,
+          1492,
+          341
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1390,
+          "floor": 339,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": [
+          53,
+          373,
+          236,
+          665
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 130,
+          "floor": 663,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": [
+          285,
+          344,
+          484,
+          656
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 394,
+          "floor": 654,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": [
+          551,
+          337,
+          747,
+          656
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 654,
+          "floor": 654,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": [
+          791,
+          402,
+          1006,
+          656
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 893,
+          "floor": 654,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": [
+          1047,
+          418,
+          1267,
+          658
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1150,
+          "floor": 656,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": [
+          1320,
+          371,
+          1502,
+          666
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1407,
+          "floor": 664,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": [
+          53,
+          373,
+          236,
+          665
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 130,
+          "floor": 663,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": [
+          285,
+          344,
+          484,
+          656
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 394,
+          "floor": 654,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": [
+          551,
+          337,
+          747,
+          656
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 654,
+          "floor": 654,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": [
+          791,
+          402,
+          1006,
+          656
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 893,
+          "floor": 654,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": [
+          1047,
+          418,
+          1267,
+          658
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1150,
+          "floor": 656,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": [
+          1320,
+          371,
+          1502,
+          666
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1407,
+          "floor": 664,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": [
+          44,
+          681,
+          265,
+          969
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 157,
+          "floor": 967,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": [
+          300,
+          655,
+          511,
+          969
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 408,
+          "floor": 967,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": [
+          556,
+          653,
+          753,
+          969
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 650,
+          "floor": 967,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": [
+          790,
+          709,
+          1017,
+          969
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 899,
+          "floor": 967,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": [
+          1045,
+          724,
+          1293,
+          969
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1150,
+          "floor": 967,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": [
+          1296,
+          682,
+          1514,
+          969
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1402,
+          "floor": 967,
+          "scale": 0.17
+        }
+      }
+    ],
+    "axeheavy": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": [
+          31,
+          97,
+          253,
+          344
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 128,
+          "floor": 342,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": [
+          300,
+          45,
+          510,
+          342
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 384,
+          "floor": 340,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": [
+          589,
+          3,
+          751,
+          273
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 640,
+          "floor": 271,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": [
+          789,
+          59,
+          989,
+          352
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 896,
+          "floor": 350,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": [
+          1072,
+          134,
+          1250,
+          348
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1152,
+          "floor": 346,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": [
+          1310,
+          63,
+          1501,
+          347
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 345,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 6,
+        "source": [
+          1310,
+          63,
+          1501,
+          347
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 345,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "source": [
+          1310,
+          63,
+          1501,
+          347
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 345,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": [
+          38,
+          393,
+          252,
+          662
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 128,
+          "floor": 660,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": [
+          318,
+          365,
+          495,
+          662
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 384,
+          "floor": 660,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": [
+          591,
+          335,
+          748,
+          608
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 640,
+          "floor": 606,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": [
+          800,
+          383,
+          1009,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 896,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": [
+          1072,
+          459,
+          1262,
+          665
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1152,
+          "floor": 663,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": [
+          1325,
+          368,
+          1511,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1408,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 6,
+        "source": [
+          1325,
+          368,
+          1511,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1408,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "source": [
+          1325,
+          368,
+          1511,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": true,
+        "anchor": {
+          "center": 1408,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": [
+          38,
+          393,
+          252,
+          662
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 128,
+          "floor": 660,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": [
+          318,
+          365,
+          495,
+          662
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 384,
+          "floor": 660,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": [
+          591,
+          335,
+          748,
+          608
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 640,
+          "floor": 606,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": [
+          800,
+          383,
+          1009,
+          663
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 896,
+          "floor": 661,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": [
+          1072,
+          459,
+          1262,
+          665
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1152,
+          "floor": 663,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": [
+          1325,
+          368,
+          1511,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 6,
+        "source": [
+          1325,
+          368,
+          1511,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 2,
+        "col": 7,
+        "source": [
+          1325,
+          368,
+          1511,
+          661
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 659,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": [
+          33,
+          732,
+          253,
+          980
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 128,
+          "floor": 978,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": [
+          283,
+          685,
+          499,
+          978
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 384,
+          "floor": 976,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": [
+          545,
+          649,
+          715,
+          915
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 640,
+          "floor": 913,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": [
+          784,
+          705,
+          990,
+          975
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 896,
+          "floor": 973,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": [
+          1039,
+          776,
+          1236,
+          978
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1152,
+          "floor": 976,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": [
+          1295,
+          705,
+          1503,
+          978
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 976,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 6,
+        "source": [
+          1295,
+          705,
+          1503,
+          978
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 976,
+          "scale": 0.17
+        }
+      },
+      {
+        "row": 3,
+        "col": 7,
+        "source": [
+          1295,
+          705,
+          1503,
+          978
+        ],
+        "scale": 0.17,
+        "mirrored": false,
+        "anchor": {
+          "center": 1408,
+          "floor": 976,
+          "scale": 0.17
+        }
+      }
+    ],
+    "special": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": [
+          13,
+          43,
+          202,
+          291
+        ],
+        "scale": 0.22672064777327935,
+        "mirrored": false
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": [
+          269,
+          84,
+          445,
+          295
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": [
+          522,
+          59,
+          737,
+          291
+        ],
+        "scale": 0.21293611448882244,
+        "mirrored": false
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": [
+          783,
+          130,
+          965,
+          294
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": [
+          1033,
+          14,
+          1199,
+          297
+        ],
+        "scale": 0.19858156028368795,
+        "mirrored": false
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": [
+          1251,
+          184,
+          1528,
+          301
+        ],
+        "scale": 0.20938628158844766,
+        "mirrored": false
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": [
+          70,
+          291,
+          198,
+          532
+        ],
+        "scale": 0.23,
+        "mirrored": true
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": [
+          279,
+          328,
+          433,
+          546
+        ],
+        "scale": 0.23,
+        "mirrored": true
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": [
+          572,
+          296,
+          758,
+          529
+        ],
+        "scale": 0.23,
+        "mirrored": true
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": [
+          800,
+          365,
+          983,
+          531
+        ],
+        "scale": 0.23,
+        "mirrored": true
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": [
+          1033,
+          14,
+          1199,
+          297
+        ],
+        "scale": 0.19858156028368795,
+        "mirrored": true
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": [
+          1229,
+          435,
+          1520,
+          545
+        ],
+        "scale": 0.19931271477663232,
+        "mirrored": true
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": [
+          71,
+          528,
+          209,
+          770
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": [
+          294,
+          570,
+          449,
+          770
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": [
+          542,
+          533,
+          731,
+          760
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": [
+          803,
+          604,
+          974,
+          772
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": [
+          1033,
+          14,
+          1199,
+          297
+        ],
+        "scale": 0.19858156028368795,
+        "mirrored": false
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": [
+          1253,
+          660,
+          1530,
+          766
+        ],
+        "scale": 0.20938628158844766,
+        "mirrored": false
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": [
+          43,
+          765,
+          250,
+          1006
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": [
+          291,
+          799,
+          475,
+          999
+        ],
+        "scale": 0.23,
+        "mirrored": false
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": [
+          549,
+          764,
+          760,
+          995
+        ],
+        "scale": 0.20527078302863064,
+        "mirrored": false
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": [
+          800,
+          817,
+          956,
+          1000
+        ],
+        "scale": 0.22330426905220246,
+        "mirrored": false
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": [
+          1036,
+          742,
+          1191,
+          1007
+        ],
+        "scale": 0.21212121212121213,
+        "mirrored": false
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": [
+          1245,
+          898,
+          1528,
+          1002
+        ],
+        "scale": 0.2049469964664311,
+        "mirrored": false
+      }
+    ]
+  }
+}

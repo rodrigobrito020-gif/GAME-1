@@ -143,19 +143,21 @@ export function warriorWalkPose(row, phase = 0, idle = false) {
 // Rasterize affine sprite parts into the fixed 64px renderer contract.
 // This is an asset build step; the game only loads the resulting PNG sheets.
 function layer(target, source, rect, matrix, shade = 1) {
+  const size = Math.sqrt(target.length / 4),
+    factor = size / 64;
   const [a, b, c, d, tx, ty] = matrix,
     det = a * d - b * c;
   const [x0, y0, x1, y1] = rect;
   const mask = source.partMasks?.get(rect.join(","));
-  for (let y = 0; y < 64; y++)
-    for (let x = 0; x < 64; x++) {
+  for (let y = 0; y < size; y++)
+    for (let x = 0; x < size; x++) {
       let alpha = 0,
         red = 0,
         green = 0,
         blue = 0;
       {
-        const dx = x + 0.5 - tx,
-          dy = y + 0.5 - ty;
+        const dx = (x + 0.5) / factor - tx,
+          dy = (y + 0.5) / factor - ty;
         const sx = Math.floor((d * dx - c * dy) / det),
           sy = Math.floor((-b * dx + a * dy) / det);
         if (sx < x0 || sx > x1 || sy < y0 || sy > y1) continue;
@@ -169,7 +171,7 @@ function layer(target, source, rect, matrix, shade = 1) {
         blue += source.pixels[i + 2] * opacity;
       }
       if (!alpha) continue;
-      const i = (y * 64 + x) * 4,
+      const i = (y * size + x) * 4,
         sa = alpha / 255,
         da = target[i + 3] / 255;
       const out = sa + da * (1 - sa);
@@ -206,10 +208,17 @@ function bone(target, source, rect, from, to, length, shade) {
     shade,
   );
 }
-export function renderWarriorWalkFrame(source, row, phase, idle = false) {
+export function renderWarriorWalkFrame(
+  source,
+  row,
+  phase,
+  idle = false,
+  factor = 1,
+) {
+  const size = 64 * factor;
   const pose = warriorWalkPose(row, phase, idle),
     def = WALK_PARTS[pose.source],
-    pixels = Buffer.alloc(64 * 64 * 4);
+    pixels = Buffer.alloc(size * size * 4);
   const order = row === 3 ? [0, 1] : [1, 0];
   for (const i of order) {
     const leg = pose.legs[i],
@@ -229,13 +238,13 @@ export function renderWarriorWalkFrame(source, row, phase, idle = false) {
   ]);
   if (!pose.mirror) return pixels;
   const mirrored = Buffer.alloc(pixels.length);
-  for (let y = 0; y < 64; y++)
-    for (let x = 0; x < 64; x++)
+  for (let y = 0; y < size; y++)
+    for (let x = 0; x < size; x++)
       pixels.copy(
         mirrored,
-        (y * 64 + 63 - x) * 4,
-        (y * 64 + x) * 4,
-        (y * 64 + x + 1) * 4,
+        (y * size + size - 1 - x) * 4,
+        (y * size + x) * 4,
+        (y * size + x + 1) * 4,
       );
   return mirrored;
 }

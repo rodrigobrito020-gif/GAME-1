@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { readZip } from "./zip-reader.mjs";
 import { attachLocalGame } from "./local-game.mjs";
+import { withLightAfterimages } from "./client-afterimages.mjs";
 import { localAssets } from "./assets.mjs";
 import { createMedievalCity } from "./medieval-city.mjs";
 import { createRoyalHunt } from "./royal-hunt.mjs";
@@ -50,6 +51,10 @@ for (const name of required)
     throw Error(
       `Build ausente ou ambíguo: ${name}. Este iniciador é para o ZIP enviado em 30/10/2026.`,
     );
+// Validate once at startup, before exposing a client whose adapter cannot run.
+const adaptedClient = withLightAfterimages(
+  byName.get("main-Du8N-0Wf.js")[0].read(),
+);
 const status = {
   mode: "captured-client-only",
   originalBackend: false,
@@ -172,6 +177,7 @@ const server = createServer((req, res) => {
       "/warrior-preview.css",
       "/warrior.mjs",
       "/warrior-walk-rig.mjs",
+      "/light-afterimages.mjs",
     ].includes(pathname)
   ) {
     const file =
@@ -216,7 +222,7 @@ const server = createServer((req, res) => {
   let data = cached.get(entry.name);
   try {
     if (!data) {
-      data = entry.read();
+      data = name === "main-Du8N-0Wf.js" ? adaptedClient : entry.read();
       cached.set(entry.name, data);
     }
   } catch {

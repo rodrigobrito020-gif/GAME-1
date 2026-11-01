@@ -1,8 +1,16 @@
-# Jogo local — 0.6.6: Avanço de Luz somente à distância
+# Jogo local — 0.6.7: rastro do personagem no dash
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Rastro do personagem — 0.6.7
+
+O Avanço de Luz deixa cópias translúcidas do próprio guerreiro nos pontos por onde ele passa, preservando a pose, direção, espada e escudo. As cópias têm tonalidade suave de luz, desaparecem em 320ms e ficam limitadas a cinco visíveis. Só são emitidas com deslocamento durante o dash; não permanecem como personagens no mapa.
+
+O efeito comprido que parecia um projétil foi retirado da ativação. As faíscas de contato continuam na chegada. A prévia também usa poses anteriores ao longo do caminho para mostrar o rastro. Distância mínima de 160, alcance de 300, dano, mana, recarga e progresso foram preservados; somente o Avanço de Luz segue disponível.
+
+Para tornar as silhuetas visíveis sobre o piso claro, `client-afterimages.mjs` adapta localmente o pequeno trecho de renderização dos rastros do cliente compatível. O ZIP de recursos permanece intacto. O adaptador é validado na inicialização e limita o novo comportamento ao Avanço de Luz; outros rastros conservam o funcionamento anterior. Não há mudança no cálculo do combate.
 
 ## Dash reservado para inimigos distantes — 0.6.6
 
@@ -153,7 +161,7 @@ npm run art:vfx
 
 Conta e progresso: **.local-runtime/account.json**. Não apague essa pasta para conservar os dados. Senha armazenada com scrypt; tokens locais duram até oito horas no processo. Ao reiniciar o servidor, a entrada automática faz novo login.
 
-Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. Scripts e estilos compilados do cliente permanecem sem alteração; uma folha de estilo própria aplica o tema branco e dourado. O servidor fornece a cidade com `art/medieval-ivory-gold.png` e a arena com `art/royal-hunt.png`, cada uma com sua grade de colisão. Os demais recursos continuam sendo lidos do ZIP local.
+Servidor somente em **127.0.0.1**. Não é uma instalação multiplayer/VPS pronta. Nenhuma conexão, proxy, conta ou sessão do servidor original é utilizada. O servidor adapta o rastro do Avanço de Luz no script entregue ao navegador, mantendo o ZIP de recursos intacto. Uma folha de estilo própria aplica o tema branco e dourado. O servidor fornece a cidade com `art/medieval-ivory-gold.png` e a arena com `art/royal-hunt.png`, cada uma com sua grade de colisão. Os demais recursos continuam sendo lidos do ZIP local.
 
 O GitHub contém código próprio e adaptadores, com as artes próprias da cidade, da arena e do guerreiro e sem redistribuir o pacote capturado. Os outros jogos e branches foram preservados.
 

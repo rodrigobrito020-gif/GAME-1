@@ -63,3 +63,9 @@ Prévia inclui uma travessia em sentido único para demonstrar a ação. Colisã
 ## Teste isolado — 0.6.5
 
 A prévia mostra somente o Avanço de Luz como habilidade, junto das ações básicas do corpo. O catálogo jogável, a validação de uso manual e a automação usam `ACTIVE_SKILLS`, contendo apenas `avanco-de-luz`. Definições e artes das outras três habilidades permanecem guardadas para revisão futura, sem poderem ser utilizadas nesta versão.
+
+## Cópias do personagem no dash — 0.6.7
+
+`LIGHT_AFTERIMAGES` centraliza intervalo (50ms), duração (320ms), opacidade inicial (0,62), cor e limite de cinco cópias. O renderer congela a textura/quadro, escala, origem e direção do corpo em posições anteriores. Mistura normal e tonalização suave preservam os detalhes sobre o piso marfim, em vez de saturar a cópia inteira de branco. As cópias perdem opacidade e são reutilizadas pelo pequeno pool existente.
+
+`client-afterimages.mjs` adapta apenas o trecho compatível do renderer no momento de servir o script. O ZIP não é editado; uma versão incompatível é recusada na inicialização. A emissão exige movimento do corpo durante o Avanço de Luz e não adiciona deslocamento à física. O antigo efeito comprido de vento foi retirado da ativação; o contato permanece.

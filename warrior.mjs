@@ -1,4 +1,5 @@
 // Shared animation/impact contract. Short body actions, longer independent VFX.
+import { LIGHT_AFTERIMAGES } from "./light-afterimages.mjs";
 import { WALK_STRIDE } from "./warrior-walk-rig.mjs";
 export const WARRIOR_SKIN = "humano-guerreiro";
 export const WARRIOR_SHEETS = {
@@ -84,7 +85,12 @@ export function warriorRig(original) {
       impacts: [300],
       // World-space translation is authoritative on the server. Do not add a
       // second, cosmetic dash that would snap the body back after landing.
-      motion: { trail: { at: [50, 300], color: "#fff0b4" } },
+      motion: {
+        trail: {
+          at: [50, LIGHT_AFTERIMAGES.emissionUntilMs],
+          color: LIGHT_AFTERIMAGES.color,
+        },
+      },
     },
     "humano-investida": {
       frames: [

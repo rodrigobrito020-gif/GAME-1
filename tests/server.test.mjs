@@ -1,3 +1,4 @@
+import { withLightAfterimages } from "../client-afterimages.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -81,7 +82,10 @@ test(
       const original = await (
         await fetch(base + "/assets/main-Du8N-0Wf.js")
       ).arrayBuffer();
-      assert.deepEqual(Buffer.from(original), read("main-Du8N-0Wf.js"));
+      assert.deepEqual(
+        Buffer.from(original),
+        withLightAfterimages(read("main-Du8N-0Wf.js")),
+      );
       const messages = [];
       let requestId = 0;
       const connect = async () => {

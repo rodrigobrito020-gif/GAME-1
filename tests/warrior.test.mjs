@@ -204,6 +204,11 @@ test("warrior assets and skill effects are served locally with matching flipbook
     habilidades: { mago: {} },
   };
   const effects = warriorEffects(original);
+  assert.equal(
+    effects.habilidades["avanco-de-luz"].golpe,
+    undefined,
+    "the dash must not play the old fixed projectile ribbon",
+  );
   assert.deepEqual(effects.efeitos.other, original.efeitos.other);
   for (const [id, effect] of Object.entries(effects.efeitos)) {
     if (id === "other") continue;

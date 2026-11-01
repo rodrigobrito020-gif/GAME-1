@@ -1,10 +1,10 @@
+import { LIGHT_AFTERIMAGES } from "/light-afterimages.mjs";
 import {
   WARRIOR_SHEETS,
   WARRIOR_ACTIONS,
   WARRIOR_LIGHT_DASH,
 } from "/warrior.mjs";
 const rig = await (await fetch("/data/paperdoll.json")).json();
-const effects = await (await fetch("/data/effects.json")).json();
 const images = {};
 async function image(url) {
   const img = new Image();
@@ -20,13 +20,6 @@ await Promise.all(
   }),
 );
 const previewSkills = ["avanco-de-luz"];
-const fxNames = ["guerreiro-avanco-luz"];
-const fx = await Promise.all(
-  fxNames.map(async (id) => ({
-    image: await image(effects.efeitos[id].folha),
-    def: effects.efeitos[id],
-  })),
-);
 const canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d");
 const readout = document.querySelector("output"),
@@ -69,8 +62,7 @@ function render() {
   } else if (move) {
     total = move.frames.length * rig.stepMs;
     const index = previewSkills.indexOf(action);
-    const tail =
-      index < 0 ? 0 : (fx[index].def.frames / fx[index].def.fps) * 1000;
+    const tail = index < 0 ? 0 : total + LIGHT_AFTERIMAGES.lifetimeMs;
     phase = elapsed % (Math.max(total, tail) + 350);
     const entry =
       move.frames[
@@ -125,36 +117,55 @@ function render() {
   ctx.beginPath();
   ctx.ellipse(300 + offset, 332 + offsetY, 68, 15, 0, 0, Math.PI * 2);
   ctx.fill();
-  const n = previewSkills.indexOf(action);
-  const effect = n >= 0 ? fx[n] : null;
-  const drawEffect = () => {
-    if (!effect || phase >= (effect.def.frames / effect.def.fps) * 1000) return;
-    const def = effect.def,
-      f = Math.floor((phase * def.fps) / 1000);
-    const size = def.alturaTela * 1.35;
-    ctx.save();
-    ctx.translate(
-      action === WARRIOR_LIGHT_DASH.id ? 300 : 300 + offset,
-      (def.camada === "chao" || def.camada === "atras" ? 332 : 268) +
-        (action === WARRIOR_LIGHT_DASH.id ? 0 : offsetY),
-    );
-    if (def.orientacao === "direita")
-      ctx.rotate([Math.PI / 2, Math.PI, 0, -Math.PI / 2][direction]);
-    ctx.imageSmoothingEnabled = true;
-    ctx.drawImage(
-      effect.image,
-      f * 128,
-      0,
-      128,
-      128,
-      -size * def.pivo[0],
-      -size * def.pivo[1],
-      size,
-      size,
-    );
-    ctx.restore();
-  };
-  if (effect?.def.camada !== "frente") drawEffect();
+  let afterimages = 0;
+  if (action === WARRIOR_LIGHT_DASH.id) {
+    const axis = [
+      [0, 1],
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+    ][direction];
+    const stamps = [];
+    for (
+      let stamp = WARRIOR_LIGHT_DASH.start + LIGHT_AFTERIMAGES.intervalMs;
+      stamp <= Math.min(phase, WARRIOR_LIGHT_DASH.end);
+      stamp += LIGHT_AFTERIMAGES.intervalMs
+    )
+      if (phase - stamp < LIGHT_AFTERIMAGES.lifetimeMs) stamps.push(stamp);
+    for (const stamp of stamps.slice(-LIGHT_AFTERIMAGES.maxVisible)) {
+      const progress = Math.min(
+        1,
+        (stamp - WARRIOR_LIGHT_DASH.start) /
+          (WARRIOR_LIGHT_DASH.end - WARRIOR_LIGHT_DASH.start),
+      );
+      const entry =
+        move.frames[
+          Math.min(move.frames.length - 1, Math.floor(stamp / rig.stepMs))
+        ];
+      const [pastSheet, pastCol] = Array.isArray(entry)
+        ? entry
+        : [move.sheet, entry];
+      ctx.save();
+      ctx.globalAlpha =
+        LIGHT_AFTERIMAGES.opacity *
+        Math.pow(1 - (phase - stamp) / LIGHT_AFTERIMAGES.lifetimeMs, 1.25);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(
+        images[pastSheet],
+        pastCol * 64,
+        direction * 64,
+        64,
+        64,
+        172 + axis[0] * (progress - 0.5) * 130,
+        92 + axis[1] * (progress - 0.5) * 100,
+        256,
+        256,
+      );
+      ctx.restore();
+      afterimages++;
+    }
+  }
+  canvas.dataset.afterimages = String(afterimages);
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(
     images[sheet],
@@ -167,7 +178,6 @@ function render() {
     256,
     256,
   );
-  if (effect?.def.camada === "frente") drawEffect();
   readout.textContent = `${["Frente", "Esquerda", "Direita", "Costas"][direction]} · ${sheet} · quadro ${col + 1} / ${WARRIOR_SHEETS[sheet]}`;
   canvas.dataset.sheet = sheet;
   canvas.dataset.frame = String(col);

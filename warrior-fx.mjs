@@ -8,7 +8,6 @@ const particles = {
 export function warriorEffects(original) {
   const effects = structuredClone(original);
   effects.habilidades["avanco-de-luz"] = {
-    golpe: { efeito: "guerreiro-avanco-luz", distancia: 0.5 },
     impacto: "guerreiro-avanco-impacto",
   };
   for (const id of Object.keys(WARRIOR_VFX))

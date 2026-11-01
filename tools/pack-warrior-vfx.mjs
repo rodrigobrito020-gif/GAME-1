@@ -377,6 +377,7 @@ function frame(fx, index) {
 }
 const manifest = {};
 for (const [id, fx] of Object.entries(WARRIOR_VFX)) {
+  if (id === "guerreiro-avatar-corte") continue;
   const width = fx.frames * 128,
     pixels = Buffer.alloc(width * 128 * 4);
   for (let i = 0; i < fx.frames; i++) {

@@ -66,6 +66,8 @@ export function warriorFx(id) {
 }
 export function warriorIcon(id) {
   const shapes = {
+    "avatar-da-luz":
+      '<path d="m24 5 4 16 13 3-13 4-4 15-4-15-13-4 13-3Z" fill="#fff1b8"/><path d="m12 13 4 6 8-8 8 8 4-6v12H12Z" fill="none" stroke="#d7a333" stroke-width="2"/>',
     "egide-de-luz":
       '<path d="m24 6 15 6-2 16-13 14-13-14-2-16Z" fill="#fff5d8" stroke="#e4b355" stroke-width="2"/><path d="m24 14 3 7 7 3-7 3-3 8-3-8-7-3 7-3Z" fill="#c18c35"/>',
     "impacto-de-luz":

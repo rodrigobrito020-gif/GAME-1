@@ -1,8 +1,30 @@
-# Jogo local — 0.6.14: roupas redesenhadas nas poses do guerreiro
+# Jogo local — 0.6.15: Avatar da Luz, ultimate do Guerreiro Humano
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Quarta habilidade — Avatar da Luz (0.6.15)
+
+**Avatar da Luz (4)** é uma transformação temporária. O guerreiro ergue a espada, recebe uma coroa de ativação e mantém uma aura dourada. A energia da espada e do escudo acompanha o quadro real da animação: rosto, roupa, equipamento e identidade do personagem não são substituídos. A ativação leva 600 ms; depois o guerreiro continua andando e usando as três habilidades anteriores durante a transformação.
+
+Valores iniciais para teste:
+
+- **100 de energia** para ativar, sem gasto de mana. Começa em zero. Um impacto acertado dá +4, um ataque recebido +2 e cada inimigo derrotado +6. Um golpe em área não multiplica os +4 por quantidade de alvos. Não carrega na cidade, parado, contra um inimigo já morto ou durante a própria transformação.
+- **8 segundos** ativos: ataques básicos atingem também inimigos vivos a até 100 unidades do alvo principal, uma vez por inimigo no impacto. O dano do ataque primário mantém seu valor anterior. O guerreiro recebe **35% menos dano**, depois da defesa normal/Égide, com mínimo de 1. A ultimate não cura nem dá invulnerabilidade.
+- Intervalo mínimo de **45 segundos** entre ativações, além de precisar carregar novamente os 100 pontos. Energia e prazo da recarga ficam no save; sair/reentrar ou reiniciar não libera outra ativação. A transformação em si termina ao sair da caçada, morrer ou desconectar; morrer também zera a energia.
+
+Na caçada, a barra acima das habilidades mostra a carga. Ao ficar pronta, **pressione 4 ou clique no quarto ícone**. A ativação manual funciona junto do combate automático das outras habilidades. Se houver um golpe em andamento, o Avatar aguarda a recuperação desse golpe, sem cancelar sua animação. A ultimate começa **manual por padrão**, preservando as escolhas anteriores de automação; o servidor também aceita adicioná-la à ordem automática quando o jogador escolher essa opção.
+
+Acima da cabeça continua existindo **um único círculo de duração**: durante a transformação mostra o Avatar; ao terminar, volta à duração restante da Égide, caso ela ainda esteja ativa. A recarga fica na barra de habilidades e é restaurada corretamente ao recarregar o jogo. Aura e energia desaparecem na expiração, morte ou troca de cena.
+
+Para examinar a habilidade isolada, abra **http://127.0.0.1:5188/guerreiro** e selecione **4 · Avatar da Luz**. A prévia não muda o inventário, a energia ou o save. `npm run art:avatar` reconstrói a aura, a ativação, o corte em área e o ícone a partir de `art/warrior/source/avatar-vfx.png`.
+
+No Windows: feche o servidor antigo, extraia o novo ZIP, copie `.local-runtime` e `recursos-publicos.zip` da pasta anterior e abra `ABRIR_CLIENTE_COPIADO.bat`. Use Ctrl+F5 e confira **v0.6.15** no topo.
+
+A implementação desta versão cobre o Guerreiro Humano. Os valores são provisórios para revisão jogando; as ultimates de outras classes ainda precisam de definição. A troca da espada e do escudo iniciais por modelos simples continua pendente: o jogador pediu para pausar essa alteração antes de aprovar a ultimate. Os sets do Lineage 2 continuam preservados como referência para adaptação 2D, conforme `LINEAGE_SETS.md`.
+
+As seções abaixo registram versões anteriores.
 
 ## Roupas redesenhadas nas próprias poses — 0.6.14
 

@@ -1,6 +1,15 @@
 // Shared flipbook metadata. Textured effects have transparent lead-in frames
 // when the client starts them on cast; their peak lines up with the body hit.
 export const WARRIOR_VFX = {
+  "guerreiro-avatar-corte": {
+    kind: "avatar-cleave",
+    frames: 16,
+    fps: 32,
+    height: 120,
+    pivot: [0.5, 0.7],
+    layer: "frente",
+    end: 500,
+  },
   "guerreiro-egide-escudo": {
     kind: "aegis-shield",
     source: "aegis",

@@ -48,11 +48,18 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
   const ring = node.querySelector(".cooldown-progress"),
     counter = node.querySelector("strong"),
     label = node.querySelector("small");
-  const buff = { until: 0, total: 1 };
+  const buff = { until: 0, total: 1 },
+    avatar = { until: 0, total: 1 };
   let anchor = null;
   const paint = () => {
     const now = performance.now();
-    const timer = buff;
+    const timer = avatar.until > now ? avatar : buff;
+    const skillName = timer === avatar ? "Avatar da Luz" : "Égide de Luz";
+    node.querySelector("img").src =
+      timer === avatar
+        ? "/assets/ui/royal-warrior/avatar-da-luz.png"
+        : "/assets/ui/royal-warrior/egide-de-luz.svg";
+    node.dataset.skill = timer === avatar ? "avatar-da-luz" : "egide-de-luz";
     const remaining = Math.max(0, timer.until - now),
       name = "DURAÇÃO";
     node.hidden = remaining <= 0;
@@ -64,7 +71,7 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
     label.textContent = name;
     node.setAttribute(
       "aria-label",
-      `Égide de Luz: ${name.toLowerCase()} ${Math.ceil(remaining / 1000)} segundos`,
+      `${skillName}: ${name.toLowerCase()} ${Math.ceil(remaining / 1000)} segundos`,
     );
     header.hidden = node.hidden || !anchor?.visible || now - anchor.at > 500;
     if (!header.hidden) {
@@ -72,7 +79,10 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
       header.style.top = `${anchor.y}px`;
     }
 
-    window.__royalBuffUntil = buff.until > now ? buff.until : 0;
+    window.__royalBuffUntil =
+      Math.max(buff.until, avatar.until) > now
+        ? Math.max(buff.until, avatar.until)
+        : 0;
   };
   const start = (timer, entity, remaining, total) => {
     const ms = Math.max(0, Number(remaining) || 0);
@@ -89,12 +99,20 @@ if (new URLSearchParams(location.search).get("demo") === "1") {
       detail.durationMs,
     ),
   );
+  window.addEventListener("royal-avatar-buff", ({ detail }) =>
+    start(
+      avatar,
+      detail.entity,
+      detail.removed ? 0 : detail.durationMs,
+      detail.durationMs,
+    ),
+  );
   window.addEventListener("royal-skill-anchor", ({ detail }) => {
     anchor = { ...detail, at: performance.now() };
     paint();
   });
   window.addEventListener("royal-skill-scene-reset", () => {
-    buff.until = 0;
+    buff.until = avatar.until = 0;
     anchor = null;
     paint();
   });

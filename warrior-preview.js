@@ -1,3 +1,4 @@
+import { LIGHT_AVATAR } from "/light-avatar.mjs";
 import { LIGHT_AEGIS } from "/defense-buff.mjs";
 import { LIGHT_AFTERIMAGES } from "/light-afterimages.mjs";
 import {
@@ -38,7 +39,19 @@ const aegisCast = await image(
 const aegisAura = await image(
   "/assets/fx/royal-warrior/guerreiro-egide-aura.png",
 );
-const previewSkills = ["avanco-de-luz", "impacto-de-luz", "egide-de-luz"];
+const avatarAura = await image(
+  "/assets/fx/royal-warrior/guerreiro-avatar-aura.png",
+);
+const avatarCast = await image(
+  "/assets/fx/royal-warrior/guerreiro-avatar-ativacao.png",
+);
+const glowFrames = new Map();
+const previewSkills = [
+  "avanco-de-luz",
+  "impacto-de-luz",
+  "egide-de-luz",
+  "avatar-da-luz",
+];
 const canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d");
 const readout = document.querySelector("output"),
@@ -82,13 +95,15 @@ function render() {
     total = move.frames.length * rig.stepMs;
     const index = previewSkills.indexOf(action);
     const tail =
-      action === "egide-de-luz"
-        ? LIGHT_AEGIS.applyAtMs + LIGHT_AEGIS.durationMs + 800
-        : action === "impacto-de-luz"
-          ? 2000
-          : index < 0
-            ? 0
-            : total + LIGHT_AFTERIMAGES.lifetimeMs;
+      action === "avatar-da-luz"
+        ? LIGHT_AVATAR.applyAtMs + LIGHT_AVATAR.durationMs + 800
+        : action === "egide-de-luz"
+          ? LIGHT_AEGIS.applyAtMs + LIGHT_AEGIS.durationMs + 800
+          : action === "impacto-de-luz"
+            ? 2000
+            : index < 0
+              ? 0
+              : total + LIGHT_AFTERIMAGES.lifetimeMs;
     phase = elapsed % (Math.max(total, tail) + 350);
     const entry =
       move.frames[
@@ -98,6 +113,13 @@ function render() {
     if (phase > total) {
       sheet = "idle";
       col = 0;
+      if (
+        action === LIGHT_AVATAR.id &&
+        phase < LIGHT_AVATAR.applyAtMs + LIGHT_AVATAR.durationMs
+      ) {
+        sheet = "weapon";
+        col = Math.floor((phase - total) / 120) % 6;
+      }
     }
     const jump = move.motion?.jump;
     if (jump && phase >= jump.at[0] && phase <= jump.at[1])
@@ -157,6 +179,27 @@ function render() {
       400,
     );
   }
+  const avatarActive =
+    action === LIGHT_AVATAR.id &&
+    phase >= LIGHT_AVATAR.applyAtMs &&
+    phase < LIGHT_AVATAR.applyAtMs + LIGHT_AVATAR.durationMs;
+  if (avatarActive) {
+    ctx.save();
+    ctx.globalAlpha = 0.75;
+    ctx.drawImage(avatarAura, 190, 98, 220, 260);
+    ctx.restore();
+  }
+  if (
+    action === LIGHT_AVATAR.id &&
+    phase >= LIGHT_AVATAR.applyAtMs &&
+    phase < LIGHT_AVATAR.applyAtMs + 650
+  ) {
+    ctx.save();
+    ctx.globalAlpha = 1 - (phase - LIGHT_AVATAR.applyAtMs) / 650;
+    ctx.drawImage(avatarCast, 140, 160, 320, 240);
+    ctx.restore();
+  }
+  canvas.dataset.avatarActive = String(avatarActive);
   canvas.dataset.lift = String(lift);
   canvas.dataset.phase = String(phase);
   if (action === "egide-de-luz") {
@@ -239,6 +282,34 @@ function render() {
     256,
     256,
   );
+  if (avatarActive) {
+    const key = `${trainingArmor}:${sheet}:${direction}:${col}`;
+    if (!glowFrames.has(key)) {
+      const c = document.createElement("canvas");
+      c.width = c.height = 64;
+      const g = c.getContext("2d");
+      g.drawImage(
+        (trainingArmor ? trainingImages : images)[sheet],
+        col * 64,
+        direction * 64,
+        64,
+        64,
+        0,
+        0,
+        64,
+        64,
+      );
+      const data = g.getImageData(0, 0, 64, 64);
+      window.__royalAvatarMask(data.data, 64, 64);
+      g.putImageData(data, 0, 0);
+      glowFrames.set(key, c);
+    }
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.globalAlpha = 0.9;
+    ctx.drawImage(glowFrames.get(key), 172, 92, 256, 256);
+    ctx.restore();
+  }
   if (action === "egide-de-luz" && phase < 1600) {
     const frame = Math.min(31, Math.floor((phase * 20) / 1000));
     ctx.drawImage(

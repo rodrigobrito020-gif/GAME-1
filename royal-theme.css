@@ -509,3 +509,86 @@ body {
 .royal-buff-duration .cooldown-progress {
   stroke: #d7ab42;
 }
+
+.royal-ultimate-meter {
+  position: fixed;
+  bottom: 92px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  z-index: 25;
+  padding: 6px 10px;
+  border: 1px solid #b7954e;
+  border-radius: 8px;
+  background: #fff8e9ee;
+  color: #684e22;
+  font: 10px/14px system-ui;
+  cursor: pointer;
+  box-shadow: 0 2px 9px #382b2733;
+  text-align: left;
+}
+.royal-ultimate-meter[hidden] {
+  display: none;
+}
+.royal-ultimate-meter:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.royal-ultimate-meter > span {
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.royal-ultimate-meter > strong {
+  float: right;
+  font-variant-numeric: tabular-nums;
+}
+.royal-ultimate-meter > div {
+  height: 5px;
+  background: #d9c9a9;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 3px 0;
+}
+.royal-ultimate-meter i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #a77b2b, #f8d773);
+  transition: width 0.15s linear;
+}
+.royal-ultimate-meter small {
+  display: block;
+  font-size: 10px;
+}
+.royal-ultimate-meter.ready {
+  border-color: #bd8524;
+  box-shadow: 0 0 12px #ffd57980;
+}
+.royal-ultimate-meter.active {
+  background: #fff0cbee;
+}
+.slHudSkillsAuto .royal-ultimate-skill {
+  opacity: 1;
+  cursor: pointer;
+}
+.royal-ultimate-ready {
+  box-shadow: 0 0 10px #e7b641 !important;
+}
+@media (max-height: 600px) {
+  .royal-ultimate-meter {
+    bottom: 76px;
+    padding: 3px 8px;
+    width: 230px;
+  }
+}
+
+.royal-ultimate-skill .slHudSkillArt {
+  background: #423321;
+  border-radius: 5px;
+}
+.slHudSkillsAuto .royal-ultimate-skill .slHudSkillKey {
+  display: block;
+}
+.royal-skill-orb[data-skill="avatar-da-luz"] img {
+  background: #423321;
+  border-radius: 50%;
+}

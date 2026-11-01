@@ -1,3 +1,5 @@
+import { LIGHT_AVATAR } from "./light-avatar.mjs";
+import { withUltimateState } from "./ultimate-wire.mjs";
 import { WebSocketServer } from "ws";
 import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import {
@@ -57,7 +59,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-13";
+  catalog.version = "local-human-warrior-14";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -512,13 +514,15 @@ export function attachLocalGame(
     },
   };
   const send = (client, kind, value, requestId = 0) => {
-    if (client.ws.readyState === 1)
-      client.ws.send(
-        protocol.encode("ServerMessage", {
-          requestId,
-          body: { case: kind, value },
-        }),
-      );
+    if (client.ws.readyState === 1) {
+      let packet = protocol.encode("ServerMessage", {
+        requestId,
+        body: { case: kind, value },
+      });
+      if (["characterState", "characterPatch", "worldSnapshot"].includes(kind))
+        packet = withUltimateState(packet, farm.avatar.state(client));
+      client.ws.send(packet);
+    }
   };
   const actor = (client) => ({
     id: 1,
@@ -653,6 +657,18 @@ export function attachLocalGame(
     client.displayedLevel = account.character.progress.level;
     client.displayedSkin = equipmentSkin(account.character);
     if (hunt) send(client, "huntSession", hunt.session);
+    const ultimateRemaining = farm.avatar.saved.readyAt - Date.now();
+    if (ultimateRemaining > 0)
+      send(client, "worldEvents", {
+        tick,
+        cooldowns: [
+          {
+            skillId: LIGHT_AVATAR.id,
+            readyInMs: ultimateRemaining,
+            totalMs: LIGHT_AVATAR.cooldownMs,
+          },
+        ],
+      });
   };
   const returnCity = (client) => {
     const removed = farm.stop(client);
@@ -1101,7 +1117,14 @@ export function attachLocalGame(
           patch(client);
           send(client, "huntSession", client.hunt.session);
         }
-        if (output.deltas.length || output.died) persist();
+        if (
+          output.deltas.length ||
+          output.died ||
+          output.events.buffs.length ||
+          output.events.casts.some((e) => e.skillId === "avatar-da-luz") ||
+          tick % 100 === 0
+        )
+          persist();
       }
       let dx = 0,
         dy = 0;

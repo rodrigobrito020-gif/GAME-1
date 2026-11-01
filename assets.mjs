@@ -38,6 +38,9 @@ export function localAssets(byName, status) {
     level_required: "Você ainda não tem o nível necessário para esta caçada.",
     already_hunting: "Retorne à cidade antes de iniciar outra caçada.",
     invalid_target: "Selecione um monstro vivo ao alcance da habilidade.",
+    ultimate_energy:
+      "Avatar da Luz precisa de 100 de energia. Carregue a barra em combate.",
+    buff_active: "Essa transformação ou proteção já está ativa.",
     target_too_close:
       "Alvo muito próximo. Use o Avanço de Luz para alcançar inimigos distantes.",
     not_hunting: "Entre em uma caçada para usar habilidades de combate.",
@@ -57,6 +60,21 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const ownAvatar = {
+      "/assets/ui/royal-warrior/avatar-da-luz.png": "avatar-da-luz.png",
+      "/assets/fx/royal-warrior/guerreiro-avatar-aura.png":
+        "vfx/guerreiro-avatar-aura.png",
+      "/assets/fx/royal-warrior/guerreiro-avatar-ativacao.png":
+        "vfx/guerreiro-avatar-ativacao.png",
+    }[pathname];
+    if (ownAvatar)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL("./art/warrior/" + ownAvatar, import.meta.url),
+        ),
+      };
+
     if (
       pathname === "/data/paperdoll.json" ||
       pathname === "/data/effects.json"

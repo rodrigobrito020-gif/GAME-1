@@ -1,5 +1,6 @@
 // Shared animation/impact contract. Short body actions, longer independent VFX.
 import { LIGHT_AFTERIMAGES } from "./light-afterimages.mjs";
+import { LIGHT_AVATAR } from "./light-avatar.mjs";
 import { LIGHT_AEGIS } from "./defense-buff.mjs";
 import { WALK_STRIDE } from "./warrior-walk-rig.mjs";
 export const WARRIOR_SKIN = "humano-guerreiro";
@@ -31,6 +32,11 @@ export const WARRIOR_GROUND_SLAM = {
   jump: { at: [100, 550], height: 32 },
 };
 export const WARRIOR_ACTIONS = {
+  "avatar-da-luz": {
+    move: "humano-avatar-luz",
+    duration: LIGHT_AVATAR.castMs,
+    impact: LIGHT_AVATAR.applyAtMs,
+  },
   "egide-de-luz": {
     move: "humano-egide-luz",
     duration: LIGHT_AEGIS.castMs,
@@ -175,6 +181,20 @@ export function warriorRig(original) {
       motion: { glow: { at: [100, 450], color: "#ffe0a1", pulse: false } },
     },
   });
+  rig.moves["humano-avatar-luz"] = {
+    frames: [
+      ...hold("special", 0, 1),
+      ...hold("special", 1, 2),
+      ...hold("special", 4, 6),
+      ...hold("special", 0, 3),
+    ],
+    impacts: [LIGHT_AVATAR.applyAtMs],
+  };
+  for (const move of [WARRIOR_BASIC.move, WARRIOR_RETURN.move])
+    rig.moves[move + "-avatar"] = {
+      ...structuredClone(rig.moves[move]),
+      hit: "guerreiro-avatar-corte",
+    };
   rig.basic.guerreiro = {
     chain: [WARRIOR_BASIC.move, WARRIOR_RETURN.move],
     heavy: WARRIOR_BASIC.move,

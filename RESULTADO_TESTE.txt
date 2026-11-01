@@ -1,62 +1,60 @@
-VERSAO 0.6.14 — ROUPAS REDESENHADAS NAS POSES
+VERSAO 0.6.15 — AVATAR DA LUZ
 Data: 01/11/2026
 
-PROBLEMA CORRIGIDO
-A roupa da 0.6.13 foi rejeitada pelo jogador: a substituição de cores por
-máscaras deixou blocos, contornos de placas e um corpo pouco natural.
-O processo de repintura das folhas prontas foi retirado.
+ENTREGUE
+- Quarta habilidade do Guerreiro Humano: Avatar da Luz, manual por padrão.
+- Tecla 4 e clique no quarto ícone funcionam junto do combate automático.
+- Energia começa zerada, carrega ao causar/receber dano e derrotar inimigos.
+  Custo 100; +4 por impacto acertado, +2 por ataque recebido, +6 por inimigo
+  derrotado. Não carrega parada/cidade/mortos nem durante o próprio Avatar.
+- Ativação de 600ms, aplicação no quadro de 300ms. Por 8s: aura dourada,
+  espada/escudo de energia, ataques básicos em área pequena e 35% menos dano.
+  Não cura, não dá invulnerabilidade nem aumenta o dano do alvo principal.
+- Intervalo mínimo 45s, salvo com a energia para impedir reset por reconexão.
+- Pedido durante outro golpe fica na fila, sem cancelar o movimento aprovado.
+- Indicador único de duração acima do personagem: prioridade Avatar, depois
+  Égide restante. Recarga no quarto slot nativo, inclusive após reiniciar.
+- Prévia /guerreiro tem o botão 4 para revisão isolada, sem modificar a partida.
 
-ALTERACOES
-- Fontes próprias de roupa em source/novice: camisa de linho com gola,
-  mangas de tecido, cinto, calça comprida e botas baixas de couro.
-- Corpo desenhado com roupas nas poses de espada, salto/cravada, reações e
-  nas peças articuladas da caminhada. Sem placas, capa ou saiote no corpo inicial.
-- Corrigido o encontro da espada de uma linha da arte com a cabeça da linha seguinte.
-- Preparação compacta para dash/buff: o compositor não precisa miniaturizar o
-  personagem para encaixar uma espada estendida longe do corpo.
-- Peitoral de treino acompanha o novo tronco e aparece também nas costas,
-  agora que a roupa inicial não tem capa. Retirar restaura as roupas simples.
-- A adaptação completa dos sets do Lineage 2 continua pendente, conforme
-  LINEAGE_SETS.md. Nenhum equipamento ou atributo novo foi concedido.
+TESTES AUTOMATIZADOS
+64 testes aprovados, zero falhas e zero ignorados, com recursos-publicos.zip real.
+- Novos testes de energia, alvo morto/tempo ocioso, custo, quadro de aplicação,
+  expiração, prazo persistente, alvos vivos/próximos atingidos uma única vez,
+  redução de dano com Égide, morte, saída de cena, fila e automação opcional.
+- As habilidades 1/2/3 mantêm seus slots, tempos e regras. O quarto slot novo
+  substitui somente o espaço de rascunho anteriormente indisponível.
+- Protocolo do cliente real, inventário, save, loot, mapas, caminhada e respawn
+  continuam aprovados. A extensão opcional de estado usa um campo protobuf
+  desconhecido, ignorado normalmente pelo cliente base; não há outro login.
 
-TESTES
-57 testes aprovados, nenhum reprovado ou ignorado, com o ZIP real de recursos.
-- Mesmas dimensões, quadros, quatro direções, pivô dos pés e sequências do cliente.
-- Caminhada alternada, direções espelhadas e tronco estável nos apoios.
-- Transparência, margens e silhuetas sem manchas soltas nas poses de repouso.
-- Escala da preparação dentro de 5% da postura normal em todas as direções.
-- Peitoral altera somente a região do tronco, preservando o restante da roupa
-  e a transparência. Conferida a aparência equipada nas quatro direções.
-- Reconstrução das seis folhas iniciais/equipadas é determinística.
-- Combate, habilidades, defesa, inventário, mapa, respawn, protocolo e
-  persistência continuam aprovados na suíte completa.
+NAVEGADOR REAL — CHROMIUM/WEBGL
+- Partida com recursos enviados pelo jogador e save isolado de teste.
+- Barra carregada naturalmente em combate; nenhuma carga concedida pelo teste.
+- Primeira ativação pela tecla 4 e segunda pelo quarto ícone, após a recarga
+  real terminar e os 100 pontos terem sido novamente obtidos em combate.
+- Aura acompanha caminhada/ataques/saltos; luz usa os pixels reais da arma e
+  do escudo de cada quadro, com conteúdo visível e sem trocar a roupa base.
+- Confirmados um único círculo, consumo da carga, fim dos efeitos, recarga
+  continuando após expirar e limpeza ao voltar à cidade.
+- Um segundo processo do servidor carregou um save de QA com prazo de recarga
+  ainda vigente: contador restaurado no quarto slot, sem restaurar o buff.
+- Prévia da ultimate em quatro direções, com ativação, aura e ataques de energia.
+- Gravação de aproximadamente 77s para conferir as duas ativações/transições.
+- Nenhum erro JavaScript nos testes em português do cliente e da prévia.
 
-CLIENTE REAL NO NAVEGADOR (CHROMIUM/WEBGL)
-- Caminhada com WASD e capturas das quatro direções na cidade.
-- Equipar e retirar peitoral obtido no save isolado de testes; roupa muda no
-  mapa e na mochila, sem criar outra identidade salva ou conceder uma skin.
-- Caçada com roupas simples e execução real das três habilidades aprovadas:
-  Avanço de Luz, Impacto de Luz e Égide de Luz.
-- Um único círculo de duração acima do nome, três escudos durante o buff,
-  mínimo de 38 pixels na tela, limpeza ao expirar e ao sair da caçada.
-- Janela 1920x1040 e 1000x760. Nenhum erro JavaScript; recursos por HTTP 200.
-- Gravação de aproximadamente 38 segundos usada para conferir transições
-  e aparência durante movimento/combate, além das imagens estáticas.
-- Prévia /guerreiro também alterna roupa/peitoral sem modificar o inventário.
-
-PRESERVADO
-Tempos, custos e danos das habilidades aprovadas. A recarga fica somente na
-barra de habilidades; acima da cabeça fica a duração da proteção.
-Peitoral: +3 DEF e +25 HP. Saves, itens, ouro e regras de progressão preservados.
-O servidor continua local/solo. Nenhuma conta, equipe ou set completo novo
-foi implementado nesta revisão visual.
+PRESERVADO / PENDENTE
+Roupas e rosto aprovados, equipamentos, itens, ouro, progressão e três habilidades
+anteriores preservados. A troca da espada/escudo iniciais por modelos simples
+continua pausada conforme a instrução do jogador. Sets do Lineage 2 e outras
+ultimates ainda dependem de suas etapas próprias. Servidor continua local/solo.
+Valores de balanceamento desta ultimate são iniciais para teste.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
-3. Com o servidor fechado, copie .local-runtime da pasta anterior para manter
-   seu progresso. Copie também recursos-publicos.zip, ou deixe-o em Downloads.
-4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
-5. Confira v0.6.14 no topo.
+3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
+   para manter o progresso. Copie também recursos-publicos.zip ou deixe-o em Downloads.
+4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5.
+5. Confira v0.6.15 no topo.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa: http://127.0.0.1:5188/guerreiro

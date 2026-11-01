@@ -416,7 +416,7 @@ test("draft skills cannot be cast or reenabled through automation", () => {
   const mana = farm.character.progress.mana;
   assert.deepEqual(
     ACTIVE_SKILLS.map((s) => s.id),
-    ["avanco-de-luz", "impacto-de-luz", "egide-de-luz"],
+    ["avanco-de-luz", "impacto-de-luz", "egide-de-luz", "avatar-da-luz"],
   );
   for (const id of ["investida", "golpe-destruidor", "furia-guerreiro"]) {
     assert.throws(() => farm.cast(client, id, 100), /invalid_skill/);

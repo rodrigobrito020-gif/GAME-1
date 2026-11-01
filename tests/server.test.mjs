@@ -148,7 +148,7 @@ test(
         .body.value;
       assert.deepEqual(
         catalog.skills.map((s) => s.id),
-        ["avanco-de-luz", "impacto-de-luz", "egide-de-luz"],
+        ["avanco-de-luz", "impacto-de-luz", "egide-de-luz", "avatar-da-luz"],
         "approved dash and new slam keep their native slots",
       );
       const scene = (await wait((m) => m.body?.case === "sceneEnter")).body

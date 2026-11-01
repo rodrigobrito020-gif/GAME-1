@@ -7,6 +7,7 @@ import {
   WARRIOR_GROUND_SLAM,
 } from "./warrior.mjs";
 import { LIGHT_AEGIS, TeamDefenseBuff } from "./defense-buff.mjs";
+import { LIGHT_AVATAR, LightAvatar } from "./light-avatar.mjs";
 export const SKILLS = [
   {
     id: WARRIOR_LIGHT_DASH.id,
@@ -47,6 +48,19 @@ export const SKILLS = [
     durationMs: LIGHT_AEGIS.durationMs,
   },
   {
+    id: LIGHT_AVATAR.id,
+    name: LIGHT_AVATAR.name,
+    key: "4",
+    kind: "buff",
+    description:
+      "Ultimate: consome 100 de energia de combate. Por 8s, os ataques básicos atingem uma pequena área e o guerreiro recebe 35% menos dano. Intervalo mínimo de 45s.",
+    icon: "/assets/ui/royal-warrior/avatar-da-luz.png",
+    manaCost: 0,
+    cooldownMs: LIGHT_AVATAR.cooldownMs,
+    range: 0,
+    durationMs: LIGHT_AVATAR.durationMs,
+  },
+  {
     id: "investida",
     name: "Investida",
     icon: "/assets/ui/royal-warrior/investida.svg",
@@ -82,10 +96,13 @@ export const SKILLS = [
 // Approved warrior skills in their stable manual hotbar slots.
 // Unapproved draft skills remain unavailable to both manual and automatic use.
 export const ACTIVE_SKILLS = SKILLS.filter((skill) =>
-  [WARRIOR_LIGHT_DASH.id, WARRIOR_GROUND_SLAM.id, LIGHT_AEGIS.id].includes(
-    skill.id,
-  ),
-);
+  [
+    WARRIOR_LIGHT_DASH.id,
+    WARRIOR_GROUND_SLAM.id,
+    LIGHT_AEGIS.id,
+    LIGHT_AVATAR.id,
+  ].includes(skill.id),
+).sort((a, b) => Number(a.key) - Number(b.key));
 export const ITEMS = [
   {
     id: "fragmento-local",
@@ -182,13 +199,16 @@ export class LocalFarm {
     this.random = random;
     this.defenseBuffs = defenseBuffs ?? new TeamDefenseBuff({ now });
     this.resolveTeam = resolveTeam;
+    this.avatar = new LightAvatar(this.character, { now });
     account.bag ??= [];
     account.warehouse ??= [];
     account.nextUid ??= 1;
     const c = this.character;
     c.equipment.slots ??= [];
     if (!account.farmVersion) {
-      c.automation.skillOrder = ACTIVE_SKILLS.map((skill) => skill.id);
+      c.automation.skillOrder = ACTIVE_SKILLS.filter(
+        (skill) => skill.id !== LIGHT_AVATAR.id,
+      ).map((skill) => skill.id);
       c.consumables.hpPotions = { pequena: 10 };
       c.consumables.manaPotions = { pequena: 10 };
       account.farmVersion = 1;
@@ -201,7 +221,9 @@ export class LocalFarm {
     // deliberately empty order and preserve later player edits on restart.
     if (account.skillReviewVersion !== 4) {
       if (c.automation.skillOrder.length)
-        c.automation.skillOrder = ACTIVE_SKILLS.map((skill) => skill.id);
+        c.automation.skillOrder = ACTIVE_SKILLS.filter(
+          (skill) => skill.id !== LIGHT_AVATAR.id,
+        ).map((skill) => skill.id);
       account.skillReviewVersion = 4;
     }
     c.progress.hp ||= 250;
@@ -315,6 +337,7 @@ export class LocalFarm {
   stop(client) {
     const events = this.events();
     events.buffs.push(...this.defenseBuffs.remove(this.character));
+    events.buffs.push(...this.avatar.clear(client.entityId ?? 1));
     client.hunt = null;
     client.combatAnimUntil = 0;
     client.target = null;
@@ -353,6 +376,7 @@ export class LocalFarm {
     c.wallet.gold = Number(c.wallet.gold) + a.gold;
     c.progress.xp = Number(c.progress.xp) + a.xp;
     hunt.session.kills++;
+    this.avatar.gain(LIGHT_AVATAR.killCharge);
     hunt.session.gold += a.gold;
     hunt.session.xp += a.xp;
     while (
@@ -444,9 +468,43 @@ export class LocalFarm {
     const skill = ACTIVE_SKILLS.find((s) => s.id === id);
     if (!h || h.deadAt || !c.progress.hp) throw Error("local.not_hunting");
     if (!skill) throw Error("local.invalid_skill");
+    if (id === LIGHT_AVATAR.id && (h.nextCast > now || h.actionUntil > now)) {
+      if (this.avatar.saved.readyAt > now || this.avatar.active())
+        throw Error("local.cooldown");
+      if (this.avatar.saved.charge < LIGHT_AVATAR.maxCharge)
+        throw Error("local.ultimate_energy");
+      h.avatarQueued = true;
+      return { events, deltas };
+    }
     if ((h.cooldowns[id] ?? 0) > now || h.nextCast > now || h.actionUntil > now)
       throw Error("local.cooldown");
     if (c.progress.mana < skill.manaCost) throw Error("local.no_mana");
+    if (id === LIGHT_AVATAR.id) {
+      this.avatar.reserve();
+      h.avatarQueued = false;
+      h.cooldowns[id] = this.avatar.saved.readyAt;
+      h.nextCast = h.actionUntil = now + LIGHT_AVATAR.castMs;
+      client.combatAnimUntil = h.actionUntil;
+      const origin = {
+        x: Math.round(client.x * 10),
+        y: Math.round(client.y * 10),
+      };
+      events.casts.push({
+        caster: client.entityId ?? 1,
+        skillId: id,
+        target: client.entityId ?? 1,
+        origin,
+        dest: { ...origin },
+        facing: client.facing,
+      });
+      events.cooldowns.push({
+        skillId: id,
+        readyInMs: LIGHT_AVATAR.cooldownMs,
+        totalMs: LIGHT_AVATAR.cooldownMs,
+      });
+      h.impacts.push({ at: now + LIGHT_AVATAR.applyAtMs, avatarBuff: true });
+      return { events, deltas };
+    }
     if (id === LIGHT_AEGIS.id) {
       if (this.defenseBuffs.state(c)) throw Error("local.buff_active");
       c.progress.mana -= skill.manaCost;
@@ -566,6 +624,8 @@ export class LocalFarm {
       spawned = [],
       despawned = [];
     events.buffs.push(...this.defenseBuffs.expire());
+    if (this.avatar.until && !this.avatar.active())
+      events.buffs.push(...this.avatar.clear(client.entityId ?? 1));
     if (!h) return { events, deltas, spawned, despawned };
     if (h.deadAt)
       return {
@@ -575,6 +635,13 @@ export class LocalFarm {
         despawned,
         returnCity: now >= h.deadAt + 3000,
       };
+    if (h.avatarQueued && now >= h.actionUntil && now >= h.nextCast) {
+      try {
+        this.cast(client, LIGHT_AVATAR.id, 0, events, deltas, { free });
+      } catch {
+        h.avatarQueued = false;
+      }
+    }
     let dashMoved = false;
     if (h.dash) {
       const dash = h.dash;
@@ -609,6 +676,10 @@ export class LocalFarm {
       }
     }
     for (const impact of h.impacts.filter((p) => p.at <= now)) {
+      if (impact.avatarBuff) {
+        events.buffs.push(this.avatar.activate(client.entityId ?? 1));
+        continue;
+      }
       if (impact.defenseBuff) {
         events.buffs.push(
           ...this.defenseBuffs.apply(
@@ -618,16 +689,30 @@ export class LocalFarm {
         );
         continue;
       }
-      const targets = impact.area
+      const primary = impact.basic
+        ? h.monsters.find((m) => m.id === impact.targets[0] && m.hp > 0)
+        : null;
+      const cleave = impact.basic && this.avatar.active() && primary;
+      const targets = cleave
         ? h.monsters
             .filter(
               (m) =>
                 m.hp > 0 &&
-                Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
-                  impact.area.radius,
+                Math.hypot(m.x - primary.x, m.y - primary.y) <=
+                  LIGHT_AVATAR.cleaveRadius,
             )
             .map((m) => m.id)
-        : impact.targets;
+        : impact.area
+          ? h.monsters
+              .filter(
+                (m) =>
+                  m.hp > 0 &&
+                  Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
+                    impact.area.radius,
+              )
+              .map((m) => m.id)
+          : impact.targets;
+      let landed = false;
       for (const id of targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
         if (
@@ -636,9 +721,19 @@ export class LocalFarm {
             (!h.dash?.blocked &&
               Math.hypot(monster.x - client.x, monster.y - client.y) <=
                 WARRIOR_LIGHT_DASH.hitRange))
-        )
-          this.hit(h, monster, impact.amount, impact.skillId, events, deltas);
+        ) {
+          this.hit(
+            h,
+            monster,
+            impact.amount,
+            cleave ? LIGHT_AVATAR.id : impact.skillId,
+            events,
+            deltas,
+          );
+          landed = true;
+        }
       }
+      if (landed) this.avatar.gain(LIGHT_AVATAR.hitCharge);
       const amount = Math.min(impact.heal, c.derived.maxHp - c.progress.hp);
       if (amount > 0) {
         c.progress.hp += amount;
@@ -707,6 +802,17 @@ export class LocalFarm {
       h.manualTarget = 0;
     h.target = target?.id ?? 0;
     client.moving = dashMoved;
+    if (
+      target &&
+      now >= h.actionUntil &&
+      (c.automation.skillOrder ?? []).includes(LIGHT_AVATAR.id)
+    ) {
+      try {
+        this.cast(client, LIGHT_AVATAR.id, 0, events, deltas, { free });
+      } catch {
+        /* Not ready: normal combat continues. */
+      }
+    }
     if (
       target &&
       now >= h.actionUntil &&
@@ -785,7 +891,7 @@ export class LocalFarm {
           const distance = Math.hypot(dx, dy) || 1;
           events.moves.push({
             entity: 1,
-            move: basic.move,
+            move: this.avatar.active() ? basic.move + "-avatar" : basic.move,
             target: target.id,
             dirX: Math.round((dx / distance) * 1000),
             dirY: Math.round((dy / distance) * 1000),
@@ -793,6 +899,7 @@ export class LocalFarm {
           });
           h.impacts.push({
             at: now + basic.impact,
+            basic: true,
             targets: [target.id],
             amount: c.derived.atk,
             skillId: "",
@@ -828,9 +935,16 @@ export class LocalFarm {
         m.anim = 2;
         const amount = Math.min(
           c.progress.hp,
-          Math.max(1, h.area.damage - c.derived.def),
+          Math.max(
+            1,
+            Math.round(
+              Math.max(1, h.area.damage - c.derived.def) *
+                (this.avatar.active() ? 1 - LIGHT_AVATAR.damageReduction : 1),
+            ),
+          ),
         );
         c.progress.hp -= amount;
+        this.avatar.gain(LIGHT_AVATAR.receivedCharge);
         events.damage.push({ source: m.id, target: 1, amount });
         if (c.progress.hp > 0 && now >= h.actionUntil) {
           h.actionUntil = now + 100;
@@ -848,6 +962,7 @@ export class LocalFarm {
           h.dash = null;
           h.impacts = [];
           events.buffs.push(...this.defenseBuffs.remove(c));
+          events.buffs.push(...this.avatar.clear(client.entityId ?? 1, true));
           client.moving = false;
           events.deaths.push({ entity: 1, killer: m.id });
           c.hunt.lastDeath = {

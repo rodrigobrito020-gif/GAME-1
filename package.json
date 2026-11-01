@@ -1,6 +1,6 @@
 {
   "name": "cliente-capturado-local",
-  "version": "0.6.19",
+  "version": "0.6.20",
   "private": true,
   "type": "module",
   "engines": {
@@ -15,7 +15,8 @@
     "art:clothes": "node tools/pack-starter-clothes.mjs",
     "art:avatar": "node tools/pack-avatar-vfx.mjs",
     "art:weapons": "node tools/pack-starter-weapons.mjs && node tools/pack-training-armor.mjs",
-    "art:hd": "node tools/pack-warrior.mjs --hd && node tools/pack-warrior-hd.mjs"
+    "art:hd": "node tools/pack-warrior.mjs --hd && node tools/pack-warrior-hd.mjs",
+    "art:archer": "node tools/pack-archer.mjs"
   },
   "dependencies": {
     "ws": "8.21.3"

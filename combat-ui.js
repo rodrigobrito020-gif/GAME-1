@@ -61,9 +61,11 @@
         "small",
         s.classId === "universal"
           ? "HABILIDADE COMUM · TODAS AS CLASSES"
-          : s.id === "avatar-da-luz"
-            ? "ULTIMATE · GUERREIRO HUMANO"
-            : "GUERREIRO HUMANO",
+          : ["avatar-da-luz", "espirito-da-floresta"].includes(s.id)
+            ? `ULTIMATE · ${s.classId === "arqueira" ? "ARQUEIRA ELFA" : "GUERREIRO HUMANO"}`
+            : s.classId === "arqueira"
+              ? "ARQUEIRA ELFA"
+              : "GUERREIRO HUMANO",
       ),
       text("h2", s.name),
       text("p", s.description),
@@ -71,7 +73,12 @@
     const stats = document.createElement("dl");
     for (const [label, value] of [
       ["Atalho", s.id === "dash" ? "Shift esquerdo" : s.key],
-      ["Custo", s.id === "avatar-da-luz" ? "100 energia" : `${s.manaCost} MP`],
+      [
+        "Custo",
+        ["avatar-da-luz", "espirito-da-floresta"].includes(s.id)
+          ? "100 energia"
+          : `${s.manaCost} MP`,
+      ],
       ["Recarga", time(s.cooldownMs)],
       ...(s.durationMs ? [["Duração", time(s.durationMs)]] : []),
     ])
@@ -196,7 +203,8 @@
       }
       if (Math.hypot(e.clientX - h.x, e.clientY - h.y) > 12) return;
       const s = find(h.button);
-      if (s?.id === "avatar-da-luz") window.__royalRequestAvatar?.();
+      if (["avatar-da-luz", "espirito-da-floresta"].includes(s?.id))
+        window.__royalRequestAvatar?.();
       else if (s?.id === "dash") window.__royalRequestDash?.();
       else if (s) send(s.id);
     },
@@ -308,7 +316,10 @@
       }
     }
     for (const [id, button] of switches)
-      if (!seen.has(id) || !state?.inHunt) button.hidden = true;
+      if (!seen.has(id)) {
+        button.remove();
+        switches.delete(id);
+      } else if (!state?.inHunt) button.hidden = true;
     refreshCard();
   }
   window.addEventListener("royal-ultimate-state", (e) => {

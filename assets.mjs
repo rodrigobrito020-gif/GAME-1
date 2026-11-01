@@ -1,3 +1,4 @@
+import { ARCHER_SKIN, ARCHER_SHEETS, archerRig } from "./archer.mjs";
 import { adaptIdle } from "./png.mjs";
 import { readFileSync } from "node:fs";
 import { WARRIOR_SKIN, WARRIOR_SHEETS, warriorRig } from "./warrior.mjs";
@@ -26,6 +27,8 @@ export function localAssets(byName, status) {
   looks.looks[WARRIOR_SKIN] = { entity: WARRIOR_SKIN };
   looks.entities[TRAINING_ARMOR_LOOK] = Object.keys(WARRIOR_SHEETS);
   looks.looks[TRAINING_ARMOR_LOOK] = { entity: TRAINING_ARMOR_LOOK };
+  looks.entities[ARCHER_SKIN] = Object.keys(ARCHER_SHEETS);
+  looks.looks[ARCHER_SKIN] = { entity: ARCHER_SKIN };
   const errors = JSON.parse(first("errors.json"));
   Object.assign(errors, {
     "errors.local.not_implemented":
@@ -35,11 +38,12 @@ export function localAssets(byName, status) {
   });
   const messages = {
     invalid_hunt: "Caçada inválida. Escolha uma das arenas locais de teste.",
-    level_required: "Você ainda não tem o nível necessário para esta caçada.",
+    level_required:
+      "Você ainda não tem o nível necessário para usar esse recurso.",
     already_hunting: "Retorne à cidade antes de iniciar outra caçada.",
     invalid_target: "Selecione um monstro vivo ao alcance da habilidade.",
     ultimate_energy:
-      "Avatar da Luz precisa de 100 de energia. Carregue a barra em combate.",
+      "A ultimate precisa de 100 de energia. Carregue a barra em combate.",
     buff_active: "Essa transformação ou proteção já está ativa.",
     target_too_close:
       "Alvo muito próximo. Use o Avanço de Luz para alcançar inimigos distantes.",
@@ -50,7 +54,8 @@ export function localAssets(byName, status) {
     invalid_item:
       "Item indisponível ou operação inválida. Confira o espaço na mochila.",
     invalid_inventory: "Inventário inválido.",
-    city_only: "Retorne à cidade para trocar equipamentos ou comprar poções.",
+    city_only:
+      "Retorne à cidade para trocar de classe, trocar equipamentos ou comprar poções.",
     potion_unavailable:
       "Poção indisponível: confira estoque, vida/mana e intervalo de uso.",
     no_gold: "Ouro insuficiente.",
@@ -60,6 +65,75 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const elfSheet =
+      /^\/assets\/paperdoll\/entities\/elfa-arqueira\/([a-z0-9]+)\.png$/.exec(
+        pathname,
+      );
+    if (elfSheet && ARCHER_SHEETS[elfSheet[1]])
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/archer/${elfSheet[1]}.png`, import.meta.url),
+        ),
+      };
+    const elfHd =
+      /^\/assets\/fx\/royal-archer\/hd\/base\/([a-z0-9]+)\.png$/.exec(pathname);
+    if (elfHd && ARCHER_SHEETS[elfHd[1]])
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/archer/hd/${elfHd[1]}.png`, import.meta.url),
+        ),
+      };
+    const elfIcon =
+      /^\/assets\/ui\/royal-archer\/(tiro-perfurante|chuva-de-flechas|olhos-da-floresta|espirito-da-floresta)\.png$/.exec(
+        pathname,
+      );
+    if (elfIcon)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/archer/icons/${elfIcon[1]}.png`, import.meta.url),
+        ),
+      };
+    const elfFx =
+      /^\/assets\/fx\/royal-archer\/(ring|spirit|arrow|impact)\.png$/.exec(
+        pathname,
+      );
+    if (elfFx)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/archer/vfx/${elfFx[1]}.png`, import.meta.url),
+        ),
+      };
+    const potion = /^\/assets\/ui\/royal-potions\/(hp|mana)-([123])\.png$/.exec(
+      pathname,
+    );
+    if (potion)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(
+            `./art/potions/icons/${potion[1]}-${potion[2]}.png`,
+            import.meta.url,
+          ),
+        ),
+      };
+    const classPortrait =
+      /^\/assets\/ui\/royal-classes\/(warrior|archer)\.png$/.exec(pathname);
+    if (classPortrait)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(
+            classPortrait[1] === "archer"
+              ? "./art/archer/portrait.png"
+              : "./art/classes/warrior.png",
+            import.meta.url,
+          ),
+        ),
+      };
     const hd =
       /^\/assets\/fx\/royal-warrior\/hd\/(base|training)\/([a-z0-9]+)\.png$/.exec(
         pathname,
@@ -126,7 +200,7 @@ export function localAssets(byName, status) {
         bytes: Buffer.from(
           JSON.stringify(
             name === "paperdoll.json"
-              ? warriorRig(JSON.parse(original))
+              ? archerRig(warriorRig(JSON.parse(original)))
               : warriorEffects(JSON.parse(original)),
           ),
         ),

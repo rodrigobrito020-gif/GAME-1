@@ -1,8 +1,42 @@
-# Jogo local — 0.6.19: automação por habilidade e dash comum
+# Jogo local — 0.6.20: Arqueira Elfa, seis poções e buffs simultâneos
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.20
+
+Na cidade, clique em **“Trocar classe”**, abaixo do painel do personagem, para escolher **Guerreiro Humano** ou **Arqueira Elfa**. Itens, peças equipadas, mochila, armazém, ouro e EXP são preservados. As escolhas AUTO/MANUAL de habilidades são lembradas separadamente por classe. Não é possível trocar durante a caçada.
+
+A arqueira tem arte própria em 128px, caminhada articulada, arco, disparo com preparação e recuperação nas quatro direções e dano real à distância. Suas habilidades aprovadas são:
+
+| Tecla | Habilidade | Funcionamento desta primeira versão |
+| --- | --- | --- |
+| 1 | Tiro Perfurante | Flecha atravessa inimigos alinhados, 200% do ataque; 8 MP, recarga 5s. |
+| 2 | Chuva de Flechas | Área no alvo, três impactos de 70% do ataque em 1,7s; 15 MP, recarga 8s. Continua mesmo após a morte do primeiro alvo. |
+| 3 | Olhos da Floresta | Ataque próprio +20% por 5min; 10 MP, recarga 120s; não acumula bônus. |
+| 4 | Espírito da Floresta | Ultimate com 100 de energia, dura 45s e recarrega em 60s; ataque +35%, disparos a cada 700ms e dano recebido −15%. |
+| Shift esquerdo | Dash | Mesma esquiva universal de 2,5s de recarga, com pose da arqueira. |
+
+O combate básico e a perseguição continuam automáticos. Cada habilidade pode ser AUTO ou MANUAL. Flechas têm trajeto e tempo de viagem; não causam dano antes da chegada. A ultimate carrega com combate real e, se em AUTO, ativa com energia cheia e recarga concluída. **Os números novos da arqueira são balanceamento inicial para teste**, além dos nomes e do conjunto aprovados. Os tempos já aprovados do guerreiro permanecem.
+
+**Todos os buffs ativos aparecem juntos**, lado a lado acima do personagem, cada um com sua própria duração e carta de descrição ao passar o mouse/focar/pressionar. Por exemplo: Égide + Avatar e Olhos + Espírito. Expirar um efeito não remove o outro. As recargas continuam na barra, sem duplicá-las na cabeça.
+
+**Seis atalhos de poções**, no canto inferior direito: três HP e três mana. Clique no ícone para configurar Manual/Auto, limite de **30%, 50% ou 70%**, usar ou comprar na cidade.
+
+| Poção de HP ou mana | Libera | Recupera | Preço unitário |
+| --- | --- | --- | --- |
+| Pequena | Nível 1 | 40% do recurso máximo | 10 ouro |
+| Média | Nível 55 | 60% | 40 ouro |
+| Grande | Nível 150 | 80% | 100 ouro |
+
+A força da poção e o limite de ativação são independentes. No AUTO, o servidor consome estoque quando o recurso fica **igual ou abaixo do percentual escolhido**, somente em caçada e vivo. Se várias forças do mesmo recurso estiverem em AUTO, prioriza a maior habilitada que tenha estoque; HP tem prioridade sobre mana. Todas compartilham intervalo de uso de 1,5s. No MANUAL, o limite escolhido fica salvo para uso futuro no AUTO e o jogador escolhe o momento de consumir. Bloqueios de nível e estoque também são validados no servidor. As preferências das seis poções são salvas separadamente. As poções novas são compradas, sem concessão de estoque na migração.
+
+**Equipamentos:** aguardaremos as cinco classes iniciais antes de adaptar os sets, como combinado. Guerreiro e Arqueira são as duas classes prontas desta etapa; as outras três ainda precisam de definição.
+
+**Windows:** feche o servidor antigo; extraia o novo ZIP em outra pasta; copie `.local-runtime` da pasta anterior para preservar a conta e mantenha `recursos-publicos.zip` junto do jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.20** no topo. Endereço: http://127.0.0.1:5188/jogar?demo=1 .
+
+As seções abaixo registram versões anteriores; regras modificadas na 0.6.20 são descritas acima.
 
 ## Atualização 0.6.19
 
@@ -51,7 +85,7 @@ Valores atuais:
 
 Na caçada, a barra acima das habilidades mostra a carga. Ao ficar pronta, **pressione 4 ou clique no quarto ícone**. A ativação manual funciona junto do combate automático das outras habilidades. Se houver um golpe em andamento, o Avatar aguarda a recuperação desse golpe, sem cancelar sua animação. A ultimate é automática por padrão nesta atualização, inclusive em saves antigos, e preserva as escolhas anteriores das outras habilidades. Também pode ser acionada manualmente quando pronta.
 
-Acima da cabeça continua existindo **um único círculo de duração**: durante a transformação mostra o Avatar; ao terminar, volta à duração restante da Égide, caso ela ainda esteja ativa. A recarga fica na barra de habilidades e é restaurada corretamente ao recarregar o jogo. Aura e energia desaparecem na expiração, morte ou troca de cena.
+Na versão 0.6.15 existia **um único círculo de duração** (substituído por indicadores simultâneos na 0.6.20): durante a transformação mostra o Avatar; ao terminar, volta à duração restante da Égide, caso ela ainda esteja ativa. A recarga fica na barra de habilidades e é restaurada corretamente ao recarregar o jogo. Aura e energia desaparecem na expiração, morte ou troca de cena.
 
 Para examinar a habilidade isolada, abra **http://127.0.0.1:5188/guerreiro** e selecione **4 · Avatar da Luz**. A prévia não muda o inventário, a energia ou o save. `npm run art:avatar` reconstrói a aura, a ativação, o corte em área e o ícone a partir de `art/warrior/source/avatar-vfx.png`.
 

@@ -1,3 +1,6 @@
+import { ARCHER_CLASS, ARCHER_SKIN } from "./archer.mjs";
+import { archerFxState } from "./archer-combat.mjs";
+import { POTION_TIERS, potionState } from "./potions.mjs";
 import { combatMode, setCombatMode, stepEvade } from "./combat-control.mjs";
 import { MONSTER_ROLES, combatState } from "./monster-combat.mjs";
 import { LIGHT_AVATAR } from "./light-avatar.mjs";
@@ -13,7 +16,7 @@ import {
 } from "node:fs";
 import path from "node:path";
 import { Protocol } from "./protocol.mjs";
-import { LocalFarm, AREAS, ITEMS, ACTIVE_SKILLS as SKILLS } from "./farm.mjs";
+import { LocalFarm, AREAS, ITEMS, ALL_SKILLS as SKILLS } from "./farm.mjs";
 import {
   equipmentIdentity,
   equipmentSkin,
@@ -61,7 +64,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-19";
+  catalog.version = "local-classes-20";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -83,6 +86,16 @@ export function attachLocalGame(
       initialStats: [],
     },
   ];
+  catalog.classes.push({
+    id: ARCHER_CLASS,
+    name: "Arqueira Elfa",
+    icon: "agilidade",
+    range: 320,
+    hpBase: 220,
+    manaBase: 120,
+    attacksPerSecond: 1,
+    initialStats: [],
+  });
   catalog.skins = [
     {
       id: WARRIOR_SKIN,
@@ -114,6 +127,14 @@ export function attachLocalGame(
     },
   ];
   catalog.skins.push({
+    id: ARCHER_SKIN,
+    name: "Arqueira Elfa",
+    gender: 2,
+    classId: ARCHER_CLASS,
+    forSale: false,
+    kit: [],
+  });
+  catalog.skins.push({
     id: TRAINING_ARMOR_LOOK,
     name: "Guerreiro Humano — peitoral de treino",
     gender: 1,
@@ -136,22 +157,33 @@ export function attachLocalGame(
   catalog.items = ITEMS;
   catalog.skills = SKILLS.map((skill) => ({
     ...skill,
-    classId: skill.universal ? "universal" : "guerreiro",
+    classId: skill.universal
+      ? "universal"
+      : [
+            "tiro-perfurante",
+            "chuva-de-flechas",
+            "olhos-da-floresta",
+            "espirito-da-floresta",
+          ].includes(skill.id)
+        ? ARCHER_CLASS
+        : "guerreiro",
     kind: skill.kind ?? (skill.radius ? "area" : "damage"),
     source: "physical",
     description:
       skill.description ?? "Habilidade local de teste. Valores provisórios.",
   }));
-  catalog.consumables = [1, 2].map((kind) => ({
-    kind,
-    tier: 1,
-    name: kind === 1 ? "Poção de vida local" : "Poção de mana local",
-    icon: kind === 1 ? "pocao-vida" : "pocao-mana",
-    pct: 0.4,
-    price: 10,
-    basePrice: 10,
-    minLevel: 1,
-  }));
+  catalog.consumables = [1, 2].flatMap((kind) =>
+    POTION_TIERS.map((t) => ({
+      kind,
+      tier: t.tier,
+      name: `Poção de ${kind === 1 ? "HP" : "Mana"} ${t.name}`,
+      icon: kind === 1 ? "pocao-vida" : "pocao-mana",
+      pct: t.pct,
+      price: t.price,
+      basePrice: t.price,
+      minLevel: t.minLevel,
+    })),
+  );
   catalog.gates = AREAS.map((a) => ({
     id: a.id,
     sceneId: a.id,
@@ -529,9 +561,22 @@ export function attachLocalGame(
           automatic:
             combatMode(account) === "auto" &&
             (account.character.automation.skillOrder ?? []).includes(
-              LIGHT_AVATAR.id,
+              farm.ultimateDefinition.id,
             ),
           ...combatState(account, client, Date.now()),
+          activeBuffs: farm.activeBuffs(),
+          archerFx: archerFxState(client, Date.now()),
+          classId: account.character.identity.classId,
+          className:
+            account.character.identity.classId === ARCHER_CLASS
+              ? "Arqueira Elfa"
+              : "Guerreiro Humano",
+          ...potionState(account, Date.now(), farm.nextPotion ?? 0),
+          level: account.character.progress.level,
+          hp: account.character.progress.hp,
+          maxHp: account.character.derived.maxHp,
+          mana: account.character.progress.mana,
+          maxMana: account.character.derived.maxMana,
         });
       client.ws.send(packet);
     }
@@ -677,9 +722,9 @@ export function attachLocalGame(
         tick,
         cooldowns: [
           {
-            skillId: LIGHT_AVATAR.id,
+            skillId: farm.ultimateDefinition.id,
             readyInMs: ultimateRemaining,
-            totalMs: LIGHT_AVATAR.cooldownMs,
+            totalMs: farm.ultimateDefinition.cooldownMs,
           },
         ],
       });
@@ -998,6 +1043,32 @@ export function attachLocalGame(
               );
             } else if (kind === "setTarget") farm.target(client, value.entity);
             else if (kind === "useSkill") {
+              const change = /^classe:(guerreiro|arqueira)$/.exec(
+                value.skillId,
+              );
+              if (change) {
+                farm.changeClass(client, change[1]);
+                patch(client);
+                persist();
+                return;
+              }
+
+              const potionConfig =
+                /^potion-config:([12]):([123]):(manual|auto):(30|50|70)$/.exec(
+                  value.skillId,
+                );
+              if (potionConfig) {
+                farm.configurePotion(
+                  Number(potionConfig[1]),
+                  Number(potionConfig[2]),
+                  potionConfig[3] === "auto",
+                  Number(potionConfig[4]),
+                );
+                patch(client);
+                persist();
+                return;
+              }
+
               if (value.skillId === "ataque-direito") {
                 farm.orderAttack(client, value.target);
                 patch(client);
@@ -1131,6 +1202,11 @@ export function attachLocalGame(
     const now = Date.now();
     for (const client of connections) {
       if (!client.auth) continue;
+      client.classId = account.character.identity.classId;
+      if (client.hunt && !client.hunt.deadAt && farm.autoPotion()) {
+        patch(client);
+        persist();
+      }
       if (client.hunt) {
         const output = farm.step(client, { free, route });
         if (output.returnCity) {

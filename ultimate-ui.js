@@ -95,6 +95,8 @@
   function paint() {
     meter.hidden = !state?.inHunt || !state.alive;
     if (!state) return;
+    meter.querySelector("span").textContent =
+      `4 · ${(state.ultimateName ?? "Avatar da Luz").toUpperCase()}`;
     const active = remaining("activeMs"),
       cd = remaining("cooldownMs"),
       isReady = ready();
@@ -107,7 +109,7 @@
     meter.querySelector("i").style.width =
       `${active ? (100 * active) / (state.durationMs || 45000) : Math.max(0, Math.min(100, state.charge))}%`;
     meter.querySelector("small").textContent = state.queued
-      ? "Preparando Avatar…"
+      ? `Preparando ${state.ultimateName ?? "Avatar da Luz"}…`
       : active
         ? `Transformado · ${Math.ceil(active / 1000)}s`
         : isReady
@@ -118,7 +120,7 @@
             ? `Recarga · ${Math.ceil(cd / 1000)}s · energia por combate`
             : "Carrega ao causar e receber dano";
     const button = document.querySelector(
-      '.slHudSkill[aria-label="Avatar da Luz"]',
+      `.slHudSkill[aria-label="${state.ultimateName ?? "Avatar da Luz"}"]`,
     );
     if (button) {
       button.classList.add("royal-ultimate-skill");

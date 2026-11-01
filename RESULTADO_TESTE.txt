@@ -1,35 +1,46 @@
-VERSAO 0.6.19 — AUTOMACAO POR HABILIDADE E DASH COMUM
+VERSAO 0.6.20 — ARQUEIRA ELFA, SEIS POCOES E BUFFS SIMULTANEOS
 Data: 01/11/2026
 
 ENTREGUE
-- Removido o modo manual global. Saves antigos retomam a caca automatica sem
-  perder progresso, itens ou selecoes de habilidades.
-- Botoes AUTO/MANUAL individuais acima dos cinco icones. MANUAL desativa apenas
-  o uso automatico da habilidade; clique/atalho continua disponivel. Golpes
-  basicos e movimento continuam automaticos mesmo com todas no MANUAL.
-- Dash comum no quinto slot, catalogo universal, novo icone ilustrado e Shift
-  esquerdo. Comeca manual; AUTO tenta sair de marcacoes inimigas iminentes.
-  Icone/Shift/automatico compartilham validacao, colisao e recarga de 2,5s.
-- Indicadores ativos de Egide/Avatar usam as mesmas artes novas da barra.
-  Hover, foco e pressionamento mostram a mesma carta e o tempo restante,
-  sem conjurar novamente. Acima do personagem permanece somente a duracao.
-- Avatar 45s/60s, Egide 5min/120s e correcao de Shift repetido mantidos.
+- Arqueira Elfa com arte propria em 128px, caminhada articulada, arco e poses
+  de disparo nas quatro direcoes. Tiro Perfurante, Chuva de Flechas, Olhos da
+  Floresta e Espirito da Floresta, mais o Dash universal.
+- Combate basico a distancia, flechas com tempo de viagem e dano no impacto;
+  chuva com tres impactos reais e persistencia apos a morte do primeiro alvo.
+- Troca de classe na cidade preserva itens, equipamentos, armazem, ouro e EXP.
+  Escolhas AUTO/MANUAL de habilidades lembradas por classe.
+- Todos os buffs ativos aparecem juntos acima do personagem, com icones,
+  duracoes e cartas independentes. A recarga continua na barra.
+- Tres pocoes HP e tres mana: pequena nivel 1, media 55 e grande 150.
+  Configuracao individual Manual/Auto com limites 30%, 50% e 70%.
+  Recuperacao de 40%, 60% e 80% (valores iniciais); estoque e ouro reais;
+  intervalo compartilhado de 1,5s; nenhuma pocao nova concedida na migracao.
+- Guerreiro, tempos aprovados, roupas e itens anteriores preservados.
+  Equipamentos por peca aguardam as cinco classes iniciais, conforme pedido.
 
 TESTES
-- 75 testes automatizados passaram, zero falhas ou ignorados, com ZIP real.
-- Migracao do antigo modo manual sem alterar preferencias de habilidades;
-  automacao individual persistente; golpes basicos com todas em manual;
-  Dash manual/automatico e cooldown compartilhado; ataques inimigos reais.
-- Chromium/WebGL e cliente real em portugues, saves de QA separados:
-  cinco icones, Dash com classId universal, nenhum botao de modo manual global;
-  caca continua com todas as habilidades manuais; toggles rapidos independentes;
-  Egide ativa ao habilitar AUTO; Avatar com energia 100 aguarda uso manual e
-  ativa pela tecla 4 durante a caca automatica; Dash por icone e Shift repetido.
-- Cartas dos dois efeitos sobre a cabeca abertas por hover com artes corretas,
-  tempo restante e modo escolhido; escolhas mantidas ao recarregar a pagina.
-- Teste adicional: Dash em AUTO usado diante de ataque de monstro gerado na
-  propria partida, sem comando manual de dash. Outras habilidades manuais.
-- Nenhum erro JavaScript ou desconexao nesses testes.
+- 88 testes automatizados passaram, zero falhas ou ignorados, com ZIP real.
+- Regressao do guerreiro, farm, servidor/protobuf, morte, estoque, inventarios,
+  armazenamento, progressao, dash, animacoes e colisao.
+- Arqueira: troca/restauracao de classe sem perda de itens; dano so na chegada;
+  perfuracao em corredor sem duplicar acertos; chuva em tres tempos; buffs
+  independentes; expiracao, saida, morte; velocidade e reducao de dano da ultimate.
+- Pocoes: limites exatos 30/50/70, desbloqueios 54/55 e 149/150, configuracoes
+  independentes apos serializacao, cooldown compartilhado, estoque, ouro,
+  prioridades, recurso completo, personagem morto e quantidades invalidas.
+- Chromium/WebGL com cliente real em pt-BR e saves de QA separados:
+  troca de classe atualiza ator nativo, retrato e folhas HD; cinco habilidades;
+  combate com flechas, perfuracao e chuva; Olhos e Espirito simultaneos;
+  ultimate ativada automaticamente com energia conquistada em combate real.
+- Cartas dos dois buffs da arqueira abertas individualmente; troca de volta
+  para guerreiro preserva estoque, equipamentos, ouro, EXP e armazem.
+- Dois perfis isolados de QA, niveis 55 e 150: bloqueios visuais corretos,
+  compra e consumo efetivo de pocao de mana; estoque passa de 10 para 9;
+  configuracao do limite salva. Egide e Avatar juntos, sem sobrepor os icones.
+- Sem erros JavaScript nos testes de navegador. Sem novas requisicoes de
+  imagem em 1s de repintura dos atalhos; evita recarregar icones a cada quadro.
+- Ausencias de audio/FX preexistentes no ZIP capturado nao foram preenchidas
+  com arquivos ficticios. As novas artes proprias sao fornecidas neste projeto.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
@@ -37,6 +48,12 @@ WINDOWS
 3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
    para manter o progresso. Copie recursos-publicos.zip ou deixe-o em Downloads.
 4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
-5. Confira v0.6.19 no topo.
+5. Confira v0.6.20 no topo.
+6. Na cidade: botao Trocar classe. Pocoes: seis icones no canto inferior direito.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-Previa: http://127.0.0.1:5188/guerreiro
+Previa do guerreiro: http://127.0.0.1:5188/guerreiro
+
+PENDENTE DE REVISAO
+- Aparencia e balanceamento inicial da arqueira; valores definitivos de pocoes.
+- Definir as outras tres classes antes de iniciar a adaptacao dos equipamentos.
+- Multiplayer continua fora deste servidor de uma conta local.

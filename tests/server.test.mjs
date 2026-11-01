@@ -147,7 +147,9 @@ test(
       const catalog = (await wait((m) => m.body?.case === "contentCatalog"))
         .body.value;
       assert.deepEqual(
-        catalog.skills.map((s) => s.id),
+        catalog.skills
+          .filter((s) => ["guerreiro", "universal"].includes(s.classId))
+          .map((s) => s.id),
         [
           "avanco-de-luz",
           "impacto-de-luz",
@@ -157,6 +159,16 @@ test(
         ],
         "approved dash and new slam keep their native slots",
       );
+      assert.deepEqual(
+        catalog.skills.filter((s) => s.classId === "arqueira").map((s) => s.id),
+        [
+          "tiro-perfurante",
+          "chuva-de-flechas",
+          "olhos-da-floresta",
+          "espirito-da-floresta",
+        ],
+      );
+      assert.equal(catalog.consumables.length, 6);
       const scene = (await wait((m) => m.body?.case === "sceneEnter")).body
         .value;
       assert.equal(scene.map.source.case, "atlasMapId");

@@ -1,0 +1,403 @@
+{
+  "character": "Arqueira Elfa",
+  "frame": [
+    128,
+    128
+  ],
+  "feet": [
+    64,
+    120
+  ],
+  "rows": [
+    "south",
+    "west",
+    "east",
+    "north"
+  ],
+  "poses": [
+    {
+      "sheet": "weapon",
+      "row": 0,
+      "col": 0,
+      "sourceRow": 0,
+      "sourceCol": 0,
+      "scale": 0.25
+    },
+    {
+      "sheet": "weapon",
+      "row": 0,
+      "col": 1,
+      "sourceRow": 0,
+      "sourceCol": 1,
+      "scale": 0.25
+    },
+    {
+      "sheet": "weapon",
+      "row": 0,
+      "col": 2,
+      "sourceRow": 0,
+      "sourceCol": 2,
+      "scale": 0.25
+    },
+    {
+      "sheet": "weapon",
+      "row": 0,
+      "col": 3,
+      "sourceRow": 0,
+      "sourceCol": 3,
+      "scale": 0.25
+    },
+    {
+      "sheet": "weapon",
+      "row": 0,
+      "col": 4,
+      "sourceRow": 0,
+      "sourceCol": 4,
+      "scale": 0.25
+    },
+    {
+      "sheet": "weapon",
+      "row": 0,
+      "col": 5,
+      "sourceRow": 0,
+      "sourceCol": 5,
+      "scale": 0.25
+    },
+    {
+      "sheet": "weapon",
+      "row": 1,
+      "col": 0,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 1,
+      "col": 1,
+      "sourceRow": 1,
+      "sourceCol": 1,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 1,
+      "col": 2,
+      "sourceRow": 1,
+      "sourceCol": 2,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 1,
+      "col": 3,
+      "sourceRow": 1,
+      "sourceCol": 3,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 1,
+      "col": 4,
+      "sourceRow": 1,
+      "sourceCol": 4,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 1,
+      "col": 5,
+      "sourceRow": 1,
+      "sourceCol": 5,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 2,
+      "col": 0,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 2,
+      "col": 1,
+      "sourceRow": 1,
+      "sourceCol": 1,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 2,
+      "col": 2,
+      "sourceRow": 1,
+      "sourceCol": 2,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 2,
+      "col": 3,
+      "sourceRow": 1,
+      "sourceCol": 3,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 2,
+      "col": 4,
+      "sourceRow": 1,
+      "sourceCol": 4,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 2,
+      "col": 5,
+      "sourceRow": 1,
+      "sourceCol": 5,
+      "scale": 0.43724696356275305
+    },
+    {
+      "sheet": "weapon",
+      "row": 3,
+      "col": 0,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.22929936305732485
+    },
+    {
+      "sheet": "weapon",
+      "row": 3,
+      "col": 1,
+      "sourceRow": 1,
+      "sourceCol": 1,
+      "scale": 0.22929936305732485
+    },
+    {
+      "sheet": "weapon",
+      "row": 3,
+      "col": 2,
+      "sourceRow": 1,
+      "sourceCol": 2,
+      "scale": 0.22929936305732485
+    },
+    {
+      "sheet": "weapon",
+      "row": 3,
+      "col": 3,
+      "sourceRow": 1,
+      "sourceCol": 3,
+      "scale": 0.22929936305732485
+    },
+    {
+      "sheet": "weapon",
+      "row": 3,
+      "col": 4,
+      "sourceRow": 1,
+      "sourceCol": 4,
+      "scale": 0.22929936305732485
+    },
+    {
+      "sheet": "weapon",
+      "row": 3,
+      "col": 5,
+      "sourceRow": 1,
+      "sourceCol": 5,
+      "scale": 0.22929936305732485
+    },
+    {
+      "sheet": "special",
+      "row": 0,
+      "col": 0,
+      "sourceRow": 0,
+      "sourceCol": 0,
+      "scale": 0.4426229508196721
+    },
+    {
+      "sheet": "special",
+      "row": 0,
+      "col": 1,
+      "sourceRow": 0,
+      "sourceCol": 0,
+      "scale": 0.4426229508196721
+    },
+    {
+      "sheet": "special",
+      "row": 0,
+      "col": 2,
+      "sourceRow": 0,
+      "sourceCol": 1,
+      "scale": 0.4426229508196721
+    },
+    {
+      "sheet": "special",
+      "row": 0,
+      "col": 3,
+      "sourceRow": 0,
+      "sourceCol": 0,
+      "scale": 0.4426229508196721
+    },
+    {
+      "sheet": "special",
+      "row": 0,
+      "col": 4,
+      "sourceRow": 0,
+      "sourceCol": 2,
+      "scale": 0.4426229508196721
+    },
+    {
+      "sheet": "special",
+      "row": 0,
+      "col": 5,
+      "sourceRow": 0,
+      "sourceCol": 3,
+      "scale": 0.4426229508196721
+    },
+    {
+      "sheet": "special",
+      "row": 1,
+      "col": 0,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 1,
+      "col": 1,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 1,
+      "col": 2,
+      "sourceRow": 1,
+      "sourceCol": 1,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 1,
+      "col": 3,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 1,
+      "col": 4,
+      "sourceRow": 1,
+      "sourceCol": 2,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 1,
+      "col": 5,
+      "sourceRow": 1,
+      "sourceCol": 3,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 2,
+      "col": 0,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 2,
+      "col": 1,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 2,
+      "col": 2,
+      "sourceRow": 1,
+      "sourceCol": 1,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 2,
+      "col": 3,
+      "sourceRow": 1,
+      "sourceCol": 0,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 2,
+      "col": 4,
+      "sourceRow": 1,
+      "sourceCol": 2,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 2,
+      "col": 5,
+      "sourceRow": 1,
+      "sourceCol": 3,
+      "scale": 0.46551724137931033
+    },
+    {
+      "sheet": "special",
+      "row": 3,
+      "col": 0,
+      "sourceRow": 3,
+      "sourceCol": 0,
+      "scale": 0.44813278008298757
+    },
+    {
+      "sheet": "special",
+      "row": 3,
+      "col": 1,
+      "sourceRow": 3,
+      "sourceCol": 0,
+      "scale": 0.44813278008298757
+    },
+    {
+      "sheet": "special",
+      "row": 3,
+      "col": 2,
+      "sourceRow": 3,
+      "sourceCol": 1,
+      "scale": 0.44813278008298757
+    },
+    {
+      "sheet": "special",
+      "row": 3,
+      "col": 3,
+      "sourceRow": 3,
+      "sourceCol": 0,
+      "scale": 0.44813278008298757
+    },
+    {
+      "sheet": "special",
+      "row": 3,
+      "col": 4,
+      "sourceRow": 3,
+      "sourceCol": 2,
+      "scale": 0.44813278008298757
+    },
+    {
+      "sheet": "special",
+      "row": 3,
+      "col": 5,
+      "sourceRow": 3,
+      "sourceCol": 3,
+      "scale": 0.44813278008298757
+    }
+  ]
+}

@@ -61,7 +61,7 @@ export function evade(client, { dirX = 0, dirY = 0 }, now, free = () => true) {
   }
   return {
     entity: 1,
-    move: "humano-esquiva",
+    move: client.classId === "arqueira" ? "elfa-esquiva" : "humano-esquiva",
     dirX: Math.round(dx * 1000),
     dirY: Math.round(dy * 1000),
     durationMs: EVADE.durationMs,

@@ -21,12 +21,12 @@ export function withDefenseBuffUi(bytes) {
   code = replaceOnce(
     code,
     "function rte(e,t,n){let r=",
-    'function rte(e,t,n){window.__royalCombatSend=(kind,value)=>e.net.send(kind,value);window.__royalCombatCatalog=()=>[...e.catalog.skills.values()];window.__royalCastUltimate=()=>e.net.send(`useSkill`,{skillId:"avatar-da-luz",target:0});let r=',
+    'function rte(e,t,n){window.__royalCombatSend=(kind,value)=>e.net.send(kind,value);window.__royalCombatCatalog=()=>[...e.catalog.skills.values()];window.__royalCastUltimate=()=>e.net.send(`useSkill`,{skillId:window.__royalUltimateState?.ultimateSkillId??"avatar-da-luz",target:0});let r=',
   );
   code = replaceOnce(
     code,
     "f=t=>{d||e.net.send(`useSkill`,",
-    'f=t=>{if(t.id==="avatar-da-luz"){window.__royalRequestAvatar?.();return}d||e.net.send(`useSkill`,',
+    'f=t=>{if(t.id===(window.__royalUltimateState?.ultimateSkillId??"avatar-da-luz")){window.__royalRequestAvatar?.();return}d||e.net.send(`useSkill`,',
   );
   code = replaceOnce(
     code,
@@ -90,6 +90,7 @@ window.__royalAegisVisuals?.update(this);
 window.__royalAvatarVisuals?.update(this);
 window.__royalHD?.update(this);
 window.__royalCombatVisuals?.update(this);
+window.__royalArcherVisuals?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);
   return Buffer.from(code);

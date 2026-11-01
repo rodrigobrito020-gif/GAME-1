@@ -214,10 +214,11 @@ export function renderWarriorWalkFrame(
   phase,
   idle = false,
   factor = 1,
+  definitions = WALK_PARTS,
 ) {
   const size = 64 * factor;
   const pose = warriorWalkPose(row, phase, idle),
-    def = WALK_PARTS[pose.source],
+    def = definitions[pose.source],
     pixels = Buffer.alloc(size * size * 4);
   const order = row === 3 ? [0, 1] : [1, 0];
   for (const i of order) {

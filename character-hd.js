@@ -20,6 +20,14 @@
         .then(() => art.set(`${look}:${sheet}`, image))
         .catch(() => {});
     }
+  for (const sheet of ["idle", "walk", "run1", "weapon", "special"]) {
+    const image = new Image();
+    image.src = `/assets/fx/royal-archer/hd/base/${sheet}.png`;
+    image
+      .decode()
+      .then(() => art.set(`archer:${sheet}`, image))
+      .catch(() => {});
+  }
   function cleanup(a) {
     const s = actors.get(a);
     if (s) {
@@ -34,12 +42,17 @@
       cleanup(a);
       return;
     }
-    if (!String(b.texture?.key).includes("humano-guerreiro")) {
+    const elf = String(b.texture?.key).includes("elfa-arqueira");
+    if (!elf && !String(b.texture?.key).includes("humano-guerreiro")) {
       cleanup(a);
       return;
     }
     const [sheet, row, col] = String(b.frame?.name).split(":"),
-      look = b.texture.key.includes("peitoral-treino") ? "training" : "base",
+      look = elf
+        ? "archer"
+        : b.texture.key.includes("peitoral-treino")
+          ? "training"
+          : "base",
       key = `royal-hd:${look}:${sheet}`,
       im = art.get(`${look}:${sheet}`);
     if (!im) return;
@@ -85,7 +98,7 @@
       }
       if (
         !actors.has(a) &&
-        String(a.body.texture?.key).includes("humano-guerreiro")
+        /humano-guerreiro|elfa-arqueira/.test(String(a.body.texture?.key))
       )
         draw(a);
     },

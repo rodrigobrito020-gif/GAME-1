@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.20: Arqueira Elfa com arte própria, disparos e quatro habilidades aprovadas, mais o Dash comum. Troca de classe na cidade preserva inventários/equipamentos/progresso e lembra automação por classe. Seis poções HP/mana, níveis 1/55/150, Manual/Auto e limites 30/50/70% independentes. Indicadores simultâneos de todos os buffs, cada um com duração e carta.
+
 - 0.6.19: retirada do modo manual global; caça automática com AUTO/MANUAL por habilidade e escolhas salvas. Dash universal na barra/Shift, manual por padrão e com evasão de marcações no AUTO. Ícones de efeitos ativos iguais aos da barra, com carta e tempo restante ao consultar.
 
 - 0.6.18: corrigido o fechamento indevido da conexão ao repetir o dash durante a recarga; adicionado botão direito para aproximar/atacar o inimigo escolhido, com interrupção por movimento/dash e parada após a morte do alvo no modo manual.
@@ -31,8 +33,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Próximas partes da construção
 
-1. Refinar o Guerreiro Humano após a revisão visual do jogador. Criar variações visuais de equipamentos, corrida dedicada e artes distintas dos monstros e NPCs; o humano inicial já está integrado.
-2. Criação de personagens e classes, usando um catálogo próprio de habilidades e equipamentos.
+1. Revisar a Arqueira Elfa jogando; guerreiro aprovado preservado. Os quatro nomes e o conjunto foram aprovados; números novos, preços e forças das poções são valores iniciais para teste. Preferências de cada habilidade e poção permanecem independentes.
+2. Definir e construir as três classes restantes: duas de cinco iniciais estão prontas (Guerreiro Humano e Arqueira Elfa). **Somente depois das cinco, trabalhar nos equipamentos**, conforme decisão de 01/11/2026. Não inventar silenciosamente as próximas três classes.
 3. Ambientes de caça próprios, inimigos variados e chefes. Cidade e arena já têm mapas próprios; faltam novos ambientes e inimigos com artes distintas.
 4. Reaproveitar os sets do Lineage 2 já preparados no GAME-1: comum/No Grade, incomum/D, raro/C, épico/B e lendário/A. Adaptar os modelos/texturas 3D para as poses 2D e vincular cada peça ao slot equipado, com bônus de conjunto completo. Não substituir esse catálogo por equipamentos novos genéricos. Fontes e limites atuais em `LINEAGE_SETS.md`. Balancear recompensas com testes de jogo.
 5. Expandir os demais sistemas escolhidos para o nosso jogo. Menus existentes no cliente não significam que o servidor desses sistemas foi implementado.

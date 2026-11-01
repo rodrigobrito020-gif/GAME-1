@@ -14,8 +14,9 @@ export const LIGHT_AVATAR = Object.freeze({
   killCharge: 6,
 });
 export class LightAvatar {
-  constructor(character, { now = Date.now } = {}) {
+  constructor(character, { now = Date.now, definition = LIGHT_AVATAR } = {}) {
     this.now = now;
+    this.definition = definition;
     this.character = character;
     const saved = character.ultimate ?? {};
     this.saved = character.ultimate = {
@@ -36,14 +37,14 @@ export class LightAvatar {
     if (this.saved.readyAt > this.now()) throw Error("local.cooldown");
     if (this.saved.charge < 100) throw Error("local.ultimate_energy");
     this.saved.charge = 0;
-    this.saved.readyAt = this.now() + LIGHT_AVATAR.cooldownMs;
+    this.saved.readyAt = this.now() + this.definition.cooldownMs;
   }
   activate(entity) {
-    this.until = this.now() + LIGHT_AVATAR.durationMs;
+    this.until = this.now() + this.definition.durationMs;
     return {
       entity,
-      buffId: LIGHT_AVATAR.id,
-      durationMs: LIGHT_AVATAR.durationMs,
+      buffId: this.definition.id,
+      durationMs: this.definition.durationMs,
       removed: false,
     };
   }
@@ -52,19 +53,21 @@ export class LightAvatar {
     this.until = 0;
     if (death) this.saved.charge = 0;
     return hadBuff
-      ? [{ entity, buffId: LIGHT_AVATAR.id, durationMs: 0, removed: true }]
+      ? [{ entity, buffId: this.definition.id, durationMs: 0, removed: true }]
       : [];
   }
   state(client) {
     return {
       version: 1,
+      ultimateSkillId: this.definition.id,
+      ultimateName: this.definition.name,
       charge: this.saved.charge,
       maxCharge: 100,
-      durationMs: LIGHT_AVATAR.durationMs,
+      durationMs: this.definition.durationMs,
       cooldownMs: Math.max(0, this.saved.readyAt - this.now()),
       activeMs: Math.max(0, this.until - this.now()),
       automatic: (this.character.automation.skillOrder ?? []).includes(
-        LIGHT_AVATAR.id,
+        this.definition.id,
       ),
       queued: !!client.hunt?.avatarQueued,
       inHunt: !!client.hunt,

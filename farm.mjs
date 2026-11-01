@@ -1,3 +1,24 @@
+import {
+  ARCHER_CLASS,
+  ARCHER_SKIN,
+  ARCHER_SKILLS,
+  ARCHER_EYES,
+  ARCHER_SPIRIT,
+  isArcher,
+} from "./archer.mjs";
+import {
+  archerBasic,
+  castArcher,
+  piercedTargets,
+  archerFxState,
+} from "./archer-combat.mjs";
+import {
+  ensurePotions,
+  configurePotion,
+  consumePotion,
+  buyPotionStock,
+  automaticPotion,
+} from "./potions.mjs";
 import { combatMode, evade, EVADE } from "./combat-control.mjs";
 import {
   MONSTER_ROLES,
@@ -123,6 +144,11 @@ export const ACTIVE_SKILLS = SKILLS.filter((skill) =>
     LIGHT_AVATAR.id,
   ].includes(skill.id),
 ).sort((a, b) => (Number(a.key) || 99) - (Number(b.key) || 99));
+export const ALL_SKILLS = [
+  ...ACTIVE_SKILLS.filter((s) => !s.universal),
+  ...ARCHER_SKILLS,
+  ...ACTIVE_SKILLS.filter((s) => s.universal),
+];
 export const ITEMS = [
   {
     id: "fragmento-local",
@@ -220,16 +246,22 @@ export class LocalFarm {
     this.random = random;
     this.defenseBuffs = defenseBuffs ?? new TeamDefenseBuff({ now });
     this.resolveTeam = resolveTeam;
-    this.avatar = new LightAvatar(this.character, { now });
+    this.avatar = new LightAvatar(this.character, {
+      now,
+      definition: this.ultimateDefinition,
+    });
     account.bag ??= [];
     account.warehouse ??= [];
     account.nextUid ??= 1;
     const c = this.character;
     c.equipment.slots ??= [];
     if (!account.farmVersion) {
-      c.automation.skillOrder = ACTIVE_SKILLS.filter(
-        (skill) => skill.id !== LIGHT_AVATAR.id && skill.id !== EVADE.id,
-      ).map((skill) => skill.id);
+      c.automation.skillOrder = this.skills
+        .filter(
+          (skill) =>
+            skill.id !== this.ultimateDefinition.id && skill.id !== EVADE.id,
+        )
+        .map((skill) => skill.id);
       c.consumables.hpPotions = { pequena: 10 };
       c.consumables.manaPotions = { pequena: 10 };
       account.farmVersion = 1;
@@ -237,24 +269,95 @@ export class LocalFarm {
     // Rename the first skill without enabling disabled slots or resetting saves.
     c.automation.skillOrder = (c.automation.skillOrder ?? [])
       .map((id) => (id === "corte-poderoso" ? WARRIOR_LIGHT_DASH.id : id))
-      .filter((id) => ACTIVE_SKILLS.some((skill) => skill.id === id));
+      .filter((id) => this.skills.some((skill) => skill.id === id));
     // Once per save, add the team defense buff to the approved sequence. Respect a
     // deliberately empty order and preserve later player edits on restart.
     if (account.skillReviewVersion !== 4) {
       if (c.automation.skillOrder.length)
-        c.automation.skillOrder = ACTIVE_SKILLS.filter(
-          (skill) => skill.id !== LIGHT_AVATAR.id && skill.id !== EVADE.id,
-        ).map((skill) => skill.id);
+        c.automation.skillOrder = this.skills
+          .filter(
+            (skill) =>
+              skill.id !== this.ultimateDefinition.id && skill.id !== EVADE.id,
+          )
+          .map((skill) => skill.id);
       account.skillReviewVersion = 4;
     }
     if (account.avatarAutomationVersion !== 1) {
-      if (!c.automation.skillOrder.includes(LIGHT_AVATAR.id))
-        c.automation.skillOrder.push(LIGHT_AVATAR.id);
+      if (!c.automation.skillOrder.includes(this.ultimateDefinition.id))
+        c.automation.skillOrder.push(this.ultimateDefinition.id);
       account.avatarAutomationVersion = 1;
     }
+    ensurePotions(account);
     c.progress.hp ||= 250;
     c.progress.mana = Math.max(0, c.progress.mana);
     this.recalculate();
+  }
+  get skills() {
+    return isArcher(this.character)
+      ? [...ARCHER_SKILLS, ...ACTIVE_SKILLS.filter((s) => s.universal)]
+      : ACTIVE_SKILLS;
+  }
+  get ultimateDefinition() {
+    return isArcher(this.character) ? ARCHER_SPIRIT : LIGHT_AVATAR;
+  }
+  changeClass(client, id) {
+    if (client.hunt) throw Error("local.city_only");
+    if (!["guerreiro", ARCHER_CLASS].includes(id))
+      throw Error("local.invalid_skill");
+    const c = this.character,
+      old = c.identity.classId;
+    if (old === id) return;
+    this.account.classAutomation ??= {};
+    this.account.classAutomation[old] = [...c.automation.skillOrder];
+    const hp = c.progress.hp / c.derived.maxHp,
+      mana = c.progress.mana / c.derived.maxMana;
+    c.identity.classId = id;
+    c.identity.skinId = id === ARCHER_CLASS ? ARCHER_SKIN : "humano-guerreiro";
+    c.identity.gender = id === ARCHER_CLASS ? 2 : 1;
+    c.identity.ownedSkins = [
+      ...new Set([...(c.identity.ownedSkins ?? []), c.identity.skinId]),
+    ];
+    this.eyesUntil = 0;
+    this.avatar = new LightAvatar(c, {
+      now: this.now,
+      definition: this.ultimateDefinition,
+    });
+    c.automation.skillOrder = [
+      ...(this.account.classAutomation[id] ??
+        this.skills.filter((s) => !s.universal).map((s) => s.id)),
+    ];
+    this.recalculate();
+    c.progress.hp = Math.max(1, Math.round(c.derived.maxHp * hp));
+    c.progress.mana = Math.round(c.derived.maxMana * mana);
+  }
+  activeBuffs() {
+    const now = this.now(),
+      c = this.character,
+      ids = [];
+    const defense = this.defenseBuffs.state(c);
+    if (defense)
+      ids.push({
+        id: LIGHT_AEGIS.id,
+        remainingMs: defense.until - now,
+        totalMs: LIGHT_AEGIS.durationMs,
+      });
+    if (this.eyesUntil > now)
+      ids.push({
+        id: ARCHER_EYES.id,
+        remainingMs: this.eyesUntil - now,
+        totalMs: ARCHER_EYES.durationMs,
+      });
+    if (this.avatar.active())
+      ids.push({
+        id: this.ultimateDefinition.id,
+        remainingMs: this.avatar.until - now,
+        totalMs: this.ultimateDefinition.durationMs,
+      });
+    return ids.map((b) => ({
+      ...b,
+      icon: ALL_SKILLS.find((s) => s.id === b.id)?.icon,
+      name: ALL_SKILLS.find((s) => s.id === b.id)?.name,
+    }));
   }
   get character() {
     return this.account.character;
@@ -265,11 +368,15 @@ export class LocalFarm {
     const sum = (key) =>
       c.equipment.slots.reduce((n, e) => n + (e.item.stats?.[key] ?? 0), 0);
     Object.assign(c.derived, {
-      atk: 15 + (level - 1) * 2 + sum("atk"),
+      atk: Math.round(
+        ((isArcher(c) ? 14 : 15) + (level - 1) * 2 + sum("atk")) *
+          (isArcher(c) && this.eyesUntil > this.now() ? 1.2 : 1) *
+          (isArcher(c) && this.avatar.active() ? 1.35 : 1),
+      ),
       def: this.defenseBuffs.defense(c, sum("def")),
-      maxHp: 250 + (level - 1) * 20 + sum("hp"),
-      maxMana: 100 + (level - 1) * 5,
-      attackRange: 65,
+      maxHp: (isArcher(c) ? 220 : 250) + (level - 1) * 20 + sum("hp"),
+      maxMana: (isArcher(c) ? 120 : 100) + (level - 1) * 5,
+      attackRange: isArcher(c) ? 320 : 65,
       attackCooldown: 1,
       moveSpeed: 160,
       manaRegen: 3,
@@ -367,6 +474,8 @@ export class LocalFarm {
     const events = this.events();
     events.buffs.push(...this.defenseBuffs.remove(this.character));
     events.buffs.push(...this.avatar.clear(client.entityId ?? 1));
+    this.eyesUntil = 0;
+    this.recalculate();
     client.hunt = null;
     client.evade = null;
     client.combatAnimUntil = 0;
@@ -487,6 +596,7 @@ export class LocalFarm {
     if (monster.hp <= 0) return;
     amount = Math.min(monster.hp, Math.max(1, Math.round(amount)));
     monster.hp -= amount;
+    if (monster.hp > 0 && isArcher(this.character)) monster.aggro = true;
     monster.anim = monster.hp ? 4 : 5;
     events.damage.push({ source: 1, target: monster.id, amount, skillId });
     if (!monster.hp) {
@@ -513,6 +623,7 @@ export class LocalFarm {
       throw Error("local.invalid_target");
     if (now < h.nextAttack || now < h.actionUntil || client.evade)
       throw Error("local.cooldown");
+    if (isArcher(c)) return archerBasic(this, client, target, events);
     h.nextAttack = now + 1000;
     const basic = h.basicChain++ % 2 ? WARRIOR_RETURN : WARRIOR_BASIC;
     h.actionUntil = now + basic.duration;
@@ -628,7 +739,9 @@ export class LocalFarm {
       now = this.now();
     if (id === "ataque-basico") return this.basic(client, targetId, events);
     if (id === EVADE.id) return this.dash(client, {}, events, { free });
-    const skill = ACTIVE_SKILLS.find((s) => s.id === id);
+    if (isArcher(c))
+      return castArcher(this, client, id, targetId, events, deltas);
+    const skill = this.skills.find((s) => s.id === id);
     if (!h || h.deadAt || !c.progress.hp) throw Error("local.not_hunting");
     if (!skill) throw Error("local.invalid_skill");
     if (id === LIGHT_AVATAR.id && (h.nextCast > now || h.actionUntil > now)) {
@@ -788,8 +901,22 @@ export class LocalFarm {
       spawned = [],
       despawned = [];
     events.buffs.push(...this.defenseBuffs.expire());
-    if (this.avatar.until && !this.avatar.active())
+    if (this.avatar.until && !this.avatar.active()) {
       events.buffs.push(...this.avatar.clear(client.entityId ?? 1));
+      this.recalculate();
+    }
+    if (this.eyesUntil && this.eyesUntil <= now) {
+      this.eyesUntil = 0;
+      this.recalculate();
+      events.buffs.push({
+        entity: 1,
+        buffId: ARCHER_EYES.id,
+        durationMs: 0,
+        removed: true,
+      });
+    }
+    if (h?.archerFx) h.archerFx = h.archerFx.filter((f) => f.end > now);
+
     if (!h) return { events, deltas, spawned, despawned };
     if (h.deadAt)
       return {
@@ -802,7 +929,9 @@ export class LocalFarm {
     this.autoDash(client, events, free);
     if (h.avatarQueued && now >= h.actionUntil && now >= h.nextCast) {
       try {
-        this.cast(client, LIGHT_AVATAR.id, 0, events, deltas, { free });
+        this.cast(client, this.ultimateDefinition.id, 0, events, deltas, {
+          free,
+        });
       } catch {
         h.avatarQueued = false;
       }
@@ -843,6 +972,18 @@ export class LocalFarm {
     for (const impact of h.impacts.filter((p) => p.at <= now)) {
       if (impact.avatarBuff) {
         events.buffs.push(this.avatar.activate(client.entityId ?? 1));
+        this.recalculate();
+        continue;
+      }
+      if (impact.eyesBuff) {
+        this.eyesUntil = now + ARCHER_EYES.durationMs;
+        this.recalculate();
+        events.buffs.push({
+          entity: 1,
+          buffId: ARCHER_EYES.id,
+          durationMs: ARCHER_EYES.durationMs,
+          removed: false,
+        });
         continue;
       }
       if (impact.defenseBuff) {
@@ -857,26 +998,29 @@ export class LocalFarm {
       const primary = impact.basic
         ? h.monsters.find((m) => m.id === impact.targets[0] && m.hp > 0)
         : null;
-      const cleave = impact.basic && this.avatar.active() && primary;
-      const targets = cleave
-        ? h.monsters
-            .filter(
-              (m) =>
-                m.hp > 0 &&
-                Math.hypot(m.x - primary.x, m.y - primary.y) <=
-                  LIGHT_AVATAR.cleaveRadius,
-            )
-            .map((m) => m.id)
-        : impact.area
+      const cleave =
+        impact.basic && !isArcher(c) && this.avatar.active() && primary;
+      const targets = impact.pierce
+        ? piercedTargets(h.monsters, impact.pierce)
+        : cleave
           ? h.monsters
               .filter(
                 (m) =>
                   m.hp > 0 &&
-                  Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
-                    impact.area.radius,
+                  Math.hypot(m.x - primary.x, m.y - primary.y) <=
+                    LIGHT_AVATAR.cleaveRadius,
               )
               .map((m) => m.id)
-          : impact.targets;
+          : impact.area
+            ? h.monsters
+                .filter(
+                  (m) =>
+                    m.hp > 0 &&
+                    Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
+                      impact.area.radius,
+                )
+                .map((m) => m.id)
+            : impact.targets;
       let landed = false;
       for (const id of targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
@@ -975,10 +1119,12 @@ export class LocalFarm {
       automatic &&
       target &&
       now >= h.actionUntil &&
-      (c.automation.skillOrder ?? []).includes(LIGHT_AVATAR.id)
+      (c.automation.skillOrder ?? []).includes(this.ultimateDefinition.id)
     ) {
       try {
-        this.cast(client, LIGHT_AVATAR.id, 0, events, deltas, { free });
+        this.cast(client, this.ultimateDefinition.id, 0, events, deltas, {
+          free,
+        });
       } catch {
         /* Not ready: normal combat continues. */
       }
@@ -994,6 +1140,19 @@ export class LocalFarm {
         this.cast(client, LIGHT_AEGIS.id, 0, events, deltas, { free });
       } catch {
         /* A buff on cooldown must not stop movement or basic attacks. */
+      }
+    }
+    if (
+      isArcher(c) &&
+      target &&
+      now >= h.actionUntil &&
+      (c.automation.skillOrder ?? []).includes(ARCHER_EYES.id) &&
+      !(this.eyesUntil > now)
+    ) {
+      try {
+        this.cast(client, ARCHER_EYES.id, 0, events, deltas, { free });
+      } catch {
+        /* Resume normal combat. */
       }
     }
     if (automatic && target && now >= h.actionUntil && !client.evade) {
@@ -1094,7 +1253,8 @@ export class LocalFarm {
       m.anim = 0;
       const fromHome = Math.hypot(m.x - m.home.x, m.y - m.home.y);
       if (distance <= AGGRO_RADIUS) m.aggro = true;
-      if (fromHome > LEASH_RADIUS || distance > 300) m.aggro = false;
+      if (fromHome > LEASH_RADIUS || distance > (isArcher(c) ? 500 : 300))
+        m.aggro = false;
       if (!skillDamage && startMonsterSkill(m, client, now)) {
         m.anim = 2;
         continue;
@@ -1127,7 +1287,9 @@ export class LocalFarm {
             1,
             Math.round(
               Math.max(1, h.area.damage * (skillDamage || 1) - c.derived.def) *
-                (this.avatar.active() ? 1 - LIGHT_AVATAR.damageReduction : 1),
+                (this.avatar.active()
+                  ? 1 - this.ultimateDefinition.damageReduction
+                  : 1),
             ),
           ),
         );
@@ -1138,7 +1300,7 @@ export class LocalFarm {
           h.actionUntil = now + 100;
           events.moves.push({
             entity: 1,
-            move: "humano-ferido",
+            move: isArcher(c) ? "elfa-ferida" : "humano-ferido",
             target: m.id,
             dirX: 0,
             dirY: 0,
@@ -1151,8 +1313,12 @@ export class LocalFarm {
           client.evade = null;
           h.impacts = [];
           for (const enemy of h.monsters) enemy.cast = null;
+          this.eyesUntil = 0;
+          h.archerFx = [];
+          this.recalculate();
           events.buffs.push(...this.defenseBuffs.remove(c));
           events.buffs.push(...this.avatar.clear(client.entityId ?? 1, true));
+          this.recalculate();
           client.moving = false;
           events.deaths.push({ entity: 1, killer: m.id });
           c.hunt.lastDeath = {
@@ -1508,43 +1674,44 @@ export class LocalFarm {
   automation(value) {
     const order = value.skillOrder ?? [];
     if (
-      order.length > ACTIVE_SKILLS.length ||
+      order.length > this.skills.length ||
       new Set(order).size !== order.length ||
-      order.some((id) => !ACTIVE_SKILLS.some((s) => s.id === id))
+      order.some((id) => !this.skills.some((s) => s.id === id))
     )
       throw Error("local.invalid_skill");
     // Other automation systems are not implemented; do not claim to enable them.
     this.character.automation.skillOrder = [...order];
     this.character.automation.skillOrderStrict = !!value.skillOrderStrict;
+    this.account.classAutomation ??= {};
+    this.account.classAutomation[
+      this.character.identity?.classId ?? "guerreiro"
+    ] = [...order];
     return this.character.automation;
   }
   potion(kind, tier) {
-    if (![1, 2].includes(kind) || tier !== 1) throw Error("local.invalid_item");
-    const c = this.character,
-      stock = kind === 1 ? c.consumables.hpPotions : c.consumables.manaPotions,
-      key = kind === 1 ? "hp" : "mana",
-      max = kind === 1 ? c.derived.maxHp : c.derived.maxMana;
-    if (
-      !c.progress.hp ||
-      !stock.pequena ||
-      c.progress[key] >= max ||
-      this.now() < (this.nextPotion ?? 0)
-    )
-      throw Error("local.potion_unavailable");
-    stock.pequena--;
-    c.progress[key] = Math.min(max, c.progress[key] + Math.ceil(max * 0.4));
+    const result = consumePotion(
+      this.account,
+      kind,
+      tier,
+      this.now(),
+      this.nextPotion ?? 0,
+    );
     this.nextPotion = this.now() + 1500;
-    return { kind, tier };
+    return result;
+  }
+  configurePotion(kind, tier, automatic, threshold) {
+    return configurePotion(this.account, kind, tier, automatic, threshold);
+  }
+  autoPotion() {
+    const result = automaticPotion(
+      this.account,
+      this.now(),
+      this.nextPotion ?? 0,
+    );
+    if (result) this.nextPotion = this.now() + 1500;
+    return result;
   }
   buyPotion(kind, tier, qty) {
-    if (![1, 2].includes(kind) || tier !== 1 || !finiteId(qty) || qty > 1000)
-      throw Error("local.invalid_item");
-    const c = this.character,
-      cost = qty * 10,
-      stock = kind === 1 ? c.consumables.hpPotions : c.consumables.manaPotions;
-    if (Number(c.wallet.gold) < cost) throw Error("local.no_gold");
-    c.wallet.gold = Number(c.wallet.gold) - cost;
-    stock.pequena = (stock.pequena ?? 0) + qty;
-    return { kind, tier, qty, goldCost: cost, owned: stock.pequena };
+    return buyPotionStock(this.account, kind, tier, qty);
   }
 }

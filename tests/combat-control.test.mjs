@@ -189,3 +189,54 @@ test("128px warrior frames contain real original detail, not magnified 64px bloc
     }
   assert.ok(different > 300);
 });
+
+test("explicit right-click order approaches its target without enabling skills, cancels on dash/mode changes and stops after target death", () => {
+  const s = setup(),
+    { farm, client, account } = s,
+    m = client.hunt.monsters[0];
+  Object.assign(m, {
+    hp: 100,
+    maxHp: 100,
+    x: client.x + 180,
+    y: client.y,
+    home: { x: client.x + 180, y: client.y },
+    nextAttack: Infinity,
+    nextSkill: Infinity,
+  });
+  const other = client.hunt.monsters[1];
+  Object.assign(other, {
+    hp: 100,
+    maxHp: 100,
+    x: client.x - 30,
+    y: client.y,
+    home: { x: client.x - 30, y: client.y },
+    nextAttack: Infinity,
+    nextSkill: Infinity,
+  });
+  assert.throws(() => farm.orderAttack(client, 9999), /invalid_target/);
+  farm.orderAttack(client, m.id);
+  const x = client.x;
+  const output = s.step(50);
+  assert.ok(client.x > x);
+  assert.equal(client.hunt.target, m.id);
+  assert.equal(output.events.casts.length, 0);
+  setCombatMode(account, client, "manual");
+  assert.equal(client.hunt.attackOrder, 0);
+  farm.orderAttack(client, m.id);
+  evade(client, { dirY: 1000 }, s.now());
+  assert.equal(client.hunt.attackOrder, 0);
+  assert.equal(client.hunt.manualTarget, 0);
+  stepEvade(client, s.now() + 240);
+  s.step(300);
+  farm.orderAttack(client, m.id);
+  m.hp = 0;
+  m.respawnAt = Infinity;
+  const stopped = s.step(50);
+  assert.equal(client.hunt.attackOrder, 0);
+  assert.equal(stopped.events.moves.length, 0);
+  assert.equal(
+    client.hunt.target,
+    0,
+    "never switches automatically to the other living monster in manual mode",
+  );
+});

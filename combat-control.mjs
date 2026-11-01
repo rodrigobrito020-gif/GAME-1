@@ -9,6 +9,7 @@ export function setCombatMode(account, client, mode) {
   client.route = [];
   client.target = null;
   if (client.hunt) {
+    client.hunt.attackOrder = 0;
     client.hunt.manualTarget = 0;
     client.hunt.avatarQueued = false;
   }
@@ -53,11 +54,14 @@ export function evade(client, { dirX = 0, dirY = 0 }, now, free = () => true) {
   client.route = [];
   client.until = 0;
   client.combatAnimUntil = now + EVADE.durationMs;
-  if (client.hunt)
+  if (client.hunt) {
+    client.hunt.attackOrder = 0;
+    client.hunt.manualTarget = 0;
     client.hunt.actionUntil = Math.max(
       client.hunt.actionUntil,
       client.combatAnimUntil,
     );
+  }
   return {
     entity: 1,
     move: "humano-esquiva",

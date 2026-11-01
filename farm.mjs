@@ -369,8 +369,20 @@ export class LocalFarm {
       (entity && !client.hunt.monsters.some((m) => m.id === entity && m.hp > 0))
     )
       throw Error("local.invalid_target");
+    client.hunt.attackOrder = 0;
     client.hunt.manualTarget = entity;
     client.hunt.target = entity;
+  }
+  orderAttack(client, entity) {
+    if (!client.hunt || client.hunt.deadAt || !this.character.progress.hp)
+      throw Error("local.not_hunting");
+    if (!entity) throw Error("local.invalid_target");
+    this.target(client, entity);
+    client.hunt.attackOrder = entity;
+    client.target = null;
+    client.route = [];
+    client.until = 0;
+    client.dx = client.dy = 0;
   }
   events() {
     return {
@@ -862,8 +874,10 @@ export class LocalFarm {
     if (
       h.manualTarget &&
       !h.monsters.some((m) => m.id === h.manualTarget && m.hp > 0)
-    )
+    ) {
       h.manualTarget = 0;
+      h.attackOrder = 0;
+    }
     h.target = target?.id ?? 0;
     client.moving = dashMoved;
     if (
@@ -951,6 +965,24 @@ export class LocalFarm {
           this.basic(client, target.id, events);
         }
       }
+    }
+    if (
+      !automatic &&
+      h.attackOrder &&
+      target &&
+      now >= h.actionUntil &&
+      !client.evade
+    ) {
+      if (
+        Math.hypot(target.x - client.x, target.y - client.y) >
+        c.derived.attackRange
+      ) {
+        client.moving = move(
+          client,
+          route(client, target)[0] ?? target,
+          c.derived.moveSpeed,
+        );
+      } else if (now >= h.nextAttack) this.basic(client, target.id, events);
     }
     if (automatic && !target && now >= h.actionUntil && !client.evade) {
       const waypoint = MONSTER_HOMES[h.patrolIndex % MONSTER_HOMES.length];

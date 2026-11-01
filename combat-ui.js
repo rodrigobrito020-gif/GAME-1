@@ -147,6 +147,7 @@
   panel.querySelector("button").onclick = () =>
     send(state?.combatMode === "manual" ? "modo-auto" : "modo-manual");
   const keys = new Set();
+  let dashRequestAt = -Infinity;
   const typing = () =>
     document.activeElement?.matches(
       'input,textarea,select,[contenteditable="true"]',
@@ -161,6 +162,14 @@
       keys.add(e.code);
       if (e.code === "ShiftLeft" && !e.repeat) {
         e.preventDefault();
+        const now = performance.now();
+        if (
+          !state?.alive ||
+          now - dashRequestAt < 250 ||
+          Math.max(0, (state.evadeCooldownMs ?? 0) - (now - stateAt)) > 0
+        )
+          return;
+        dashRequestAt = now;
         let x =
             (keys.has("KeyD") || keys.has("ArrowRight") ? 1 : 0) -
             (keys.has("KeyA") || keys.has("ArrowLeft") ? 1 : 0),
@@ -194,7 +203,7 @@
       : "MODO AUTOMÁTICO · assumir controle";
     b.setAttribute("aria-pressed", String(!manual));
     panel.querySelector(".royal-mode-help").textContent = manual
-      ? "WASD mover · clique no inimigo ou F atacar · Tab alvo · 1–4 habilidades"
+      ? "WASD mover · botão direito perseguir/atacar · F atacar · Tab alvo · 1–4 habilidades"
       : "Busca inimigos e usa as habilidades habilitadas.";
     const cd = Math.max(
       0,

@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.18: corrigido o fechamento indevido da conexão ao repetir o dash durante a recarga; adicionado botão direito para aproximar/atacar o inimigo escolhido, com interrupção por movimento/dash e parada após a morte do alvo no modo manual.
+
 - 0.6.17: personagem em 128px a partir das fontes originais, dash direcional no Shift esquerdo, alternância persistente manual/automático, inimigos maiores com preparação, flechas e ataque mágico em área, quatro ícones ilustrados e cartas de habilidade por hover/foco/pressionamento longo. Valores de ultimate e Égide mantidos.
 
 - 0.6.16: espada de ferro simples e escudo de madeira; energia do Avatar adaptada às novas armas. Avatar automático também nos saves anteriores: 45s de duração, 60s de recarga e energia 100. Égide: 5min de duração e 120s de recarga, renovada após expirar, sem acumular defesa. Indicador único de duração em m:ss.

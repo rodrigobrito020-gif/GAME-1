@@ -1,8 +1,14 @@
-# Jogo local — 0.6.17: nitidez, combate manual e inimigos com habilidades
+# Jogo local — 0.6.18: Shift corrigido e ataque com botão direito
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.18
+
+- **Shift esquerdo corrigido:** tentar o dash durante a recarga, durante outro golpe ou diante de uma parede é uma recusa normal de gameplay. Não fecha a conexão e não encerra a caçada. Pressionamentos repetidos também são filtrados no cliente; a validação final continua no servidor.
+- **Botão direito no inimigo:** seleciona o alvo e dá a ordem de se aproximar e atacar. No modo manual, usa ataques básicos somente nesse inimigo, sem ativar habilidades ou procurar outro alvo quando ele morre. WASD/setas, outra ordem de movimento, dash bem-sucedido, troca de modo e limpeza do alvo interrompem a ordem. No automático, o inimigo clicado vira a prioridade da caçada.
+- Clique esquerdo/F e todos os visuais, habilidades, tempos e progressão da 0.6.17 mantidos.
 
 ## Atualização 0.6.17
 

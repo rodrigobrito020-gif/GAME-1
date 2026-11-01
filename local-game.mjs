@@ -841,25 +841,34 @@ export function attachLocalGame(
           return;
         }
         if (kind === "roll") {
-          const move = evade(client, value, now, (x, y) =>
-            free(x, y, client.hunt ? map : cityMap),
-          );
-          send(client, "worldEvents", {
-            tick,
-            ...farm.events(),
-            moves: [move],
-            cooldowns: [
-              {
-                skillId: "rolamento",
-                readyInMs: EVADE.cooldownMs,
-                totalMs: EVADE.cooldownMs,
-              },
-            ],
-          });
+          try {
+            const move = evade(client, value, now, (x, y) =>
+              free(x, y, client.hunt ? map : cityMap),
+            );
+            send(client, "worldEvents", {
+              tick,
+              ...farm.events(),
+              moves: [move],
+              cooldowns: [
+                {
+                  skillId: "rolamento",
+                  readyInMs: EVADE.cooldownMs,
+                  totalMs: EVADE.cooldownMs,
+                },
+              ],
+            });
+          } catch (error) {
+            if (!error.message?.startsWith("local.")) throw error;
+            send(client, "error", { code: error.message }, message.requestId);
+          }
           return;
         }
         if (kind === "moveDir") {
           if (client.hunt && combatMode(account) === "auto") return;
+          if (client.hunt && (value.dirX || value.dirY)) {
+            client.hunt.attackOrder = 0;
+            client.hunt.manualTarget = 0;
+          }
           client.dx = Math.max(-1, Math.min(1, value.dirX / 1000));
           client.dy = Math.max(-1, Math.min(1, value.dirY / 1000));
           client.until = now + 350;
@@ -871,6 +880,10 @@ export function attachLocalGame(
         if (kind === "moveTo") {
           if (client.hunt && combatMode(account) === "auto") return;
           if (free(value.x / 10, value.y / 10, client.hunt ? map : cityMap)) {
+            if (client.hunt) {
+              client.hunt.attackOrder = 0;
+              client.hunt.manualTarget = 0;
+            }
             client.route = route(
               client,
               { x: value.x / 10, y: value.y / 10 },
@@ -1002,6 +1015,11 @@ export function attachLocalGame(
               );
             } else if (kind === "setTarget") farm.target(client, value.entity);
             else if (kind === "useSkill") {
+              if (value.skillId === "ataque-direito") {
+                farm.orderAttack(client, value.target);
+                patch(client);
+                return;
+              }
               if (["modo-manual", "modo-auto"].includes(value.skillId)) {
                 setCombatMode(
                   account,
@@ -1180,6 +1198,7 @@ export function attachLocalGame(
       const canMove =
         (!client.hunt || combatMode(account) === "manual") &&
         !evading &&
+        !client.hunt?.attackOrder &&
         !client.hunt?.deadAt &&
         now >= (client.combatAnimUntil ?? 0);
       let dx = 0,

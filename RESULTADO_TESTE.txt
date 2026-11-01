@@ -1,39 +1,34 @@
-VERSAO 0.6.17 — NITIDEZ, CONTROLE MANUAL E COMBATE
+VERSAO 0.6.18 — SHIFT CORRIGIDO E BOTAO DIREITO
 Data: 01/11/2026
 
-ENTREGUE
-- Guerreiro em quadros de 128px, amostrados das fontes originais grandes,
-  preservando tamanho no mundo, roupas, equipamento, face e poses.
-- Modo manual/automatico persistente. WASD/setas, alvo por Tab/clique,
-  ataque por F/clique ao alcance e habilidades 1-4 no manual.
-- Dash direcional no Shift esquerdo: ate 128 unidades, 240ms, recarga 2,5s.
-  Respeita paredes, morte, recuperacao de golpes e estado do servidor.
-- Inimigos maiores: guardiao com golpe marcado em area, arqueiro com recuo
-  e flecha direcionada, feiticeiro com area marcada antes do impacto.
-- Quatro icones ilustrados e cartas de habilidade com efeito, custo, duracao,
-  recarga e atalho. Hover/foco consulta; pressionamento longo nao lanca.
-- Tempos aprovados mantidos: Avatar 45s/60s e Egide 5min/120s.
-- Saves, itens, ouro, equipamentos e escolhas das outras habilidades mantidos.
+CORRIGIDO
+O segundo pedido de dash, ainda em recarga, lancava local.cooldown fora do
+tratamento de erros de gameplay. O servidor interpretava como mensagem invalida,
+fechava o WebSocket e o cliente voltava para a cidade ao reconectar.
+Agora recusas de dash sao respondidas sem fechar a conexao. O cliente tambem
+filtra pressionamentos repetidos e consulta a recarga informada pelo servidor.
+
+ADICIONADO
+Botao direito em um monstro vivo seleciona o inimigo e ordena aproximar/atacar.
+No manual, usa somente ataques basicos contra esse alvo e para apos a morte.
+Movimento WASD/setas, outra ordem de movimento, dash bem-sucedido, troca de modo
+ou limpeza do alvo interrompem a ordem. No automatico, o alvo vira prioridade.
+Clique esquerdo/F, visuais, mapas, habilidades, tempos, itens e saves mantidos.
 
 TESTES
-- 72 testes automatizados passaram, zero falhas ou ignorados, com ZIP real.
-- Cobertura de controle manual sem perseguicao/ataque automatico, retomada da
-  automacao, impacto manual, cooldown, dash com colisao ao iniciar e durante
-  trajeto, ataques inimigos com preparacao/dano desviado/cancelamento por morte.
-- Verificado que as folhas HD contem detalhes reais entre pixels vizinhos,
-  em vez de blocos ampliados da folha de 64px. Build HD reproduzivel por hash.
-- Chromium/WebGL com cliente real em portugues e save de QA separado:
-  camada HD de 128px na cidade, troca de modo, WASD na hunt, dash pelo teclado
-  Shift esquerdo e cooldown do servidor, carta por hover, pressionamento longo
-  sem conjurar, clique curto conjurando Egide e ataque basico manual por F.
-- Inimigos maiores confirmados no renderer nativo; marcacoes reais de flecha
-  e magia em area observadas antes do impacto; retorno ao automatico funcionando.
-- Saida da hunt limpa controles/efeitos. Zero erros JavaScript.
-- Previa isolada HD da ultimate nas quatro direcoes sem alterar a partida.
-
-LIMITES MANTIDOS
-Servidor local/solo. Sets do Lineage 2 e artes de outras classes continuam nas
-etapas registradas em LINEAGE_SETS.md e PROXIMAS_ETAPAS.md.
+- 74 testes automatizados, com o ZIP real, incluindo regressao de WebSocket:
+  pedidos repetidos de dash recebem local.cooldown, a conexao permanece aberta,
+  ping continua respondendo e nenhuma transicao de cena e enviada.
+- Ordem de ataque validada no servidor: aproxima do alvo escolhido, mata com
+  impactos reais e nao passa para outro inimigo vivo no modo manual.
+- Cancelamento por dash/modo e alvo morto; validacao de alvos inexistentes.
+- Chromium/WebGL, cliente real em portugues e save de QA separado:
+  dois ShiftLeft reais seguidos geram um dash sem desconectar; pedidos brutos
+  adicionais durante a recarga tambem sao rejeitados sem desconectar; novo dash
+  funciona apos recarregar; botao direito real seleciona, aproxima e derrota o
+  inimigo escolhido; WASD interrompe a proxima ordem de ataque.
+- Nenhuma reconexao, retorno indevido a cidade, erro JavaScript ou erro de
+  protocolo nesses testes do navegador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
@@ -41,6 +36,6 @@ WINDOWS
 3. Com os servidores fechados, copie .local-runtime da pasta antiga para a nova
    para manter o progresso. Copie recursos-publicos.zip ou deixe-o em Downloads.
 4. Abra ABRIR_CLIENTE_COPIADO.bat e pressione Ctrl+F5 no navegador.
-5. Confira v0.6.17 no topo.
+5. Confira v0.6.18 no topo.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Previa: http://127.0.0.1:5188/guerreiro

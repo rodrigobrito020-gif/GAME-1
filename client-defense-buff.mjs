@@ -53,6 +53,11 @@ export function withDefenseBuffUi(bytes) {
     "this.net.send(`setTarget`,{entity:n.id});return}break;case Ft.PLAYER",
     'this.net.send(`setTarget`,{entity:n.id});if(window.__royalUltimateState?.combatMode==="manual")this.net.send(`useSkill`,{skillId:"ataque-basico",target:n.id});return}break;case Ft.PLAYER',
   );
+  code = replaceOnce(
+    code,
+    "if(e.rightButtonDown()){let t=this.scene.cameras.main.getWorldPoint(e.x,e.y),n=this.hooks.pick(t.x,t.y);",
+    'if(e.rightButtonDown()){let t=this.scene.cameras.main.getWorldPoint(e.x,e.y),n=this.hooks.pick(t.x,t.y);if(n?.kind===Ft.MONSTER&&n.alive){this.net.send(`useSkill`,{skillId:"ataque-direito",target:n.id});return;}',
+  );
   const scene = "r.on(`sceneEnter`,e=>this.enterScene(e))";
   code = replaceOnce(
     code,

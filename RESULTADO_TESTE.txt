@@ -1,36 +1,50 @@
-VERSAO 0.6.9 — AVANCO DE LUZ + IMPACTO DE LUZ
+VERSAO 0.6.10 — EGIDE DE LUZ
 Data: 01/11/2026
 
-As duas habilidades aprovadas estão juntas no farm automático:
-1. Avanço de Luz aproxima o guerreiro de um inimigo distante (160–300 unidades).
-2. Depois da recuperação, Impacto de Luz salta/crava a espada perto do alvo,
-   atingindo os inimigos ao redor uma única vez na aterrissagem.
+Terceira habilidade, tecla 3: buff temporário de defesa, com escudo de luz,
+aura branco/dourada e indicador de duração junto ao painel do personagem.
+Mantém Avanço de Luz (1) e Impacto de Luz (2) disponíveis e no automático.
 
-Cada habilidade conserva suas condições, recarga, custo, dano e animação.
-Não foi criado um combo obrigatório nem removida a restrição de distância
-do dash. Quando não pode usar uma habilidade, o guerreiro continua atacando
-normalmente. As teclas 1 e 2 continuam disponíveis para uso manual.
+VALORES PROVISORIOS PARA AVALIACAO
+- Defesa +30% da base dos equipamentos, arredondada para cima; mínimo +2 DEF.
+- Duração 12s; mana 10; recarga 20s.
+- Aplicação aos 300ms; recuperação até 650ms. Sem dano, cura ou invulnerabilidade.
+- O mesmo bônus não acumula; reaplicações renovam uma única proteção.
 
-TESTES
-- 45 testes aprovados, nenhum reprovado, usando o recursos-publicos.zip real.
-- Teste da sequência automática: dash, recuperação, salto/impacto e retorno
-  aos ataques básicos, com os tempos de dano e recarga de cada habilidade.
-- Migração testada para saves antigos, inclusive a versão anterior que usava
-  somente Impacto de Luz. A ordem é alterada uma única vez para as duas skills.
-- Ordem vazia permanece desativada; escolhas posteriores são preservadas.
-- Testes existentes de alcance mínimo, colisão, cancelamento por morte/saída,
-  dano em área, respawn, inventário, armazém e persistência continuam aprovados.
+TESTES AUTOMATIZADOS
+53 aprovados, nenhum reprovado, usando o recursos-publicos.zip real.
+- Aplicação ao conjurador e a jogadores/companheiros vivos do mesmo grupo
+  e instância, sem limite de distância dentro da instância.
+- Exclusão de inimigos, mortos, outros grupos, outras instâncias e duplicatas.
+- Caminho real de conjuração/aplicação com um guerreiro, um jogador aliado e
+  um companheiro: os três receberam bônus e eventos de buff no servidor.
+- Defesa realmente reduz o dano recebido: inimigo de treino causa 4 antes e
+  2 durante o buff, sem armadura equipada.
+- Expiração, morte, saída da instância, cancelamento antes de aplicar,
+  renovação sem acumular e ausência de mana cobertas pelos testes.
+- Morte do conjurador não remove antecipadamente a proteção dos outros vivos.
+- Reabrir um save não incorpora o bônus temporário à defesa permanente.
+- Automação usa proteção antes da aproximação, sem bloquear o farm por recarga
+  ou gastar o buff com a arena vazia. Ordem automática desativada é respeitada.
+- Testes anteriores de dash, cravada, inventário, armazém, mapas, respawn,
+  protocolo, persistência e progresso continuam aprovados.
+- Todas as folhas do personagem e PNGs dos efeitos anteriores foram preservadas.
 
 NAVEGADOR
-Chromium/Playwright, cliente real com WebGL, conta local, mapa e monstros normais.
-- 24 segundos de farm: 7 ativações com dano registrado.
-- 3 sequências consecutivas de Avanço de Luz + Impacto de Luz no mesmo inimigo.
-- Rastro do dash e pose de cravada conferidos visualmente.
-- Nenhum erro JavaScript ou aviso de animação.
+Chromium/Playwright, cliente real com WebGL, conta local e mapa normal:
+- 27 segundos de farm com as três habilidades funcionando.
+- Dois eventos de aplicação da Égide e um de expiração registrados.
+- Defesa derivada alternou entre 0 e 2, conforme aplicação/expiração.
+- Contador visível, remoção do indicador e renovação automática conferidos.
+- Conjuração e aura revisadas visualmente; prévia nas quatro direções.
+- Nenhum erro JavaScript ou aviso de animação; novos efeitos/ícone HTTP 200.
 
-Cidade, hunt, monstros, artes, equipamentos, mochila, armazém, níveis, EXP,
-ouro e balanceamento das duas habilidades não receberam alterações.
-Os valores de balanceamento continuam provisórios para avaliação.
+LIMITACAO ATUAL DA EQUIPE
+A partida continua com apenas uma conta local: o buff já protege o guerreiro.
+O motor coletivo foi testado no servidor com jogadores e companheiros; ainda
+faltam formação de grupos, múltiplas contas, recrutamento de companheiros e
+sincronização entre jogadores para isso estar disponível na partida normal.
+Não há modo cooperativo de rede ou aliados recrutáveis nesta entrega.
 O cliente ainda consulta sons antigos ausentes do ZIP capturado.
 
 WINDOWS
@@ -41,3 +55,4 @@ WINDOWS
    arquivo em Downloads.
 4. Abra ABRIR_CLIENTE_COPIADO.bat e use Ctrl+F5 no navegador.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
+Previa: http://127.0.0.1:5188/guerreiro

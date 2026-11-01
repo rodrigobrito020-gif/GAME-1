@@ -1,5 +1,6 @@
 // Shared animation/impact contract. Short body actions, longer independent VFX.
 import { LIGHT_AFTERIMAGES } from "./light-afterimages.mjs";
+import { LIGHT_AEGIS } from "./defense-buff.mjs";
 import { WALK_STRIDE } from "./warrior-walk-rig.mjs";
 export const WARRIOR_SKIN = "humano-guerreiro";
 export const WARRIOR_SHEETS = {
@@ -30,6 +31,11 @@ export const WARRIOR_GROUND_SLAM = {
   jump: { at: [100, 550], height: 32 },
 };
 export const WARRIOR_ACTIONS = {
+  "egide-de-luz": {
+    move: "humano-egide-luz",
+    duration: LIGHT_AEGIS.castMs,
+    impact: LIGHT_AEGIS.applyAtMs,
+  },
   "impacto-de-luz": { move: "humano-impacto-luz", duration: 950, impact: 550 },
   "avanco-de-luz": { move: "humano-avanco-luz", duration: 550, impact: 300 },
   investida: { move: "humano-investida", duration: 600, impact: 250 },
@@ -61,6 +67,16 @@ export function warriorRig(original) {
     motion: { lunge: { windup: 2, reach, lift: -1, tilt: 2 } },
   });
   Object.assign(rig.moves, {
+    "humano-egide-luz": {
+      frames: [
+        ...hold("special", 0, 2),
+        ...hold("special", 1, 4),
+        ...hold("special", 4, 4),
+        ...hold("special", 0, 3),
+      ],
+      impacts: [LIGHT_AEGIS.applyAtMs],
+      motion: { glow: { at: [100, 550], color: "#fff1bf", pulse: false } },
+    },
     "humano-impacto-luz": {
       frames: [
         ...hold("axeheavy", 0, 2),

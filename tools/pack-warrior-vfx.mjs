@@ -9,6 +9,9 @@ const source = decodeRgba(
     new URL("../art/warrior/source/skills-vfx.png", import.meta.url),
   ),
 );
+const aegisSource = decodeRgba(
+  readFileSync(new URL("../art/warrior/source/aegis-vfx.png", import.meta.url)),
+);
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const smooth = (x) => {
   x = clamp(x);
@@ -68,8 +71,9 @@ function paint(
   },
 ) {
   if (alpha <= 0) return;
-  const halfW = source.width / 2,
-    halfH = source.height / 2,
+  const art = fx.source === "aegis" ? aegisSource : source;
+  const halfW = art.width / 2,
+    halfH = art.height / 2,
     ox = (fx.cell % 2) * halfW,
     oy = Math.floor(fx.cell / 2) * halfH,
     cos = Math.cos(angle),
@@ -91,14 +95,14 @@ function paint(
             sy = (uy / 94 + 0.5) * halfH;
           if (sx < 0 || sy < 0 || sx >= halfW || sy >= halfH) continue;
           const index =
-            (Math.floor(oy + sy) * source.width + Math.floor(ox + sx)) * 4;
+            (Math.floor(oy + sy) * art.width + Math.floor(ox + sx)) * 4;
           const edge = clamp(Math.min(sx, sy, halfW - sx, halfH - sy) / 10);
-          const opacity = source.pixels[index + 3] * edge;
+          const opacity = art.pixels[index + 3] * edge;
           if (opacity < 8) continue;
           a += opacity;
-          red += source.pixels[index] * opacity;
-          green += source.pixels[index + 1] * opacity;
-          blue += source.pixels[index + 2] * opacity;
+          red += art.pixels[index] * opacity;
+          green += art.pixels[index + 1] * opacity;
+          blue += art.pixels[index + 2] * opacity;
         }
       if (a)
         blend(
@@ -131,7 +135,35 @@ function frame(fx, index) {
     after = clamp((ms - impact) / Math.max(1, fx.end - impact)),
     fade = 1 - smooth((after - 0.15) / 0.85);
   if (fx.cast && ms < fx.start) return pixels;
-  if (fx.kind === "light-dash") {
+  if (fx.kind.startsWith("aegis")) {
+    const loop = fx.kind === "aegis-loop",
+      finish = fx.kind === "aegis-fade";
+    const alpha = loop
+      ? 0.34 + 0.055 * Math.sin(t * Math.PI * 2)
+      : finish
+        ? (1 - smooth(t)) * 0.55
+        : before * fade * 0.9;
+    const scale = loop
+      ? 0.98 + 0.025 * Math.sin(t * Math.PI * 2)
+      : finish
+        ? 0.9 + t * 0.18
+        : 0.72 + before * 0.24 + after * 0.06;
+    paint(pixels, fx, {
+      scaleX: scale,
+      scaleY: scale,
+      cy: loop ? 68 : 61,
+      alpha,
+      phase: t,
+    });
+    for (let i = 0; i < 6; i++)
+      glint(
+        pixels,
+        64 + Math.sin(i * 2.4 + t * 2) * 35,
+        105 - ((t + i / 6) % 1) * 70,
+        1.2,
+        alpha * 0.55,
+      );
+  } else if (fx.kind === "light-dash") {
     // A low ribbon of white/gold wind, followed by sparse light motes. It
     // spans the path at cast time and fades independently after landing.
     const dashTime = Math.max(0, Math.min(1, (ms - 50) / 250));
@@ -225,7 +257,7 @@ function frame(fx, index) {
       );
     }
   }
-  if (fx.kind !== "spark") {
+  if (fx.kind !== "spark" && !fx.kind.startsWith("aegis")) {
     const opacity =
       fx.kind === "embers"
         ? Math.sin(Math.PI * t) * 0.7

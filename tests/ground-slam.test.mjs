@@ -162,17 +162,19 @@ test("combined skill review migrates once, keeps manual slots and preserves disa
     [
       ["avanco-de-luz", "1"],
       [SLAM.id, "2"],
+      ["egide-de-luz", "3"],
     ],
   );
   const a = fixture({ order: ["corte-poderoso"], version: 1 });
   assert.deepEqual(a.account.character.automation.skillOrder, [
     "avanco-de-luz",
     SLAM.id,
+    "egide-de-luz",
   ]);
   assert.deepEqual(
     fixture({ order: [SLAM.id], version: 2 }).account.character.automation
       .skillOrder,
-    ["avanco-de-luz", SLAM.id],
+    ["avanco-de-luz", SLAM.id, "egide-de-luz"],
   );
   assert.equal(a.account.character.wallet.gold, 1234);
   a.farm.automation({ skillOrder: ["avanco-de-luz", SLAM.id] });
@@ -190,6 +192,7 @@ test("combined skill review migrates once, keeps manual slots and preserves disa
   assert.deepEqual(a.account.character.automation.skillOrder, [
     "avanco-de-luz",
     SLAM.id,
+    "egide-de-luz",
   ]);
 });
 

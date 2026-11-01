@@ -6,6 +6,7 @@ import {
   WARRIOR_LIGHT_DASH,
   WARRIOR_GROUND_SLAM,
 } from "./warrior.mjs";
+import { LIGHT_AEGIS, TeamDefenseBuff } from "./defense-buff.mjs";
 export const SKILLS = [
   {
     id: WARRIOR_LIGHT_DASH.id,
@@ -31,6 +32,19 @@ export const SKILLS = [
     range: WARRIOR_GROUND_SLAM.range,
     radius: WARRIOR_GROUND_SLAM.radius,
     multiplier: 2.5,
+  },
+  {
+    id: LIGHT_AEGIS.id,
+    name: LIGHT_AEGIS.name,
+    description:
+      "Aumenta a defesa do guerreiro e de todos os jogadores e companheiros vivos do mesmo grupo na instância. DEF +30% (mínimo +2) por 12 segundos.",
+    icon: "/assets/ui/royal-warrior/egide-de-luz.svg",
+    key: "3",
+    kind: "buff",
+    manaCost: LIGHT_AEGIS.manaCost,
+    cooldownMs: LIGHT_AEGIS.cooldownMs,
+    range: 0,
+    durationMs: LIGHT_AEGIS.durationMs,
   },
   {
     id: "investida",
@@ -65,10 +79,12 @@ export const SKILLS = [
     heal: 25,
   },
 ];
-// Preserve the approved dash in slot 1; review the ground slam in slot 2.
+// Approved warrior skills in their stable manual hotbar slots.
 // Unapproved draft skills remain unavailable to both manual and automatic use.
 export const ACTIVE_SKILLS = SKILLS.filter((skill) =>
-  [WARRIOR_LIGHT_DASH.id, WARRIOR_GROUND_SLAM.id].includes(skill.id),
+  [WARRIOR_LIGHT_DASH.id, WARRIOR_GROUND_SLAM.id, LIGHT_AEGIS.id].includes(
+    skill.id,
+  ),
 );
 export const ITEMS = [
   {
@@ -152,10 +168,20 @@ const AGGRO_RADIUS = 145,
 const finiteId = (value) =>
   typeof value === "number" && Number.isInteger(value) && value > 0;
 export class LocalFarm {
-  constructor(account, { now = Date.now, random = Math.random } = {}) {
+  constructor(
+    account,
+    {
+      now = Date.now,
+      random = Math.random,
+      defenseBuffs,
+      resolveTeam = () => [],
+    } = {},
+  ) {
     this.account = account;
     this.now = now;
     this.random = random;
+    this.defenseBuffs = defenseBuffs ?? new TeamDefenseBuff({ now });
+    this.resolveTeam = resolveTeam;
     account.bag ??= [];
     account.warehouse ??= [];
     account.nextUid ??= 1;
@@ -171,12 +197,12 @@ export class LocalFarm {
     c.automation.skillOrder = (c.automation.skillOrder ?? [])
       .map((id) => (id === "corte-poderoso" ? WARRIOR_LIGHT_DASH.id : id))
       .filter((id) => ACTIVE_SKILLS.some((skill) => skill.id === id));
-    // Once per save, enable the approved dash + slam sequence. Respect a
+    // Once per save, add the team defense buff to the approved sequence. Respect a
     // deliberately empty order and preserve later player edits on restart.
-    if (account.skillReviewVersion !== 3) {
+    if (account.skillReviewVersion !== 4) {
       if (c.automation.skillOrder.length)
         c.automation.skillOrder = ACTIVE_SKILLS.map((skill) => skill.id);
-      account.skillReviewVersion = 3;
+      account.skillReviewVersion = 4;
     }
     c.progress.hp ||= 250;
     c.progress.mana = Math.max(0, c.progress.mana);
@@ -192,7 +218,7 @@ export class LocalFarm {
       c.equipment.slots.reduce((n, e) => n + (e.item.stats?.[key] ?? 0), 0);
     Object.assign(c.derived, {
       atk: 15 + (level - 1) * 2 + sum("atk"),
-      def: sum("def"),
+      def: this.defenseBuffs.defense(c, sum("def")),
       maxHp: 250 + (level - 1) * 20 + sum("hp"),
       maxMana: 100 + (level - 1) * 5,
       attackRange: 65,
@@ -208,6 +234,20 @@ export class LocalFarm {
     c.progress.xpToNext = this.xpRequired(level);
     c.inventory.bagUsed = this.account.bag.length;
     c.inventory.warehouseUsed = this.account.warehouse.length;
+  }
+  member(client) {
+    const instanceId = client.instanceId ?? client.hunt;
+    return {
+      entity: client.entityId ?? 1,
+      kind: client.memberKind ?? "player",
+      partyId: client.partyId ?? null,
+      instanceId,
+      character: this.character,
+      isAlive: () =>
+        !!client.hunt && !client.hunt.deadAt && this.character.progress.hp > 0,
+      isPresent: () => (client.instanceId ?? client.hunt) === instanceId,
+      refresh: () => this.recalculate(),
+    };
   }
   xpRequired(level) {
     return Math.floor(100 * Math.pow(level, 1.35));
@@ -273,12 +313,15 @@ export class LocalFarm {
     return client.hunt;
   }
   stop(client) {
+    const events = this.events();
+    events.buffs.push(...this.defenseBuffs.remove(this.character));
     client.hunt = null;
     client.combatAnimUntil = 0;
     client.target = null;
     client.route = [];
     client.until = 0;
     client.moving = false;
+    return events;
   }
   target(client, entity) {
     if (
@@ -301,6 +344,7 @@ export class LocalFarm {
       loot: [],
       heals: [],
       moves: [],
+      buffs: [],
     };
   }
   reward(hunt, monster, events) {
@@ -403,6 +447,32 @@ export class LocalFarm {
     if ((h.cooldowns[id] ?? 0) > now || h.nextCast > now || h.actionUntil > now)
       throw Error("local.cooldown");
     if (c.progress.mana < skill.manaCost) throw Error("local.no_mana");
+    if (id === LIGHT_AEGIS.id) {
+      if (this.defenseBuffs.state(c)) throw Error("local.buff_active");
+      c.progress.mana -= skill.manaCost;
+      h.cooldowns[id] = now + skill.cooldownMs;
+      h.nextCast = h.actionUntil = now + LIGHT_AEGIS.castMs;
+      client.combatAnimUntil = h.actionUntil;
+      const origin = {
+        x: Math.round(client.x * 10),
+        y: Math.round(client.y * 10),
+      };
+      events.casts.push({
+        caster: client.entityId ?? 1,
+        skillId: id,
+        target: client.entityId ?? 1,
+        origin,
+        dest: { ...origin },
+        facing: client.facing,
+      });
+      events.cooldowns.push({
+        skillId: id,
+        readyInMs: skill.cooldownMs,
+        totalMs: skill.cooldownMs,
+      });
+      h.impacts.push({ at: now + LIGHT_AEGIS.applyAtMs, defenseBuff: true });
+      return { events, deltas };
+    }
     const target = h.monsters.find((m) => m.id === targetId && m.hp > 0);
     if (
       !target ||
@@ -495,6 +565,7 @@ export class LocalFarm {
       deltas = [],
       spawned = [],
       despawned = [];
+    events.buffs.push(...this.defenseBuffs.expire());
     if (!h) return { events, deltas, spawned, despawned };
     if (h.deadAt)
       return {
@@ -538,6 +609,15 @@ export class LocalFarm {
       }
     }
     for (const impact of h.impacts.filter((p) => p.at <= now)) {
+      if (impact.defenseBuff) {
+        events.buffs.push(
+          ...this.defenseBuffs.apply(
+            this.member(client),
+            this.resolveTeam(client),
+          ),
+        );
+        continue;
+      }
       const targets = impact.area
         ? h.monsters
             .filter(
@@ -627,6 +707,18 @@ export class LocalFarm {
       h.manualTarget = 0;
     h.target = target?.id ?? 0;
     client.moving = dashMoved;
+    if (
+      target &&
+      now >= h.actionUntil &&
+      (c.automation.skillOrder ?? []).includes(LIGHT_AEGIS.id) &&
+      !this.defenseBuffs.state(c)
+    ) {
+      try {
+        this.cast(client, LIGHT_AEGIS.id, 0, events, deltas, { free });
+      } catch {
+        /* A buff on cooldown must not stop movement or basic attacks. */
+      }
+    }
     if (target && now >= h.actionUntil) {
       if (
         Math.hypot(target.x - client.x, target.y - client.y) >
@@ -755,6 +847,7 @@ export class LocalFarm {
           h.deadAt = now;
           h.dash = null;
           h.impacts = [];
+          events.buffs.push(...this.defenseBuffs.remove(c));
           client.moving = false;
           events.deaths.push({ entity: 1, killer: m.id });
           c.hunt.lastDeath = {

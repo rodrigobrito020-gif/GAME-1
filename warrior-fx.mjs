@@ -7,6 +7,13 @@ const particles = {
 };
 export function warriorEffects(original) {
   const effects = structuredClone(original);
+  effects.habilidades["egide-de-luz"] = {
+    aura: {
+      ativa: "guerreiro-egide-ativacao",
+      loop: "guerreiro-egide-aura",
+      fim: "guerreiro-egide-fim",
+    },
+  };
   effects.habilidades["impacto-de-luz"] = {
     indicador: "guerreiro-impacto-luz",
   };
@@ -59,6 +66,8 @@ export function warriorFx(id) {
 }
 export function warriorIcon(id) {
   const shapes = {
+    "egide-de-luz":
+      '<path d="m24 6 15 6-2 16-13 14-13-14-2-16Z" fill="#fff5d8" stroke="#e4b355" stroke-width="2"/><path d="m24 14 3 7 7 3-7 3-3 8-3-8-7-3 7-3Z" fill="#c18c35"/>',
     "impacto-de-luz":
       '<path d="M21 7h6v24l-3 6-3-6Z" fill="#fff4cf"/><path d="M16 15h16M24 4v7" stroke="#e4b355" stroke-width="3"/><path d="m7 37 9-3-3 8m28-5-9-3 3 8M18 41l6-4 6 4" fill="none" stroke="#ffda71" stroke-width="2"/>',
     "avanco-de-luz":

@@ -1,3 +1,4 @@
+import { withDefenseBuffUi } from "../client-defense-buff.mjs";
 import { withLightAfterimages } from "../client-afterimages.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -84,7 +85,7 @@ test(
       ).arrayBuffer();
       assert.deepEqual(
         Buffer.from(original),
-        withLightAfterimages(read("main-Du8N-0Wf.js")),
+        withDefenseBuffUi(withLightAfterimages(read("main-Du8N-0Wf.js"))),
       );
       const messages = [];
       let requestId = 0;
@@ -134,7 +135,7 @@ test(
         .body.value;
       assert.deepEqual(
         catalog.skills.map((s) => s.id),
-        ["avanco-de-luz", "impacto-de-luz"],
+        ["avanco-de-luz", "impacto-de-luz", "egide-de-luz"],
         "approved dash and new slam keep their native slots",
       );
       const scene = (await wait((m) => m.body?.case === "sceneEnter")).body

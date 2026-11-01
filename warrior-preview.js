@@ -22,7 +22,13 @@ await Promise.all(
 const slamFx = await image(
   "/assets/fx/royal-warrior/guerreiro-impacto-luz.png",
 );
-const previewSkills = ["avanco-de-luz", "impacto-de-luz"];
+const aegisCast = await image(
+  "/assets/fx/royal-warrior/guerreiro-egide-ativacao.png",
+);
+const aegisAura = await image(
+  "/assets/fx/royal-warrior/guerreiro-egide-aura.png",
+);
+const previewSkills = ["avanco-de-luz", "impacto-de-luz", "egide-de-luz"];
 const canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d");
 const readout = document.querySelector("output"),
@@ -65,12 +71,11 @@ function render() {
   } else if (move) {
     total = move.frames.length * rig.stepMs;
     const index = previewSkills.indexOf(action);
-    const tail =
-      action === "impacto-de-luz"
-        ? 2000
-        : index < 0
-          ? 0
-          : total + LIGHT_AFTERIMAGES.lifetimeMs;
+    const tail = ["impacto-de-luz", "egide-de-luz"].includes(action)
+      ? 2000
+      : index < 0
+        ? 0
+        : total + LIGHT_AFTERIMAGES.lifetimeMs;
     phase = elapsed % (Math.max(total, tail) + 350);
     const entry =
       move.frames[
@@ -141,6 +146,22 @@ function render() {
   }
   canvas.dataset.lift = String(lift);
   canvas.dataset.phase = String(phase);
+  if (action === "egide-de-luz") {
+    if (phase >= 300 && phase < 2000) {
+      const frame = Math.floor(((phase - 300) * 16) / 1000) % 32;
+      ctx.drawImage(
+        aegisAura,
+        frame * 128,
+        0,
+        128,
+        128,
+        184,
+        332 - 232 * 0.92,
+        232,
+        232,
+      );
+    }
+  }
   let afterimages = 0;
   if (action === WARRIOR_LIGHT_DASH.id) {
     const axis = [
@@ -202,6 +223,20 @@ function render() {
     256,
     256,
   );
+  if (action === "egide-de-luz" && phase < 1600) {
+    const frame = Math.min(31, Math.floor((phase * 20) / 1000));
+    ctx.drawImage(
+      aegisCast,
+      frame * 128,
+      0,
+      128,
+      128,
+      152,
+      332 - 296 * 0.82,
+      296,
+      296,
+    );
+  }
   readout.textContent = `${["Frente", "Esquerda", "Direita", "Costas"][direction]} · ${sheet} · quadro ${col + 1} / ${WARRIOR_SHEETS[sheet]}`;
   canvas.dataset.sheet = sheet;
   canvas.dataset.frame = String(col);

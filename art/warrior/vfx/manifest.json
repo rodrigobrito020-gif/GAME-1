@@ -1,4 +1,37 @@
 {
+  "guerreiro-egide-ativacao": {
+    "frames": 32,
+    "fps": 20,
+    "durationMs": 1600,
+    "impactMs": 300,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "frente"
+  },
+  "guerreiro-egide-aura": {
+    "frames": 32,
+    "fps": 16,
+    "durationMs": 2000,
+    "impactMs": null,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "atras"
+  },
+  "guerreiro-egide-fim": {
+    "frames": 16,
+    "fps": 20,
+    "durationMs": 800,
+    "impactMs": null,
+    "frame": [
+      128,
+      128
+    ],
+    "layer": "chao"
+  },
   "guerreiro-impacto-luz": {
     "frames": 32,
     "fps": 16,

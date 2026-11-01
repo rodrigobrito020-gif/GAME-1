@@ -424,3 +424,32 @@ body {
   color: #785c2c;
   background: #dfc88d66 !important;
 }
+
+.royal-defense-buff {
+  position: fixed;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 11px;
+  border: 1px solid #c6a460;
+  border-radius: 7px;
+  background: #fff6dfef;
+  color: #5b421d;
+  box-shadow: 0 3px 12px #49361825;
+  font:
+    600 12px system-ui,
+    sans-serif;
+  pointer-events: auto;
+}
+.royal-defense-buff[hidden] {
+  display: none;
+}
+.royal-defense-buff img {
+  width: 25px;
+  height: 25px;
+}
+.royal-defense-buff strong {
+  min-width: 24px;
+  color: #8b6327;
+}

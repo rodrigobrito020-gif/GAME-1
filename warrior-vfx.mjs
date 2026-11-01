@@ -1,6 +1,43 @@
 // Shared flipbook metadata. Textured effects have transparent lead-in frames
 // when the client starts them on cast; their peak lines up with the body hit.
 export const WARRIOR_VFX = {
+  "guerreiro-egide-ativacao": {
+    kind: "aegis-cast",
+    source: "aegis",
+    cell: 0,
+    frames: 32,
+    fps: 20,
+    height: 148,
+    pivot: [0.5, 0.82],
+    layer: "frente",
+    skill: "egide-de-luz",
+    cast: true,
+    start: 70,
+    end: 1600,
+  },
+  "guerreiro-egide-aura": {
+    kind: "aegis-loop",
+    source: "aegis",
+    cell: 2,
+    frames: 32,
+    fps: 16,
+    height: 136,
+    pivot: [0.5, 0.92],
+    layer: "atras",
+    end: 2000,
+    loop: true,
+  },
+  "guerreiro-egide-fim": {
+    kind: "aegis-fade",
+    source: "aegis",
+    cell: 1,
+    frames: 16,
+    fps: 20,
+    height: 132,
+    pivot: [0.5, 0.75],
+    layer: "chao",
+    end: 800,
+  },
   "guerreiro-impacto-luz": {
     kind: "quake",
     cell: 2,

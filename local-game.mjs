@@ -52,7 +52,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-9";
+  catalog.version = "local-human-warrior-10";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -120,7 +120,7 @@ export function attachLocalGame(
   catalog.skills = SKILLS.map((skill) => ({
     ...skill,
     classId: "guerreiro",
-    kind: skill.radius ? "area" : "damage",
+    kind: skill.kind ?? (skill.radius ? "area" : "damage"),
     source: "physical",
     description:
       skill.description ?? "Habilidade local de teste. Valores provisórios.",
@@ -635,7 +635,8 @@ export function attachLocalGame(
     if (hunt) send(client, "huntSession", hunt.session);
   };
   const returnCity = (client) => {
-    farm.stop(client);
+    const removed = farm.stop(client);
+    if (removed.buffs.length) send(client, "worldEvents", { tick, ...removed });
     account.character.progress.hp = account.character.derived.maxHp;
     account.character.progress.mana = account.character.derived.maxMana;
     send(client, "deathState", { dead: false });
@@ -1068,7 +1069,12 @@ export function attachLocalGame(
             autoReturnAtMs: now + 3000,
             noHealItems: true,
           });
-        if (output.deltas.length || output.died || tick % 20 === 0) {
+        if (
+          output.deltas.length ||
+          output.died ||
+          output.events.buffs.length ||
+          tick % 20 === 0
+        ) {
           patch(client);
           send(client, "huntSession", client.hunt.session);
         }

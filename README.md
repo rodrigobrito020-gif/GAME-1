@@ -1,8 +1,22 @@
-# Jogo local — 0.6.9: Avanço de Luz + Impacto de Luz
+# Jogo local — 0.6.10: Égide de Luz
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Terceira habilidade — Égide de Luz (0.6.10)
+
+**Égide de Luz (3)** é um buff de defesa. O guerreiro assume a postura de proteção, manifesta um escudo branco/dourado e recebe uma aura discreta. Um indicador junto ao painel do personagem mostra o tempo restante. As teclas 1 e 2 continuam sendo Avanço de Luz e Impacto de Luz.
+
+- **Valores provisórios para avaliação:** DEF +30% sobre a defesa base dos equipamentos, arredondado para cima, com bônus mínimo de +2. Duração 12s, mana 10, recarga 20s. Não causa dano, não cura, não concede vida de escudo nem invulnerabilidade.
+- Conjuração de 650ms; o bônus começa aos 300ms. O servidor aplica a defesa antes de calcular novos danos. Expiração, morte ou saída da instância removem o bônus e a aura. Sair/morrer antes da aplicação cancela o buff pendente. O bônus não se torna atributo permanente ao salvar/reabrir o jogo.
+- O mesmo efeito não acumula. Outra aplicação pode renovar sua duração, mantendo um único bônus. A morte do conjurador não retira o buff de aliados vivos que já o receberam.
+- A regra coletiva inclui o próprio guerreiro e **todos os jogadores e companheiros vivos do mesmo grupo e da mesma instância**, sem limite de distância dentro dela. Inimigos, desconhecidos, outros grupos e outras instâncias são excluídos. A lista de aliados vem do servidor; escolher um alvo pelo cliente não concede participação no grupo.
+- **Limite desta versão local:** o jogo continua com uma única conta/um personagem local. Formação de grupos, contas multijogador, recrutamento de companheiros e a distribuição de estados entre jogadores ainda não existem. Portanto, na partida atual, o buff protege o guerreiro. A aplicação coletiva foi implementada no motor e validada com jogadores e companheiros em testes do servidor; não é um modo cooperativo já disponível na interface.
+- O farm usa a proteção antes da aproximação quando há inimigos e o bônus está inativo. Depois, continua a combinação aprovada de dash e cravada, respeitando recargas e mana. Não desperdiça o buff com a arena vazia. Uma ordem automática vazia continua desativada; ordens anteriores ativas recebem a terceira habilidade uma única vez, preservando edições posteriores.
+- Personagem, efeitos aprovados do dash/cravada, mapas, inventários, níveis e moedas foram preservados. A aplicação não concede itens.
+
+A prévia em **http://127.0.0.1:5188/guerreiro** inclui o botão da terceira habilidade e as quatro direções. `client-defense-buff.mjs` encaminha apenas os eventos desse buff do próprio personagem para o indicador local; o cliente compatível continua renderizando as animações e a aura. O ZIP original de recursos permanece intacto.
 
 ## Duas habilidades no automático — 0.6.9
 

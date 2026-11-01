@@ -8,6 +8,7 @@ import {
 } from "./archer.mjs";
 import {
   archerBasic,
+  archerReposition,
   castArcher,
   piercedTargets,
   archerFxState,
@@ -1094,6 +1095,18 @@ export class LocalFarm {
     let target = h.monsters.find(
       (m) => m.id === (locked ? h.target : h.manualTarget) && m.hp > 0,
     );
+    // A ranged volley keeps its aim between shots while that enemy remains in
+    // range. Explicit right-click orders still take priority. Melee selection
+    // continues to use the nearest living target between actions.
+    if (!target && automatic && isArcher(c) && !h.manualTarget) {
+      const focused = h.monsters.find((m) => m.id === h.target && m.hp > 0);
+      if (
+        focused &&
+        Math.hypot(focused.x - client.x, focused.y - client.y) <=
+          c.derived.attackRange
+      )
+        target = focused;
+    }
     if (!target && automatic)
       target = h.monsters
         .filter((m) => m.hp > 0)
@@ -1186,6 +1199,12 @@ export class LocalFarm {
           const way = route(client, target)[0] ?? target;
           client.moving = move(client, way, c.derived.moveSpeed);
         }
+      } else if (
+        isArcher(c) &&
+        now < h.nextAttack &&
+        archerReposition(client, target, now, free)
+      ) {
+        client.moving = move(client, h.archerRetreat, c.derived.moveSpeed);
       } else {
         const faceX = target.x - client.x,
           faceY = target.y - client.y;

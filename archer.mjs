@@ -5,6 +5,8 @@ export const ARCHER_SHEETS = {
   walk: 4,
   run1: 4,
   weapon: 6,
+  // Compatibility atlas name: these poses draw a bow skyward, never an axe.
+  axeheavy: 8,
   special: 6,
 };
 export const ARCHER_SPIRIT = {
@@ -85,38 +87,52 @@ export const ARCHER_SKILLS = [
 ];
 export const isArcher = (c) => c.identity?.classId === ARCHER_CLASS;
 const hold = (sheet, col, n) => Array.from({ length: n }, () => [sheet, col]);
+export const ARCHER_ACTIONS = {
+  basic: { move: "elfa-flecha", durationMs: 500, releaseMs: 250 },
+  piercing: { move: "elfa-perfurante", durationMs: 550, releaseMs: 300 },
+  rain: {
+    move: "elfa-chuva",
+    durationMs: 650,
+    releaseMs: 350,
+    impactsMs: [600, 1150, 1700],
+    endMs: 2050,
+  },
+};
 export function archerRig(original) {
   const rig = structuredClone(original);
   Object.assign(rig.moves, {
     "elfa-flecha": {
       frames: [
+        ...hold("weapon", 0, 1),
         ...hold("weapon", 1, 2),
-        ...hold("weapon", 2, 3),
-        ...hold("weapon", 3, 2),
+        ...hold("weapon", 2, 2),
+        ...hold("weapon", 3, 1),
         ...hold("weapon", 4, 2),
-        ...hold("weapon", 5, 1),
+        ...hold("weapon", 5, 2),
       ],
-      impacts: [250],
+      impacts: [ARCHER_ACTIONS.basic.releaseMs],
     },
     "elfa-perfurante": {
       frames: [
+        ...hold("weapon", 0, 1),
         ...hold("weapon", 1, 2),
-        ...hold("weapon", 2, 4),
-        ...hold("weapon", 3, 2),
+        ...hold("weapon", 2, 3),
+        ...hold("weapon", 3, 1),
         ...hold("weapon", 4, 2),
-        ...hold("weapon", 5, 1),
+        ...hold("weapon", 5, 2),
       ],
-      impacts: [300],
+      impacts: [ARCHER_ACTIONS.piercing.releaseMs],
     },
     "elfa-chuva": {
       frames: [
-        ...hold("weapon", 1, 2),
-        ...hold("weapon", 2, 4),
-        ...hold("weapon", 3, 2),
-        ...hold("weapon", 4, 3),
-        ...hold("weapon", 5, 2),
+        ...hold("axeheavy", 0, 1),
+        ...hold("axeheavy", 1, 2),
+        ...hold("axeheavy", 2, 4),
+        ...hold("axeheavy", 3, 2),
+        ...hold("axeheavy", 4, 2),
+        ...hold("axeheavy", 5, 2),
       ],
-      impacts: [600],
+      impacts: [ARCHER_ACTIONS.rain.releaseMs],
     },
     "elfa-bencao": {
       frames: [

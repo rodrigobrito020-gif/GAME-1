@@ -127,6 +127,15 @@ test("elf basic attack releases an authored arrow, damages only on arrival, and 
   assert.equal(cast.events.moves[0].move, "elfa-flecha");
   assert.equal(m.hp, 1000);
   assert.equal(client.facing, 2);
+  const projectile = archerFxState(client, 10000)[0];
+  assert.equal(projectile.y, client.y - 72, "projectile begins at bow height");
+  assert.equal(
+    projectile.ty,
+    m.y - 70,
+    "projectile targets the torso rather than the feet",
+  );
+  assert.ok(projectile.x > client.x && projectile.x < m.x);
+
   client.hunt.nextAttack = Infinity;
   const due = client.hunt.impacts[0].at - 10000;
   s.step(due - 1);
@@ -263,6 +272,7 @@ test("elf sheets provide all four directions in native and HD sizes, transparent
     ["walk", 4],
     ["run1", 4],
     ["weapon", 6],
+    ["axeheavy", 8],
     ["special", 6],
   ])
     for (const [folder, size] of [
@@ -323,4 +333,27 @@ test("Spirit speeds up authoritative basic shots, reduces incoming damage, and d
   assert.equal(client.hunt.impacts.length, 0);
   assert.equal(client.hunt.archerFx.length, 0);
   assert.equal(farm.avatar.saved.charge, 0);
+});
+
+test("archer retains a living in-range aim between shots, while right-click, death and range loss choose the appropriate new target", () => {
+  const s = setup(),
+    { farm, client } = s,
+    a = s.alive(0, 260),
+    b = s.alive(1, 300);
+  client.hunt.nextAttack = Infinity;
+  s.step(1);
+  assert.equal(client.hunt.target, a.id);
+  b.x = client.x + 200;
+  s.step(50);
+  assert.equal(client.hunt.target, a.id);
+  farm.orderAttack(client, b.id);
+  s.step(1);
+  assert.equal(client.hunt.target, b.id);
+  b.hp = 0;
+  s.step(1);
+  assert.equal(client.hunt.target, a.id);
+  const c = s.alive(2, 210);
+  a.x = client.x + 500;
+  s.step(1);
+  assert.equal(client.hunt.target, c.id);
 });

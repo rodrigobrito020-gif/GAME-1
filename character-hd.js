@@ -23,7 +23,14 @@ import { locomotionPose } from "/character-locomotion.mjs";
         .then(() => art.set(`${look}:${sheet}`, image))
         .catch(() => {});
     }
-  for (const sheet of ["idle", "walk", "run1", "weapon", "special"]) {
+  for (const sheet of [
+    "idle",
+    "walk",
+    "run1",
+    "weapon",
+    "axeheavy",
+    "special",
+  ]) {
     const image = new Image();
     image.src = `/assets/fx/royal-archer/hd/base/${sheet}.png`;
     image

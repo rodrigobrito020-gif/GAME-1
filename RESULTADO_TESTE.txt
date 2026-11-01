@@ -1,44 +1,49 @@
-VERSAO 0.6.23 — REVISAO DA CAMINHADA
+VERSAO 0.6.24 — COMBATE DA ARQUEIRA
 Data: 01/11/2026
 
 MOTIVO
-A gravacao enviada mostrou deslocamento com as pernas quase sempre abertas,
-pouca passagem dos pes e mudanca brusca para a pose parada.
+Os videos 111.mp4 e 22222.mp4 mostraram pouca correspondencia entre a pose do
+arco, o sentido das flechas e os efeitos das habilidades. O guerreiro foi
+aprovado pelo jogador e sua gameplay deve ser preservada.
 
 ALTERACOES
-- Novas fases laterais de contato, apoio, passagem e elevacao para guerreiro
-  e arqueira. Oito quadros HD; as poses verticais existentes foram preservadas
-  para evitar mudanca do desenho do corpo dentro do mesmo ciclo.
-- Cadencia comandada pela distancia real percorrida. Passada de 120 unidades
-  nas duas velocidades que usam o mesmo desenho; nao acelerar pernas paradas.
-- Conclusao curta do apoio ao parar/esbarrar, conservando a fase ao virar.
-- Proxy nativo permanece com quatro quadros; acao de habilidade tem prioridade
-  sobre caminhada. Rastro e brilho de armas recebem a pose HD realmente exibida.
-- Peitoral de treino processado em cada pose visivel, sem reutilizar uma
-  mascara de outro quadro. Previa individual e comparador atualizados.
-- Corpo inteiro e estatura comum mantidos. Nenhuma parte de perna recortada
-  ou esticada. Nenhuma mudanca em progresso, equipamento, combate ou habilidades.
+- Revisadas poses de disparo de frente/costas, com preparacao, tensionamento,
+  soltura no instante do projetil e recuperacao. Flecha parte da altura do
+  arco e segue para o tronco do alvo. Corrigida textura que voava de costas.
+- Chuva de Flechas tem folha propria apontando o arco para cima. Tres ondas
+  chegam nos mesmos 600/1150/1700ms dos impactos de dano existentes.
+- Tiro Perfurante com carga visual breve, projetil destacado e impacto.
+- Olhos e Espirito com ativacao visual e aura menos sobreposta ao corpo.
+  Os indicadores de duracao dos dois efeitos continuam independentes.
+- Mira conserva alvo vivo ao alcance entre tiros; botao direito tem prioridade.
+- Afastamento curto durante a espera entre disparos quando um inimigo chega
+  perto. Segmento testado contra paredes, duracao e frequencia limitadas.
+  Uma habilidade em execucao ou uma ordem explicita nao e interrompida.
+- Sem alteracoes de dano, mana, alcance, recargas, duracoes dos buffs, energia,
+  classes disponiveis, equipamentos, poucoes ou progresso da conta.
 
 VERIFICACAO
-- 94 testes passaram com o ZIP capturado real, sem falhas ou ignorados.
-- Testes novos cobrem fases HD por distancia, direcao, parada, bloqueio,
-  teleporte, prioridade das habilidades e estreitamento da passada lateral.
-- Chromium/WebGL, cliente real pt-BR, dados isolados de QA: guerreiro,
-  peitoral equipado e arqueira caminhando nas quatro direcoes; uma unica
-  camada HD, cinco habilidades e seis controles de pocoes.
-- Avanco de Luz real em combate produziu rastros HD na posicao correta.
-- Gravacao do movimento feita no cliente real para revisao da sequencia.
-- A avaliacao artistica continua aberta para o jogador testar a atualizacao.
+- 100 testes automatizados: protocolo real, combate, classes, persistencia,
+  equipamentos, pocoes, fases de animacao, colisao e efeitos visuais por tempo.
+- Cliente real Chromium/WebGL pt-BR, conta isolada: quatro habilidades da elfa,
+  folha de disparo para o alto no compositor HD, flechas orientadas, dois buffs
+  simultaneos e gravacao do combate automatico sem erros JavaScript.
+- Comparador nas quatro direcoes e previa individual do guerreiro.
+- Regressao real de caminhada nas quatro direcoes, peitoral e rastro do dash.
+- 110 arquivos do guerreiro/contratos compartilhados de corpo conferidos
+  byte a byte com a versao 0.6.23 aprovada; sem alteracoes nessas artes/regras.
+- A revisao visual da arqueira fica disponivel para o jogador testar.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
-2. Extraia o ZIP em uma nova pasta.
-3. Copie a pasta .local-runtime anterior com os servidores fechados.
-4. Mantenha recursos-publicos.zip na pasta do jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.23.
+2. Extraia o ZIP em outra pasta.
+3. Copie .local-runtime da versao anterior com os servidores fechados.
+4. Mantenha recursos-publicos.zip junto do jogo ou em Downloads.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, pressione Ctrl+F5 e confira v0.6.24.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Comparacao: http://127.0.0.1:5188/personagens
 
-Node.js continua suficiente para jogar. Python/Pillow sao opcionais para
-reconstruir as artes ja entregues. Equipamentos completos continuam para
-depois das cinco classes iniciais; o servidor continua de uma conta local.
+Node.js continua suficiente para jogar. A reconstrucao opcional das artes da
+arqueira usa Python/Pillow: npm run art:archer. Esse comando nao reconstroi
+as artes aprovadas do guerreiro. Equipamentos completos seguem adiados ate
+as cinco classes iniciais. O servidor continua com uma conta local de teste.

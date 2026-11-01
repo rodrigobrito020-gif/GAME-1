@@ -4,7 +4,7 @@ const canvas = document.querySelector("canvas"),
   images = new Map();
 const definitions = {
   warrior: ["idle", "walk", "run1", "weapon", "special", "axeheavy"],
-  archer: ["idle", "walk", "run1", "weapon", "special"],
+  archer: ["idle", "walk", "run1", "weapon", "axeheavy", "special"],
 };
 await Promise.all(
   Object.entries(definitions).flatMap(([cl, sheets]) =>

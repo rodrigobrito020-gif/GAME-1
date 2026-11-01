@@ -3,7 +3,7 @@ Optional build tool: Pillow; no Python is needed to run the exported game.
 """
 from pathlib import Path
 from statistics import median
-import json
+import json, argparse
 from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -78,9 +78,11 @@ def save_sheet(cl, name, rows):
     hd.save(folder/'hd'/f'{name}.png');native.save(folder/f'{name}.png')
     return poses
 
+parser=argparse.ArgumentParser();parser.add_argument('--class',dest='only',choices=['warrior','archer']);args=parser.parse_args()
 manifests={}
 for cl,modelrow in [('warrior',0),('archer',1)]:
-    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+    if args.only and cl!=args.only:continue
+    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':24 if cl=='archer' else 23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
     idle=[];walk=[]
     for row in range(4):
         modelcol=2 if cl=='warrior' and row==1 else row
@@ -101,7 +103,7 @@ for cl,modelrow in [('warrior',0),('archer',1)]:
     manifest['sources']['idle']=save_sheet(cl,'idle',idle)
     manifest['sources']['walk']=save_sheet(cl,'walk',walk)
     manifest['sources']['run1']=save_sheet(cl,'run1',walk)
-    weapon=[];special=[];slam=[]
+    weapon=[];special=[];slam=[];volley=[]
     for row in range(4):
         srcrow=0 if row==0 else 2 if row==3 else 1;mirror=row==1
         if cl=='warrior':
@@ -111,15 +113,18 @@ for cl,modelrow in [('warrior',0),('archer',1)]:
             special.append([frame(cell('warrior-reactions',4,6,sr,col),ref,mirror,dead=col==5) for col in range(6)])
             ref=cell('warrior-slam',3,6,srcrow,0);slam.append([frame(cell('warrior-slam',3,6,srcrow,min(col,5)),ref,mirror,flight=col==3) for col in range(8)])
         else:
+            vr=cell('archer-volley',3,6,srcrow,0)
+            volley.append([frame(cell('archer-volley',3,6,srcrow,min(col,5)),vr,mirror) for col in range(8)])
             vertical=row in [0,3] and (SOURCE/'archer-vertical.png').exists();name='archer-vertical' if vertical else 'archer-shoot';sr=(0 if row==0 else 1) if vertical else srcrow;nr=2 if vertical else 3
             ref=cell(name,nr,6,sr,0);weapon.append([frame(cell(name,nr,6,sr,col),ref,mirror) for col in range(6)])
             ref=cell('archer-reactions',4,4,row,0);special.append([frame(cell('archer-reactions',4,4,row,col),ref,dead=col==3) for col in [0,0,1,0,2,3]])
     manifest['sources']['weapon']=save_sheet(cl,'weapon',weapon)
     manifest['sources']['special']=save_sheet(cl,'special',special)
+    if cl=='archer':manifest['sources']['axeheavy']=save_sheet(cl,'axeheavy',volley)
     if cl=='warrior':manifest['sources']['axeheavy']=save_sheet(cl,'axeheavy',slam)
     (ROOT/'art'/cl/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');manifests[cl]=manifest
     idle[0][0][0].crop((64,112,320,368)).resize((128,128),Image.Resampling.LANCZOS).save(ROOT/'art'/cl/'portrait.png')
 (ROOT/'art/classes').mkdir(exist_ok=True)
 Image.open(ROOT/'art/warrior/portrait.png').save(ROOT/'art/classes/warrior.png')
-(ROOT/'art/characters/manifest.json').write_text(json.dumps({'frame':FRAME,'feet':FEET,'bodyHeight':HEIGHT,'classes':list(manifests)},indent=2)+'\n')
+(ROOT/'art/characters/manifest.json').write_text(json.dumps({'frame':FRAME,'feet':FEET,'bodyHeight':HEIGHT,'classes':['warrior','archer']},indent=2)+'\n')
 print('Whole figures packed at a common 224px body height in 384px cells (112 units in the game), no limb assembly.')

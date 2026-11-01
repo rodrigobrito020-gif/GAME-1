@@ -1,8 +1,22 @@
-# Jogo local — 0.6.23: revisão da caminhada
+# Jogo local — 0.6.24: revisão do combate da arqueira
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.24
+
+A revisão dos vídeos da arqueira levou a ajustes próprios para o arco e suas habilidades, preservando a gameplay aprovada do guerreiro.
+
+- Novas poses de disparo de frente/costas e sequência de preparação, corda tensionada, soltura e recuperação. A flecha sai no quadro de soltura e começa junto ao arco. Corrigida a orientação da textura: a ponta acompanha o sentido do disparo.
+- **Chuva de Flechas:** animação própria apontando o arco para o alto; três ondas visuais chegam nos mesmos instantes dos impactos de dano, em 600, 1150 e 1700ms. O alvo morrer não cancela a área restante.
+- **Tiro Perfurante:** preparação breve, projétil destacado e retorno ao próximo disparo. Mantidos os valores de dano, mana e recarga.
+- **Olhos/Espírito da Floresta:** ativação com partículas, aura discreta e espírito atrás do personagem, mantendo o corpo visível e os dois indicadores independentes.
+- A arqueira conserva a mira no alvo vivo ao alcance entre ataques. Uma ordem explícita com botão direito tem prioridade; alvo morto ou distante permite nova seleção.
+- Ao ser pressionada de perto, faz um afastamento curto durante o intervalo entre tiros, com verificação de colisão e limite de frequência. Não interrompe a própria habilidade nem deixa de atirar por estar encurralada.
+- Os tempos aprovados das habilidades e os dados da conta são mantidos. O guerreiro conserva sua arte, poses, animações, habilidades e regras de seleção de alvo.
+
+**Windows:** feche o servidor antigo; extraia o novo ZIP em outra pasta; copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto do jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.24**. O comparador em `/personagens` mostra as novas poses da arqueira ao lado do guerreiro.
 
 ## Atualização 0.6.23
 

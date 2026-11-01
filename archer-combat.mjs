@@ -1,4 +1,9 @@
-import { ARCHER_SKILLS, ARCHER_EYES, ARCHER_SPIRIT } from "./archer.mjs";
+import {
+  ARCHER_SKILLS,
+  ARCHER_EYES,
+  ARCHER_SPIRIT,
+  ARCHER_ACTIONS,
+} from "./archer.mjs";
 const face = (client, target) => {
   const dx = target.x - client.x,
     dy = target.y - client.y;
@@ -9,7 +14,12 @@ export function arrow(
   farm,
   client,
   target,
-  { skillId = "", multiplier = 1, piercing = false, release = 250 } = {},
+  {
+    skillId = "",
+    multiplier = 1,
+    piercing = false,
+    release = ARCHER_ACTIONS.basic.releaseMs,
+  } = {},
   events,
 ) {
   const h = client.hunt,
@@ -26,6 +36,9 @@ export function arrow(
       ),
     ),
     id = `arrow:${now}:${(h.arrowSerial = (h.arrowSerial ?? 0) + 1)}`;
+  const dx = target.x - client.x,
+    dy = target.y - client.y,
+    length = Math.hypot(dx, dy) || 1;
   const projectile = {
     id,
     kind: "arrow",
@@ -33,11 +46,11 @@ export function arrow(
     start: now,
     release: now + release,
     end: now + release + travel,
-    x: client.x,
-    y: client.y - 55,
+    x: client.x + (dx / length) * 20,
+    y: client.y - 72 + (dy / length) * 10,
     target: target.id,
     tx: target.x,
-    ty: target.y - 40,
+    ty: target.y - 70,
   };
   if (piercing) {
     const dx = target.x - client.x,
@@ -45,7 +58,7 @@ export function arrow(
       len = Math.hypot(dx, dy) || 1;
     projectile.target = 0;
     projectile.tx = client.x + (dx / len) * 420;
-    projectile.ty = client.y - 40 + (dy / len) * 420;
+    projectile.ty = client.y - 72 + (dy / len) * 420;
   }
   h.archerFx ??= [];
   h.archerFx.push(projectile);
@@ -76,7 +89,7 @@ export function archerBasic(farm, client, target, events) {
     now = farm.now();
   face(client, target);
   h.nextAttack = now + (farm.avatar.active() ? 700 : 1000);
-  h.actionUntil = now + 500;
+  h.actionUntil = now + ARCHER_ACTIONS.basic.durationMs;
   client.combatAnimUntil = h.actionUntil;
   events.moves.push({
     entity: 1,
@@ -84,10 +97,61 @@ export function archerBasic(farm, client, target, events) {
     target: target.id,
     dirX: 0,
     dirY: 0,
-    durationMs: 500,
+    durationMs: ARCHER_ACTIONS.basic.durationMs,
   });
   arrow(farm, client, target, {}, events);
   return { events, deltas: [] };
+}
+// A short step during the gap between shots, never a cast interruption or an
+// endless retreat. Check the entire segment before choosing a direction.
+export function archerReposition(client, target, now, free) {
+  const h = client.hunt;
+  if (
+    !h ||
+    h.actionUntil > now ||
+    h.nextAttack <= now ||
+    h.manualTarget ||
+    target.hp <= 0
+  )
+    return null;
+  const previous = h.archerRetreat;
+  if (
+    previous &&
+    previous.until > now &&
+    Math.hypot(previous.x - client.x, previous.y - client.y) > 12
+  )
+    return previous;
+  if (
+    (h.nextArcherRetreat ?? 0) > now ||
+    Math.hypot(target.x - client.x, target.y - client.y) >= 105
+  )
+    return null;
+  const away = Math.atan2(client.y - target.y, client.x - target.x);
+  for (const turn of [
+    0,
+    Math.PI / 4,
+    -Math.PI / 4,
+    Math.PI / 2,
+    -Math.PI / 2,
+  ]) {
+    const dx = Math.cos(away + turn) * 96,
+      dy = Math.sin(away + turn) * 96;
+    if (
+      !Array.from({ length: 12 }, (_, i) =>
+        free(client.x + (dx * (i + 1)) / 12, client.y + (dy * (i + 1)) / 12),
+      ).every(Boolean)
+    )
+      continue;
+    h.nextArcherRetreat = now + 2500;
+    return (h.archerRetreat = {
+      x: client.x + dx,
+      y: client.y + dy,
+      until: now + 450,
+    });
+  }
+  // A blocked corner falls back to shooting; do not repeatedly search every tick.
+  h.nextArcherRetreat = now + 600;
+  return null;
 }
 export function castArcher(farm, client, id, targetId, events, deltas) {
   const h = client.hunt,
@@ -129,9 +193,9 @@ export function castArcher(farm, client, id, targetId, events, deltas) {
       : now + skill.cooldownMs;
   const duration =
     id === "tiro-perfurante"
-      ? 550
+      ? ARCHER_ACTIONS.piercing.durationMs
       : id === "chuva-de-flechas"
-        ? 650
+        ? ARCHER_ACTIONS.rain.durationMs
         : id === ARCHER_EYES.id
           ? 600
           : 650;
@@ -162,7 +226,12 @@ export function castArcher(farm, client, id, targetId, events, deltas) {
       farm,
       client,
       target,
-      { skillId: id, multiplier: 2, piercing: true, release: 300 },
+      {
+        skillId: id,
+        multiplier: 2,
+        piercing: true,
+        release: ARCHER_ACTIONS.piercing.releaseMs,
+      },
       events,
     );
   else {
@@ -171,12 +240,13 @@ export function castArcher(farm, client, id, targetId, events, deltas) {
       id: `rain:${now}`,
       kind: "rain",
       start: now,
-      end: now + 2050,
+      end: now + ARCHER_ACTIONS.rain.endMs,
+      release: now + ARCHER_ACTIONS.rain.releaseMs,
       x: target.x,
       y: target.y,
       radius: 145,
     });
-    for (const at of [600, 1150, 1700])
+    for (const at of ARCHER_ACTIONS.rain.impactsMs)
       h.impacts.push({
         at: now + at,
         area: { x: target.x, y: target.y, radius: 145 },
@@ -215,7 +285,7 @@ export function archerFxState(client, now) {
       );
       return {
         ...f,
-        ...(target ? { tx: target.x, ty: target.y - 40 } : {}),
+        ...(target ? { tx: target.x, ty: target.y - 70 } : {}),
         remainingMs: f.end - now,
         durationMs: f.end - f.start,
         releaseMs: (f.release ?? f.start) - f.start,

@@ -81,8 +81,8 @@ test("skills validate target, range, mana and cooldown; basic attacks continue w
     tierMin: 1,
     difficulty: "normal",
   });
-  client.x = 848;
-  client.y = 960;
+  client.x = client.hunt.monsters[0].x;
+  client.y = client.hunt.monsters[0].y - 16;
   const target = client.hunt.monsters[0];
   assert.throws(() => farm.cast(client, SKILLS[0].id, 999), /invalid_target/);
   const mp = farm.character.progress.mana;

@@ -256,7 +256,7 @@ test(
       );
       for (
         let n = 0;
-        n < 1000 &&
+        n < 1800 &&
         !messages.some(
           (m) =>
             m.body?.case === "huntSession" && Number(m.body.value.kills) >= 6,
@@ -269,7 +269,7 @@ test(
           (m) =>
             m.body?.case === "huntSession" && Number(m.body.value.kills) >= 6,
         ),
-        "must actually kill and respawn monsters",
+        "must travel between enemies and earn six kills",
       );
       assert.ok(
         messages.some(

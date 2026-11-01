@@ -257,8 +257,8 @@ function scenario() {
     difficulty: "normal",
   });
   farm.character.automation.skillOrder = [];
-  client.x = 848;
-  client.y = 960;
+  client.x = client.hunt.monsters[0].x;
+  client.y = client.hunt.monsters[0].y - 16;
   return {
     farm,
     client,
@@ -310,8 +310,8 @@ test("all four skills land at their impact frame, reserve recovery and cancel pe
     tierMin: 1,
     difficulty: "normal",
   });
-  client.x = 848;
-  client.y = 960;
+  client.x = client.hunt.monsters[0].x;
+  client.y = client.hunt.monsters[0].y - 16;
   farm.character.progress.hp = 1;
   farm.cast(client, "golpe-destruidor", 100);
   client.hunt.monsters[0].nextAttack = 0;
@@ -328,9 +328,9 @@ test("basic sword attack announces the authored animation before damage and cann
   assert.equal(client.facing, 0);
   assert.equal(start.events.damage.length, 0);
   assert.throws(() => farm.cast(client, "investida", 100), /cooldown/);
-  assert.equal(step(199).events.damage.length, 0);
+  assert.equal(step(WARRIOR_BASIC.impact - 1).events.damage.length, 0);
   assert.ok(step(1).events.damage.some((e) => e.source === 1 && !e.skillId));
-  const next = step(800);
+  const next = step(1000 - WARRIOR_BASIC.impact);
   assert.ok(
     next.events.moves.some((e) => e.move === WARRIOR_RETURN.move),
     "the combo must alternate into the return cut",
@@ -342,7 +342,14 @@ test("painted cast effects leave time for anticipation, sustain after impact and
   for (const [id, fx] of Object.entries(WARRIOR_VFX)) {
     if (!fx.cast) continue;
     const action = WARRIOR_ACTIONS[fx.skill];
-    assert.ok(action.duration >= 1300);
+    assert.ok(
+      action.duration >= 400 && action.duration <= 900,
+      "combat actions should be brief",
+    );
+    assert.ok(
+      (fx.frames / fx.fps) * 1000 > action.duration,
+      "effect tails must not block the next action",
+    );
     assert.ok((fx.frames / fx.fps) * 1000 >= action.impact + 700);
     const image = decodeRgba(
       readFileSync(new URL(`../art/warrior/vfx/${id}.png`, import.meta.url)),
@@ -393,4 +400,46 @@ test("delayed area strike hits the enemies inside the displayed circle at impact
   assert.ok(hit.includes(target.id));
   assert.ok(hit.includes(entering.id));
   assert.ok(!hit.includes(leaving.id));
+});
+
+test("idle warrior cutouts contain one connected silhouette, without floating matte stains", () => {
+  const image = decodeRgba(
+    readFileSync(new URL("../art/warrior/idle.png", import.meta.url)),
+  );
+  for (let row = 0; row < 4; row++)
+    for (let col = 0; col < 4; col++) {
+      const solid = (i) =>
+        image.pixels[
+          ((row * 64 + Math.floor(i / 64)) * image.width +
+            col * 64 +
+            (i % 64)) *
+            4 +
+            3
+        ] >= 24;
+      const all = Array.from({ length: 4096 }, (_, i) => i).filter(solid),
+        seen = new Set([all[0]]),
+        queue = [all[0]];
+      for (let n = 0; n < queue.length; n++)
+        for (const j of [
+          queue[n] - 1,
+          queue[n] + 1,
+          queue[n] - 64,
+          queue[n] + 64,
+        ])
+          if (
+            j >= 0 &&
+            j < 4096 &&
+            Math.abs((j % 64) - (queue[n] % 64)) <= 1 &&
+            !seen.has(j) &&
+            solid(j)
+          ) {
+            seen.add(j);
+            queue.push(j);
+          }
+      assert.equal(
+        seen.size,
+        all.length,
+        `idle/${row}/${col}: detached stains outside the warrior silhouette`,
+      );
+    }
 });

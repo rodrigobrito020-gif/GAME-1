@@ -104,11 +104,25 @@ export const AREAS = [
     gold: 18,
   },
 ];
-const positions = [
-  { x: 848, y: 976 },
-  { x: 1040, y: 976 },
-  { x: 944, y: 1072 },
+// Distributed homes across the walkable courtyard. Never pull the whole map
+// toward the entry point: each monster defends a small region of its own.
+export const MONSTER_HOMES = [
+  { x: 448, y: 528 },
+  { x: 800, y: 480 },
+  { x: 1168, y: 496 },
+  { x: 1504, y: 560 },
+  { x: 320, y: 800 },
+  { x: 704, y: 752 },
+  { x: 1200, y: 752 },
+  { x: 1584, y: 848 },
+  { x: 448, y: 1104 },
+  { x: 816, y: 1152 },
+  { x: 1184, y: 1088 },
+  { x: 1568, y: 1136 },
 ];
+export const RESPAWN_DELAY_MS = 20000;
+const AGGRO_RADIUS = 145,
+  LEASH_RADIUS = 220;
 const finiteId = (value) =>
   typeof value === "number" && Number.isInteger(value) && value > 0;
 export class LocalFarm {
@@ -183,8 +197,10 @@ export class LocalFarm {
       nextCast: now,
       actionUntil: now,
       impacts: [],
-      nextMonsterId: 103,
+      nextMonsterId: 100 + MONSTER_HOMES.length,
       basicChain: 0,
+      patrolIndex: 0,
+      manualTarget: 0,
       nextRegen: now + 1000,
       cooldowns: {},
       target: 0,
@@ -199,16 +215,18 @@ export class LocalFarm {
         gold: 0,
         drops: [],
       },
-      monsters: positions.map((p, index) => ({
+      monsters: MONSTER_HOMES.map((p, index) => ({
         ...p,
         home: { ...p },
         id: 100 + index,
         hp: area.hp,
         maxHp: area.hp,
         facing: 0,
+        aggro: false,
         anim: 0,
         nextAttack: now + 1000,
         respawnAt: 0,
+        respawnDelay: RESPAWN_DELAY_MS + (index % 5) * 2000,
       })),
     };
     Object.assign(this.character.hunt, {
@@ -233,6 +251,7 @@ export class LocalFarm {
       (entity && !client.hunt.monsters.some((m) => m.id === entity && m.hp > 0))
     )
       throw Error("local.invalid_target");
+    client.hunt.manualTarget = entity;
     client.hunt.target = entity;
   }
   events() {
@@ -324,7 +343,7 @@ export class LocalFarm {
     monster.anim = monster.hp ? 4 : 5;
     events.damage.push({ source: 1, target: monster.id, amount, skillId });
     if (!monster.hp) {
-      monster.respawnAt = this.now() + 3000;
+      monster.respawnAt = this.now() + monster.respawnDelay;
       events.deaths.push({ entity: monster.id, killer: 1 });
       deltas.push(this.reward(hunt, monster, events));
     }
@@ -456,19 +475,35 @@ export class LocalFarm {
         Object.assign(m, m.home, {
           id: h.nextMonsterId++,
           hp: m.maxHp,
+          aggro: false,
           anim: 0,
           nextAttack: now + 1000,
         });
         spawned.push(m);
       }
-    let target = h.monsters.find((m) => m.id === h.target && m.hp > 0);
-    target ??= h.monsters
-      .filter((m) => m.hp > 0)
-      .sort(
-        (a, b) =>
-          Math.hypot(a.x - client.x, a.y - client.y) -
-          Math.hypot(b.x - client.x, b.y - client.y),
-      )[0];
+    // Keep a committed strike's target until recovery ends; between actions,
+    // select the nearest live enemy again rather than locking a distant one.
+    const locked = now < h.actionUntil;
+    let target = h.monsters.find(
+      (m) => m.id === (locked ? h.target : h.manualTarget) && m.hp > 0,
+    );
+    if (!target)
+      target = h.monsters
+        .filter((m) => m.hp > 0)
+        .reduce(
+          (nearest, m) =>
+            !nearest ||
+            Math.hypot(m.x - client.x, m.y - client.y) <
+              Math.hypot(nearest.x - client.x, nearest.y - client.y)
+              ? m
+              : nearest,
+          null,
+        );
+    if (
+      h.manualTarget &&
+      !h.monsters.some((m) => m.id === h.manualTarget && m.hp > 0)
+    )
+      h.manualTarget = 0;
     h.target = target?.id ?? 0;
     client.moving = false;
     if (target && now >= h.actionUntil) {
@@ -477,7 +512,7 @@ export class LocalFarm {
         c.derived.attackRange
       ) {
         const way = route(client, target)[0] ?? target;
-        client.moving = move(client, way, 160);
+        client.moving = move(client, way, c.derived.moveSpeed);
       } else {
         const faceX = target.x - client.x,
           faceY = target.y - client.y;
@@ -523,11 +558,27 @@ export class LocalFarm {
         }
       }
     }
+    if (!target && now >= h.actionUntil) {
+      const waypoint = MONSTER_HOMES[h.patrolIndex % MONSTER_HOMES.length];
+      if (Math.hypot(client.x - waypoint.x, client.y - waypoint.y) < 20)
+        h.patrolIndex++;
+      else
+        client.moving = move(
+          client,
+          route(client, waypoint)[0] ?? waypoint,
+          c.derived.moveSpeed,
+        );
+    }
     for (const m of h.monsters) {
       if (!m.hp) continue;
       const distance = Math.hypot(m.x - client.x, m.y - client.y);
       m.anim = 0;
-      if (distance > 48 && distance < 300) {
+      const fromHome = Math.hypot(m.x - m.home.x, m.y - m.home.y);
+      if (distance <= AGGRO_RADIUS) m.aggro = true;
+      if (fromHome > LEASH_RADIUS || distance > 300) m.aggro = false;
+      if (!m.aggro) {
+        if (fromHome > 8 && move(m, m.home, 70)) m.anim = 1;
+      } else if (distance > 48) {
         if (move(m, client, 70)) m.anim = 1;
       } else if (distance <= 55 && now >= m.nextAttack) {
         m.nextAttack = now + 1400;
@@ -539,14 +590,14 @@ export class LocalFarm {
         c.progress.hp -= amount;
         events.damage.push({ source: m.id, target: 1, amount });
         if (c.progress.hp > 0 && now >= h.actionUntil) {
-          h.actionUntil = now + 300;
+          h.actionUntil = now + 100;
           events.moves.push({
             entity: 1,
             move: "humano-ferido",
             target: m.id,
             dirX: 0,
             dirY: 0,
-            durationMs: 300,
+            durationMs: 100,
           });
         }
         if (!c.progress.hp) {

@@ -1,58 +1,77 @@
-JOGO LOCAL — 0.6.2: HABILIDADES E ESCUDO DO GUERREIRO
+JOGO LOCAL — 0.6.3: NITIDEZ, COMBATE ÁGIL E HUNT DISTRIBUÍDA
 Data: 01/11/2026
 
-ALTERAÇÕES
-- Escudo de marfim/ouro/aço azul no braço esquerdo nas folhas de repouso,
-  caminhada, corrida, espada, habilidades, ferimento e derrota. Espada na direita.
-- Nove efeitos pintados em PNG transparente: arco de espada, vento da investida,
-  fissuras/detritos, aura e partículas. Contraste azul-aço, branco e dourado.
-- Preparação, impacto, recuperação e dissipação mais longos e legíveis.
-  Corte: 1400ms / impacto 700ms. Investida: 1300ms / 750ms.
-  Destruidor: 1900ms / 1100ms. Fúria: 1700ms / 700ms.
-  Efeitos principais: 1600 a 2667ms. Contatos: 1000 a 1600ms.
-- Área do Destruidor atinge os inimigos dentro do círculo no impacto.
-- Dano, cura, mana, recargas e combo básico preservados. Não há dano contínuo.
-  A preparação maior naturalmente torna a sequência de ações mais cadenciada.
-- Escudo é aparência base: não cria item, defesa nem bloqueio novos.
-- Sem reiniciar ou substituir nível, ouro, EXP, mochila, equipamentos e armazém.
-  Praça da Coroa, Pátio da Coroa e IDs únicos de reaparecimento preservados.
+PROBLEMAS VERIFICADOS NO VÍDEO
+- Fundo semitransparente e fragmentos de linhas vizinhas entravam nos recortes
+  do personagem, aparecendo como manchas na cidade.
+- Redução com média de várias amostras suavizava olhos e contornos pequenos.
+- Preparações/recuperações longas prendiam o herói e davam ritmo cinematográfico.
+- Três monstros pequenos concentrados perto da entrada, com respawn de 3 segundos.
+
+CORREÇÕES
+- Fontes revisadas com cabeça/rosto maiores e contornos mais claros.
+- Máscaras individuais de torso/pernas descartam névoa e poses vizinhas.
+  Componentes anormalmente altos são separados antes de empacotar as reações.
+- Amostragem pontual preserva olhos/linhas no contrato de 64px. A textura usa
+  filtro NEAREST no renderer nativo; não há mudança no código compilado capturado.
+- Espada direita e escudo esquerdo preservados.
+- Corpo: básico/retorno 400ms, impacto 150ms; Corte 650/250ms;
+  Investida 600/250ms; Destruidor 850/400ms; Fúria 600/250ms.
+- Efeitos independentes persistem após o golpe sem prolongar a imobilização.
+  Tremores removidos dessas ações; salto do Destruidor reduzido a 8 unidades.
+- Doze monstros espalhados pelo pátio. Altura de exibição 104, parte desenhada
+  calibrada em 64px (antes: altura 80 sobre quadro de 112, com grande margem vazia).
+- Respawn de 20 a 28 segundos, escalonado e com nova identidade a cada vida.
+- Farm escolhe o vivo mais próximo entre ações; mantém o golpe já iniciado.
+  Seleção manual permanece até morte/remoção. Sem vivos, o personagem patrulha.
+- Monstros distantes não correm todos para a entrada. Região de reação e limite
+  de afastamento fazem cada um defender seu setor e voltar à origem.
+- Piso livre é atravessado diretamente, com corredor de colisão verificado.
+  Navegação pela grade continua disponível quando há obstáculo.
+- Custos, dano, cura, recargas e dados salvos preservados. A cadência mais ágil
+  naturalmente altera a velocidade prática de combate.
 
 TESTES AUTOMATIZADOS
-26 aprovados, nenhum pulado, com recursos-publicos.zip real.
-- Sincronização das quatro habilidades, recuperação e cancelamento por morte/saída.
-- Área considera entrada/saída dos inimigos durante a preparação.
-- Efeitos duram após o dano, dissipam gradualmente, mantêm margens transparentes
-  e a fissura não é encerrada pelo evento de impacto do cliente.
-- Folhas com poses distintas, pés no pivô comum, armas/capa sem corte.
-- Apoio alternado, quadril estável, passada lateral e escala dos golpes.
-- 50 ciclos de reaparecimento: 150 identidades novas, sem reutilização.
-- Integração HTTP/WebSocket com cliente real, autenticação, combate, farm, drops,
-  morte, retorno, inventário, equipamentos, poções, vendas e armazém.
-- Persistência após reinício e migração da aparência; protocolo/PNG/mapas.
+30 aprovados, nenhum pulado, usando o recursos-publicos.zip real.
+- Silhueta do repouso sem fragmentos desconectados/manchas nas quatro direções.
+- Pés, margens, poses, escala dos ataques, apoio alternado e quadril estável.
+- Sincronização dos quatro golpes, recuperação, mana, recargas e cancelamento.
+- Efeitos independentes: antecipação, impacto, dissipação e margens transparentes.
+- Área atrasada considera os ocupantes presentes no instante do dano.
+- Monstros espalhados em piso conectado, alvo mais próximo e reação local.
+- Simulação de um minuto atravessa mais de 1000 unidades em X e 500 em Y,
+  mata pelo menos dez inimigos e respeita o limite de afastamento da origem.
+- Sem inimigos: patrulha, intervalo mínimo de 20s e grupos de respawn escalonados.
+- 50 ciclos de respawn: 600 novas vidas, sem reaproveitar identidade antiga.
+- Integração HTTP/WebSocket real: autenticação, movimento/colisões, farm, seis
+  abates com deslocamento, progressão, drops, inventário, equipamento, poções,
+  vendas, armazém e preservação após reinício.
+- Protocolo, PNG, capacidade, vendas parciais e proteção de itens travados.
 
-NAVEGADOR — CHROMIUM
-- 1440x900: caminhada nas quatro direções, combo básico/retorno e quatro skills
-  observados no renderer nativo. Pátio da Coroa carregado.
-- Ensaio de 35s, além da inicialização/capturas: 17 abates, 19 novas vidas,
-  19 monstros vistos com arte ativa; nenhuma amostra com todos os vivos invisíveis.
-- Capturas de cada skill em combate real e na prévia para conferir efeitos e escudo.
-- Sete PNGs de efeitos usados no ensaio responderam 200; nenhuma exceção JS.
-- Prévia: 44 combinações de direção/ação, pausa e avanço de quadros, sem erros.
-- Tela 390x844: jogador humano carregado sem exceção JS.
-- Scripts compilados do cliente permanecem inalterados no servidor entregue.
-  A instrumentação de observação usada no ensaio não é distribuída.
+NAVEGADOR — VERSÃO FINAL
+Chromium, 1440x900, ensaio de 45 segundos de amostragem além da entrada/capturas:
+- Pátio da Coroa, 18 abates, 23 vidas/identidades observadas, todas com arte visível.
+- Deslocamento do herói durante o combate: 1185,2 unidades em X e 587,2 em Y.
+- Nenhuma amostra com todos os inimigos vivos invisíveis.
+- Caminhada nas quatro direções, básico/retorno e as quatro habilidades observados.
+- Sem exceção JavaScript nem aviso de falha de arte/animação/mapa.
+- Cidade conferida visualmente com recortes limpos e nova amostragem.
+- Prévia: 44 combinações direção/ação, pausa e avanço de quadros, sem erros.
+- Tela 390x844: personagem carregado, sem exceção JavaScript.
 
 LIMITES
-Armadura, espada e escudo ainda são aparência fixa; equipamentos alteram
-atributos, não o desenho. Corrida reutiliza caminhada. Grito vira de frente nas
-laterais. NPCs/monstros continuam provisórios. Não é uma versão multiplayer/VPS.
-Testado em Linux/Chromium, sem execução em máquina Windows física.
+O personagem continua em sprites de 64px; afastar a câmera reduz detalhes do
+rosto. Armadura, espada e escudo são aparência inicial fixa, sem nova defesa ou
+itens concedidos. Corrida reutiliza caminhada. Grito vira de frente nas laterais.
+NPCs e monstros conservam a sombra provisória; não foram criadas artes novas de
+inimigos nesta atualização. Servidor local, uma conta, sem multiplayer/VPS.
+Testes em Linux/Chromium; não houve execução em Windows físico.
 
 WINDOWS
-Feche a versão anterior com Ctrl+C. Extraia o novo ZIP em outra pasta.
-Coloque recursos-publicos.zip junto de ABRIR_CLIENTE_COPIADO.bat.
-Copie a pasta .local-runtime da versão antiga com os servidores fechados para
-preservar o progresso. Execute o BAT e mantenha o terminal aberto.
-Requer Node.js 22.12+ ou 24 LTS. Use Ctrl+F5 no navegador.
+Encerre o servidor antigo com Ctrl+C. Extraia o novo ZIP em outra pasta.
+Copie recursos-publicos.zip e .local-runtime da versão antiga para essa pasta,
+com ambos os servidores fechados, para preservar o progresso.
+Execute ABRIR_CLIENTE_COPIADO.bat e mantenha o terminal aberto.
+Requer Node.js 22.12+ ou 24 LTS. Atualize o navegador com Ctrl+F5.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Prévia: http://127.0.0.1:5188/guerreiro

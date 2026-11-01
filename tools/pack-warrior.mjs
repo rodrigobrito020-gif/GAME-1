@@ -7,7 +7,9 @@ import {
   renderWarriorWalkFrame,
   warriorWalkPose,
   WALK_STRIDE,
+  WALK_PARTS,
 } from "../warrior-walk-rig.mjs";
+import { isolateParts } from "./sprite-cutout.mjs";
 const folder = new URL("../art/warrior/", import.meta.url);
 function load(name, columns, rows = 4) {
   const image = decodeRgba(
@@ -47,6 +49,35 @@ function load(name, columns, rows = 4) {
         }
     }
     if (points.length >= 2) components.push({ points, x0, y0, x1, y1 });
+  }
+  // An exported matte can join the feet of one pose to the next row's hair.
+  // Split only oversized connected components; normal swords retain gutters.
+  for (let n = components.length - 1; n >= 0; n--) {
+    const c = components[n];
+    if (c.y1 - c.y0 < (h / rows) * 1.4) continue;
+    components.splice(n, 1);
+    const chunks = new Map();
+    for (const point of c.points) {
+      const row = Math.floor(Math.floor(point / w) / (h / rows));
+      if (!chunks.has(row)) chunks.set(row, []);
+      chunks.get(row).push(point);
+    }
+    for (const points of chunks.values()) {
+      if (points.length < 2) continue;
+      let x0 = w,
+        y0 = h,
+        x1 = 0,
+        y1 = 0;
+      for (const i of points) {
+        const x = i % w,
+          y = Math.floor(i / w);
+        x0 = Math.min(x0, x);
+        x1 = Math.max(x1, x);
+        y0 = Math.min(y0, y);
+        y1 = Math.max(y1, y);
+      }
+      components.push({ points, x0, y0, x1, y1 });
+    }
   }
   const grid = Array.from({ length: rows }, () => Array(columns));
   for (const c of components) {
@@ -142,36 +173,35 @@ function pack(name, source, columns, choose, mirror = () => false, anchor) {
           56 / (c.y1 - sy0 + 1),
         );
       const flip = mirror(row, col);
-      // 4x4 area samples produce alpha-correct antialiasing at the 64px export size.
+      // Point sampling preserves the small face and ink outlines at native 64px.
       for (let y = 0; y < 64; y++)
         for (let x = 0; x < 64; x++) {
           let alpha = 0,
             red = 0,
             green = 0,
             blue = 0;
-          for (let yy = 0; yy < 4; yy++)
-            for (let xx = 0; xx < 4; xx++) {
-              const px = Math.floor(
-                center + ((flip ? 63 - x : x) - 32 + (xx + 0.5) / 4) / scale,
-              );
-              const py = Math.floor(
-                (fixed?.floor ?? c.y1) + (y - 59 + (yy + 0.5) / 4) / scale,
-              );
-              if (px < sx0 || px > sx1 || py < sy0 || py > sy1) continue;
-              const at = py * source.width + px;
-              if (!mask.has(at)) continue;
-              const a = source.pixels[at * 4 + 3];
-              alpha += a;
-              red += source.pixels[at * 4] * a;
-              green += source.pixels[at * 4 + 1] * a;
-              blue += source.pixels[at * 4 + 2] * a;
-            }
+          {
+            const px = Math.floor(
+              center + ((flip ? 63 - x : x) - 32 + 0.5) / scale,
+            );
+            const py = Math.floor(
+              (fixed?.floor ?? c.y1) + (y - 59 + 0.5) / scale,
+            );
+            if (px < sx0 || px > sx1 || py < sy0 || py > sy1) continue;
+            const at = py * source.width + px;
+            if (!mask.has(at)) continue;
+            const a = source.pixels[at * 4 + 3];
+            alpha += a;
+            red += source.pixels[at * 4] * a;
+            green += source.pixels[at * 4 + 1] * a;
+            blue += source.pixels[at * 4 + 2] * a;
+          }
           const at = ((row * 64 + y) * width + col * 64 + x) * 4;
           if (alpha) {
             output[at] = Math.round(red / alpha);
             output[at + 1] = Math.round(green / alpha);
             output[at + 2] = Math.round(blue / alpha);
-            output[at + 3] = Math.round(alpha / 16);
+            output[at + 3] = Math.round(alpha);
           }
         }
       rectangles.push({
@@ -190,7 +220,10 @@ function pack(name, source, columns, choose, mirror = () => false, anchor) {
   return rectangles;
 }
 const sources = {},
-  parts = decodeRgba(readFileSync(new URL("source/walk-parts.png", folder)));
+  parts = isolateParts(
+    decodeRgba(readFileSync(new URL("source/walk-parts.png", folder))),
+    WALK_PARTS.flatMap((p) => [p.body.rect, ...p.thighs, ...p.shins]),
+  );
 for (const name of ["idle", "walk"]) {
   const pixels = Buffer.alloc(256 * 256 * 4);
   sources[name] = [];
@@ -245,7 +278,7 @@ writeFileSync(
     {
       character: "Guerreiro Humano",
       skinId: "humano-guerreiro",
-      version: 3,
+      version: 4,
       frame: [64, 64],
       feet: [32, 60],
       rows: ["south", "west", "east", "north"],

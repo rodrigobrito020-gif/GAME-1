@@ -26,11 +26,11 @@ Cada quadro tem **64 × 64 pixels**, pés em **(32,60)**, linhas **frente, esque
 
 | Ação                             | Duração | Impacto |
 | -------------------------------- | ------: | ------: |
-| Espada básica e golpe de retorno |  500 ms |  200 ms |
-| Corte Poderoso                   | 1400 ms |  700 ms |
-| Investida                        | 1300 ms |  750 ms |
-| Golpe Destruidor                 | 1900 ms | 1100 ms |
-| Fúria do Guerreiro               | 1700 ms |  700 ms |
+| Espada básica e golpe de retorno |  400 ms |  150 ms |
+| Corte Poderoso                   |  650 ms |  250 ms |
+| Investida                        |  600 ms |  250 ms |
+| Golpe Destruidor                 |  850 ms |  400 ms |
+| Fúria do Guerreiro               |  600 ms |  250 ms |
 
 `warrior.mjs` compartilha durações/impactos com o servidor e fornece as sequências. `warrior-fx.mjs` mantém os efeitos separados da arte do corpo. As próximas classes devem receber identificadores e ações próprios seguindo o mesmo contrato.
 
@@ -47,3 +47,9 @@ As fontes de torso, espada e reação agora incluem o escudo na esquerda. A sepa
 `source/skills-vfx.png` contém quatro artes pintadas originais em transparência. `npm run art:vfx` monta nove flipbooks de 128px, com deformação, partículas, antecipação e dissipação. `warrior-vfx.mjs` centraliza os metadados e `warrior.mjs` compartilha os instantes de impacto com o servidor. Efeitos disparados no início da ação possuem quadros de preparação; os efeitos de contato iniciam no dano. A fissura usa `inteiro: true` para não ser encerrada prematuramente pelo evento de impacto do cliente.
 
 Armadura, espada e escudo são a aparência base. Não há item de escudo nem nova defesa/bloqueio concedidos por esta arte. A área atrasada é avaliada na posição marcada no chão, com os ocupantes presentes no impacto.
+
+## Limpeza e agilidade — 0.6.3
+
+Fontes revisadas com cabeça/rosto mais legíveis e contornos mais marcados. A montagem usa amostragem pontual para não dissolver olhos e contornos na redução para 64px. As máscaras são individuais por peça: um recorte não pode herdar pixels da espada ou cabeça da linha vizinha, mesmo que os retângulos se cruzem. A névoa semitransparente do fundo não é conteúdo de personagem. Componentes muito altos de poses adjacentes são separados antes do empacotamento.
+
+As ações do corpo agora duram 400–850ms, com efeito visual independente e mais longo. Não há tremores de câmera nessas ações; o salto usa altura discreta de 8 unidades. O desenho permanece uma base de 64px, sem troca visual de equipamentos. NPCs e monstros ainda usam sprites provisórios.

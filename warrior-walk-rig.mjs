@@ -3,7 +3,7 @@
 export const WALK_STRIDE = 96;
 export const WALK_PARTS = [
   {
-    body: { rect: [62, 8, 374, 359], hip: [216, 211], scale: 0.126 },
+    body: { rect: [28, 0, 400, 370], hip: [216, 211], scale: 0.126 },
     thighs: [
       [505, 87, 617, 272],
       [1012, 87, 1112, 272],
@@ -15,7 +15,7 @@ export const WALK_PARTS = [
   },
   {
     body: {
-      rect: [54, 337, 348, 696],
+      rect: [30, 325, 390, 700],
       hip: [230, 532],
       scale: 0.126,
       mirror: true,
@@ -30,7 +30,7 @@ export const WALK_PARTS = [
     ],
   },
   {
-    body: { rect: [62, 662, 398, 1018], hip: [220, 855], scale: 0.126 },
+    body: { rect: [48, 650, 425, 1023], hip: [220, 855], scale: 0.126 },
     thighs: [
       [519, 737, 631, 922],
       [1004, 736, 1116, 922],
@@ -146,30 +146,31 @@ function layer(target, source, rect, matrix, shade = 1) {
   const [a, b, c, d, tx, ty] = matrix,
     det = a * d - b * c;
   const [x0, y0, x1, y1] = rect;
+  const mask = source.partMasks?.get(rect.join(","));
   for (let y = 0; y < 64; y++)
     for (let x = 0; x < 64; x++) {
       let alpha = 0,
         red = 0,
         green = 0,
         blue = 0;
-      for (let yy = 0; yy < 4; yy++)
-        for (let xx = 0; xx < 4; xx++) {
-          const dx = x + (xx + 0.5) / 4 - tx,
-            dy = y + (yy + 0.5) / 4 - ty;
-          const sx = Math.floor((d * dx - c * dy) / det),
-            sy = Math.floor((-b * dx + a * dy) / det);
-          if (sx < x0 || sx > x1 || sy < y0 || sy > y1) continue;
-          const i = (sy * source.width + sx) * 4,
-            opacity = source.pixels[i + 3];
-          if (opacity < 8) continue;
-          alpha += opacity;
-          red += source.pixels[i] * opacity;
-          green += source.pixels[i + 1] * opacity;
-          blue += source.pixels[i + 2] * opacity;
-        }
+      {
+        const dx = x + 0.5 - tx,
+          dy = y + 0.5 - ty;
+        const sx = Math.floor((d * dx - c * dy) / det),
+          sy = Math.floor((-b * dx + a * dy) / det);
+        if (sx < x0 || sx > x1 || sy < y0 || sy > y1) continue;
+        if (mask && !mask.has(sy * source.width + sx)) continue;
+        const i = (sy * source.width + sx) * 4,
+          opacity = source.pixels[i + 3];
+        if (opacity < 8) continue;
+        alpha += opacity;
+        red += source.pixels[i] * opacity;
+        green += source.pixels[i + 1] * opacity;
+        blue += source.pixels[i + 2] * opacity;
+      }
       if (!alpha) continue;
       const i = (y * 64 + x) * 4,
-        sa = alpha / (16 * 255),
+        sa = alpha / 255,
         da = target[i + 3] / 255;
       const out = sa + da * (1 - sa);
       for (const [ch, sum] of [

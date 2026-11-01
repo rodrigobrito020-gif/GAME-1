@@ -52,7 +52,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-human-warrior-3";
+  catalog.version = "local-human-warrior-4";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -159,8 +159,8 @@ export function attachLocalGame(
     category: "normal",
     role: "melee",
     spriteDir: "local-treino",
-    displayHeight: 80,
-    artHeight: 112,
+    displayHeight: 104,
+    artHeight: 64,
     tint: a.required === 1 ? 0xc090ff : 0xff7777,
     stats: {
       level: a.required,
@@ -381,6 +381,26 @@ export function attachLocalGame(
   const blockedBits = gridBits(cityMap),
     huntBlockedBits = gridBits(map);
   const route = (from, to, layout = map) => {
+    // Open courtyards should be crossed directly, not one orthogonal tile at
+    // a time. Sample the body corridor before skipping the grid path.
+    const count = Math.max(
+      1,
+      Math.ceil(Math.hypot(to.x - from.x, to.y - from.y) / 8),
+    );
+    let clear = true;
+    for (let i = 0; i <= count; i++)
+      if (
+        !free(
+          from.x + ((to.x - from.x) * i) / count,
+          from.y + ((to.y - from.y) * i) / count,
+          layout,
+        )
+      ) {
+        clear = false;
+        break;
+      }
+    if (clear) return [to];
+
     const origin = Math.floor(from.y / 32) * 60 + Math.floor(from.x / 32),
       target = Math.floor(to.y / 32) * 60 + Math.floor(to.x / 32),
       queue = [origin],

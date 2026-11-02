@@ -1,50 +1,29 @@
-VERSAO 0.6.25 — AURA, CAMINHADA VERTICAL, CONE E POCOES
+VERSAO 0.6.26 — CONTRASTE DAS HABILIDADES DA ARQUEIRA
 Data: 02/11/2026
 
 ALTERACOES
-- Aura do Espirito da Floresta envolve o corpo, no mesmo estilo de
-  apresentacao do guerreiro, com energia verde e centro transparente.
-- Novas figuras completas de frente/costas para caminhar, alternando o apoio
-  das pernas. Linha de chao e escala unicas por direcao; laterais mantidas.
-- Tiro Perfurante usa tres flechas simultaneas, abertas em cone, com novo icone.
-  Dano de 200% por inimigo, no maximo uma vez por uso na sobreposicao dos raios.
-- Dash do Shift: icone/carta/rastro usam a cor da classe. Verde na arqueira,
-  dourado no guerreiro. Silhuetas HD geradas a partir do deslocamento real,
-  com limite de cinco e desvanecimento, inclusive em alta taxa de quadros.
-- Dois atalhos de pocoes ao lado da barra: HP e mana, so o tipo selecionado.
-  Botao AUTO/MANUAL independente em cada um; abrir o icone permite escolher
-  o tamanho, limite 30/50/70%, compra na cidade e uso manual.
-- Z usa HP selecionado; X usa mana selecionada. AUTO nao consome tamanhos
-  escondidos. Escolha, modos e limites persistem; estoque, niveis 1/55/150,
-  recursos e intervalo compartilhado de 1,5s sao verificados pelo servidor.
+- Verde intenso, bordas verde-escuras e centros luminosos nos efeitos locais.
+- Tres flechas em cone com pontas definidas, sprites e rastros maiores.
+- Chuva de Flechas com hastes maiores, pontas contrastadas, area de queda
+  marcada com preenchimento discreto e aneis de impacto com contorno.
+- Ativacao dos buffs dura visualmente 0,9s; circulo dos pes mais nitido.
+- Aura corporal, caminhada, pocoes e habilidades aprovadas preservadas.
+- Dano, alcance, area atingida, velocidade, duracao e recargas nao mudaram.
 
 VERIFICACAO
-- 108 testes automatizados passaram com o ZIP real: protocolo, combate,
-  progressao, dados salvos, equipamento, poucoes, cone sem dano duplicado,
-  apoio dos pes e rastro por deslocamento acumulado em alta taxa de quadros.
-- Cliente real Chromium/WebGL pt-BR: quatro habilidades, tres flechas visiveis,
-  aura corporal forte, dois buffs com duracoes separadas e limpeza ao sair.
-- Movimento real nas quatro direcoes com guerreiro, peitoral e arqueira;
-  rastro aprovado do Avanco de Luz continua com a figura HD correta.
-- Shift real conferido com silhuetas HD verdes na arqueira e douradas no guerreiro.
-- UI de pocoes testada a 1440/1024/768/480px, selecao de tipos e limites,
-  configuracao apos recarregar/trocar classe, uso manual de HP grande e AUTO
-  de mana media, sem consumir o estoque da pequena escondida. Esse teste
-  usa vida/mana reduzidas no inicio da hunt em um cenario isolado de QA.
-- Artes, animacoes e contratos aprovados do guerreiro comparados com 0.6.24.
-  Distancias, recargas e regras de combate do guerreiro preservadas.
-- A revisao visual do jogador continua pendente para esta atualizacao.
+- 108 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
+- Chromium/WebGL pt-BR, cliente real e servidor isolado: quatro habilidades,
+  tres flechas simultaneas, chuva em tres ondas, buffs independentes,
+  combate automatico por seis segundos e limpeza dos efeitos ao sair.
+- Zero erros JavaScript no teste nativo; revisao da gravacao confirmou
+  cone, queda das flechas e area visiveis sobre o piso branco/dourado.
+- Dados reais de conta nao foram usados nem alterados pelos testes.
+- A avaliacao visual do jogador continua pendente para esta revisao.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.25.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.26.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-
-Para jogar basta Node.js. Reconstrucao opcional das artes da arqueira com
-Python/Pillow: npm run art:archer. As artes do guerreiro nao sao refeitas por
-esse comando. Novas classes devem registrar cor, movimento e icone do Dash
-em class-visuals.mjs. Equipamentos completos continuam para depois das cinco
-classes iniciais; o servidor continua com uma conta local de teste.

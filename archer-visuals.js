@@ -1,7 +1,8 @@
 import { projectilePose, rainPose } from "/archer-vfx.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 
-// Small, independent effects: casting never pauses or scales the whole scene.
+// Emerald edges and light cores stay readable over ivory stone and dark terrain.
+// Effects remain local: casting never pauses or scales the whole scene.
 (() => {
   const art = new Map(),
     scenes = new Map();
@@ -18,21 +19,42 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
     state = e.detail;
     at = performance.now();
   });
+  function line(g, x, y, tx, ty, alpha = 1, width = 3) {
+    for (const [w, color, opacity] of [
+      [width + 4, 0x123e2e, 0.82],
+      [width + 1.5, 0x19b969, 1],
+      [Math.max(1, width * 0.4), 0xe8ffd2, 1],
+    ]) {
+      g.lineStyle(w, color, alpha * opacity);
+      g.lineBetween(x, y, tx, ty);
+    }
+  }
+  function circle(g, x, y, r, alpha = 1, width = 2) {
+    for (const [w, color, opacity] of [
+      [width + 4, 0x123e2e, 0.8],
+      [width + 1.5, 0x19b969, 1],
+      [1, 0xe8ffd2, 1],
+    ]) {
+      g.lineStyle(w, color, alpha * opacity);
+      g.strokeCircle(x, y, r);
+    }
+  }
   function spark(g, x, y, p, size = 20) {
     const alpha = 1 - p;
-    g.lineStyle(2, 0xe5ffec, alpha);
     for (let i = 0; i < 5; i++) {
       const a = (i * Math.PI * 2) / 5,
         r = 3 + p * size;
-      g.lineBetween(
+      line(
+        g,
         x + Math.cos(a) * r * 0.5,
         y + Math.sin(a) * r * 0.5,
         x + Math.cos(a) * r,
         y + Math.sin(a) * r,
+        alpha,
+        2,
       );
     }
-    g.lineStyle(1.5, 0xa6eabb, alpha * 0.7);
-    g.strokeCircle(x, y, 2 + p * size * 0.6);
+    circle(g, x, y, 2 + p * size * 0.6, alpha * 0.8, 1.5);
   }
   function draw(scene, entry) {
     const now = performance.now(),
@@ -61,14 +83,14 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
           if (!pose) {
             if (fx.color === "piercing") {
               const p = Math.max(0, age / fx.releaseMs);
-              g.lineStyle(1.5, 0xffe8ac, p * 0.8);
-              g.strokeCircle(fx.x, fx.y, 3 + 5 * p);
-              g.lineStyle(2, 0xb6f3b0, p * 0.6);
-              g.lineBetween(
+              circle(g, fx.x, fx.y, 3 + 7 * p, p * 0.9);
+              line(
+                g,
                 fx.x,
                 fx.y,
                 fx.x + Math.cos(angle) * 24 * p,
                 fx.y + Math.sin(angle) * 24 * p,
+                p * 0.8,
               );
             }
             continue;
@@ -82,8 +104,8 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
           shot.sprite
             .setPosition(pose.x, pose.y)
             .setDisplaySize(
-              empowered ? (fx.fan ? 92 : 76) : 42,
-              empowered ? 28 : 16,
+              empowered ? (fx.fan ? 110 : 88) : 48,
+              empowered ? 32 : 18,
             )
             .setAngle(pose.angle)
             .setDepth(1e6)
@@ -92,39 +114,58 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
           if (age - fx.releaseMs < 100)
             spark(g, fx.x, fx.y, (age - fx.releaseMs) / 100, 11);
           if (empowered) {
-            g.lineStyle(3, 0xc4f2a0, 0.42);
-            g.lineBetween(
+            line(
+              g,
               pose.x,
               pose.y,
-              pose.x - Math.cos(angle) * (fx.fan ? 90 : 38),
-              pose.y - Math.sin(angle) * (fx.fan ? 90 : 38),
+              pose.x - Math.cos(angle) * (fx.fan ? 105 : 55),
+              pose.y - Math.sin(angle) * (fx.fan ? 105 : 55),
+              0.85,
+              fx.fan ? 4 : 3,
             );
+            // A solid arrowhead remains legible even when the translucent art
+            // passes over bright marble. It follows the same projectile pose.
+            const tipX = pose.x + Math.cos(angle) * 31,
+              tipY = pose.y + Math.sin(angle) * 31;
+            for (const side of [-1, 1])
+              line(
+                g,
+                tipX,
+                tipY,
+                tipX - Math.cos(angle + side * 0.65) * 18,
+                tipY - Math.sin(angle + side * 0.65) * 18,
+                0.95,
+                3,
+              );
           }
         } else if (fx.kind === "rain") {
           const rain = rainPose(fx, age);
           if (rain.telegraph) {
-            g.lineStyle(1.5, 0xc7df9a, 0.5);
-            g.strokeCircle(fx.x, fx.y, fx.radius);
-            g.fillStyle(0x8bd69c, 0.035);
+            g.fillStyle(0x137347, 0.1);
             g.fillCircle(fx.x, fx.y, fx.radius);
+            circle(g, fx.x, fx.y, fx.radius, 0.8, 2);
           }
           for (const d of rain.drops) {
             // Feather, wooden shaft and tip stay readable while falling in three
             // volleys, rather than a continuously looping field of light lines.
-            g.lineStyle(3, 0x5c4930, d.alpha * 0.8);
-            g.lineBetween(d.x - 2, d.y - 23, d.x, d.y);
-            g.lineStyle(1.3, 0xffe9bb, d.alpha);
-            g.lineBetween(d.x - 2, d.y - 23, d.x, d.y);
-            g.lineStyle(1.5, 0xd4f2bb, d.alpha);
-            g.lineBetween(d.x - 5, d.y - 20, d.x - 1, d.y - 16);
-            g.lineBetween(d.x + 2, d.y - 21, d.x - 1, d.y - 16);
-            g.fillStyle(0xe9edce, d.alpha);
-            g.fillTriangle(d.x, d.y + 4, d.x - 3, d.y - 3, d.x + 3, d.y - 3);
+            line(g, d.x - 3, d.y - 36, d.x, d.y, d.alpha, 3);
+            line(g, d.x - 8, d.y - 29, d.x - 2, d.y - 22, d.alpha, 2);
+            line(g, d.x + 4, d.y - 29, d.x - 2, d.y - 22, d.alpha, 2);
+            g.fillStyle(0x123e2e, d.alpha);
+            g.fillTriangle(d.x, d.y + 8, d.x - 6, d.y - 4, d.x + 6, d.y - 4);
+            g.fillStyle(0xe8ffd2, d.alpha);
+            g.fillTriangle(d.x, d.y + 5, d.x - 3, d.y - 2, d.x + 3, d.y - 2);
           }
           for (const hit of rain.impacts) {
             const p = hit.progress;
-            g.lineStyle(2, 0xccefa5, (1 - p) * 0.55);
-            g.strokeCircle(fx.x, fx.y, fx.radius * (0.7 + 0.3 * p));
+            circle(
+              g,
+              fx.x,
+              fx.y,
+              fx.radius * (0.7 + 0.3 * p),
+              (1 - p) * 0.9,
+              3,
+            );
             for (let i = 0; i < 10; i++) {
               const a = i * 2.399963 + hit.wave * 0.7,
                 r = fx.radius * Math.sqrt((i + 0.5) / 10) * 0.85;
@@ -162,7 +203,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         .setPosition(a.x, a.y + 3)
         .setDisplaySize(126, 62)
         .setAngle(Math.sin(now / 1600) * 3)
-        .setAlpha(spirit ? 0.65 : 0.42)
+        .setAlpha(spirit ? 0.8 : 0.65)
         .setDepth(a.root.depth - 0.2)
         .setVisible(true);
     } else entry.ring?.setVisible(false);
@@ -199,14 +240,20 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
     for (const buff of [eyes, spirit])
       if (buff) {
         const age = buff.totalMs - buff.remainingMs + (now - at),
-          p = age / 650;
+          p = age / 900;
         if (p >= 0 && p < 1) {
-          g.lineStyle(2, spirit ? 0xffe0a0 : 0xb2eeae, (1 - p) * 0.8);
-          g.strokeEllipse(a.x, a.y - 45, 30 + p * 75, 50 + p * 55);
+          for (const [width, color] of [
+            [7, 0x123e2e],
+            [4, 0x19b969],
+            [1, 0xe8ffd2],
+          ]) {
+            g.lineStyle(width, color, (1 - p) * 0.85);
+            g.strokeEllipse(a.x, a.y - 45, 30 + p * 75, 50 + p * 55);
+          }
           for (let i = 0; i < 7; i++) {
             const t = (i * Math.PI * 2) / 7 + p * 2,
               r = 15 + p * 48;
-            g.fillStyle(spirit ? 0xffe6ad : 0xb2eaa5, 1 - p);
+            g.fillStyle(0x15854d, 1 - p);
             g.fillEllipse(
               a.x + Math.cos(t) * r,
               a.y - 45 + Math.sin(t) * r * 0.65,

@@ -1,8 +1,16 @@
-# Jogo local — 0.6.25: aura, cone de flechas e poções na barra
+# Jogo local — 0.6.26: habilidades da arqueira com mais contraste
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.26
+
+Os efeitos da arqueira agora usam verde mais intenso, contorno verde-escuro e centro luminoso para continuar legíveis sobre o piso branco e dourado. As três flechas têm pontas e rastros mais definidos; a Chuva de Flechas ganhou hastes maiores, área de queda marcada e impactos com contorno. A ativação dos buffs fica visível por 0,9s e o círculo sob os pés está mais nítido. A aura corporal aprovada é mantida.
+
+Esta revisão altera a apresentação visual. Dano, alcance, área atingida, velocidade dos projéteis, animações, recargas e duração dos buffs continuam iguais. As artes e habilidades do guerreiro e a barra compacta de poções são preservadas.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, pressione Ctrl+F5 e confira **v0.6.26**.
 
 ## Atualização 0.6.25
 

@@ -58,3 +58,5 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 - Regras de multiplayer e hospedagem desta nova base. O servidor atual serve somente uma conta local.
 
 Preservar progresso ao atualizar: copiar `.local-runtime` com o servidor fechado. Testar as mudanças e entregar o ZIP do GitHub, como solicitado pelo usuário.
+
+- Entregue em 0.6.26: contraste dos efeitos da arqueira no cenário claro (contornos, rastros, área e impactos); nova revisão visual do jogador pendente.

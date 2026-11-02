@@ -1,29 +1,35 @@
-VERSAO 0.6.26 — CONTRASTE DAS HABILIDADES DA ARQUEIRA
+VERSAO 0.6.27 — EFEITOS EM VERDE/DOURADO E ULTIMATE DE VELOCIDADE
 Data: 02/11/2026
 
 ALTERACOES
-- Verde intenso, bordas verde-escuras e centros luminosos nos efeitos locais.
-- Tres flechas em cone com pontas definidas, sprites e rastros maiores.
-- Chuva de Flechas com hastes maiores, pontas contrastadas, area de queda
-  marcada com preenchimento discreto e aneis de impacto com contorno.
-- Ativacao dos buffs dura visualmente 0,9s; circulo dos pes mais nitido.
-- Aura corporal, caminhada, pocoes e habilidades aprovadas preservadas.
-- Dano, alcance, area atingida, velocidade, duracao e recargas nao mudaram.
+- Removidos contornos grossos, setas geometricas e aneis graficos da 0.6.26.
+- Cone usa a arte de flecha da classe, sombra suave e pequenas particulas.
+- Chuva usa flechas com textura em tres ondas, marca de folhas no chao e
+  impactos pintados em verde/dourado. Efeitos ficam locais e sao limpos ao sair.
+- Nova aura da ultimate: fluxos abertos de luz verde e dourada nas laterais,
+  com bordas suaves e centro livre, substituindo a moldura fechada anterior.
+- Espirito da Floresta: retirado o bonus de 35% de ataque; agora concede
+  50% de velocidade de ataque. Intervalo basico de 1s passa para ~0,667s.
+  O dano por flecha nao aumenta. Olhos da Floresta mantem 20% de ataque.
+- Ultimate continua com 45s de duracao, recarga de 60s, energia 100 e
+  reducao de dano recebido de 15%. Demais alcances e recargas preservados.
+- Caminhada, Dash por classe, poucoes e artes/habilidades do guerreiro mantidos.
 
 VERIFICACAO
-- 108 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
+- 109 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
+- Testes verificam a cadencia real antes/depois da ultimate, bloqueio de
+  ataque antecipado, dano por flecha, expiracao e coexistencia com Olhos.
 - Chromium/WebGL pt-BR, cliente real e servidor isolado: quatro habilidades,
-  tres flechas simultaneas, chuva em tres ondas, buffs independentes,
-  combate automatico por seis segundos e limpeza dos efeitos ao sair.
-- Zero erros JavaScript no teste nativo; revisao da gravacao confirmou
-  cone, queda das flechas e area visiveis sobre o piso branco/dourado.
+  cone simultaneo, flechas texturizadas da chuva apontando para baixo,
+  aura corporal e dois buffs, combate automatico e limpeza dos efeitos.
+- Zero erros JavaScript. Nova aura conferida no cenario branco/dourado.
 - Dados reais de conta nao foram usados nem alterados pelos testes.
-- A avaliacao visual do jogador continua pendente para esta revisao.
+- A aprovacao visual do jogador continua pendente para esta revisao.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.26.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.27.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

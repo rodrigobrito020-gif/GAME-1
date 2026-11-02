@@ -1,14 +1,14 @@
 import { projectilePose, rainPose } from "/archer-vfx.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 
-// Emerald edges and light cores stay readable over ivory stone and dark terrain.
-// Effects remain local: casting never pauses or scales the whole scene.
+// Authored leaf, gold and light textures carry the class identity. Soft local
+// shading separates them from marble without drawing outlines over the art.
 (() => {
   const art = new Map(),
     scenes = new Map();
   let state = null,
     at = 0;
-  for (const name of ["ring", "aura", "arrow"]) {
+  for (const name of ["ring", "aura", "arrow", "impact"]) {
     const im = new Image();
     im.src = `/assets/fx/royal-archer/${name}.png`;
     im.decode()
@@ -19,42 +19,19 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
     state = e.detail;
     at = performance.now();
   });
-  function line(g, x, y, tx, ty, alpha = 1, width = 3) {
-    for (const [w, color, opacity] of [
-      [width + 4, 0x123e2e, 0.82],
-      [width + 1.5, 0x19b969, 1],
-      [Math.max(1, width * 0.4), 0xe8ffd2, 1],
-    ]) {
-      g.lineStyle(w, color, alpha * opacity);
-      g.lineBetween(x, y, tx, ty);
-    }
-  }
-  function circle(g, x, y, r, alpha = 1, width = 2) {
-    for (const [w, color, opacity] of [
-      [width + 4, 0x123e2e, 0.8],
-      [width + 1.5, 0x19b969, 1],
-      [1, 0xe8ffd2, 1],
-    ]) {
-      g.lineStyle(w, color, alpha * opacity);
-      g.strokeCircle(x, y, r);
-    }
-  }
   function spark(g, x, y, p, size = 20) {
-    const alpha = 1 - p;
-    for (let i = 0; i < 5; i++) {
-      const a = (i * Math.PI * 2) / 5,
+    const alpha = Math.max(0, 1 - p);
+    // Tiny gold motes fade out rather than forming expanding graphic circles.
+    for (let i = 0; i < 6; i++) {
+      const angle = i * 2.399963,
         r = 3 + p * size;
-      line(
-        g,
-        x + Math.cos(a) * r * 0.5,
-        y + Math.sin(a) * r * 0.5,
-        x + Math.cos(a) * r,
-        y + Math.sin(a) * r,
-        alpha,
-        2,
-      );
+      const px = x + Math.cos(angle) * r,
+        py = y + Math.sin(angle) * r * 0.7;
+      g.fillStyle(0xb39952, alpha * 0.18);
+      g.fillCircle(px, py, 3);
+      g.fillStyle(i % 2 ? 0xffe7a5 : 0xd9f2b5, alpha * 0.85);
+      g.fillEllipse(px, py, 1.5, 3);
     }
-    circle(g, x, y, 2 + p * size * 0.6, alpha * 0.8, 1.5);
   }
   function draw(scene, entry) {
     const now = performance.now(),
@@ -63,6 +40,24 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
     for (const [name, im] of art)
       if (!scene.textures.exists(`elf-fx:${name}`))
         scene.textures.addImage(`elf-fx:${name}`, im);
+    const visibleEffects = new Set();
+    function texture(id, name, x, y, w, h, alpha, angle = 0, depth = 1e6) {
+      if (!art.has(name)) return;
+      visibleEffects.add(id);
+      let image = entry.effects.get(id);
+      if (!image) {
+        image = scene.add.image(0, 0, `elf-fx:${name}`);
+        entry.effects.set(id, image);
+      }
+      image
+        .setPosition(x, y)
+        .setDisplaySize(w, h)
+        .setAlpha(alpha)
+        .setAngle(angle)
+        .setDepth(depth)
+        .setVisible(true);
+      return image;
+    }
     const seen = new Set();
     if (state?.inHunt && state.classId === "arqueira")
       for (const fx of state.archerFx ?? []) {
@@ -73,7 +68,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
           seen.add(fx.id);
           let shot = entry.projectiles.get(fx.id);
           if (!shot) {
-            shot = { sprite: null };
+            shot = { sprite: null, shade: null };
             entry.projectiles.set(fx.id, shot);
           }
           shot.fx = fx;
@@ -81,95 +76,107 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
           const pose = projectilePose(fx, age),
             angle = Math.atan2(fx.ty - fx.y, fx.tx - fx.x);
           if (!pose) {
-            if (fx.color === "piercing") {
-              const p = Math.max(0, age / fx.releaseMs);
-              circle(g, fx.x, fx.y, 3 + 7 * p, p * 0.9);
-              line(
-                g,
-                fx.x,
-                fx.y,
-                fx.x + Math.cos(angle) * 24 * p,
-                fx.y + Math.sin(angle) * 24 * p,
-                p * 0.8,
-              );
-            }
+            if (fx.fan)
+              spark(g, fx.x, fx.y, Math.max(0, age / fx.releaseMs), 9);
             continue;
           }
           if (!art.has("arrow")) continue;
-          if (!shot.sprite)
+          if (!shot.sprite) {
+            shot.shade = scene.add
+              .image(0, 0, "elf-fx:arrow")
+              .setFlipX(true)
+              .setTint(0x425c39);
             shot.sprite = scene.add.image(0, 0, "elf-fx:arrow").setFlipX(true);
-          const empowered = fx.color !== "normal";
-          // The authored arrow points LEFT. Flip its artwork before rotating it
-          // along the target vector; otherwise every projectile flies backward.
+          }
+          const empowered = fx.color !== "normal",
+            width = empowered ? (fx.fan ? 102 : 82) : 44,
+            height = empowered ? 29 : 17;
+          // A restrained offset shadow preserves texture detail on light floors.
+          shot.shade
+            .setPosition(pose.x + 1, pose.y + 2)
+            .setDisplaySize(width, height)
+            .setAngle(pose.angle)
+            .setDepth(1e6 - 1)
+            .setAlpha(empowered ? 0.32 : 0.18);
           shot.sprite
             .setPosition(pose.x, pose.y)
-            .setDisplaySize(
-              empowered ? (fx.fan ? 110 : 88) : 48,
-              empowered ? 32 : 18,
-            )
+            .setDisplaySize(width, height)
             .setAngle(pose.angle)
             .setDepth(1e6)
-            .setAlpha(0.95)
+            .setAlpha(1)
             .setVisible(true);
-          if (age - fx.releaseMs < 100)
-            spark(g, fx.x, fx.y, (age - fx.releaseMs) / 100, 11);
+          if (age - fx.releaseMs < 110)
+            spark(g, fx.x, fx.y, (age - fx.releaseMs) / 110, 11);
           if (empowered) {
-            line(
-              g,
-              pose.x,
-              pose.y,
-              pose.x - Math.cos(angle) * (fx.fan ? 105 : 55),
-              pose.y - Math.sin(angle) * (fx.fan ? 105 : 55),
-              0.85,
-              fx.fan ? 4 : 3,
-            );
-            // A solid arrowhead remains legible even when the translucent art
-            // passes over bright marble. It follows the same projectile pose.
-            const tipX = pose.x + Math.cos(angle) * 31,
-              tipY = pose.y + Math.sin(angle) * 31;
-            for (const side of [-1, 1])
-              line(
-                g,
-                tipX,
-                tipY,
-                tipX - Math.cos(angle + side * 0.65) * 18,
-                tipY - Math.sin(angle + side * 0.65) * 18,
-                0.95,
-                3,
-              );
+            // Short tapered wisps echo the gold/leaf artwork, never solid rays.
+            const travelAge = age - fx.releaseMs;
+            for (let i = 1; i <= 5; i++) {
+              const behind = Math.min(travelAge * 0.65, i * 10),
+                px = pose.x - Math.cos(angle) * behind,
+                py = pose.y - Math.sin(angle) * behind;
+              g.fillStyle(i % 2 ? 0x7ca16a : 0xd6b87d, (1 - i / 6) * 0.14);
+              g.fillCircle(px, py, 4 - i * 0.4);
+              g.fillStyle(0xf4ecc6, (1 - i / 6) * 0.45);
+              g.fillCircle(px, py, 1.5 - i * 0.15);
+            }
           }
         } else if (fx.kind === "rain") {
-          const rain = rainPose(fx, age);
+          const rain = rainPose(fx, age),
+            groundDepth = (entry.actor?.root.depth ?? 0) - 0.3;
           if (rain.telegraph) {
-            g.fillStyle(0x137347, 0.1);
-            g.fillCircle(fx.x, fx.y, fx.radius);
-            circle(g, fx.x, fx.y, fx.radius, 0.8, 2);
+            const fade = Math.min(
+              1,
+              Math.max(0, (age - fx.releaseMs) / 180),
+              left / 240,
+            );
+            texture(
+              `${fx.id}:ground`,
+              "ring",
+              fx.x,
+              fx.y,
+              fx.radius * 2.1,
+              fx.radius * 1.4,
+              fade * 0.5,
+              0,
+              groundDepth,
+            );
           }
           for (const d of rain.drops) {
-            // Feather, wooden shaft and tip stay readable while falling in three
-            // volleys, rather than a continuously looping field of light lines.
-            line(g, d.x - 3, d.y - 36, d.x, d.y, d.alpha, 3);
-            line(g, d.x - 8, d.y - 29, d.x - 2, d.y - 22, d.alpha, 2);
-            line(g, d.x + 4, d.y - 29, d.x - 2, d.y - 22, d.alpha, 2);
-            g.fillStyle(0x123e2e, d.alpha);
-            g.fillTriangle(d.x, d.y + 8, d.x - 6, d.y - 4, d.x + 6, d.y - 4);
-            g.fillStyle(0xe8ffd2, d.alpha);
-            g.fillTriangle(d.x, d.y + 5, d.x - 3, d.y - 2, d.x + 3, d.y - 2);
+            const key = `${fx.id}:drop:${d.wave}:${d.index}`;
+            texture(
+              key + ":shade",
+              "arrow",
+              d.x + 1,
+              d.y - 22 + 2,
+              68,
+              19,
+              d.alpha * 0.28,
+              90,
+            )
+              ?.setFlipX(true)
+              .setTint(0x425c39);
+            texture(key, "arrow", d.x, d.y - 22, 68, 19, d.alpha, 90)?.setFlipX(
+              true,
+            );
           }
           for (const hit of rain.impacts) {
             const p = hit.progress;
-            circle(
-              g,
-              fx.x,
-              fx.y,
-              fx.radius * (0.7 + 0.3 * p),
-              (1 - p) * 0.9,
-              3,
-            );
-            for (let i = 0; i < 10; i++) {
-              const a = i * 2.399963 + hit.wave * 0.7,
-                r = fx.radius * Math.sqrt((i + 0.5) / 10) * 0.85;
-              spark(g, fx.x + Math.cos(a) * r, fx.y + Math.sin(a) * r, p, 13);
+            for (let i = 0; i < 8; i++) {
+              const angle = i * 2.399963 + hit.wave * 0.7,
+                r = fx.radius * Math.sqrt((i + 0.5) / 8) * 0.85,
+                x = fx.x + Math.cos(angle) * r,
+                y = fx.y + Math.sin(angle) * r;
+              texture(
+                `${fx.id}:hit:${hit.wave}:${i}`,
+                "impact",
+                x,
+                y - 5,
+                28 + p * 24,
+                38 + p * 32,
+                (1 - p) * (1 - p) * 0.72,
+                0,
+              );
+              spark(g, x, y, p, 12);
             }
           }
         }
@@ -183,11 +190,23 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         )
           entry.impacts.push({ x: shot.fx.tx, y: shot.fx.ty, at: now });
         shot.sprite?.destroy();
+        shot.shade?.destroy();
         entry.projectiles.delete(id);
       }
-    entry.impacts = entry.impacts.filter((hit) => now - hit.at < 220);
-    for (const hit of entry.impacts)
-      spark(g, hit.x, hit.y, (now - hit.at) / 220, 22);
+    entry.impacts = entry.impacts.filter((hit) => now - hit.at < 280);
+    for (const [i, hit] of entry.impacts.entries()) {
+      const p = (now - hit.at) / 280;
+      texture(
+        `shot-hit:${hit.at}:${i}`,
+        "impact",
+        hit.x,
+        hit.y,
+        28 + p * 28,
+        38 + p * 34,
+        (1 - p) * (1 - p) * 0.8,
+      );
+      spark(g, hit.x, hit.y, p, 18);
+    }
     const a = entry.actor,
       active =
         state?.classId === "arqueira" &&
@@ -203,7 +222,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         .setPosition(a.x, a.y + 3)
         .setDisplaySize(126, 62)
         .setAngle(Math.sin(now / 1600) * 3)
-        .setAlpha(spirit ? 0.8 : 0.65)
+        .setAlpha(spirit ? 0.65 : 0.42)
         .setDepth(a.root.depth - 0.2)
         .setVisible(true);
     } else entry.ring?.setVisible(false);
@@ -240,33 +259,37 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
     for (const buff of [eyes, spirit])
       if (buff) {
         const age = buff.totalMs - buff.remainingMs + (now - at),
-          p = age / 900;
+          p = age / 650;
         if (p >= 0 && p < 1) {
-          for (const [width, color] of [
-            [7, 0x123e2e],
-            [4, 0x19b969],
-            [1, 0xe8ffd2],
-          ]) {
-            g.lineStyle(width, color, (1 - p) * 0.85);
-            g.strokeEllipse(a.x, a.y - 45, 30 + p * 75, 50 + p * 55);
-          }
-          for (let i = 0; i < 7; i++) {
-            const t = (i * Math.PI * 2) / 7 + p * 2,
-              r = 15 + p * 48;
-            g.fillStyle(0x15854d, 1 - p);
-            g.fillEllipse(
-              a.x + Math.cos(t) * r,
-              a.y - 45 + Math.sin(t) * r * 0.65,
-              3,
-              7,
-            );
-          }
+          // One textured flash at the body, fading while control stays responsive.
+          const image = texture(
+            `buff:${buff.id}`,
+            "impact",
+            a.x,
+            a.y - 45,
+            44 + p * 28,
+            68 + p * 35,
+            (1 - p) * (1 - p) * 0.65,
+            0,
+          );
+          if (image) visibleEffects.add(`buff:${buff.id}`);
+          spark(g, a.x, a.y - 45, p, 32);
         }
+      }
+    for (const [id, image] of entry.effects)
+      if (!visibleEffects.has(id)) {
+        image.destroy();
+        entry.effects.delete(id);
       }
   }
   function clear(entry) {
     entry.g.clear();
-    for (const shot of entry.projectiles.values()) shot.sprite?.destroy();
+    for (const shot of entry.projectiles.values()) {
+      shot.sprite?.destroy();
+      shot.shade?.destroy();
+    }
+    for (const image of entry.effects.values()) image.destroy();
+    entry.effects.clear();
     entry.projectiles.clear();
     entry.impacts = [];
     entry.ring?.setVisible(false);
@@ -280,6 +303,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         entry = {
           g: scene.add.graphics().setDepth(1e6),
           projectiles: new Map(),
+          effects: new Map(),
           impacts: [],
           actor: null,
         };

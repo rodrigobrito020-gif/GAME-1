@@ -1,8 +1,16 @@
-# Jogo local — 0.6.26: habilidades da arqueira com mais contraste
+# Jogo local — 0.6.27: efeitos da arqueira em verde e dourado
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.27
+
+A revisão visual substitui os contornos grossos e as setas geométricas da 0.6.26 pelas artes de flechas, folhas e energia verde/dourada da própria arqueira. O cone usa flechas com textura, sombra suave e partículas curtas; a Chuva de Flechas usa a mesma arte em três ondas, uma marca de folhas no chão e pequenos impactos com textura. A ativação dos buffs também usa folhas e luz. A ultimate ganha uma aura mais aberta: fluxos suaves de verde e dourado nas laterais, sem a moldura fechada anterior. O círculo dos pés volta aos valores aprovados na 0.6.25.
+
+**Espírito da Floresta:** substituído o bônus de 35% de ataque por **50% de velocidade de ataque**. O intervalo entre disparos básicos passa de 1s para aproximadamente 0,667s durante a ultimate; cada flecha mantém o seu dano normal. A duração de 45s, a recarga de 60s, a energia e a redução de dano de 15% continuam iguais. Olhos da Floresta mantém seu bônus próprio de 20% de ataque. Alcance, áreas atingidas e recargas das demais habilidades são preservados, assim como a caminhada, o Dash de cada classe e a barra compacta de poções. O acabamento visual ainda depende da avaliação do jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, pressione Ctrl+F5 e confira **v0.6.27**.
 
 ## Atualização 0.6.26
 

@@ -17,6 +17,7 @@ export const ARCHER_SPIRIT = {
   cooldownMs: 60000,
   maxCharge: 100,
   damageReduction: 0.15,
+  attackSpeedPercent: 0.5,
   cleaveRadius: 0,
   castMs: 650,
   applyAtMs: 300,
@@ -82,7 +83,7 @@ export const ARCHER_SKILLS = [
     durationMs: ARCHER_SPIRIT.durationMs,
     range: 0,
     description:
-      "Ultimate: usa 100 de energia. Por 45 segundos, aumenta o ataque em 35%, acelera os disparos e reduz o dano recebido em 15%. A recarga é de 60 segundos e a energia precisa ser obtida novamente em combate.",
+      "Ultimate: usa 100 de energia. Por 45 segundos, aumenta a velocidade de ataque em 50% e reduz o dano recebido em 15%, sem aumentar o dano por flecha. A recarga é de 60 segundos e a energia precisa ser obtida novamente em combate.",
     icon: "/assets/ui/royal-archer/espirito-da-floresta.png",
   },
 ];

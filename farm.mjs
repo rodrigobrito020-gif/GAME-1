@@ -379,14 +379,16 @@ export class LocalFarm {
     Object.assign(c.derived, {
       atk: Math.round(
         ((isArcher(c) ? 14 : 15) + (level - 1) * 2 + sum("atk")) *
-          (isArcher(c) && this.eyesUntil > this.now() ? 1.2 : 1) *
-          (isArcher(c) && this.avatar.active() ? 1.35 : 1),
+          (isArcher(c) && this.eyesUntil > this.now() ? 1.2 : 1),
       ),
       def: this.defenseBuffs.defense(c, sum("def")),
       maxHp: (isArcher(c) ? 220 : 250) + (level - 1) * 20 + sum("hp"),
       maxMana: (isArcher(c) ? 120 : 100) + (level - 1) * 5,
       attackRange: isArcher(c) ? 320 : 65,
-      attackCooldown: 1,
+      attackCooldown:
+        isArcher(c) && this.avatar.active()
+          ? 1 / (1 + ARCHER_SPIRIT.attackSpeedPercent)
+          : 1,
       moveSpeed: 160,
       manaRegen: 3,
       cooldownMult: 1,

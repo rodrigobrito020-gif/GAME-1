@@ -46,15 +46,22 @@ test("elf dash trail and class icon share the class energy while warrior colors 
     const im = decodeRgba(
       readFileSync(new URL("../art/archer/" + file, import.meta.url)),
     );
-    let green = 0;
+    let green = 0,
+      gold = 0;
     for (let i = 0; i < im.pixels.length; i += 4) {
       const [r, g, b, a] = im.pixels.subarray(i, i + 4);
       if (a > 100 && g > 90 && g > r * 1.15 && g > b * 1.05) green++;
+      if (a > 100 && r > 150 && g > 110 && b < g * 0.9) gold++;
     }
     assert.ok(
-      green > im.width * im.height * 0.12,
+      green > im.width * im.height * (file === "vfx/aura.png" ? 0.08 : 0.12),
       file + " must visibly carry forest-green energy",
     );
+    if (file === "vfx/aura.png")
+      assert.ok(
+        gold > im.width * im.height * 0.08,
+        "aura carries soft gold alongside emerald",
+      );
   }
 });
 test("elf ultimate aura is a tall transparent body surround rather than only a ground ring", () => {

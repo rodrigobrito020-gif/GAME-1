@@ -215,7 +215,7 @@ test("rain persists for three authoritative area impacts after the original targ
   assert.equal(out.hp, 980);
   assert.equal(farm.character.progress.mana, 85);
 });
-test("Eyes and Spirit coexist with independent remaining durations, boost actual attack, expire separately and clear on exit", () => {
+test("Eyes boosts attack while Spirit independently boosts attack speed, expires separately and clears on exit", () => {
   const s = setup(),
     { farm, client } = s;
   farm.cast(client, ARCHER_EYES.id, 0);
@@ -225,7 +225,8 @@ test("Eyes and Spirit coexist with independent remaining durations, boost actual
   farm.avatar.saved.charge = 100;
   farm.cast(client, ARCHER_SPIRIT.id, 0);
   s.step(300);
-  assert.equal(farm.character.derived.atk, 23);
+  assert.equal(farm.character.derived.atk, 17);
+  assert.equal(farm.character.derived.attackCooldown, 2 / 3);
   assert.deepEqual(
     farm.activeBuffs().map((b) => b.id),
     [ARCHER_EYES.id, ARCHER_SPIRIT.id],
@@ -238,6 +239,7 @@ test("Eyes and Spirit coexist with independent remaining durations, boost actual
     [ARCHER_EYES.id],
   );
   assert.equal(farm.character.derived.atk, 17);
+  assert.equal(farm.character.derived.attackCooldown, 1);
   assert.throws(
     () => farm.cast(client, ARCHER_EYES.id, 0),
     /cooldown|buff_active/,
@@ -246,6 +248,30 @@ test("Eyes and Spirit coexist with independent remaining durations, boost actual
   assert.equal(farm.activeBuffs().length, 0);
   assert.equal(farm.character.derived.atk, 14);
   assert.equal(farm.avatar.saved.readyAt, 10650 + 60000);
+});
+test("Spirit fires 50 percent more basic shots per second without increasing each arrow's damage", () => {
+  const s = setup(),
+    { farm, client } = s,
+    target = s.alive(0, 300);
+  farm.avatar.activate(1);
+  farm.recalculate();
+  assert.equal(farm.character.derived.atk, 14);
+  client.hunt.nextAttack = 0;
+  farm.basic(client, target.id);
+  assert.ok(Math.abs(client.hunt.nextAttack - (10000 + 1000 / 1.5)) < 0.001);
+  assert.equal(client.hunt.impacts[0].amount, 14);
+  s.step(500);
+  assert.throws(() => farm.basic(client, target.id), /cooldown/);
+  s.step(166);
+  assert.throws(() => farm.basic(client, target.id), /cooldown/);
+  const next = s.step(1);
+  assert.ok(next.events.moves.some((m) => m.move === "elfa-flecha"));
+  client.hunt.nextAttack = Infinity;
+  s.step(50);
+  assert.equal(target.hp, 986);
+  s.step(45000);
+  assert.equal(farm.character.derived.atk, 14);
+  assert.equal(farm.character.derived.attackCooldown, 1);
 });
 test("warrior Aegis and Avatar coexist above the head and removing Avatar leaves Aegis intact", () => {
   const s = setup("guerreiro"),
@@ -326,7 +352,7 @@ test("Spirit speeds up authoritative basic shots, reduces incoming damage, and d
   s.step(200);
   client.hunt.nextAttack = 0;
   farm.basic(client, m.id);
-  assert.equal(client.hunt.nextAttack, 10000 + 651 + 200 + 700);
+  assert.equal(client.hunt.nextAttack, 10000 + 651 + 200 + 1000 / 1.5);
   farm.character.progress.hp = 1;
   m.nextAttack = 0;
   const death = s.step(1);

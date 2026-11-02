@@ -90,7 +90,7 @@ export function archerBasic(farm, client, target, events) {
   const h = client.hunt,
     now = farm.now();
   face(client, target);
-  h.nextAttack = now + (farm.avatar.active() ? 700 : 1000);
+  h.nextAttack = now + farm.character.derived.attackCooldown * 1000;
   h.actionUntil = now + ARCHER_ACTIONS.basic.durationMs;
   client.combatAnimUntil = h.actionUntil;
   events.moves.push({

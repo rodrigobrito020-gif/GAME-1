@@ -3,13 +3,15 @@ frames. No body artwork is repainted, resized or replaced by this build step.
 """
 from pathlib import Path
 from PIL import Image,ImageFilter,ImageChops
-import json,math
+import json,math,argparse
+parser=argparse.ArgumentParser();parser.add_argument("--look",choices=["archer","gunslinger","warrior","warrior-training"]);args=parser.parse_args()
 root=Path(__file__).resolve().parents[1]/'art'
-for look in ['archer','gunslinger']:
+for look in ([args.look] if args.look else ['archer','gunslinger','warrior','warrior-training']):
     folder=root/'energy'/look;folder.mkdir(parents=True,exist_ok=True)
     emitters={}
     for sheet in ['idle','walk','run1','weapon','axeheavy','special']:
-        src=Image.open(root/look/'hd'/f'{sheet}.png').convert('RGBA')
+        source=root/'warrior'/'hd'/'training' if look=='warrior-training' else root/look/'hd'
+        src=Image.open(source/f'{sheet}.png').convert('RGBA')
         surface=Image.new('RGBA',src.size);contour=Image.new('RGBA',src.size);cols=src.width//384
         for row in range(4):
             for col in range(cols):
@@ -38,4 +40,4 @@ for look in ['archer','gunslinger']:
                 contour.alpha_composite(light,(col*384,row*384));surface.alpha_composite(mask,(col*384,row*384))
         contour.save(folder/f'{sheet}-contour.png');surface.save(folder/f'{sheet}-surface.png')
     (folder/'emitters.json').write_text(json.dumps(emitters,separators=(',',':'))+'\n')
-print('Attached energy: pose-specific alpha masks and body-edge emitters for archer and gunslinger.')
+print('Attached energy: pose-specific alpha masks and body-edge emitters for pose-bound character light.')

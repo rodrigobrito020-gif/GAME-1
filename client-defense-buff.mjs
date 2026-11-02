@@ -83,6 +83,11 @@ export function withDefenseBuffUi(bytes) {
     "let t=e.key.toLowerCase(),n=[`1`,`2`,`3`,`4`].indexOf(t)",
     "let t=e.key.toLowerCase();if(t===`shift`)return;let n=[`1`,`2`,`3`,`4`].indexOf(t)",
   );
+  code = replaceOnce(
+    code,
+    "levelUp(e,t){let n=this.actor(e);",
+    "levelUp(e,t){let n=this.actor(e);if(n&&window.__royalLevelUp?.apply(n,t,e===this.d.entities.own?EC:null))return;",
+  );
   const scene = "r.on(`sceneEnter`,e=>this.enterScene(e))";
   code = replaceOnce(
     code,

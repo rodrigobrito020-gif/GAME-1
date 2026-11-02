@@ -6,9 +6,11 @@ const sheets = ["idle", "walk", "run1", "weapon", "axeheavy", "special"];
 const read = (p) =>
   decodeRgba(readFileSync(new URL("../art/" + p, import.meta.url)));
 test("attached light uses every approved pose alpha, protects the face and has an actual silhouette halo", () => {
-  for (const look of ["archer", "gunslinger"])
+  for (const look of ["archer", "gunslinger", "warrior", "warrior-training"])
     for (const sheet of sheets) {
-      const base = read(`${look}/hd/${sheet}.png`),
+      const base = read(
+          `${look === "warrior-training" ? "warrior/hd/training" : look + "/hd"}/${sheet}.png`,
+        ),
         surface = read(`energy/${look}/${sheet}-surface.png`),
         rim = read(`energy/${look}/${sheet}-contour.png`);
       assert.equal(surface.width, base.width);
@@ -37,14 +39,16 @@ test("attached light uses every approved pose alpha, protects the face and has a
     }
 });
 test("aura emitters sit on the real body in all directions, including eight HD walking phases", () => {
-  for (const look of ["archer", "gunslinger"]) {
+  for (const look of ["archer", "gunslinger", "warrior", "warrior-training"]) {
     const meta = JSON.parse(
       readFileSync(
         new URL(`../art/energy/${look}/emitters.json`, import.meta.url),
       ),
     );
     for (const sheet of sheets) {
-      const base = read(`${look}/hd/${sheet}.png`);
+      const base = read(
+        `${look === "warrior-training" ? "warrior/hd/training" : look + "/hd"}/${sheet}.png`,
+      );
       for (let row = 0; row < 4; row++)
         for (let col = 0; col < base.width / 384; col++) {
           const points = meta[`${sheet}:${row}:${col}`];

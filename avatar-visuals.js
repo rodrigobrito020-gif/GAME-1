@@ -2,16 +2,7 @@
 // an inventory/skin replacement. Weapon light follows the actual atlas frame.
 (() => {
   const states = new Map(),
-    scenes = new Map(),
-    artwork = new Map();
-  for (const name of ["aura", "ativacao"]) {
-    const img = new Image();
-    img.src = `/assets/fx/royal-warrior/guerreiro-avatar-${name}.png`;
-    img
-      .decode()
-      .then(() => artwork.set(name, img))
-      .catch(() => {});
-  }
+    scenes = new Map();
   const weaponMasks = new Map();
   for (const sheet of [
     "idle",
@@ -110,40 +101,18 @@
     }
     const scene = actor.root.scene,
       body = window.__royalHD?.capture(actor) ?? actor.body;
-    if (!artwork.has("aura") || !artwork.has("ativacao")) return;
-    for (const [name, img] of artwork)
-      if (!scene.textures.exists(`royal-avatar-${name}`))
-        scene.textures.addImage(`royal-avatar-${name}`, img);
-    if (!state.sprites.length) {
-      state.sprites.push(
-        scene.add.image(0, 0, "royal-avatar-aura").setOrigin(0.5, 0.9),
-      );
+    if (!state.sprites.length)
       state.sprites.push(
         scene.add
           .image(0, 0, body.texture.key, body.frame.name)
           .setBlendMode(1),
       );
-      state.sprites.push(
-        scene.add.image(0, 0, "royal-avatar-ativacao").setOrigin(0.5, 0.65),
-      );
-    }
-    const [aura, weapons, corona] = state.sprites,
-      age = now - state.started;
-    const x = actor.x + body.x,
+    const [weapons] = state.sprites,
+      age = now - state.started,
+      x = actor.x + body.x,
       y = actor.y + body.y,
-      cam = scene.cameras.main;
-    const canvas = scene.game.canvas.getBoundingClientRect(),
-      css = canvas.width / scene.scale.width;
-    const size = Math.max(actor.height * 1.4, 90 / (cam.zoom * css));
-    const fade = Math.min(1, age / 180, (state.until - now) / 350),
+      fade = Math.min(1, age / 180, (state.until - now) / 350),
       visible = !actor.hidden && actor.root.visible && actor.body.visible;
-    aura
-      .setPosition(x, y + 4)
-      .setDisplaySize(size * 0.85, size)
-      .setDepth(actor.root.depth - 0.2)
-      .setTint(0xffd371)
-      .setAlpha((0.67 + 0.08 * Math.sin(age / 270)) * fade)
-      .setVisible(visible);
     const key = weaponTexture(actor);
     if (key)
       weapons
@@ -157,13 +126,6 @@
         .setAlpha((0.8 + 0.15 * Math.sin(age / 180)) * fade)
         .setVisible(visible);
     else weapons.setVisible(false);
-    const cast = Math.min(1, age / 650);
-    corona
-      .setPosition(actor.x, actor.y)
-      .setDisplaySize(size * (0.65 + cast * 0.45), size * (0.65 + cast * 0.45))
-      .setDepth(actor.root.depth - 0.1)
-      .setAlpha((1 - cast) * 0.9)
-      .setVisible(visible && cast < 1);
   }
   window.__royalAvatarVisuals = {
     apply(actor, durationMs, removed) {

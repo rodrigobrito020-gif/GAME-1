@@ -1,5 +1,5 @@
 // Pose-bound energy: actual silhouette rim, animated light clipped onto the
-// body and particles emitted from its edges. The warrior keeps its own effect.
+// body and particles emitted from its edges. Golden Ki is attached to the warrior.
 (() => {
   const art = new Map(),
     emitters = new Map(),
@@ -13,6 +13,14 @@
     () => (castAt = performance.now()),
   );
   const looks = {
+    guerreiro: {
+      look: "warrior",
+      buff: "avatar-da-luz",
+      color: 0xffc457,
+      light: 0xfff2bd,
+      css: "255,196,87",
+      ki: true,
+    },
     arqueira: {
       look: "archer",
       buff: "espirito-da-floresta",
@@ -28,7 +36,10 @@
       css: "178,123,255",
     },
   };
-  for (const look of ["archer", "gunslinger"]) {
+  const loading = new Set();
+  function loadLook(look) {
+    if (loading.has(look)) return;
+    loading.add(look);
     fetch(`/assets/fx/royal-energy/${look}/emitters.json`)
       .then((r) => r.json())
       .then((d) => emitters.set(look, d))
@@ -52,6 +63,8 @@
   window.addEventListener("royal-ultimate-state", (e) => {
     state = e.detail;
     stateAt = performance.now();
+    const config = looks[state?.classId];
+    if (config) loadLook(config.look);
   });
   function remove(a) {
     const s = actors.get(a);
@@ -80,13 +93,18 @@
       return;
     }
     const pose = body.pose,
-      stem = `${config.look}:${pose.sheet}`,
+      look =
+        config.ki && body.texture.key.includes(":training:")
+          ? "warrior-training"
+          : config.look,
+      stem = `${look}:${pose.sheet}`,
       surface = art.get(stem + ":surface"),
       contour = art.get(stem + ":contour"),
-      points = emitters.get(config.look)?.[
-        `${pose.sheet}:${pose.row}:${pose.col}`
-      ];
-    if (!surface || !contour || !points) return;
+      points = emitters.get(look)?.[`${pose.sheet}:${pose.row}:${pose.col}`];
+    if (!surface || !contour || !points) {
+      loadLook(look);
+      return;
+    }
     const scene = a.root.scene,
       key = `attached-energy:${a.id}`;
     let s = actors.get(a);
@@ -237,11 +255,45 @@
         life * 0.8 * fade,
       ).lineBetween(x, y + 3, x + Math.sin(i + phase) * 2, y - 3);
     }
+    // Each Ki tongue starts on an actual edge pixel of the current pose.
+    // The figure's origin, facing, scale and angle also transform these paths.
+    if (config.ki)
+      for (let i = 0; i < points.length; i++) {
+        const pt = points[i];
+        if (pt[1] < 175) continue;
+        const t = (phase * 0.8 + i * 0.193) % 1,
+          side = i % 2 ? 1 : -1,
+          x = pt[0] - 192,
+          y = pt[1] - 352,
+          reach = 22 + 32 * Math.sin(t * Math.PI),
+          spread = side * (5 + 9 * Math.sin(t * Math.PI)),
+          sway = Math.sin(phase * 4 + i) * 5,
+          alpha = Math.sin(t * Math.PI) * fade,
+          g = i % 3 ? s.back : s.front;
+        for (const [width, color, opacity] of [
+          [9, config.color, 0.14],
+          [3.2, config.color, 0.65],
+          [1.2, config.light, 0.9],
+        ]) {
+          g.lineStyle(width, color, opacity * alpha)
+            .beginPath()
+            .moveTo(x, y);
+          for (let n = 1; n <= 10; n++) {
+            const u = n / 10;
+            g.lineTo(
+              x + Math.sin(u * Math.PI) * (spread + sway) + spread * u * 0.3,
+              y - reach * u,
+            );
+          }
+          g.strokePath();
+        }
+      }
     s.flow.royalEnergyPose = poseKey;
     s.flow.royalEnergyUpdates = (s.flow.royalEnergyUpdates ?? 0) + 1;
   }
   window.__royalAttachedEnergy = {
     ready(look) {
+      loadLook(look);
       return (
         !!emitters.get(look) &&
         ["idle", "walk", "run1", "weapon", "axeheavy", "special"].every(

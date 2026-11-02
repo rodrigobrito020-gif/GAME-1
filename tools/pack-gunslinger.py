@@ -108,10 +108,10 @@ def save_sheet(cl, name, rows):
 
 
 # Whole-figure exports share the approved 384px frame, 224px body and foot plane.
-manifest={'character':'Pistoleira Dark Elf','version':34,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+manifest={'character':'Pistoleira Dark Elf','version':35,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
 idle=[];walk=[];weapon=[];special=[];burst=[]
 for row in range(4):
-    ref=whole_cell('idle-v30',1,4,0,row)
+    ref=whole_cell('idle-v35',1,4,0,[0,2,1,3][row])
     idle.append([frame(ref,ref,breath=b) for b in [1,1.003,1,.997]])
     sr=0 if row==0 else 2 if row==3 else 1
     name='walk-front-v34' if row==0 else 'walk-back-v34' if row==3 else 'walk-side-v34'

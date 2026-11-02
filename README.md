@@ -1,8 +1,18 @@
-# Jogo local — 0.6.34: caminhada, Dash e impactos por classe
+# Jogo local — 0.6.35: Ki do guerreiro, subida de nível e repouso da pistoleira
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.35
+
+- **Avatar da Luz:** aura dourada vinculada à silhueta de cada pose do guerreiro. A luz percorre roupa, corpo e armas; filamentos de Ki sobem das bordas reais da figura e acompanham ataques, caminhada, Dash e rotação. A imagem fixa de fundo foi retirada. A espada e o escudo continuam iluminados. Inclui a aparência com peitoral de treino.
+- **Subida de nível nas três classes:** animação original inspirada no Ragnarok, com selo nos pés, coluna de luz, traços radiais semelhantes a plumas, partículas e “LEVEL UP!”. Dura 2,2s e acompanha a posição do personagem. Usa somente eventos reais de nível, mantém o som nativo e reúne níveis ganhos juntos em uma única celebração. Reconectar não repete a animação.
+- **Pistoleira parada:** repouso redesenhado a partir do modelo atual da caminhada, corrigindo a volta à figura antiga mais estreita. Frente, perfis e costas com altura e linha dos pés comuns; retrato e máscaras de energia atualizados. Caminhada, tiros e habilidades preservados.
+
+As regras de combate, experiência, equipamentos, automação, poções, interface e progresso são mantidas. A aura da arqueira e a da pistoleira conservam seus efeitos; apenas as máscaras da nova pose parada da pistoleira foram atualizadas. **132 testes passaram com o ZIP real**, com conferência das auras e da subida real de nível nas três classes no Chromium/WebGL. A avaliação artística continua com o jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.35**.
 
 ## Atualização 0.6.34
 

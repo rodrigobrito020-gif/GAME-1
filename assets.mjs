@@ -94,7 +94,7 @@ export function localAssets(byName, status) {
         ),
       };
     const energy =
-      /^\/assets\/fx\/royal-energy\/(archer|gunslinger)\/(emitters\.json|(?:idle|walk|run1|weapon|axeheavy|special)-(?:surface|contour)\.png)$/.exec(
+      /^\/assets\/fx\/royal-energy\/(archer|gunslinger|warrior|warrior-training)\/(emitters\.json|(?:idle|walk|run1|weapon|axeheavy|special)-(?:surface|contour)\.png)$/.exec(
         pathname,
       );
     if (energy)

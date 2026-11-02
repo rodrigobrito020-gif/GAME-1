@@ -1,49 +1,42 @@
-VERSAO 0.6.34 — CAMINHADA, DASH E IMPACTOS POR CLASSE
+VERSAO 0.6.35 — KI DO GUERREIRO, SUBIDA DE NIVEL E REPOUSO DA PISTOLEIRA
 Data: 02/11/2026
 
 ALTERACOES
-- Elfa de costas: figura completa localizada antes de dividir a folha de poses.
-  Cabeca que cruzava a divisao entre linhas agora faz parte de cada exportacao.
-- Pistoleira: oito poses de caminhada redesenhadas de frente, perfil e costas
-  com referencia no modelo parado. Escala uniforme por direcao e pes na mesma
-  linha; sem montagem ou esticamento separado de membros.
-- Mascaras de armas, superficie, contorno e emissores regeneradas para as poses.
-- Dash universal: um unico pool HD separado dos rastros nativos de outras skills.
-  Ate quatro silhuetas, espacamento por deslocamento real e duracao propria de
-  175ms. Acao congelada, morte ou teleporte nao prolongam o rastro.
-- Impactos: cortes dourados no guerreiro, ponta de flecha com verde/dourado na
-  arqueira, Soulshot violeta preservado na pistoleira. Direcao da flecha acompanha
-  origem e alvo. Sons de impacto tambem respeitam o tipo de ataque.
-- Quatorze gravacoes de passos filtradas, ataque/final suaves e ganho reduzido
-  de 0,55 para 0,22; mixer de combate, volume salvo e mute nativo preservados.
-- Dano, alcances, cadencia, duracoes, recargas e automacao sem alteracoes.
+- Avatar da Luz: substituida a aura fixa de fundo por luz sobre a silhueta e
+  superficie das poses. Ki dourado emitido das bordas do corpo, subindo em
+  filamentos animados, com camadas a frente/atras e armas iluminadas.
+- Contorno, fluxo e emissores seguem quadro, origem, escala e rotacao do corpo.
+  Mascaras proprias para roupas iniciais e peitoral de treino. Rosto legivel.
+- Subida de nivel original inspirada no Ragnarok: selo nos pes, coluna de luz,
+  tracos radiais como plumas, particulas ascendentes e LEVEL UP! com nivel.
+  Duracao 2,2s, sem travar personagem, mudar experiencia ou pausar combate.
+- Efeito ligado ao evento nativo de nivel. Som nativo mantido, sem tela branca.
+  Niveis recebidos juntos compartilham a celebracao e exibem o maior nivel.
+- Pistoleira: novo repouso em quatro direcoes com referencia nas poses atuais
+  de caminhada. Corrige retorno ao modelo anterior mais estreito ao parar.
+  Retrato, mascaras da transformacao e atlas nativo/HD de repouso atualizados.
+- Valores, automacao, habilidades, caminhar, Dash, pocoes e equipamentos mantidos.
 
 VERIFICACAO
-- 130 testes passaram com recursos-publicos.zip real, sem falhas/ignorados.
-- Regressao da cabeca da elfa: oito quadros norte com coroa arredondada,
-  origem completa e estatura normal. Poses da pistoleira sem recortes e escala
-  uniforme durante cada ciclo de caminhada.
-- Rastro testado com relogio controlado: expiracao em repouso/acao congelada,
-  pool separado, morte, teleporte, limite de sprites e limpeza independente.
-- Chromium/WebGL pt-BR: tres classes com Dash real, silhuetas HD e desaparecimento
-  completo; Shift repetido nao sai da caca. Auras acompanham quadro e posicao;
-  efeitos e texturas temporarias sao removidos ao sair.
-- Acertos reais das tres classes mostram os numeros e desenhos proprios de
-  impacto, sem erros JavaScript; limpeza dos objetos conferida.
-- Audio realmente decodificado e iniciado no contexto em execucao nas tres
-  classes, incluindo as novas gravacoes curtas de passos. Mute nativo conferido.
-- Medicao dos primeiros passos de caminhada/corrida: ataque da gravacao reduzido
-  em aproximadamente 31%, alem da reducao do ganho exclusivo dos passos.
-- 138 arquivos protegidos identicos a 0.6.33, incluindo arte e Avatar do guerreiro
-  e poses da pistoleira fora da caminhada. Contas isoladas usadas nos testes;
-  progresso real preservado. Avaliacao artistica continua com o jogador.
+- 132 testes passaram com recursos-publicos.zip real, sem falhas/ignorados.
+- Transparencia, protecao do rosto, halo e emissores conferidos em todas as poses
+  de arqueira, pistoleira e guerreiro, com e sem peitoral.
+- Celebracao: evento explicito, validacao de nivel, varios niveis sem duplicar
+  som/objetos, expiracao e limpeza por morte, troca de cena e encerramento.
+- Chromium/WebGL pt-BR: subida real do nivel 1 ao 2 por morte de monstro nas
+  tres classes. Efeito acompanha posicao e termina; reconexao nao o repete.
+- Chromium/WebGL: energia alinhada ao quadro HD nas quatro direcoes das tres
+  classes, inclusive Shift; nenhuma imagem antiga de aura no guerreiro.
+  Expiracao, mute e remocao de efeitos/texturas ao sair da caca conferidos.
+- 160 arquivos aprovados identicos a 0.6.34: artes do guerreiro/arqueira,
+  energia da arqueira, regras, habilidades, movimento, Dash, impactos e audio.
+- Contas de teste isoladas; progresso real nao foi usado nem alterado.
+- Avaliacao artistica continua com o jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.34.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.35.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-Ferramentas Python/Pillow/FFmpeg sao opcionais para reconstruir arte/audio;
-nao sao necessarias para executar o jogo exportado.

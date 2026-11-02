@@ -2,7 +2,13 @@
 
 Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os recursos já fornecidos. O pacote não contém o servidor original. Não apresentar regras reconstruídas como se fossem as originais.
 
+## Decisão sobre ultimates — 02/11/2026
+
+Todas as próximas ultimates devem transformar visualmente o personagem, tendo a transformação do guerreiro como referência e respeitando a identidade de cada classe. A revisão 0.6.31 aplica esse padrão à Eclipse da pistoleira, junto do projétil com queimadura e da Chuva de Balas combinados na sessão anterior. A avaliação visual e de equilíbrio desta nova revisão continua com o jogador.
+
 ## Entregue
+
+- 0.6.31: Disparo Sombrio com queimadura de 5s sem acúmulo; Chuva de Balas com pose para o alto e três ondas de dano na área; Eclipse com energia de corpo inteiro e armas iluminadas acompanhando todas as poses. Ícones/cartas atualizados. Proporções e movimento aprovados preservados.
 
 - 0.6.30: proporções da pistoleira revistas em todas as poses com referência na arqueira; tiros, impactos, Rajada e Eclipse com violeta/dourado mais visíveis. As outras classes e regras de combate são preservadas. Avaliação artística pelo jogador pendente.
 
@@ -45,8 +51,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Próximas partes da construção
 
-1. Revisar a Arqueira Elfa jogando; guerreiro aprovado preservado. Os quatro nomes e o conjunto foram aprovados; números novos, preços e forças das poções são valores iniciais para teste. Preferências de cada habilidade e poção permanecem independentes.
-2. Definir e construir as três classes restantes: duas de cinco iniciais estão prontas (Guerreiro Humano e Arqueira Elfa). **Somente depois das cinco, trabalhar nos equipamentos**, conforme decisão de 01/11/2026. Não inventar silenciosamente as próximas três classes.
+1. Revisar a pistoleira no jogo após a 0.6.31: queimadura, Chuva de Balas e transformação da Eclipse. Dano contínuo e duração da queimadura são valores iniciais para teste. Guerreiro e arqueira aprovados preservados; preferências de habilidades e poções permanecem independentes.
+2. Após concluir a pistoleira, definir e construir as duas classes restantes das cinco iniciais. **Somente depois das cinco, trabalhar nos equipamentos**, conforme decisão de 01/11/2026. Não inventar silenciosamente as próximas classes.
 3. Ambientes de caça próprios, inimigos variados e chefes. Cidade e arena já têm mapas próprios; faltam novos ambientes e inimigos com artes distintas.
 4. Reaproveitar os sets do Lineage 2 já preparados no GAME-1: comum/No Grade, incomum/D, raro/C, épico/B e lendário/A. Adaptar os modelos/texturas 3D para as poses 2D e vincular cada peça ao slot equipado, com bônus de conjunto completo. Não substituir esse catálogo por equipamentos novos genéricos. Fontes e limites atuais em `LINEAGE_SETS.md`. Balancear recompensas com testes de jogo.
 5. Expandir os demais sistemas escolhidos para o nosso jogo. Menus existentes no cliente não significam que o servidor desses sistemas foi implementado.

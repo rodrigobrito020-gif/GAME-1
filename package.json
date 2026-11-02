@@ -1,6 +1,6 @@
 {
   "name": "cliente-capturado-local",
-  "version": "0.6.30",
+  "version": "0.6.31",
   "private": true,
   "type": "module",
   "engines": {
@@ -18,7 +18,7 @@
     "art:hd": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
     "art:archer": "python tools/pack-coherent-characters.py --class archer && python tools/pack-archer-energy.py",
     "art:characters": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py",
-    "art:gunslinger": "python tools/pack-gunslinger.py"
+    "art:gunslinger": "python tools/pack-gunslinger.py && python tools/pack-gunslinger-energy.py"
   },
   "dependencies": {
     "ws": "8.21.3"

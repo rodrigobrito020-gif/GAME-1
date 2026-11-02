@@ -1,6 +1,6 @@
 {
   "character": "Pistoleira Dark Elf",
-  "version": 30,
+  "version": 31,
   "frame": [
     384,
     384
@@ -3356,29 +3356,733 @@
       {
         "row": 0,
         "col": 0,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          12,
+          11,
+          234,
+          356
+        ],
+        "sourceFloor": 356,
+        "center": 118,
+        "mirrored": false,
+        "bounds": [
+          111,
+          91,
+          280,
+          353
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          175,
+          12,
+          396,
+          356
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          12,
+          11,
+          234,
+          356
+        ],
+        "sourceFloor": 356,
+        "center": 118,
+        "mirrored": false,
+        "bounds": [
+          111,
+          91,
+          280,
+          353
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          175,
+          12,
+          396,
+          356
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          10,
+          10,
+          218,
+          356
+        ],
+        "sourceFloor": 356,
+        "center": 111,
+        "mirrored": false,
+        "bounds": [
+          115,
+          90,
+          273,
+          353
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          524,
+          12,
+          730,
+          356
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          10,
+          10,
+          218,
+          356
+        ],
+        "sourceFloor": 356,
+        "center": 111,
+        "mirrored": false,
+        "bounds": [
+          115,
+          90,
+          273,
+          353
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          524,
+          12,
+          730,
+          356
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          12,
+          11,
+          196,
+          355
+        ],
+        "sourceFloor": 355,
+        "center": 101,
+        "mirrored": false,
+        "bounds": [
+          124,
+          91,
+          264,
+          352
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          844,
+          13,
+          1026,
+          356
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          12,
+          11,
+          196,
+          355
+        ],
+        "sourceFloor": 355,
+        "center": 101,
+        "mirrored": false,
+        "bounds": [
+          124,
+          91,
+          264,
+          352
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          844,
+          13,
+          1026,
+          356
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 0,
+        "col": 6,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          12,
+          11,
+          228,
+          307
+        ],
+        "sourceFloor": 307,
+        "center": 120,
+        "mirrored": false,
+        "bounds": [
+          109,
+          128,
+          274,
+          353
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          1146,
+          60,
+          1361,
+          355
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "sourceScale": 0.7567567567567568,
+        "scale": 0.7567567567567568,
+        "source": [
+          12,
+          11,
+          228,
+          307
+        ],
+        "sourceFloor": 307,
+        "center": 120,
+        "mirrored": false,
+        "bounds": [
+          109,
+          128,
+          274,
+          353
+        ],
+        "sourceBodyHeight": 296,
+        "sourceGlobalBox": [
+          1146,
+          60,
+          1361,
+          355
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          12,
+          204,
+          351
+        ],
+        "sourceFloor": 351,
+        "center": 94,
+        "mirrored": true,
+        "bounds": [
+          106,
+          86,
+          257,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          202,
+          346,
+          394,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          12,
+          204,
+          351
+        ],
+        "sourceFloor": 351,
+        "center": 94,
+        "mirrored": true,
+        "bounds": [
+          106,
+          86,
+          257,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          202,
+          346,
+          394,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
         "source": [
           11,
+          11,
+          190,
+          328
+        ],
+        "sourceFloor": 328,
+        "center": 89,
+        "mirrored": true,
+        "bounds": [
+          113,
+          103,
+          254,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          543,
+          369,
+          720,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          11,
+          11,
+          190,
+          328
+        ],
+        "sourceFloor": 328,
+        "center": 89,
+        "mirrored": true,
+        "bounds": [
+          113,
+          103,
+          254,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          543,
+          369,
+          720,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
           12,
+          10,
+          194,
+          345
+        ],
+        "sourceFloor": 345,
+        "center": 92.0,
+        "mirrored": true,
+        "bounds": [
+          112,
+          90,
+          255,
+          353
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          852,
+          353,
+          1032,
+          686
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          10,
+          194,
+          345
+        ],
+        "sourceFloor": 345,
+        "center": 92.0,
+        "mirrored": true,
+        "bounds": [
+          112,
+          90,
+          255,
+          353
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          852,
+          353,
+          1032,
+          686
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 6,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          12,
+          183,
+          298
+        ],
+        "sourceFloor": 298,
+        "center": 101.0,
+        "mirrored": true,
+        "bounds": [
+          128,
+          128,
+          262,
+          353
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          1184,
+          402,
+          1354,
+          688
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          12,
+          183,
+          298
+        ],
+        "sourceFloor": 298,
+        "center": 101.0,
+        "mirrored": true,
+        "bounds": [
+          128,
+          128,
+          262,
+          353
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          1184,
+          402,
+          1354,
+          688
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          12,
+          204,
+          351
+        ],
+        "sourceFloor": 351,
+        "center": 94,
+        "mirrored": false,
+        "bounds": [
+          127,
+          86,
+          278,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          202,
+          346,
+          394,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          12,
+          204,
+          351
+        ],
+        "sourceFloor": 351,
+        "center": 94,
+        "mirrored": false,
+        "bounds": [
+          127,
+          86,
+          278,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          202,
+          346,
+          394,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          11,
+          11,
+          190,
+          328
+        ],
+        "sourceFloor": 328,
+        "center": 89,
+        "mirrored": false,
+        "bounds": [
+          130,
+          103,
+          271,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          543,
+          369,
+          720,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          11,
+          11,
+          190,
+          328
+        ],
+        "sourceFloor": 328,
+        "center": 89,
+        "mirrored": false,
+        "bounds": [
+          130,
+          103,
+          271,
+          352
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          543,
+          369,
+          720,
+          685
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          10,
+          194,
+          345
+        ],
+        "sourceFloor": 345,
+        "center": 92.0,
+        "mirrored": false,
+        "bounds": [
+          129,
+          90,
+          272,
+          353
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          852,
+          353,
+          1032,
+          686
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          10,
+          194,
+          345
+        ],
+        "sourceFloor": 345,
+        "center": 92.0,
+        "mirrored": false,
+        "bounds": [
+          129,
+          90,
+          272,
+          353
+        ],
+        "sourceBodyHeight": 286,
+        "sourceGlobalBox": [
+          852,
+          353,
+          1032,
+          686
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 2,
+        "col": 6,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
+        "source": [
+          12,
+          12,
+          183,
+          298
+        ],
+        "sourceFloor": 298,
+        "center": 101.0,
+        "mirrored": false,
+        "bounds": [
+          122,
+          128,
           256,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 134.0,
-        "mirrored": false,
-        "bounds": [
-          137,
-          128,
-          247,
           353
         ],
-        "sourceBodyHeight": 499,
+        "sourceBodyHeight": 286,
         "sourceGlobalBox": [
-          14,
-          17,
-          258,
-          516
+          1184,
+          402,
+          1354,
+          688
         ],
         "sourceImageSize": [
           1536,
@@ -3386,31 +4090,31 @@
         ]
       },
       {
-        "row": 0,
-        "col": 1,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "row": 2,
+        "col": 7,
+        "sourceScale": 0.7832167832167832,
+        "scale": 0.7832167832167832,
         "source": [
           12,
           12,
-          239,
-          511
+          183,
+          298
         ],
-        "sourceFloor": 511,
-        "center": 126.0,
+        "sourceFloor": 298,
+        "center": 101.0,
         "mirrored": false,
         "bounds": [
-          140,
+          122,
           128,
-          243,
+          256,
           353
         ],
-        "sourceBodyHeight": 499,
+        "sourceBodyHeight": 286,
         "sourceGlobalBox": [
-          794,
-          17,
-          1021,
-          516
+          1184,
+          402,
+          1354,
+          688
         ],
         "sourceImageSize": [
           1536,
@@ -3418,222 +4122,30 @@
         ]
       },
       {
-        "row": 0,
-        "col": 2,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "row": 3,
+        "col": 0,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          12,
-          12,
-          246,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 127.0,
-        "mirrored": false,
-        "bounds": [
-          140,
-          128,
-          245,
-          353
-        ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          535,
-          17,
-          768,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 3,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
-        "source": [
-          12,
-          12,
-          224,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 118.0,
-        "mirrored": false,
-        "bounds": [
-          144,
-          128,
-          240,
-          353
-        ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          276,
-          17,
-          488,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 4,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
-        "source": [
-          12,
-          12,
+          11,
+          11,
           230,
-          511
+          336
         ],
-        "sourceFloor": 511,
-        "center": 121.0,
+        "sourceFloor": 336,
+        "center": 119,
         "mirrored": false,
         "bounds": [
-          143,
-          128,
-          241,
-          353
-        ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          1038,
-          17,
-          1255,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 5,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
-        "source": [
-          11,
-          12,
-          253,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 132.0,
-        "mirrored": false,
-        "bounds": [
-          138,
-          128,
-          247,
-          353
-        ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          1288,
-          17,
-          1528,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 6,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
-        "source": [
-          11,
-          12,
-          253,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 132.0,
-        "mirrored": false,
-        "bounds": [
-          138,
-          128,
-          247,
-          353
-        ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          1288,
-          17,
-          1528,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 7,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
-        "source": [
-          11,
-          12,
-          253,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 132.0,
-        "mirrored": false,
-        "bounds": [
-          138,
-          128,
-          247,
-          353
-        ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          1288,
-          17,
-          1528,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 0,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          193,
-          486
-        ],
-        "sourceFloor": 486,
-        "center": 103,
-        "mirrored": true,
-        "bounds": [
-          150,
-          127,
-          236,
+          105,
+          93,
+          280,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          26,
-          531,
-          206,
+          175,
+          681,
+          393,
           1005
         ],
         "sourceImageSize": [
@@ -3642,31 +4154,31 @@
         ]
       },
       {
-        "row": 1,
+        "row": 3,
         "col": 1,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          10,
-          12,
-          284,
-          485
+          11,
+          11,
+          230,
+          336
         ],
-        "sourceFloor": 485,
-        "center": 115.0,
-        "mirrored": true,
+        "sourceFloor": 336,
+        "center": 119,
+        "mirrored": false,
         "bounds": [
-          111,
-          128,
-          241,
+          105,
+          93,
+          280,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          234,
-          532,
-          506,
-          1004
+          175,
+          681,
+          393,
+          1005
         ],
         "sourceImageSize": [
           1536,
@@ -3674,95 +4186,95 @@
         ]
       },
       {
-        "row": 1,
+        "row": 3,
         "col": 2,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
           11,
-          12,
-          283,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 116.0,
-        "mirrored": true,
-        "bounds": [
-          114,
-          128,
-          242,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          496,
-          533,
-          765,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 3,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          11,
-          289,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 118,
-        "mirrored": true,
-        "bounds": [
-          111,
-          128,
-          243,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          760,
-          533,
-          1037,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 4,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
           10,
-          11,
-          315,
-          484
+          211,
+          335
         ],
-        "sourceFloor": 484,
+        "sourceFloor": 335,
         "center": 117.0,
-        "mirrored": true,
+        "mirrored": false,
         "bounds": [
+          107,
+          94,
+          267,
+          353
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          519,
+          684,
+          718,
+          1007
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          11,
+          10,
+          211,
+          335
+        ],
+        "sourceFloor": 335,
+        "center": 117.0,
+        "mirrored": false,
+        "bounds": [
+          107,
+          94,
+          267,
+          353
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          519,
+          684,
+          718,
+          1007
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          12,
+          11,
+          208,
+          331
+        ],
+        "sourceFloor": 331,
+        "center": 106,
+        "mirrored": false,
+        "bounds": [
+          117,
           98,
-          128,
-          242,
+          274,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
+          843,
+          688,
           1038,
-          533,
-          1339,
-          1004
+          1007
         ],
         "sourceImageSize": [
           1536,
@@ -3770,126 +4282,62 @@
         ]
       },
       {
-        "row": 1,
+        "row": 3,
         "col": 5,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          11,
           12,
-          181,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 100,
-        "mirrored": true,
-        "bounds": [
-          153,
-          128,
-          234,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 6,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
           11,
-          12,
-          181,
-          485
+          208,
+          331
         ],
-        "sourceFloor": 485,
-        "center": 100,
-        "mirrored": true,
-        "bounds": [
-          153,
-          128,
-          234,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 7,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          181,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 100,
-        "mirrored": true,
-        "bounds": [
-          153,
-          128,
-          234,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 0,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          193,
-          486
-        ],
-        "sourceFloor": 486,
-        "center": 103,
+        "sourceFloor": 331,
+        "center": 106,
         "mirrored": false,
         "bounds": [
-          148,
-          127,
-          234,
+          117,
+          98,
+          274,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          26,
-          531,
-          206,
+          843,
+          688,
+          1038,
+          1007
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ]
+      },
+      {
+        "row": 3,
+        "col": 6,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          12,
+          11,
+          211,
+          293
+        ],
+        "sourceFloor": 293,
+        "center": 111.0,
+        "mirrored": false,
+        "bounds": [
+          113,
+          128,
+          272,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          1158,
+          724,
+          1357,
           1005
         ],
         "sourceImageSize": [
@@ -3898,483 +4346,35 @@
         ]
       },
       {
-        "row": 2,
-        "col": 1,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          10,
-          12,
-          284,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 115.0,
-        "mirrored": false,
-        "bounds": [
-          143,
-          128,
-          273,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          234,
-          532,
-          506,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 2,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          283,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 116.0,
-        "mirrored": false,
-        "bounds": [
-          142,
-          128,
-          270,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          496,
-          533,
-          765,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 3,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          11,
-          289,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 118,
-        "mirrored": false,
-        "bounds": [
-          141,
-          128,
-          273,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          760,
-          533,
-          1037,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 4,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          10,
-          11,
-          315,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 117.0,
-        "mirrored": false,
-        "bounds": [
-          142,
-          128,
-          286,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1038,
-          533,
-          1339,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 5,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          181,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 100,
-        "mirrored": false,
-        "bounds": [
-          150,
-          128,
-          231,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 6,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          181,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 100,
-        "mirrored": false,
-        "bounds": [
-          150,
-          128,
-          231,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 7,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          181,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 100,
-        "mirrored": false,
-        "bounds": [
-          150,
-          128,
-          231,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 3,
-        "col": 0,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
-        "source": [
-          12,
-          12,
-          343,
-          679
-        ],
-        "sourceFloor": 679,
-        "center": 178,
-        "mirrored": false,
-        "bounds": [
-          136,
-          128,
-          247,
-          352
-        ],
-        "sourceBodyHeight": 667,
-        "sourceGlobalBox": [
-          17,
-          30,
-          348,
-          697
-        ],
-        "sourceImageSize": [
-          2172,
-          724
-        ]
-      },
-      {
-        "row": 3,
-        "col": 1,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
-        "source": [
-          12,
-          11,
-          330,
-          678
-        ],
-        "sourceFloor": 678,
-        "center": 171.0,
-        "mirrored": false,
-        "bounds": [
-          139,
-          128,
-          246,
-          352
-        ],
-        "sourceBodyHeight": 667,
-        "sourceGlobalBox": [
-          375,
-          31,
-          692,
-          697
-        ],
-        "sourceImageSize": [
-          2172,
-          724
-        ]
-      },
-      {
-        "row": 3,
-        "col": 2,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
-        "source": [
-          12,
-          10,
-          330,
-          680
-        ],
-        "sourceFloor": 680,
-        "center": 171.0,
-        "mirrored": false,
-        "bounds": [
-          139,
-          127,
-          246,
-          352
-        ],
-        "sourceBodyHeight": 667,
-        "sourceGlobalBox": [
-          737,
-          29,
-          1054,
-          697
-        ],
-        "sourceImageSize": [
-          2172,
-          724
-        ]
-      },
-      {
-        "row": 3,
-        "col": 3,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
-        "source": [
-          12,
-          11,
-          330,
-          678
-        ],
-        "sourceFloor": 678,
-        "center": 171.0,
-        "mirrored": true,
-        "bounds": [
-          138,
-          128,
-          245,
-          352
-        ],
-        "sourceBodyHeight": 667,
-        "sourceGlobalBox": [
-          375,
-          31,
-          692,
-          697
-        ],
-        "sourceImageSize": [
-          2172,
-          724
-        ]
-      },
-      {
-        "row": 3,
-        "col": 4,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
-        "source": [
-          12,
-          10,
-          330,
-          680
-        ],
-        "sourceFloor": 680,
-        "center": 171.0,
-        "mirrored": true,
-        "bounds": [
-          138,
-          127,
-          245,
-          352
-        ],
-        "sourceBodyHeight": 667,
-        "sourceGlobalBox": [
-          737,
-          29,
-          1054,
-          697
-        ],
-        "sourceImageSize": [
-          2172,
-          724
-        ]
-      },
-      {
-        "row": 3,
-        "col": 5,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
-        "source": [
-          11,
-          12,
-          343,
-          679
-        ],
-        "sourceFloor": 679,
-        "center": 177,
-        "mirrored": false,
-        "bounds": [
-          137,
-          128,
-          248,
-          352
-        ],
-        "sourceBodyHeight": 667,
-        "sourceGlobalBox": [
-          1825,
-          30,
-          2156,
-          697
-        ],
-        "sourceImageSize": [
-          2172,
-          724
-        ]
-      },
-      {
-        "row": 3,
-        "col": 6,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
-        "source": [
-          11,
-          12,
-          343,
-          679
-        ],
-        "sourceFloor": 679,
-        "center": 177,
-        "mirrored": false,
-        "bounds": [
-          137,
-          128,
-          248,
-          352
-        ],
-        "sourceBodyHeight": 667,
-        "sourceGlobalBox": [
-          1825,
-          30,
-          2156,
-          697
-        ],
-        "sourceImageSize": [
-          2172,
-          724
-        ]
-      },
-      {
         "row": 3,
         "col": 7,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          11,
           12,
-          343,
-          679
+          11,
+          211,
+          293
         ],
-        "sourceFloor": 679,
-        "center": 177,
+        "sourceFloor": 293,
+        "center": 111.0,
         "mirrored": false,
         "bounds": [
-          137,
+          113,
           128,
-          248,
+          272,
           352
         ],
-        "sourceBodyHeight": 667,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          1825,
-          30,
-          2156,
-          697
+          1158,
+          724,
+          1357,
+          1005
         ],
         "sourceImageSize": [
-          2172,
-          724
+          1536,
+          1024
         ]
       }
     ],

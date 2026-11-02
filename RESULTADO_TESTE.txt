@@ -1,39 +1,43 @@
-VERSAO 0.6.30 — PROPORCOES E VISIBILIDADE DA PISTOLEIRA
+VERSAO 0.6.31 — QUEIMADURA, CHUVA DE BALAS E TRANSFORMACAO ECLIPSE
 Data: 02/11/2026
 
 ALTERACOES
-- Novo modelo completo com rosto maior, tronco/quadril menos estreitos e pernas
-  menos alongadas, tendo a arqueira como referencia. Traços, cabelo e roupas
-  iniciais preservados no novo desenho; duas pistolas simples.
-- Repouso, caminhada nas quatro direcoes, disparos, buff, ferimento e derrota
-  reconstruidos com figuras completas. Oito fases de caminhada, altura comum
-  e linha dos pes fixa; exportacao sem recortes de partes do corpo.
-- Mira e disparo pareados por mao; origem dos tiros recalibrada nas novas artes.
-- Tiros e impactos maiores, violeta saturado e detalhes dourados. Desaparecimento
-  dos impactos mais gradual; Rajada e Eclipse com maior opacidade.
-- Centro da aura aberto, mantendo a leitura do personagem.
-- Extracao de efeitos completos antes de separar a imagem de origem: ponta
-  inteira dos projeteis e nenhum fragmento de bala no clarao da pistola.
+- Disparo Sombrio mantem dano inicial de 220% e trajetoria perfurante, agora com
+  projetil em chamas e queimadura de 20% do ataque/segundo por 5s. Valores de
+  teste. Sem criticos no dano continuo; reaplicacao renova sem acumular.
+- Chuva de Balas substitui a Rajada na apresentacao da habilidade 2. Mantido o
+  identificador salvo para preservar preferencias. Pose propria com duas
+  pistolas para o alto e tres ondas na area, em 700/1200/1700ms, de 110% cada.
+  Custo 18 MP, recarga 10s e raio 125 mantidos; a morte do alvo nao cancela a area.
+- Eclipse com energia de corpo inteiro seguindo a referencia do guerreiro e
+  mascaras de luz das pistolas para cada pose HD, incluindo caminhada de 8 fases.
+  Substitui a orbita; rosto visivel. Bonus, energia, duracao e recarga mantidos.
+- Novas artes e cartas das habilidades 1 e 2; preferencias AUTO/MANUAL mantidas.
 
 VERIFICACAO
-- 119 testes automatizados passaram com o ZIP real; zero falhas/ignorados.
-- Cliente real Chromium/WebGL pt-BR: tres classes lado a lado, caminhada nas
-  quatro direcoes, Dash violeta HD, troca de classe sem reabrir e preferencias
-  persistentes; duas pocoes selecionadas e galeria das tres classes.
-- Quatro skills em combate, projeteis orientados, bonus reais de critico e
-  velocidade de ataque, dois buffs independentes, cartas e combate automatico.
-- Limpeza dos efeitos ao sair da hunt; zero erros JavaScript nos testes nativos.
-- Capturas reais revisadas: proporcoes nas cartas e efeitos no piso claro.
-- 162 arquivos das outras classes, artes-base, movimento, pocoes e regras
-  compartilhadas comparados byte a byte com 0.6.29: nenhum alterado.
+- 123 testes automatizados passaram com o ZIP real, sem falhas/ignorados.
+- Queimadura testada desde o impacto, cinco ticks sem critico, renovacao sem
+  acumulo/atraso do tick, recompensa unica ao matar e isolamento por identidade
+  de monstro/instancia. Ticks atrasados e impactos processados cronologicamente.
+- Chuva testada em tres instantes: saida e retorno de inimigo a area, alvo
+  inicial morto e posicoes visuais deterministicas alinhadas aos danos.
+- Chromium/WebGL pt-BR real: tres classes, caminhada nas quatro direcoes,
+  Dash HD violeta, troca sem reabrir, escolhas salvas, duas pocoes e galeria.
+- Combate nativo: queimadura recebida pelo cliente, animacao para o alto,
+  chuva com pelo menos 10 balas descendentes simultaneas, quatro skills,
+  critico/velocidade reais, dois buffs, cartas e AUTO. Zero erros JavaScript.
+- Equipamento iluminado do Eclipse acompanha o quadro HD real em movimento.
+- Efeitos e indicadores limpos ao sair da hunt. Capturas do jogo revisadas.
+- 163 arquivos das outras classes, artes-base, movimento e pocoes e 13 arquivos
+  das poses aprovadas da pistoleira comparados byte a byte com 0.6.30: iguais.
 - Contas isoladas nos testes; progresso real nao foi alterado.
-- A avaliacao artistica final desta revisao cabe ao jogador.
+- Avaliacao artistica e equilibrio final da revisao continuam com o jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.30.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.31.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Reconstrucao opcional das artes: npm run art:gunslinger (Python/Pillow).

@@ -1,8 +1,20 @@
-# Jogo local — 0.6.30: proporções e efeitos da Pistoleira Dark Elf
+# Jogo local — 0.6.31: queimadura, Chuva de Balas e transformação Eclipse
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.31
+
+As três mudanças combinadas para a pistoleira estão disponíveis para teste:
+
+- **1 · Disparo Sombrio:** projétil com chama dourada e violeta, dano inicial de 220% do ataque e **queimadura de 20% do ataque por segundo durante 5 segundos**. Mantém a trajetória perfurante. O dano contínuo não causa críticos; uma nova aplicação renova a duração sem acumular queimaduras. São valores iniciais para teste. Custo de 8 MP e recarga de 5s mantidos.
+- **2 · Chuva de Balas:** levanta as duas pistolas para disparar para o alto, seguida por três ondas de balas sobre a área marcada. Cada onda causa 110% do ataque; raio 125, custo 18 MP e recarga 10s. As ondas atingem em 0,7s, 1,2s e 1,7s. A área permanece se o alvo inicial morrer, e os inimigos são verificados novamente a cada onda.
+- **4 · Eclipse:** transformação com energia de corpo inteiro e luz nas duas pistolas acompanhando a pose, usando a apresentação do guerreiro como referência. Substitui a órbita anterior e mantém o rosto legível. Duração 45s, recarga 60s, energia 100, velocidade de ataque +75% e redução de dano 15% mantidos.
+
+Os ícones das duas primeiras habilidades e suas cartas acompanham as novas funções. AUTO/MANUAL e escolhas salvas continuam funcionando. As proporções, caminhada e disparos normais aprovados da pistoleira são preservados, assim como as artes e habilidades do guerreiro e da arqueira, as poções e o progresso. As próximas ultimates devem seguir o padrão de transformação do personagem, com identidade própria para cada classe.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.31**.
 
 ## Atualização 0.6.30
 

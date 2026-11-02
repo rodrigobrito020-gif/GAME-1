@@ -7,11 +7,14 @@ import {
   GUNSLINGER_SKIN,
   GUNSLINGER_SKILLS,
   GUNSLINGER_ACTIONS,
+  GUNSLINGER_BURN,
+  GUNSLINGER_RAIN,
   NIGHT_INSTINCT,
   ECLIPSE,
   gunslingerRig,
 } from "../gunslinger.mjs";
 import { gunslingerFxState } from "../gunslinger-combat.mjs";
+import { gunslingerRainPose } from "../gunslinger-vfx.mjs";
 import { decodeRgba } from "../png.mjs";
 function setup() {
   let clock = 10000;
@@ -125,7 +128,7 @@ test("piercing shot hits aligned enemies once each, rejects wrong range and does
     /invalid_target/,
   );
 });
-test("six-shot area burst retains the area after the original target dies and respects enemies leaving the radius", () => {
+test("three rain waves retain the cast area after the target dies and sample positions at each impact", () => {
   const s = setup(),
     { farm, client } = s,
     a = s.alive(0, 150),
@@ -133,15 +136,21 @@ test("six-shot area burst retains the area after the original target dies and re
     out = s.alive(2, 400);
   farm.cast(client, "rajada-do-crepusculo", a.id);
   const fx = gunslingerFxState(client, 10000);
-  assert.equal(fx.length, 6);
-  assert.deepEqual(
-    fx.map((f) => f.hand),
-    [0, 1, 0, 1, 0, 1],
-  );
+  assert.equal(fx.length, 1);
+  assert.equal(fx[0].kind, "rain");
+  assert.equal(fx[0].radius, 125);
+  assert.equal(client.hunt.impacts.length, 3);
   a.hp = 0;
-  const hit = s.step(1100).events.damage;
-  assert.equal(hit.filter((d) => d.target === b.id).length, 6);
-  assert.equal(b.hp, 958);
+  s.step(699);
+  assert.equal(b.hp, 1000);
+  s.step(1);
+  assert.equal(b.hp, 986);
+  b.x = client.x + 400;
+  s.step(500);
+  assert.equal(b.hp, 986);
+  b.x = client.x + 160;
+  s.step(500);
+  assert.equal(b.hp, 972);
   assert.equal(out.hp, 1000);
   assert.equal(farm.character.progress.mana, 92);
 });
@@ -231,7 +240,7 @@ test("class switches preserve progress, items, potions and independent manual/au
   assert.equal(farm.skills.length, 5);
   assert.ok(farm.skills.at(-1).icon.includes("royal-gunslinger"));
 });
-test("gunslinger timing exposes the correct authored firing poses and separate six-shot burst releases", () => {
+test("gunslinger timing exposes normal firing and two skyward launches before the three rain impacts", () => {
   const rig = gunslingerRig({ moves: {}, basic: {}, skills: {} });
   for (const a of Object.values(GUNSLINGER_ACTIONS)) {
     const m = rig.moves[a.move];
@@ -242,6 +251,113 @@ test("gunslinger timing exposes the correct authored firing poses and separate s
   }
   assert.equal(GUNSLINGER_SKILLS.length, 4);
   assert.equal(rig.skills.eclipse.move, "dark-elf-eclipse");
+});
+
+test("burn applies at projectile impact, ticks five times without criticals and never burns a side bystander", () => {
+  const s = setup(),
+    { farm, client } = s,
+    a = s.alive(0, 150),
+    b = s.alive(1, 300),
+    side = s.alive(2, 250, 70);
+  farm.cast(client, "disparo-sombrio", a.id);
+  const impact = client.hunt.impacts[0].at;
+  s.step(impact - 10000);
+  assert.equal(a.hp, 971);
+  assert.equal(b.hp, 971);
+  const burn = gunslingerFxState(client, impact).filter(
+    (f) => f.kind === "burn",
+  );
+  assert.equal(burn.length, 2);
+  assert.equal(burn[0].remainingMs, 5000);
+  farm.random = () => 0; // All eligible direct hits would critically hit.
+  s.step(999);
+  assert.equal(a.hp, 971);
+  let damage = s.step(1).events.damage;
+  assert.deepEqual(
+    damage.map((d) => d.amount),
+    [3, 3],
+  );
+  assert.ok(damage.every((d) => !d.flags));
+  damage = s.step(4000).events.damage;
+  assert.equal(damage.length, 8);
+  assert.equal(a.hp, 956);
+  assert.equal(b.hp, 956);
+  assert.equal(side.hp, 1000);
+  assert.equal(client.hunt.gunslingerBurns.size, 0);
+  assert.equal(gunslingerFxState(client, impact + 5000).length, 0);
+});
+
+test("refreshing a burn replaces its amount and expiry without stacking or postponing a due tick", async () => {
+  const { applyGunslingerBurn, tickGunslingerBurns } = await import(
+    "../gunslinger-combat.mjs"
+  );
+  const s = setup(),
+    { farm, client } = s,
+    m = s.alive(0, 100);
+  applyGunslingerBurn(client.hunt, m, { at: 10000, burn: { amount: 3 } });
+  applyGunslingerBurn(client.hunt, m, { at: 10500, burn: { amount: 4 } });
+  assert.equal(client.hunt.gunslingerBurns.size, 1);
+  const e = farm.events();
+  tickGunslingerBurns(farm, client, e, [], 11000);
+  assert.equal(m.hp, 996);
+  assert.equal(e.damage.length, 1);
+  assert.equal(client.hunt.gunslingerBurns.get(m.id).until, 15500);
+  tickGunslingerBurns(farm, client, e, [], 15500);
+  assert.equal(m.hp, 980);
+  assert.equal(e.damage.length, 5);
+  assert.equal(client.hunt.gunslingerBurns.size, 0);
+});
+
+test("burn death rewards once and never transfers to a fresh respawn identity or another hunt", async () => {
+  const { applyGunslingerBurn } = await import("../gunslinger-combat.mjs");
+  const s = setup(),
+    { farm, client } = s,
+    m = s.alive(0, 100);
+  m.hp = 2;
+  applyGunslingerBurn(client.hunt, m, { at: 10000, burn: { amount: 3 } });
+  let rewards = 0;
+  const reward = farm.reward.bind(farm);
+  farm.reward = (...args) => {
+    rewards++;
+    return reward(...args);
+  };
+  assert.equal(s.step(1000).events.deaths.length, 1);
+  assert.equal(rewards, 1);
+  s.step(4000);
+  assert.equal(rewards, 1);
+  assert.equal(client.hunt.gunslingerBurns.size, 0);
+  const gold = farm.character.wallet.gold;
+  m.id += 100000;
+  m.hp = 1000;
+  s.step(1000);
+  assert.equal(m.hp, 1000);
+  assert.equal(farm.character.wallet.gold, gold);
+  farm.stop(client);
+  assert.deepEqual(gunslingerFxState(client, 20000), []);
+});
+
+test("bullet rain positions are deterministic, stay inside the server area and land exactly on damage waves", () => {
+  const fx = {
+    x: 300,
+    y: 400,
+    radius: 125,
+    releaseMs: GUNSLINGER_RAIN.releaseMs,
+  };
+  assert.equal(gunslingerRainPose(fx, 349).telegraph, false);
+  for (const [wave, at] of GUNSLINGER_RAIN.impactsMs.entries()) {
+    const before = gunslingerRainPose(fx, at - 1),
+      hit = gunslingerRainPose(fx, at);
+    assert.equal(before.drops.length, 18);
+    assert.equal(hit.drops.length, 0);
+    assert.equal(hit.impacts[0].wave, wave);
+    assert.equal(hit.impacts[0].progress, 0);
+    assert.deepEqual(before, gunslingerRainPose(fx, at - 1));
+    for (const d of before.drops) {
+      assert.ok(Math.hypot(d.x - fx.x, d.ground - fx.y) <= fx.radius);
+      assert.ok(d.ground - d.y < 1);
+    }
+  }
+  assert.equal(GUNSLINGER_BURN.durationMs, 5000);
 });
 test("gunslinger exports whole figures and all native/HD sheets with matching anchors and transparent gutters", () => {
   const manifest = JSON.parse(

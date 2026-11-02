@@ -1,7 +1,8 @@
 import { projectilePose } from "/archer-vfx.mjs";
+import { gunslingerRainPose } from "/gunslinger-vfx.mjs";
 import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
-// Distinct painted signatures: charged piercing shot, six-hit crescent volley,
-// a restrained weapon glint and an open moving Eclipse orbit.
+// Fire projectile and damage-over-time flames, three skyward bullet waves,
+// and a full-body Eclipse transformation following the warrior presentation.
 (() => {
   const art = new Map(),
     scenes = new Map();
@@ -14,12 +15,28 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
     "power",
     "powerimpact",
     "volley",
-    "orbit",
+    "firebullet",
+    "burn",
+    "eclipse",
   ]) {
     const im = new Image();
     im.src = `/assets/fx/royal-gunslinger/${name}.png`;
     im.decode()
       .then(() => art.set(name, im))
+      .catch(() => {});
+  }
+  for (const sheet of [
+    "idle",
+    "walk",
+    "run1",
+    "weapon",
+    "special",
+    "axeheavy",
+  ]) {
+    const im = new Image();
+    im.src = `/assets/fx/royal-gunslinger/eclipse-weapons/${sheet}.png`;
+    im.decode()
+      .then(() => art.set(`weapons:${sheet}`, im))
       .catch(() => {});
   }
   window.addEventListener("royal-ultimate-state", (e) => {
@@ -30,7 +47,6 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
     for (const s of e.images.values()) s.destroy();
     e.images.clear();
     e.shots.clear();
-    e.volleys.clear();
     e.actors.clear();
     e.hits = [];
   }
@@ -40,7 +56,12 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
       shots = new Set();
     for (const [name, im] of art)
       if (!scene.textures.exists(`gun-fx:${name}`))
-        scene.textures.addImage(`gun-fx:${name}`, im);
+        if (name.startsWith("weapons:"))
+          scene.textures.addSpriteSheet(`gun-fx:${name}`, im, {
+            frameWidth: 384,
+            frameHeight: 384,
+          });
+        else scene.textures.addImage(`gun-fx:${name}`, im);
     for (const [id, a] of e.actors) if (!a.root?.scene) e.actors.delete(id);
     function image(id, name, x, y, w, h, alpha, angle = 0, depth = 1e6) {
       if (!art.has(name) || alpha <= 0) return;
@@ -50,7 +71,8 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
         s = scene.add.image(0, 0, `gun-fx:${name}`);
         e.images.set(id, s);
       }
-      s.setPosition(x, y)
+      s.setTexture(`gun-fx:${name}`)
+        .setPosition(x, y)
         .setDisplaySize(w, h)
         .setAlpha(alpha)
         .setAngle(angle)
@@ -68,6 +90,90 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
         const left = fx.remainingMs - (now - at),
           age = fx.durationMs - left;
         if (left <= 0) continue;
+        if (fx.kind === "burn") {
+          const target = e.actors.get(fx.target),
+            x = target?.x ?? fx.x,
+            y = target?.y ?? fx.y,
+            fade = Math.min(1, left / 300),
+            phase = now / 180,
+            depth = (target?.root.depth ?? e.actor.root.depth) + 0.04;
+          for (let i = 0; i < 2; i++)
+            image(
+              `${fx.id}:flame:${i}`,
+              "burn",
+              x + (i ? 10 : -10),
+              y - 25 + Math.sin(phase + i) * 3,
+              38,
+              57 + Math.sin(phase + i) * 4,
+              0.8 * fade,
+              0,
+              depth,
+            );
+          continue;
+        }
+        if (fx.kind === "rain") {
+          const rain = gunslingerRainPose(fx, age),
+            depth = e.actor.root.depth - 0.3;
+          if (rain.telegraph)
+            image(
+              `${fx.id}:area`,
+              "volley",
+              fx.x,
+              fx.y + 3,
+              fx.radius * 2.1,
+              fx.radius * 1.4,
+              0.65 *
+                Math.min(
+                  1,
+                  Math.max(0, (age - fx.releaseMs) / 140),
+                  left / 250,
+                ),
+              0,
+              depth,
+            );
+          for (const d of rain.drops)
+            image(
+              `${fx.id}:drop:${d.wave}:${d.index}`,
+              "bullet",
+              d.x,
+              d.y - 7,
+              58,
+              20,
+              d.alpha,
+              90,
+            );
+          for (const hit of rain.impacts)
+            for (let i = 0; i < 10; i++) {
+              const a = i * 2.399963 + hit.wave * 0.7,
+                r = fx.radius * 0.85 * Math.sqrt((i + 0.5) / 10),
+                p = hit.progress;
+              image(
+                `${fx.id}:hit:${hit.wave}:${i}`,
+                "impact",
+                fx.x + Math.cos(a) * r,
+                fx.y + Math.sin(a) * r - 8,
+                30 + p * 24,
+                36 + p * 24,
+                Math.pow(1 - p, 1.3) * 0.9,
+              );
+            }
+          // Two visual launches have no extra damage: only the server rain hits.
+          for (const [hand, release] of [150, 350].entries()) {
+            const t = (age - release) / 240;
+            if (t >= 0 && t < 1)
+              image(
+                `${fx.id}:launch:${hand}`,
+                "bullet",
+                e.actor.x + (hand ? 17 : -17),
+                e.actor.y - 130 - t * 75,
+                42,
+                16,
+                (1 - t) * 0.9,
+                -90,
+              );
+          }
+          continue;
+        }
         const target = e.actors.get(fx.target),
           render = target?.root.active
             ? { ...fx, tx: target.x, ty: target.y - 70 }
@@ -76,15 +182,6 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           burst = fx.skillId === "rajada-do-crepusculo";
         shots.add(fx.id);
         e.shots.set(fx.id, { fx: render, due: now + left });
-        if (burst && fx.area) {
-          const id = fx.area.group ?? `rajada:${fx.start}`,
-            old = e.volleys.get(id);
-          e.volleys.set(id, {
-            area: fx.area,
-            at: now - age,
-            until: Math.max(now + left, old?.until ?? 0),
-          });
-        }
         const pose = projectilePose(render, age);
         if (!pose) {
           if (power) {
@@ -116,7 +213,7 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
         }
         image(
           fx.id,
-          power ? "power" : "bullet",
+          power ? "firebullet" : "bullet",
           pose.x,
           pose.y,
           power ? 128 : burst ? 66 : state.activeMs > 0 ? 58 : 50,
@@ -146,34 +243,13 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
       const p = (now - h.at) / 320;
       image(
         h.id + ":impact",
-        h.power ? "powerimpact" : "impact",
+        h.power ? "burn" : "impact",
         h.x,
         h.y,
         (h.power ? 85 : 36) + p * 18,
         (h.power ? 60 : 36) + p * 15,
         Math.pow(1 - p, 1.3) * 0.95,
-        h.power ? h.angle : 0,
-      );
-    }
-    for (const [id, v] of e.volleys) {
-      if (!active || now > v.until + 220) {
-        e.volleys.delete(id);
-        continue;
-      }
-      const fade = Math.max(
         0,
-        Math.min(1, (now - v.at) / 130, (v.until + 220 - now) / 240),
-      );
-      image(
-        id + ":ground",
-        "volley",
-        v.area.x,
-        v.area.y + 4,
-        v.area.radius * 2.15,
-        v.area.radius * 1.4,
-        fade * 0.68,
-        0,
-        e.actor.root.depth - 0.3,
       );
     }
     if (active) {
@@ -188,41 +264,57 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
             0,
             Math.min(1, age / 200, (eclipse.remainingMs - (now - at)) / 350),
           );
+        const width = 128,
+          height = 145;
         image(
-          "eclipse:orbit",
-          "orbit",
+          "eclipse:body",
+          "eclipse",
           a.x,
-          a.y - 50 + Math.sin(phase) * 2,
-          110,
-          120,
-          (0.78 + 0.025 * Math.sin(phase)) * fade,
-          Math.sin(phase * 0.5) * 7,
+          a.y + 5,
+          width,
+          height,
+          (0.8 + 0.06 * Math.sin(phase * 3)) * fade,
+          0,
           a.root.depth - 0.2,
-        );
+        )?.setOrigin(0.5, 0.94);
         image(
-          "eclipse:front",
-          "orbit",
+          "eclipse:feet",
+          "eclipse",
           a.x,
-          a.y - 50 + Math.sin(phase) * 2,
-          110,
-          120,
-          0.4 * fade,
-          Math.sin(phase * 0.5) * 7,
-          a.root.depth + 0.03,
-        )?.setCrop(0, 128, 256, 128);
-        for (let i = 0; i < 2; i++) {
-          const t = phase + i * Math.PI;
-          image(
-            "eclipse:mote:" + i,
-            "muzzle",
-            a.x + Math.cos(t) * 38,
-            a.y - 48 + Math.sin(t) * 21,
-            12,
-            12,
-            0.9 * fade,
-            phase * 20,
-            Math.sin(t) > 0 ? a.root.depth + 0.04 : a.root.depth - 0.25,
-          );
+          a.y + 5,
+          width,
+          height,
+          0.32 * fade,
+          0,
+          a.root.depth + 0.035,
+        )
+          ?.setOrigin(0.5, 0.94)
+          .setCrop(0, 198, 256, 58);
+        const body = window.__royalHD?.capture(a),
+          pose = body?.pose;
+        if (body && pose && art.has(`weapons:${pose.sheet}`)) {
+          const name = `weapons:${pose.sheet}`,
+            im = art.get(name),
+            sprite = image(
+              "eclipse:weapons",
+              name,
+              a.x + body.x,
+              a.y + body.y,
+              384,
+              384,
+              (0.86 + 0.1 * Math.sin(age / 180)) * fade,
+              body.angle,
+              a.root.depth + 0.05,
+            );
+          sprite
+            ?.setTexture(
+              `gun-fx:${name}`,
+              pose.row * (im.width / 384) + pose.col,
+            )
+            .setOrigin(body.originX, body.originY)
+            .setScale(body.scaleX, body.scaleY)
+            .setFlipX(body.flipX)
+            .setBlendMode(1);
         }
       }
       const pose = window.__royalHD?.capture(a)?.pose;
@@ -260,6 +352,15 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
       }
   }
   window.__royalGunslingerVisuals = {
+    ready() {
+      return [
+        "firebullet",
+        "burn",
+        "eclipse",
+        "weapons:weapon",
+        "weapons:axeheavy",
+      ].every((n) => art.has(n));
+    },
     update(a) {
       const scene = a.root.scene;
       let e = scenes.get(scene);
@@ -269,7 +370,6 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           actors: new Map(),
           images: new Map(),
           shots: new Map(),
-          volleys: new Map(),
           hits: [],
         };
         scenes.set(scene, e);

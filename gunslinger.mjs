@@ -52,6 +52,18 @@ export const ECLIPSE = {
   castMs: 600,
   applyAtMs: 300,
 };
+// Initial test balance: one refreshable burn, five ticks, no stacking or crits.
+export const GUNSLINGER_BURN = {
+  durationMs: 5000,
+  intervalMs: 1000,
+  multiplier: 0.2,
+};
+export const GUNSLINGER_RAIN = {
+  releaseMs: 350,
+  impactsMs: [700, 1200, 1700],
+  endMs: 2100,
+  dropsPerWave: 18,
+};
 const icon = (id) => `/assets/ui/royal-gunslinger/${id}.png`;
 export const GUNSLINGER_SKILLS = [
   {
@@ -64,21 +76,21 @@ export const GUNSLINGER_SKILLS = [
     range: 420,
     multiplier: 2.2,
     description:
-      "Concentra energia violeta em um disparo que atravessa os inimigos na trajetória, causando 220% do ataque a cada alvo atingido.",
+      "Lança um projétil em chamas que atravessa os inimigos, causando 220% do ataque e queimadura de 20% do ataque por segundo durante 5 segundos. Reaplicar renova a duração, sem acumular queimaduras; o dano contínuo não causa críticos.",
     icon: icon("disparo-sombrio"),
   },
   {
     id: "rajada-do-crepusculo",
-    name: "Rajada do Crepúsculo",
+    name: "Chuva de Balas",
     key: "2",
     kind: "area",
     manaCost: 18,
     cooldownMs: 10000,
     range: 420,
     radius: 125,
-    multiplier: 0.55,
+    multiplier: 1.1,
     description:
-      "Alterna as duas pistolas em seis disparos sobre a área do alvo. Cada impacto causa 55% do ataque nos inimigos dentro da área; a sequência continua se o alvo inicial morrer.",
+      "Dispara as duas pistolas para o alto e faz chover balas na área do alvo: três ondas de 110% do ataque, ao longo de 1,7 segundo. A chuva continua se o alvo inicial morrer; inimigos fora da área não são atingidos.",
     icon: icon("rajada-do-crepusculo"),
   },
   {
@@ -104,7 +116,7 @@ export const GUNSLINGER_SKILLS = [
     durationMs: ECLIPSE.durationMs,
     range: 0,
     description:
-      "Ultimate: consome 100 de energia. Por 45 segundos, aumenta a velocidade de ataque em 75% e reduz o dano recebido em 15%. Mantém o dano por bala e as duas pistolas alternadas. Recarga de 60 segundos; a energia é obtida novamente em combate.",
+      "Ultimate: consome 100 de energia e transforma a pistoleira com energia do Eclipse envolvendo o corpo e as duas armas. Por 45 segundos, aumenta a velocidade de ataque em 75% e reduz o dano recebido em 15%. Mantém o dano por bala. Recarga de 60 segundos; a energia é obtida novamente em combate.",
     icon: icon(ECLIPSE.id),
   },
 ];
@@ -113,8 +125,8 @@ export const GUNSLINGER_ACTIONS = {
   piercing: { move: "dark-elf-disparo", durationMs: 550, releasesMs: [150] },
   burst: {
     move: "dark-elf-rajada",
-    durationMs: 800,
-    releasesMs: [150, 250, 350, 450, 550, 650],
+    durationMs: 900,
+    releasesMs: [150, 350],
   },
 };
 const hold = (sheet, col, n) => Array.from({ length: n }, () => [sheet, col]);
@@ -136,10 +148,10 @@ export function gunslingerRig(original) {
     },
     "dark-elf-rajada": {
       frames: [
-        ...hold("axeheavy", 1, 1),
-        ...hold("axeheavy", 1, 2),
-        ...[2, 4, 2, 4, 2, 4].flatMap((c) => hold("axeheavy", c, 2)),
-        ...hold("axeheavy", 1, 1),
+        ...hold("axeheavy", 0, 3),
+        ...hold("axeheavy", 2, 4),
+        ...hold("axeheavy", 4, 5),
+        ...hold("axeheavy", 6, 6),
       ],
       impacts: GUNSLINGER_ACTIONS.burst.releasesMs,
     },

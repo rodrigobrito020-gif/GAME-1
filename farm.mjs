@@ -7,7 +7,12 @@ import {
   isGunslinger,
   isRanged,
 } from "./gunslinger.mjs";
-import { gunslingerBasic, castGunslinger } from "./gunslinger-combat.mjs";
+import {
+  gunslingerBasic,
+  castGunslinger,
+  applyGunslingerBurn,
+  tickGunslingerBurns,
+} from "./gunslinger-combat.mjs";
 import {
   ARCHER_CLASS,
   ARCHER_SKIN,
@@ -647,9 +652,10 @@ export class LocalFarm {
     this.recalculate();
     return { added, updated };
   }
-  hit(hunt, monster, amount, skillId, events, deltas) {
+  hit(hunt, monster, amount, skillId, events, deltas, { canCrit = true } = {}) {
     if (monster.hp <= 0) return;
     const critical =
+      canCrit &&
       isGunslinger(this.character) &&
       this.random() < this.character.derived.crit;
     if (critical) amount *= this.character.derived.critMult;
@@ -1049,7 +1055,10 @@ export class LocalFarm {
         }
       }
     }
-    for (const impact of h.impacts.filter((p) => p.at <= now)) {
+    for (const impact of h.impacts
+      .filter((p) => p.at <= now)
+      .sort((a, b) => a.at - b.at)) {
+      tickGunslingerBurns(this, client, events, deltas, impact.at);
       if (impact.avatarBuff) {
         events.buffs.push(this.avatar.activate(client.entityId ?? 1));
         this.recalculate();
@@ -1136,6 +1145,7 @@ export class LocalFarm {
             events,
             deltas,
           );
+          if (impact.burn) applyGunslingerBurn(h, monster, impact);
           landed = true;
         }
       }
@@ -1147,6 +1157,7 @@ export class LocalFarm {
       }
     }
     h.impacts = h.impacts.filter((p) => p.at > now);
+    tickGunslingerBurns(this, client, events, deltas);
     if (h.dash && now >= h.dash.endsAt) h.dash = null;
     const move = (unit, target, speed) => {
       const dx = target.x - unit.x,
@@ -1448,6 +1459,7 @@ export class LocalFarm {
           this.eyesUntil = 0;
           this.instinctUntil = 0;
           h.gunslingerFx = [];
+          h.gunslingerBurns?.clear();
           h.archerFx = [];
           this.recalculate();
           events.buffs.push(...this.defenseBuffs.remove(c));

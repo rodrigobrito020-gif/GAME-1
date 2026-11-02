@@ -108,7 +108,7 @@ def save_sheet(cl, name, rows):
 
 
 # Whole-figure exports share the approved 384px frame, 224px body and foot plane.
-manifest={'character':'Pistoleira Dark Elf','version':30,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+manifest={'character':'Pistoleira Dark Elf','version':31,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
 idle=[];walk=[];weapon=[];special=[];burst=[]
 for row in range(4):
     ref=whole_cell('idle-v30',1,4,0,row)
@@ -125,7 +125,10 @@ for row in range(4):
     for c in range(6):
         sc=([0,3,2,1,4,5][c] if row==0 else [0,1,2,1,2,5][c] if row==3 else c)
         poses.append(frame(whole_cell(name,nr,6,shootrow,sc),wr,mirror=row==1 or (row==3 and c in [3,4])))
-    weapon.append(poses);burst.append(poses+[poses[5],poses[5]])
+    weapon.append(poses)
+    # Skyward firing has its own whole-figure source, never recycled horizontal attacks.
+    rr=whole_cell('rain-v31',3,4,sr,3)
+    burst.append([frame(whole_cell('rain-v31',3,4,sr,c),rr,mirror=row==1) for c in [0,0,1,1,2,2,3,3]])
     rr=whole_cell('reactions-v30',3,4,sr,0)
     special.append([frame(whole_cell('reactions-v30',3,4,sr,c),rr,mirror=row==1,dead=c==2) for c in [0,0,1,0,3,2]])
 for name,rows in [('idle',idle),('walk',walk),('run1',walk),('weapon',weapon),('axeheavy',burst),('special',special)]:
@@ -173,3 +176,19 @@ for source,names in [('vfx-v30',['bullet','muzzle','impact','aura']),('skills-v3
         effect=parts[divmod(i,2)];effect.thumbnail((256,256),Image.Resampling.LANCZOS)
         out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
 print('Pistoleira: six HD/native atlases, complete figures in four directions, five skill icons and eight isolated painted effects.')
+
+# Skill-specific fire artwork: full bullet tip, separate burning status flame.
+im=Image.open(SOURCE/'effects-v31.png').convert('RGBA');w,h=im.size
+for name,box in [('firebullet',(0,0,.59,.37)),('burn',(.60,0,1,.45))]:
+    effect=im.crop(tuple(round(v*(w if i%2==0 else h))for i,v in enumerate(box)))
+    bounds=effect.getchannel('A').point(lambda a:255 if a>8 else 0).getbbox()
+    if bounds:effect=effect.crop(bounds)
+    effect.thumbnail((256,256),Image.Resampling.LANCZOS);out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
+if (SOURCE/'eclipse-v31.png').exists():
+    im=Image.open(SOURCE/'eclipse-v31.png').convert('RGBA');box=im.getchannel('A').point(lambda a:255 if a>8 else 0).getbbox();im=im.crop(box);im.thumbnail((256,256),Image.Resampling.LANCZOS)
+    out=Image.new('RGBA',(256,256));out.alpha_composite(im,((256-im.width)//2,256-im.height));out.save(folder/'vfx/eclipse.png')
+
+# Replace only the two revised skill cards; other approved class icons stay exact.
+im=Image.open(SOURCE/'icons-v31.png').convert('RGBA');w,h=im.size
+for col,name in enumerate(['disparo-sombrio','rajada-do-crepusculo']):
+    im.crop((round(col*w/2),0,round((col+1)*w/2),h)).resize((256,256),Image.Resampling.LANCZOS).save(folder/'icons'/f'{name}.png')

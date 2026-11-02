@@ -84,8 +84,12 @@ export function localAssets(byName, status) {
         /^\/assets\/ui\/royal-gunslinger\/(dash|disparo-sombrio|rajada-do-crepusculo|instinto-noturno|eclipse)\.png$/.exec(
           pathname,
         ),
+      gunMask =
+        /^\/assets\/fx\/royal-gunslinger\/eclipse-weapons\/(idle|walk|run1|weapon|special|axeheavy)\.png$/.exec(
+          pathname,
+        ),
       gunFx =
-        /^\/assets\/fx\/royal-gunslinger\/(bullet|muzzle|impact|aura|power|powerimpact|volley|orbit)\.png$/.exec(
+        /^\/assets\/fx\/royal-gunslinger\/(bullet|muzzle|impact|aura|power|powerimpact|volley|orbit|firebullet|burn|eclipse)\.png$/.exec(
           pathname,
         );
     const ownGun =
@@ -95,9 +99,11 @@ export function localAssets(byName, status) {
           ? `hd/${gunHd[1]}.png`
           : gunIcon
             ? `icons/${gunIcon[1]}.png`
-            : gunFx
-              ? `vfx/${gunFx[1]}.png`
-              : null;
+            : gunMask
+              ? `eclipse-weapons/${gunMask[1]}.png`
+              : gunFx
+                ? `vfx/${gunFx[1]}.png`
+                : null;
     if (ownGun)
       return {
         type: "image/png",

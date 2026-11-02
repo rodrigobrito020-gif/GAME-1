@@ -1,3 +1,4 @@
+import { classVisuals } from "./class-visuals.mjs";
 export const EVADE = {
   id: "dash",
   name: "Dash",
@@ -61,7 +62,7 @@ export function evade(client, { dirX = 0, dirY = 0 }, now, free = () => true) {
   }
   return {
     entity: 1,
-    move: client.classId === "arqueira" ? "elfa-esquiva" : "humano-esquiva",
+    move: classVisuals(client.classId).dashMove,
     dirX: Math.round(dx * 1000),
     dirY: Math.round(dy * 1000),
     durationMs: EVADE.durationMs,

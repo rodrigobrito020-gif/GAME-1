@@ -1,5 +1,6 @@
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 import { locomotionPose } from "/character-locomotion.mjs";
+import { updateDashTrail } from "/dash-visuals.mjs";
 // Higher detail display layer; native actors, hitboxes, rig and world positions
 // stay authoritative. Textures are rebuilt from the original large pose art.
 (() => {
@@ -112,9 +113,15 @@ import { locomotionPose } from "/character-locomotion.mjs";
       .setVisible(a.root.visible && b.visible && !a.hidden);
     s.setAlpha(a.pose?.alpha ?? 1);
     s.royalPose = pose;
+    updateDashTrail(a, s, elf);
     b.setAlpha(0);
   }
   window.__royalHD = {
+    ready(look = "base") {
+      return ["idle", "walk", "run1", "weapon", "special", "axeheavy"].every(
+        (sheet) => art.has(`${look}:${sheet}`),
+      );
+    },
     update(a) {
       const scene = a.root.scene;
       if (!scenes.has(scene)) {

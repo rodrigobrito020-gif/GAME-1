@@ -614,7 +614,7 @@ body {
 .royal-skill-orb:focus-visible{outline:2px solid #c49c47;outline-offset:3px;border-radius:8px}
 .royal-skill-orb img{object-fit:cover;image-rendering:auto}
 
-/* Class selection and six independent potion shortcuts. */
+/* Class selection and potion configuration. */
 .slHudQuick{display:none!important}
 .royal-potion-dock{position:fixed;right:18px;bottom:95px;z-index:1050;display:grid;grid-template-columns:repeat(3,48px);grid-auto-rows:63px;gap:7px}
 .royal-potion-dock[hidden],.royal-potion-panel[hidden],.royal-class-panel[hidden],.royal-class-button[hidden]{display:none}
@@ -628,3 +628,23 @@ body {
 .royal-skill-statuses{gap:10px}
 
 .royal-class-compare{display:block;text-align:center;margin-top:14px;color:#765624;font-size:12px}
+/* Two selected consumables form one row with the skill bar. */
+.royal-potion-dock{right:auto;bottom:auto;display:flex;gap:8px;width:112px;height:52px;grid-template-columns:none;grid-auto-rows:auto;z-index:1050}
+.royal-potion-cell{position:relative;width:52px;height:52px;flex:0 0 52px}
+.royal-potion-cell .royal-potion-slot{width:52px;height:52px}
+.royal-potion-cell .royal-potion-mode{position:absolute;top:-25px;left:0;width:52px;height:21px;padding:0;border:1px solid #b49048;border-radius:6px;background:#fff8e4;color:#765522;font:800 8px/19px system-ui;cursor:pointer;box-shadow:0 2px 5px #30241445;white-space:nowrap}
+.royal-potion-mode[data-automatic="true"]{background:#365c40!important;color:#fff6da!important;border-color:#9bae6f!important}
+.royal-potion-key{position:absolute;top:2px;left:3px;color:#fff6dc;font:800 9px system-ui;text-shadow:0 1px 3px #000}
+.royal-potion-menu{position:absolute;left:3px;bottom:1px;color:#e8d092;font:700 13px system-ui;text-shadow:0 1px 3px #000}
+.royal-potion-panel{right:auto;bottom:auto;width:330px;max-height:calc(100vh - 130px)}
+.royal-potion-panel>img{width:64px;height:64px;margin-bottom:4px}
+.royal-potion-types{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.royal-potion-types button{padding:6px 3px;display:flex;align-items:center;flex-direction:column;gap:3px;font-size:10px}
+.royal-potion-types img{width:38px;height:38px;object-fit:cover;border-radius:5px}.royal-potion-types small{font-size:9px}
+@media(max-width:600px){.royal-potion-dock{gap:4px;width:100px}.royal-potion-cell,.royal-potion-cell .royal-potion-slot{width:48px;height:48px;flex-basis:48px}.royal-potion-cell .royal-potion-mode{width:48px}.royal-potion-panel{width:min(330px,calc(100vw - 16px))}}
+@media(max-width:600px){
+  .slHudSkills{position:fixed!important;left:50%!important;right:auto!important;top:auto!important;bottom:12px!important;display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;gap:5px!important;width:max-content!important;max-width:none!important;transform:translateX(-50%)!important;padding:0!important;margin-left:-54px!important;z-index:1100!important}
+  .slHudSkills .slHudSkill:not(.slHudRoll){width:42px!important;height:48px!important;min-width:42px!important;flex:0 0 42px!important}
+  .royal-potion-dock{width:89px;gap:5px;z-index:1101}
+  .royal-potion-cell,.royal-potion-cell .royal-potion-slot{width:42px;height:48px;flex-basis:42px}.royal-potion-cell .royal-potion-mode{width:42px;font-size:7px}
+}

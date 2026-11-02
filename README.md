@@ -1,8 +1,20 @@
-# Jogo local — 0.6.24: revisão do combate da arqueira
+# Jogo local — 0.6.25: aura, cone de flechas e poções na barra
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.25
+
+- **Espírito da Floresta:** aura de energia verde envolvendo o corpo, com o mesmo formato de apresentação da transformação do guerreiro. O centro transparente mantém a arqueira legível; os indicadores dos buffs continuam separados.
+- **Caminhada vertical:** novos desenhos de frente e costas, com alternância do pé de apoio e linha de chão comum. Corpo inteiro e escala constante entre as poses; caminhada lateral mantida.
+- **Tiro Perfurante (1):** três flechas verdes simultâneas abrem um cone. Os inimigos nas trajetórias recebem 200% do ataque, uma única vez por uso mesmo na sobreposição. Mana, alcance e recarga mantidos; novo ícone representa as três flechas.
+- **Dash universal (Shift):** ícone, carta e rastro seguem a cor da classe. Verde na arqueira, dourado no guerreiro. A criação das silhuetas usa o deslocamento real, incluindo movimentos curtos em telas com alta taxa de atualização. Distância, colisão e recarga permanecem os mesmos.
+- **Poções:** um espaço de HP e um de mana, ao lado das habilidades, cada qual com botão AUTO/MANUAL. Abra o ícone para escolher pequena/média/grande, o limite de 30/50/70%, comprar na cidade ou usar manualmente. Z usa a poção de HP selecionada; X usa a de mana selecionada. Somente o tipo selecionado é consumido no AUTO. A seleção, o modo e o limite são salvos; níveis 1/55/150, estoque e recuperação compartilhada de 1,5s continuam valendo.
+
+As artes e habilidades aprovadas do guerreiro são preservadas. A cor do Dash de cada classe passa a ser registrada em `class-visuals.mjs`, padrão para as classes seguintes.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, pressione Ctrl+F5 e confira **v0.6.25**.
 
 ## Atualização 0.6.24
 

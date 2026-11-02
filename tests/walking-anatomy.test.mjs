@@ -5,6 +5,32 @@ import { decodeRgba } from "../png.mjs";
 import { CHARACTER_ART as ART } from "../character-art.mjs";
 const read = (p) =>
   decodeRgba(readFileSync(new URL("../art/" + p, import.meta.url)));
+test("elf vertical walking alternates the grounded boot in both directions without recentering the hips", () => {
+  const im = read("archer/hd/walk.png");
+  for (const row of [0, 3]) {
+    const support = [];
+    for (const col of [0, 2, 4, 6]) {
+      const xs = [];
+      for (let y = 344; y < 354; y++)
+        for (let x = 130; x < 260; x++) {
+          const p =
+            ((row * ART.frame + y) * im.width + col * ART.frame + x) * 4;
+          const [r, g, b, a] = im.pixels.subarray(p, p + 4);
+          if (a > 180 && r > 45 && r > g * 1.1 && g > b * 1.05) xs.push(x);
+        }
+      assert.ok(xs.length, "complete grounded boot remains visible");
+      support.push(xs.reduce((a, b) => a + b, 0) / xs.length);
+    }
+    assert.ok(
+      support[0] < ART.feet[0] - 3 && support[1] < ART.feet[0] - 3,
+      "first half supports on image-left foot",
+    );
+    assert.ok(
+      support[2] > ART.feet[0] + 3 && support[3] > ART.feet[0] + 3,
+      "second half supports on image-right foot",
+    );
+  }
+});
 function bounds(im, row, col) {
   let left = ART.frame,
     right = 0,

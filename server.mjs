@@ -198,6 +198,8 @@ const server = createServer((req, res) => {
       "/class-ui.js",
       "/archer-visuals.js",
       "/archer-vfx.mjs",
+      "/class-visuals.mjs",
+      "/dash-visuals.mjs",
       "/archer.mjs",
       "/avatar-visuals.js",
       "/light-avatar.mjs",

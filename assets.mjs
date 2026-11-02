@@ -86,7 +86,7 @@ export function localAssets(byName, status) {
         ),
       };
     const elfIcon =
-      /^\/assets\/ui\/royal-archer\/(tiro-perfurante|chuva-de-flechas|olhos-da-floresta|espirito-da-floresta)\.png$/.exec(
+      /^\/assets\/ui\/royal-archer\/(dash|tiro-perfurante|chuva-de-flechas|olhos-da-floresta|espirito-da-floresta)\.png$/.exec(
         pathname,
       );
     if (elfIcon)
@@ -97,7 +97,7 @@ export function localAssets(byName, status) {
         ),
       };
     const elfFx =
-      /^\/assets\/fx\/royal-archer\/(ring|spirit|arrow|impact)\.png$/.exec(
+      /^\/assets\/fx\/royal-archer\/(aura|ring|spirit|arrow|impact)\.png$/.exec(
         pathname,
       );
     if (elfFx)

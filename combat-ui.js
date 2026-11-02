@@ -18,7 +18,12 @@
   let dashRequestAt = -Infinity;
   const send = (skillId) =>
     window.__royalCombatSend?.("useSkill", { skillId, target: 0 });
-  const skills = () => window.__royalCombatCatalog?.() ?? [];
+  const skills = () =>
+    (window.__royalCombatCatalog?.() ?? []).map((s) =>
+      s.id === "dash" && state?.classVisuals
+        ? { ...s, icon: state.classVisuals.dashIcon }
+        : s,
+    );
   const order = () => pendingOrder ?? state?.skillOrder ?? [];
   const time = (ms) => (ms >= 60000 ? `${ms / 60000} min` : `${ms / 1000}s`);
   const text = (tag, value) => {
@@ -286,6 +291,9 @@
     )) {
       const skill = find(slot);
       if (!skill) continue;
+      const art = slot.querySelector("img");
+      if (art && skill.icon && art.getAttribute("src") !== skill.icon)
+        art.src = skill.icon;
       seen.add(skill.id);
       let button = switches.get(skill.id);
       if (!button) {

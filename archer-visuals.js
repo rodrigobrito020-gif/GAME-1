@@ -1,4 +1,5 @@
 import { projectilePose, rainPose } from "/archer-vfx.mjs";
+import { CHARACTER_ART as ART } from "/character-art.mjs";
 
 // Small, independent effects: casting never pauses or scales the whole scene.
 (() => {
@@ -6,7 +7,7 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
     scenes = new Map();
   let state = null,
     at = 0;
-  for (const name of ["ring", "spirit", "arrow"]) {
+  for (const name of ["ring", "aura", "arrow"]) {
     const im = new Image();
     im.src = `/assets/fx/royal-archer/${name}.png`;
     im.decode()
@@ -19,7 +20,7 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
   });
   function spark(g, x, y, p, size = 20) {
     const alpha = 1 - p;
-    g.lineStyle(2, 0xffedbb, alpha);
+    g.lineStyle(2, 0xe5ffec, alpha);
     for (let i = 0; i < 5; i++) {
       const a = (i * Math.PI * 2) / 5,
         r = 3 + p * size;
@@ -80,7 +81,10 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
           // along the target vector; otherwise every projectile flies backward.
           shot.sprite
             .setPosition(pose.x, pose.y)
-            .setDisplaySize(empowered ? 76 : 42, empowered ? 28 : 16)
+            .setDisplaySize(
+              empowered ? (fx.fan ? 92 : 76) : 42,
+              empowered ? 28 : 16,
+            )
             .setAngle(pose.angle)
             .setDepth(1e6)
             .setAlpha(0.95)
@@ -92,8 +96,8 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
             g.lineBetween(
               pose.x,
               pose.y,
-              pose.x - Math.cos(angle) * 38,
-              pose.y - Math.sin(angle) * 38,
+              pose.x - Math.cos(angle) * (fx.fan ? 90 : 38),
+              pose.y - Math.sin(angle) * (fx.fan ? 90 : 38),
             );
           }
         } else if (fx.kind === "rain") {
@@ -162,16 +166,25 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
         .setDepth(a.root.depth - 0.2)
         .setVisible(true);
     } else entry.ring?.setVisible(false);
-    if (spirit && art.has("spirit")) {
+    if (spirit && art.has("aura")) {
       const age = spirit.totalMs - spirit.remainingMs + (now - at),
-        cast = Math.max(0, 1 - age / 900);
-      entry.spirit ??= scene.add.image(0, 0, "elf-fx:spirit");
-      entry.spirit
-        .setPosition(a.x, a.y - 92 - cast * 12)
-        .setDisplaySize(126, 146)
-        .setAlpha(0.18 + cast * 0.4)
-        .setDepth(a.root.depth - 0.1)
-        .setVisible(true);
+        cam = scene.cameras.main,
+        canvas = scene.game.canvas.getBoundingClientRect(),
+        css = canvas.width / scene.scale.width,
+        size = Math.max(
+          ART.worldBodyHeight * 1.35,
+          a.height * 1.4,
+          90 / (cam.zoom * css),
+        ),
+        fade = Math.min(1, age / 180, (spirit.remainingMs - (now - at)) / 350),
+        body = window.__royalHD?.capture(a) ?? a.body;
+      entry.aura ??= scene.add.image(0, 0, "elf-fx:aura").setOrigin(0.5, 0.9);
+      entry.aura
+        .setPosition(a.x + body.x, a.y + body.y + 4)
+        .setDisplaySize(size * 0.85, size)
+        .setAlpha((0.67 + 0.08 * Math.sin(age / 270)) * Math.max(0, fade))
+        .setDepth(a.root.depth - 0.2)
+        .setVisible(!a.hidden && a.root.visible && a.body.visible);
       for (let i = 0; i < 5; i++) {
         const t = now / 850 + (i * Math.PI * 2) / 5;
         g.fillStyle(0xcdf3a1, 0.45);
@@ -182,7 +195,7 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
           6,
         );
       }
-    } else entry.spirit?.setVisible(false);
+    } else entry.aura?.setVisible(false);
     for (const buff of [eyes, spirit])
       if (buff) {
         const age = buff.totalMs - buff.remainingMs + (now - at),
@@ -210,7 +223,7 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
     entry.projectiles.clear();
     entry.impacts = [];
     entry.ring?.setVisible(false);
-    entry.spirit?.setVisible(false);
+    entry.aura?.setVisible(false);
   }
   window.__royalArcherVisuals = {
     update(a) {
@@ -231,7 +244,7 @@ import { projectilePose, rainPose } from "/archer-vfx.mjs";
           clear(entry);
           entry.g.destroy();
           entry.ring?.destroy();
-          entry.spirit?.destroy();
+          entry.aura?.destroy();
           scenes.delete(scene);
         });
       }

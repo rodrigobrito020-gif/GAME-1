@@ -15,12 +15,14 @@ import {
 } from "./archer-combat.mjs";
 import {
   ensurePotions,
+  selectPotion,
   configurePotion,
   consumePotion,
   buyPotionStock,
   automaticPotion,
 } from "./potions.mjs";
 import { combatMode, evade, EVADE } from "./combat-control.mjs";
+import { classVisuals } from "./class-visuals.mjs";
 import {
   MONSTER_ROLES,
   startMonsterSkill,
@@ -295,7 +297,13 @@ export class LocalFarm {
   }
   get skills() {
     return isArcher(this.character)
-      ? [...ARCHER_SKILLS, ...ACTIVE_SKILLS.filter((s) => s.universal)]
+      ? [
+          ...ARCHER_SKILLS,
+          ...ACTIVE_SKILLS.filter((s) => s.universal).map((s) => ({
+            ...s,
+            icon: classVisuals(ARCHER_CLASS).dashIcon,
+          })),
+        ]
       : ACTIVE_SKILLS;
   }
   get ultimateDefinition() {
@@ -1001,27 +1009,33 @@ export class LocalFarm {
         : null;
       const cleave =
         impact.basic && !isArcher(c) && this.avatar.active() && primary;
-      const targets = impact.pierce
-        ? piercedTargets(h.monsters, impact.pierce)
-        : cleave
-          ? h.monsters
-              .filter(
-                (m) =>
-                  m.hp > 0 &&
-                  Math.hypot(m.x - primary.x, m.y - primary.y) <=
-                    LIGHT_AVATAR.cleaveRadius,
-              )
-              .map((m) => m.id)
-          : impact.area
+      const targets = impact.cone
+        ? [
+            ...new Set(
+              impact.cone.flatMap((ray) => piercedTargets(h.monsters, ray)),
+            ),
+          ]
+        : impact.pierce
+          ? piercedTargets(h.monsters, impact.pierce)
+          : cleave
             ? h.monsters
                 .filter(
                   (m) =>
                     m.hp > 0 &&
-                    Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
-                      impact.area.radius,
+                    Math.hypot(m.x - primary.x, m.y - primary.y) <=
+                      LIGHT_AVATAR.cleaveRadius,
                 )
                 .map((m) => m.id)
-            : impact.targets;
+            : impact.area
+              ? h.monsters
+                  .filter(
+                    (m) =>
+                      m.hp > 0 &&
+                      Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
+                        impact.area.radius,
+                  )
+                  .map((m) => m.id)
+              : impact.targets;
       let landed = false;
       for (const id of targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
@@ -1720,6 +1734,9 @@ export class LocalFarm {
   }
   configurePotion(kind, tier, automatic, threshold) {
     return configurePotion(this.account, kind, tier, automatic, threshold);
+  }
+  selectPotion(kind, tier) {
+    return selectPotion(this.account, kind, tier);
   }
   autoPotion() {
     const result = automaticPotion(

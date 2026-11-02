@@ -1,3 +1,4 @@
+import { classVisuals } from "./class-visuals.mjs";
 export const ARCHER_CLASS = "arqueira",
   ARCHER_SKIN = "elfa-arqueira";
 export const ARCHER_SHEETS = {
@@ -41,7 +42,7 @@ export const ARCHER_SKILLS = [
     range: 420,
     multiplier: 2,
     description:
-      "Dispara uma flecha que atravessa os inimigos alinhados, causando 200% do ataque em cada alvo atingido.",
+      "Dispara três flechas perfurantes em cone. Cada inimigo atingido recebe 200% do ataque uma única vez por uso, mesmo se estiver no cruzamento das flechas.",
     icon: "/assets/ui/royal-archer/tiro-perfurante.png",
   },
   {
@@ -157,7 +158,9 @@ export function archerRig(original) {
     "elfa-esquiva": {
       frames: [...hold("run1", 1, 2), ...hold("run1", 3, 2)],
       impacts: [],
-      motion: { trail: { at: [0, 220], color: 0xb4ecc0 } },
+      motion: {
+        trail: { at: [0, 220], color: classVisuals(ARCHER_CLASS).trailColor },
+      },
     },
   });
   rig.basic[ARCHER_CLASS] = { chain: ["elfa-flecha"], heavy: "elfa-flecha" };

@@ -19,6 +19,8 @@ export function arrow(
     multiplier = 1,
     piercing = false,
     release = ARCHER_ACTIONS.basic.releaseMs,
+    angleOffset = 0,
+    queueImpact = true,
   } = {},
   events,
 ) {
@@ -53,35 +55,35 @@ export function arrow(
     ty: target.y - 70,
   };
   if (piercing) {
-    const dx = target.x - client.x,
-      dy = target.y - client.y,
-      len = Math.hypot(dx, dy) || 1;
+    const angle = Math.atan2(dy, dx) + angleOffset;
     projectile.target = 0;
-    projectile.tx = client.x + (dx / len) * 420;
-    projectile.ty = client.y - 72 + (dy / len) * 420;
+    projectile.tx = client.x + Math.cos(angle) * 420;
+    projectile.ty = client.y - 72 + Math.sin(angle) * 420;
+    projectile.fan = !queueImpact;
   }
   h.archerFx ??= [];
   h.archerFx.push(projectile);
-  h.impacts.push({
-    at: projectile.end,
-    targets: [target.id],
-    basic: !skillId,
-    amount: farm.character.derived.atk * multiplier,
-    skillId,
-    heal: 0,
-    ...(piercing
-      ? {
-          pierce: {
-            x: client.x,
-            y: client.y,
-            tx: target.x,
-            ty: target.y,
-            range: 420,
-            width: 32,
-          },
-        }
-      : {}),
-  });
+  if (queueImpact)
+    h.impacts.push({
+      at: projectile.end,
+      targets: [target.id],
+      basic: !skillId,
+      amount: farm.character.derived.atk * multiplier,
+      skillId,
+      heal: 0,
+      ...(piercing
+        ? {
+            pierce: {
+              x: client.x,
+              y: client.y,
+              tx: target.x,
+              ty: target.y,
+              range: 420,
+              width: 32,
+            },
+          }
+        : {}),
+    });
   return projectile;
 }
 export function archerBasic(farm, client, target, events) {
@@ -221,20 +223,42 @@ export function castArcher(farm, client, id, targetId, events, deltas) {
   if (id === ARCHER_EYES.id) h.impacts.push({ at: now + 300, eyesBuff: true });
   else if (id === ARCHER_SPIRIT.id)
     h.impacts.push({ at: now + 300, avatarBuff: true });
-  else if (id === "tiro-perfurante")
-    arrow(
-      farm,
-      client,
-      target,
-      {
-        skillId: id,
-        multiplier: 2,
-        piercing: true,
-        release: ARCHER_ACTIONS.piercing.releaseMs,
-      },
-      events,
-    );
-  else {
+  else if (id === "tiro-perfurante") {
+    const rays = [];
+    for (const angleOffset of [-0.28, 0, 0.28]) {
+      const fx = arrow(
+        farm,
+        client,
+        target,
+        {
+          skillId: id,
+          multiplier: 2,
+          piercing: true,
+          release: ARCHER_ACTIONS.piercing.releaseMs,
+          angleOffset,
+          queueImpact: false,
+        },
+        events,
+      );
+      rays.push({
+        x: client.x,
+        y: client.y,
+        tx: fx.tx,
+        ty: fx.ty + 72,
+        range: 420,
+        width: 32,
+      });
+    }
+    h.impacts.push({
+      at: h.archerFx.at(-1).end,
+      targets: [],
+      cone: rays,
+      basic: false,
+      amount: c.derived.atk * 2,
+      skillId: id,
+      heal: 0,
+    });
+  } else {
     h.archerFx ??= [];
     h.archerFx.push({
       id: `rain:${now}`,

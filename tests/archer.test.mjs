@@ -158,16 +158,18 @@ test("elf basic attack releases an authored arrow, damages only on arrival, and 
   assert.equal(s.step(1000).events.damage.length, 0);
   assert.equal(archerFxState(client, 99999).length, 0);
 });
-test("piercing arrow hits each living enemy in its fixed corridor once and excludes enemies outside width/range", () => {
+test("triple piercing arrows open a fan, hit each covered enemy once and exclude enemies outside the paths/range", () => {
   const s = setup(),
     { farm, client } = s,
     a = s.alive(0, 200),
     b = s.alive(1, 350),
-    side = s.alive(2, 200, 55),
+    side = s.alive(2, 200, 160),
     far = s.alive(3, 450);
   const out = farm.cast(client, "tiro-perfurante", a.id);
   assert.equal(out.events.damage.length, 0);
   assert.equal(farm.character.progress.mana, 92);
+  assert.equal(archerFxState(client, 10000).length, 3);
+  assert.equal(new Set(archerFxState(client, 10000).map((f) => f.id)).size, 3);
   const due = client.hunt.impacts[0].at - 10000;
   assert.equal(archerFxState(client, 10000)[0].target, 0);
   s.step(due - 1);
@@ -356,4 +358,23 @@ test("archer retains a living in-range aim between shots, while right-click, dea
   a.x = client.x + 500;
   s.step(1);
   assert.equal(client.hunt.target, c.id);
+});
+
+test("cone arrows cover both outer rays and overlapping rays never triple-hit a close enemy", () => {
+  const s = setup(),
+    { farm, client } = s,
+    center = s.alive(0, 200),
+    upper = s.alive(1, 200, -57),
+    lower = s.alive(2, 200, 57),
+    close = s.alive(3, 30);
+  farm.cast(client, "tiro-perfurante", center.id);
+  const effects = archerFxState(client, 10000);
+  assert.equal(effects.length, 3);
+  assert.ok(effects[0].ty < effects[1].ty && effects[1].ty < effects[2].ty);
+  const damage = s
+    .step(client.hunt.impacts[0].at - 10000)
+    .events.damage.filter((d) => d.source === 1);
+  assert.equal(damage.length, 4);
+  assert.equal(new Set(damage.map((d) => d.target)).size, 4);
+  assert.ok([center, upper, lower, close].every((m) => m.hp === 972));
 });

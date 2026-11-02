@@ -1,6 +1,7 @@
 import { ARCHER_CLASS, ARCHER_SKIN } from "./archer.mjs";
 import { archerFxState } from "./archer-combat.mjs";
 import { POTION_TIERS, potionState } from "./potions.mjs";
+import { classVisuals } from "./class-visuals.mjs";
 import { combatMode, setCombatMode, stepEvade } from "./combat-control.mjs";
 import { MONSTER_ROLES, combatState } from "./monster-combat.mjs";
 import { LIGHT_AVATAR } from "./light-avatar.mjs";
@@ -64,7 +65,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-classes-24";
+  catalog.version = "local-classes-25";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -567,6 +568,7 @@ export function attachLocalGame(
           activeBuffs: farm.activeBuffs(),
           archerFx: archerFxState(client, Date.now()),
           classId: account.character.identity.classId,
+          classVisuals: classVisuals(account.character.identity.classId),
           className:
             account.character.identity.classId === ARCHER_CLASS
               ? "Arqueira Elfa"
@@ -1053,6 +1055,18 @@ export function attachLocalGame(
                 return;
               }
 
+              const potionSelect = /^potion-select:([12]):([123])$/.exec(
+                value.skillId,
+              );
+              if (potionSelect) {
+                farm.selectPotion(
+                  Number(potionSelect[1]),
+                  Number(potionSelect[2]),
+                );
+                patch(client);
+                persist();
+                return;
+              }
               const potionConfig =
                 /^potion-config:([12]):([123]):(manual|auto):(30|50|70)$/.exec(
                   value.skillId,

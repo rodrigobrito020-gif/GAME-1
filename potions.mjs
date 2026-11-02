@@ -48,6 +48,33 @@ export function ensurePotions(account) {
           : 50,
       };
     }
+  account.potionSelection ??= {};
+  for (const kind of [1, 2]) {
+    const selected = POTION_TIERS.find(
+      (t) => t.tier === account.potionSelection[kind],
+    );
+    if (!selected || c.progress.level < selected.minLevel) {
+      const enabled = [...POTION_TIERS]
+        .reverse()
+        .filter(
+          (t) =>
+            c.progress.level >= t.minLevel &&
+            account.potionPreferences[`${kind}:${t.tier}`].automatic,
+        );
+      const stock =
+        kind === 1 ? c.consumables.hpPotions : c.consumables.manaPotions;
+      account.potionSelection[kind] =
+        (enabled.find((t) => stock[t.key] > 0) ?? enabled[0])?.tier ?? 1;
+    }
+  }
+}
+export function selectPotion(account, kind, tier) {
+  ensurePotions(account);
+  const def = potionDefinition(kind, tier);
+  if (account.character.progress.level < def.minLevel)
+    throw Error("local.level_required");
+  account.potionSelection[kind] = tier;
+  return { kind, tier };
 }
 export function configurePotion(account, kind, tier, automatic, threshold) {
   ensurePotions(account);
@@ -57,6 +84,7 @@ export function configurePotion(account, kind, tier, automatic, threshold) {
   if (automatic && account.character.progress.level < def.minLevel)
     throw Error("local.level_required");
   account.potionPreferences[`${kind}:${tier}`] = { automatic, threshold };
+  if (automatic) account.potionSelection[kind] = tier;
   return account.potionPreferences[`${kind}:${tier}`];
 }
 export function consumePotion(account, kind, tier, now, readyAt) {
@@ -99,7 +127,7 @@ export function automaticPotion(account, now, readyAt) {
   if (!account.character.progress.hp || now < readyAt) return null;
   const c = account.character;
   for (const kind of [1, 2])
-    for (const tier of [3, 2, 1]) {
+    for (const tier of [account.potionSelection[kind]]) {
       const def = potionDefinition(kind, tier),
         pref = account.potionPreferences[`${kind}:${tier}`],
         max = kind === 1 ? c.derived.maxHp : c.derived.maxMana;
@@ -119,6 +147,7 @@ export function potionState(account, now, readyAt = 0) {
   ensurePotions(account);
   const c = account.character;
   return {
+    selectedPotionTiers: { ...account.potionSelection },
     potionCooldownMs: Math.max(0, readyAt - now),
     potions: [1, 2].flatMap((kind) =>
       POTION_TIERS.map((t) => {

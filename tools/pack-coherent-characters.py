@@ -82,7 +82,7 @@ parser=argparse.ArgumentParser();parser.add_argument('--class',dest='only',choic
 manifests={}
 for cl,modelrow in [('warrior',0),('archer',1)]:
     if args.only and cl!=args.only:continue
-    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':24 if cl=='archer' else 23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':25 if cl=='archer' else 23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
     idle=[];walk=[]
     for row in range(4):
         modelcol=2 if cl=='warrior' and row==1 else row
@@ -93,6 +93,9 @@ for cl,modelrow in [('warrior',0),('archer',1)]:
         if row in [1,2]:
             wr=cell(name,1,8,0,0)
             walk.append([frame(cell(name,1,8,0,col),wr,row==1) for col in range(8)])
+        elif cl=='archer':
+            sr=0 if row==0 else 1;name='archer-walk-vertical';wr=cell(name,2,4,sr,0)
+            walk.append([frame(cell(name,2,4,sr,col//2),wr) for col in range(8)])
         else:
             # Preserve the existing vertical whole-figure art. Its four poses
             # already alternate support; the defect in the recording was most

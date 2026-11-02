@@ -1,6 +1,6 @@
 {
   "name": "cliente-capturado-local",
-  "version": "0.6.42",
+  "version": "0.6.43",
   "private": true,
   "type": "module",
   "engines": {
@@ -9,20 +9,21 @@
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
-    "art:warrior": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
-    "art:armor": "node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
+    "art:warrior": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:warrior-motion",
+    "art:armor": "node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:warrior-motion",
     "art:vfx": "node tools/pack-warrior-vfx.mjs && node tools/pack-avatar-vfx.mjs",
-    "art:clothes": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
-    "art:avatar": "node tools/pack-avatar-vfx.mjs && python tools/pack-attached-energy.py --look warrior && python tools/pack-attached-energy.py --look warrior-training",
-    "art:weapons": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
-    "art:hd": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:berserker",
+    "art:clothes": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:warrior-motion",
+    "art:avatar": "node tools/pack-avatar-vfx.mjs && python tools/pack-attached-energy.py --look warrior && python tools/pack-attached-energy.py --look warrior-training && npm run art:warrior-motion",
+    "art:weapons": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:warrior-motion",
+    "art:hd": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:berserker && npm run art:warrior-motion",
     "art:archer": "python tools/pack-coherent-characters.py --class archer && python tools/pack-archer-energy.py && python tools/pack-attached-energy.py",
-    "art:characters": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:berserker",
+    "art:characters": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:berserker && npm run art:warrior-motion",
     "art:steps": "python tools/soften-footsteps.py",
     "art:gunslinger": "python tools/pack-gunslinger.py && python tools/pack-gunslinger-energy.py && python tools/pack-attached-energy.py",
     "art:level": "python tools/pack-level-up.py",
     "art:ranged-vfx": "python tools/pack-ranged-vfx.py",
-    "art:berserker": "python tools/pack-berserker.py && python tools/pack-berserker-vfx.py && python tools/pack-attached-energy.py --look berserker"
+    "art:berserker": "python tools/pack-berserker.py && python tools/pack-berserker-vfx.py && python tools/pack-attached-energy.py --look berserker",
+    "art:warrior-motion": "python tools/pack-warrior-motion.py"
   },
   "dependencies": {
     "ws": "8.21.3"

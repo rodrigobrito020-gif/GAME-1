@@ -1,8 +1,21 @@
-# Jogo local — 0.6.42: resposta e fluidez
+# Jogo local — 0.6.43: movimentos do guerreiro em oito direções
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.43
+
+O jogador escolheu manter o visual 2D e melhorar as animações. Este primeiro protótipo aplica o novo padrão ao **guerreiro**, que continua sendo a referência para as outras classes. A avaliação visual fica com o jogador antes de estender o trabalho à arqueira, pistoleira e Orc.
+
+- **Oito direções próprias:** frente, costas, laterais e quatro diagonais, com figuras completas para caminhar, repousar e atacar. A caminhada tem oito poses distintas em cada direção; a virada mantém a fase da passada. Ao parar, conclui o apoio e conserva a direção. Pequenas correções da posição prevista deixam de virar o personagem para trás.
+- **Peso e continuidade:** viradas graduais e discretas mudanças de apoio, acompanhando a distância percorrida. Não aumenta a velocidade real, não acrescenta espera ao comando e não monta membros ou sobrepõe dois corpos para simular uma pose intermediária.
+- **Combate e aparência:** poses diagonais de espada com preparação, contato e recuperação; salto e impacto mantêm os tempos nativos. Peitoral de treino, máscaras das armas e Ki acompanham todas as novas poses. Quadros de combate nas quatro direções anteriores foram preservados pixel a pixel. Sem redimensionamento individual por quadro.
+- **Escopo preservado:** arqueira, pistoleira, Orc, furacão, valores das habilidades, barras, poções, progresso e as melhorias de desempenho da 0.6.42. A galeria permite comparar as novas diagonais do guerreiro; as outras classes ainda mostram suas vistas atuais.
+
+**169 testes passaram com o ZIP real**, incluindo direção em diferentes taxas de quadros, parada, correção da previsão local, ataques, integridade das poses e máscaras. Conferência adicional em Chromium/WebGL de cidade, oito direções, combate e ultimate. Testes com contas isoladas; progresso real excluído. Mais poses não garantem determinada taxa de FPS no computador do jogador.
+
+**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior com os servidores fechados. Mantenha `recursos-publicos.zip`, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.43**. Selecione Guerreiro Humano e experimente também W+A, W+D, S+A e S+D. A comparação das animações está no link da janela de classes.
 
 ## Atualização 0.6.42
 

@@ -161,7 +161,12 @@ export function localAssets(byName, status) {
       return {
         type: energy[2].endsWith(".json") ? "application/json" : "image/png",
         bytes: readFileSync(
-          new URL(`./art/energy/${energy[1]}/${energy[2]}`, import.meta.url),
+          new URL(
+            energy[1].startsWith("warrior")
+              ? `./art/warrior/motion43/energy/${energy[1]}/${energy[2]}`
+              : `./art/energy/${energy[1]}/${energy[2]}`,
+            import.meta.url,
+          ),
         ),
       };
     const gun =
@@ -287,7 +292,7 @@ export function localAssets(byName, status) {
         type: "image/png",
         bytes: readFileSync(
           new URL(
-            `./art/warrior/hd/${hd[1] === "training" ? "training/" : ""}${hd[2]}.png`,
+            `./art/warrior/motion43/${hd[1] === "training" ? "training" : "base"}/${hd[2]}.png`,
             import.meta.url,
           ),
         ),
@@ -312,7 +317,7 @@ export function localAssets(byName, status) {
         type: "image/png",
         bytes: readFileSync(
           new URL(
-            `./art/warrior/hd/${hdWeaponMask[1]}-mask.png`,
+            `./art/warrior/motion43/masks/${hdWeaponMask[1]}.png`,
             import.meta.url,
           ),
         ),

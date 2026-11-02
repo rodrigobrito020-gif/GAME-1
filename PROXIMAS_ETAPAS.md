@@ -8,6 +8,14 @@ Orientação expressa do jogador: **o guerreiro é a base para todas as outras c
 
 O jogador aprovou o resultado da 0.6.37 após a revisão da arqueira e pistoleira. Preservar essa versão aprovada e comparar futuras alterações com o guerreiro antes de entregar. A arqueira e a pistoleira aprovadas complementam a referência; o guerreiro continua sendo a base principal.
 
+## Escolha de animação 2D e primeiro protótipo — 02/11/2026
+
+Após a 0.6.42, o jogador pediu movimentos menos robóticos, com mais detalhes e ações naturais em qualquer direção. Pediu recomendação entre 2D com mais poses/oito direções e migração para personagens 3D. Aceitou a recomendação de manter o 2D e começar pelo guerreiro, por ser a referência e haver pouco tempo.
+
+A 0.6.43 entrega o primeiro protótipo no guerreiro: oito vistas completas, oito passos distintos por direção, virada sem reiniciar a passada, finalização do apoio ao parar, poses diagonais de combate e máscaras/peitoral/Ki correspondentes. Nas cenas com previsão local, usa o mesmo vetor de entrada do movimento nativo para que a reconciliação de posição não provoque uma virada indevida. Combate cardinal anterior preservado. Não altera velocidade, hitboxes, tempos de impacto, regras ou progresso.
+
+**Aguardar a avaliação visual do jogador sobre este protótipo antes de aplicar o novo padrão à arqueira, pistoleira e Orc.** Essas três classes permanecem como na versão aprovada, incluindo o furacão de 3s e a Fúria do Orc. Não interpretar a escolha por 2D como aprovação antecipada de qualquer arte nova nem reiniciar os equipamentos/quinta classe neste passo.
+
 ## Fluidez geral e aprovação do furacão — 02/11/2026
 
 O jogador aprovou expressamente a 0.6.41: o furacão ficou como desejava. Preservar as quatro classes e este resultado visual. Pedido seguinte: jogo fluido, com resposta rápida e sem atrasos perceptíveis. Não prometer latência física zero nem confundir tempos intencionais de animação/recarga com gargalos de execução.
@@ -47,6 +55,8 @@ Arqueira e pistoleira usam a família de fontes coherent-v36, exportada por tool
 O jogador confirmou que a diferença para o guerreiro inclui o movimento do corpo e os efeitos. A 0.6.37 acrescenta transferência de peso/recuo por tempo da ação e impactos com 16 quadros distintos, além de chuvas com queda acelerada/rastros e campos móveis. Os corpos da 0.6.36, escala fixa, caminhada, Ki e level up ficam preservados. Não compensar animação ausente aumentando uma imagem estática nem alterar dano/cadência para sincronizar efeitos. Auras devem usar o deslocamento/rotação da exibição HD. Apresentação da 0.6.37 aprovada pelo jogador em 02/11/2026.
 
 ## Entregue
+
+- 0.6.43: primeiro protótipo 2D do guerreiro em oito direções, com passos distintos, viradas/parada e máscaras de corpo correspondentes. Avaliação visual pendente antes de estender às demais classes.
 
 - 0.6.42: posições a 20Hz com buffer menor, interface medida/escrita em lotes e preparação das texturas da classe; quatro classes e visual aprovados preservados.
 

@@ -1,48 +1,38 @@
-VERSAO 0.6.42 — RESPOSTA E FLUIDEZ
+VERSAO 0.6.43 — GUERREIRO EM OITO DIRECOES
 Data: 02/11/2026
 
 PEDIDO
-- Furacao da 0.6.41 aprovado. Pedido de fluidez geral e resposta rapida.
+- Manter 2D e melhorar os movimentos, com o guerreiro como primeira referencia.
+- Prototipo do guerreiro para avaliacao antes das outras classes.
 
 ENTREGUE
-- Simulacao autoritativa permanece em 20Hz. Posicoes passam de 10 para 20Hz.
-- Buffer nativo reduzido para um pacote com margem adaptativa ao jitter.
-  Mantem interpolacao; sem extrapolar, teleportar ou mudar a velocidade real.
-- Controles de skills, pocoes e ultimate agrupam atualizacoes no mesmo quadro.
-  Medicoes de layout acontecem antes das alteracoes no DOM, evitando trabalho
-  repetido. Textos/atributos iguais deixam de ser escritos sem necessidade.
-- Cliques e atalhos continuam enviando comandos imediatamente. O agrupamento
-  e apenas da apresentacao da interface, sem criar fila de comandos de combate.
-- Poses HD e contornos de Ki da classe preparados gradualmente em tempo ocioso,
-  reduzindo criacao/upload de texturas durante o primeiro golpe/transformacao.
-- Artes, mascaras, rosto, proporcoes, animacoes, auras e valores de combate
-  preservados. Furacao continua com 3s e Furia do Orc com 60s/180s.
-
-COMPARACAO MEDIDA
-- Chromium/WebGL, renderizacao por software, janela 1440x900, mesmo roteiro.
-- Buffer mediano na caca: 241 para 96ms; durante Furia: 242 para 101ms.
-- Recalculos de layout: 2250 para 776 no roteiro comparativo.
-- P95 de intervalo entre quadros na Furia: 149 para 88ms; na caca: 123 para 81ms.
-- Mediana do furacao quase inalterada (66,5 para 65,7ms neste ambiente).
-- Preparacao inicial de texturas concentra algum trabalho na entrada da classe.
-- Numeros do ambiente de teste; nao sao garantia de FPS no PC do jogador.
-  Latencia zero absoluta depende de limites fisicos e nao e prometida.
+- Oito direcoes proprias e oito passos distintos em cada vista do guerreiro.
+- Virada gradual preserva a fase da passada. Parada termina o apoio.
+- Correcao da previsao local nao provoca virada indevida ao soltar a tecla.
+- Poses diagonais completas para repouso, ataque, salto, reacao e derrota.
+- Preparacao, contato e recuperacao da espada nas diagonais; tempos nativos.
+- Peitoral de treino, mascaras de arma e Ki acompanham as oito direcoes.
+- Mesma escala/ancora do guerreiro; figuras completas sem montagem de membros.
+- Combate cardinal anterior preservado pixel a pixel nas duas aparencias.
+- Galeria com quatro novas direcoes de comparacao para o guerreiro.
+- Outras tres classes, valores de combate, progresso e melhorias da 0.6.42
+  preservados. Orc conserva furacao de 3s e Furia de 60s/180s.
 
 VERIFICACAO
-- 162 testes com recursos-publicos.zip real: protocolo, saves/reinicio,
-  movimento, colisoes, combate, efeitos, carga/recargas e Pocoes.
-- Testes adicionais de interpolacao com jitter e agrupamento da interface,
-  preservando a atualizacao mais recente e medindo antes de escrever.
-- Chromium nas quatro classes: cidade, caminhada, Dash, mudanca de classe,
-  barras, controles AUTO/MANUAL, painel das tres pocoes e ultimates reais.
-- Dois furacoes reais com e sem Furia: tres segundos, oito vistas, partes na
-  frente/atras, escala fixa, perseguicao, zoom e limpeza. Sem erros JavaScript.
-- Testes com contas isoladas. Nenhum progresso real foi usado ou alterado.
+- 169 testes passaram com recursos-publicos.zip real.
+- Direcoes e viradas a 30/60/144Hz, continuidade da passada, parada, morte,
+  deslocamento de esquiva, teleporte e correcao da previsao local.
+- Poses completas com margens, oito passos unicos, quadros antigos identicos,
+  luz dentro do corpo e particulas emitidas pela silhueta atual em oito vistas.
+- Conferencia no Chromium/WebGL: cidade, diagonais, combate e ultimate.
+- Contas isoladas; nenhum progresso real usado ou alterado.
+- A avaliacao visual permanece com o jogador antes de estender o novo padrao.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.42.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.43.
+6. Selecione Guerreiro Humano e teste tambem W+A, W+D, S+A e S+D.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

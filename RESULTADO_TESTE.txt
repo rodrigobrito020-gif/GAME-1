@@ -1,40 +1,37 @@
-VERSAO 0.6.29 — REVISAO DE CAMINHADA E EFEITOS DA PISTOLEIRA
+VERSAO 0.6.30 — PROPORCOES E VISIBILIDADE DA PISTOLEIRA
 Data: 02/11/2026
 
 ALTERACOES
-- Corrigida a causa do corte da cabeca: algumas figuras de costas atravessavam
-  a divisao nominal da imagem de origem. O exportador agora isola a figura
-  completa antes da divisao. Novas poses verticais, oito por direcao.
-- Novo teste verifica a coroa arredondada do cabelo em todos os oito quadros
-  de costas. O criterio distingue a linha cortada da 0.6.28 dos novos quadros.
-- Mira mantida entre ataques quando parada e com alvo. Inicio/recuperacao dos
-  disparos voltam a prontidao; repouso na cidade e caminhada nao sao substituidos.
-- Disparo Sombrio com carga, projétil e impacto direcional proprios.
-- Rajada com crescente texturizado na area do servidor e seis disparos.
-- Instinto com brilho discreto na arma; Eclipse com orbita pintada em camadas
-  e motes que passam a frente/atras, retirando a moldura vertical anterior.
-- Projeteis basicos acompanham o alvo interpolado exibido no cliente; os
-  instantes de dano, valores, alcances, custos e recargas continuam no servidor.
+- Novo modelo completo com rosto maior, tronco/quadril menos estreitos e pernas
+  menos alongadas, tendo a arqueira como referencia. Traços, cabelo e roupas
+  iniciais preservados no novo desenho; duas pistolas simples.
+- Repouso, caminhada nas quatro direcoes, disparos, buff, ferimento e derrota
+  reconstruidos com figuras completas. Oito fases de caminhada, altura comum
+  e linha dos pes fixa; exportacao sem recortes de partes do corpo.
+- Mira e disparo pareados por mao; origem dos tiros recalibrada nas novas artes.
+- Tiros e impactos maiores, violeta saturado e detalhes dourados. Desaparecimento
+  dos impactos mais gradual; Rajada e Eclipse com maior opacidade.
+- Centro da aura aberto, mantendo a leitura do personagem.
 
 VERIFICACAO
-- 119 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
-- Cliente real Chromium/WebGL pt-BR: caminhada em quatro direcoes, Dash violeta,
-  trocas das tres classes, preferencias apos reabrir e galeria conferidos.
-- Quatro skills e estatisticas de critico/velocidade, nova orbita abaixo da
-  cabeca, cartas com classe/custo corretos, dois buffs independentes e AUTO.
+- 119 testes automatizados passaram com o ZIP real; zero falhas/ignorados.
+- Cliente real Chromium/WebGL pt-BR: tres classes lado a lado, caminhada nas
+  quatro direcoes, Dash violeta HD, troca de classe sem reabrir e preferencias
+  persistentes; duas pocoes selecionadas e galeria das tres classes.
+- Quatro skills em combate, projeteis orientados, bonus reais de critico e
+  velocidade de ataque, dois buffs independentes, cartas e combate automatico.
 - Limpeza dos efeitos ao sair da hunt; zero erros JavaScript nos testes nativos.
-- Gravacao da cidade revisada quadro a quadro para conferir a cabeca inteira.
-- 167 arquivos aprovados das outras classes, movimento, pocoes e regras de
-  combate compartilhadas comparados byte a byte com 0.6.28. Rosto, roupas,
-  repouso, disparos e reacoes da pistoleira tambem preservados.
-- Todos os testes usam contas isoladas; o progresso real nao foi alterado.
-- A aprovacao visual desta revisao continua pendente com o jogador.
+- Capturas reais revisadas: proporcoes nas cartas e efeitos no piso claro.
+- 162 arquivos das outras classes, artes-base, movimento, pocoes e regras
+  compartilhadas comparados byte a byte com 0.6.29: nenhum alterado.
+- Contas isoladas nos testes; progresso real nao foi alterado.
+- A avaliacao artistica final desta revisao cabe ao jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.29.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.30.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Reconstrucao opcional das artes: npm run art:gunslinger (Python/Pillow).

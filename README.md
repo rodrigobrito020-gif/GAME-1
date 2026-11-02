@@ -1,8 +1,21 @@
-# Jogo local — 0.6.29: revisão da Pistoleira Dark Elf
+# Jogo local — 0.6.30: proporções e efeitos da Pistoleira Dark Elf
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.30
+
+A pistoleira recebeu um novo modelo de corpo inteiro: rosto maior, tronco e quadril menos estreitos e pernas menos alongadas, usando a arqueira como referência de proporção. Os traços do rosto, cabelo preto ondulado, roupas iniciais e duas pistolas simples são mantidos no novo desenho.
+
+- Repouso, oito fases de caminhada em cada direção, disparos alternados, buff, ferimento e derrota reconstruídos a partir do mesmo modelo. As figuras são exportadas inteiras, com altura e linha dos pés comuns às três classes.
+- Pares de mira/disparo alinhados à mesma mão e origem dos projéteis recalibrada para as novas pistolas.
+- Projéteis, clarões e impactos com núcleo violeta mais saturado e detalhes dourados. Tiros básicos e Disparo Sombrio maiores; impactos permanecem legíveis por mais tempo.
+- Marca da Rajada e órbita do Eclipse com maior opacidade. O centro da aura continua aberto para permitir a leitura do personagem.
+
+As artes aprovadas do guerreiro e da arqueira, valores das habilidades, regras de combate e poções são preservados. Conferência no cliente real e 119 testes automatizados sem falhas; a avaliação artística final cabe ao jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.30**.
 
 ## Atualização 0.6.29
 

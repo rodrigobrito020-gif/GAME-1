@@ -16,20 +16,20 @@ export const GUNSLINGER_SHEETS = {
 // common foot anchor and converted to world units (224px body = 112 units).
 export const GUNSLINGER_MUZZLES = [
   [
-    [-15.5, -94],
-    [17, -94],
+    [-16, -91.5],
+    [19, -95],
   ],
   [
-    [-45, -95],
-    [-45, -95],
+    [-36.5, -97],
+    [-44, -97],
   ],
   [
-    [45, -95],
-    [45, -95],
+    [36, -97],
+    [43.5, -97],
   ],
   [
-    [18.5, -107],
-    [-19, -107],
+    [20, -109],
+    [-20.5, -109],
   ],
 ];
 export const NIGHT_INSTINCT = {

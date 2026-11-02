@@ -94,9 +94,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
               "muzzle",
               fx.x,
               fx.y,
-              12 + p * 20,
-              12 + p * 20,
-              p * 0.65,
+              16 + p * 22,
+              16 + p * 22,
+              p * 0.9,
             );
           }
           continue;
@@ -108,9 +108,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
             "muzzle",
             fx.x,
             fx.y,
-            (power ? 44 : 27) + p * 8,
-            (power ? 35 : 23) + p * 6,
-            (1 - p) * 0.9,
+            (power ? 50 : 32) + p * 8,
+            (power ? 42 : 28) + p * 6,
+            Math.pow(1 - p, 0.7),
             pose.angle,
           );
         }
@@ -119,8 +119,8 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           power ? "power" : "bullet",
           pose.x,
           pose.y,
-          power ? 108 : burst ? 58 : state.activeMs > 0 ? 48 : 38,
-          power ? 48 : burst ? 22 : 18,
+          power ? 128 : burst ? 66 : state.activeMs > 0 ? 58 : 50,
+          power ? 58 : burst ? 28 : 23,
           1,
           pose.angle,
         );
@@ -149,9 +149,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
         h.power ? "powerimpact" : "impact",
         h.x,
         h.y,
-        (h.power ? 68 : 27) + p * 18,
-        (h.power ? 47 : 27) + p * 15,
-        (1 - p) * (1 - p) * 0.85,
+        (h.power ? 85 : 36) + p * 18,
+        (h.power ? 60 : 36) + p * 15,
+        Math.pow(1 - p, 1.3) * 0.95,
         h.power ? h.angle : 0,
       );
     }
@@ -171,7 +171,7 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
         v.area.y + 4,
         v.area.radius * 2.15,
         v.area.radius * 1.4,
-        fade * 0.38,
+        fade * 0.68,
         0,
         e.actor.root.depth - 0.3,
       );
@@ -195,7 +195,7 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           a.y - 50 + Math.sin(phase) * 2,
           110,
           120,
-          (0.52 + 0.025 * Math.sin(phase)) * fade,
+          (0.78 + 0.025 * Math.sin(phase)) * fade,
           Math.sin(phase * 0.5) * 7,
           a.root.depth - 0.2,
         );
@@ -206,7 +206,7 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           a.y - 50 + Math.sin(phase) * 2,
           110,
           120,
-          0.28 * fade,
+          0.4 * fade,
           Math.sin(phase * 0.5) * 7,
           a.root.depth + 0.03,
         )?.setCrop(0, 128, 256, 128);
@@ -217,9 +217,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
             "muzzle",
             a.x + Math.cos(t) * 38,
             a.y - 48 + Math.sin(t) * 21,
-            9,
-            9,
-            0.6 * fade,
+            12,
+            12,
+            0.9 * fade,
             phase * 20,
             Math.sin(t) > 0 ? a.root.depth + 0.04 : a.root.depth - 0.25,
           );
@@ -234,9 +234,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           "muzzle",
           a.x + x,
           a.y + y,
-          8,
-          8,
-          0.25 + 0.08 * Math.sin(now / 300),
+          12,
+          12,
+          0.5 + 0.08 * Math.sin(now / 300),
         );
       }
       for (const b of buffs) {
@@ -249,7 +249,7 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
             a.y - 57,
             38 + p * 25,
             42 + p * 28,
-            (1 - p) * (1 - p) * 0.55,
+            Math.pow(1 - p, 1.3) * 0.8,
           );
       }
     }

@@ -108,30 +108,26 @@ def save_sheet(cl, name, rows):
 
 
 # Whole-figure exports share the approved 384px frame, 224px body and foot plane.
-manifest={'character':'Pistoleira Dark Elf','version':29,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+manifest={'character':'Pistoleira Dark Elf','version':30,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
 idle=[];walk=[];weapon=[];special=[];burst=[]
 for row in range(4):
-    ref=cell('idle',1,4,0,row)
+    ref=whole_cell('idle-v30',1,4,0,row)
     idle.append([frame(ref,ref,breath=b) for b in [1,1.003,1,.997]])
     sr=0 if row==0 else 2 if row==3 else 1
-    if row in [1,2]:
-        wr=cell('walk-side',2,4,0,0)
-        walk.append([frame(cell('walk-side',2,4,c//4,c%4),wr,mirror=row==1) for c in range(8)])
-    else:
-        name='walk-vertical-v29' if row==0 else 'walk-back-v29';nr=3 if row==0 else 2
-        wr=whole_cell(name,nr,4,0,0)
-        walk.append([frame(whole_cell(name,nr,4,c//4,c%4),wr) for c in range(8)])
-    name='shoot-back' if row==3 else 'shoot';nr=1 if row==3 else 3;shootrow=0 if row==3 else sr
-    wr=cell(name,nr,6,shootrow,0)
+    name='walk-front-v30' if row==0 else 'walk-back-v30' if row==3 else 'walk-side-v30'
+    wr=whole_cell(name,2,4,0,0)
+    walk.append([frame(whole_cell(name,2,4,c//4,c%4),wr,mirror=row==1) for c in range(8)])
+    name='shoot-back-v30' if row==3 else 'shoot-v30';nr=1 if row==3 else 2;shootrow=0 if row in [0,3] else 1
+    wr=whole_cell(name,nr,6,shootrow,0)
+    # Match each aim/release pair to the same hand. Reflect a complete north
+    # pose for the second hand; never cut or move individual body pieces.
     poses=[]
     for c in range(6):
-        # Whole back-view poses alternate the raised hand by reflection; barrels
-        # stay foreshortened toward north. No limb pieces are cut or stretched.
-        sc=(1 if c==3 else 2 if c==4 else 0 if c==5 else c) if row==3 else c
-        poses.append(frame(cell(name,nr,6,shootrow,sc),wr,mirror=row==1 or (row==3 and c in [3,4])))
+        sc=([0,3,2,1,4,5][c] if row==0 else [0,1,2,1,2,5][c] if row==3 else c)
+        poses.append(frame(whole_cell(name,nr,6,shootrow,sc),wr,mirror=row==1 or (row==3 and c in [3,4])))
     weapon.append(poses);burst.append(poses+[poses[5],poses[5]])
-    rr=cell('reactions',3,4,sr,0)
-    special.append([frame(cell('reactions',3,4,sr,c),rr,mirror=row==1,dead=c==2) for c in [0,0,1,0,3,2]])
+    rr=whole_cell('reactions-v30',3,4,sr,0)
+    special.append([frame(whole_cell('reactions-v30',3,4,sr,c),rr,mirror=row==1,dead=c==2) for c in [0,0,1,0,3,2]])
 for name,rows in [('idle',idle),('walk',walk),('run1',walk),('weapon',weapon),('axeheavy',burst),('special',special)]:
     manifest['sources'][name]=save_sheet('gunslinger',name,rows)
 folder=ROOT/'art/gunslinger'
@@ -141,14 +137,16 @@ im=Image.open(SOURCE/'icons.png').convert('RGBA');w,h=im.size
 for i,name in enumerate(['disparo-sombrio','rajada-do-crepusculo','instinto-noturno','eclipse','dash']):
     r,c=divmod(i,3);side=min(w//3,h//2);x=round(c*w/3+(w/3-side)/2);y=round(r*h/2+(h/2-side)/2)
     im.crop((x,y,x+side,y+side)).resize((256,256),Image.Resampling.LANCZOS).save(folder/'icons'/f'{name}.png')
-im=Image.open(SOURCE/'vfx.png').convert('RGBA');w,h=im.size
-for name,box in [('bullet',(0,.1,.56,.45)),('muzzle',(.56,0,1,.5)),('impact',(0,.5,.5,1)),('aura',(.5,.5,1,1))]:
+im=Image.open(SOURCE/'vfx-v30.png').convert('RGBA');w,h=im.size
+for name,box in [('bullet',(0,0,.5,.5)),('muzzle',(.5,0,1,.475)),('impact',(0,.5,.5,1)),('aura',(.5,.5,1,1))]:
     effect=im.crop(tuple(round(v*(w if i%2==0 else h)) for i,v in enumerate(box)))
+    bounds=effect.getchannel('A').point(lambda a:255 if a>8 else 0).getbbox()
+    if bounds:effect=effect.crop(bounds)
     effect.thumbnail((256,256),Image.Resampling.LANCZOS);out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
 print('Pistoleira: six HD/native atlases, complete figures in four directions, five skill icons and four textured effects.')
 
-im=Image.open(SOURCE/'skills-v29.png').convert('RGBA');w,h=im.size
-for name,box in [('power',(0,.05,.56,.48)),('volley',(.56,0,1,.5)),('powerimpact',(0,.5,.52,1)),('orbit',(.52,.5,1,1))]:
+im=Image.open(SOURCE/'skills-v30.png').convert('RGBA');w,h=im.size
+for name,box in [('power',(0,0,.5,.5)),('volley',(.5,0,1,.5)),('powerimpact',(0,.5,.5,1)),('orbit',(.5,.5,1,1))]:
     effect=im.crop(tuple(round(v*(w if i%2==0 else h))for i,v in enumerate(box)))
     bounds=effect.getchannel('A').point(lambda a:255 if a>8 else 0).getbbox()
     if bounds:effect=effect.crop(bounds)

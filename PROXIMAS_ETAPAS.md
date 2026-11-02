@@ -4,6 +4,8 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Entregue
 
+- 0.6.30: proporções da pistoleira revistas em todas as poses com referência na arqueira; tiros, impactos, Rajada e Eclipse com violeta/dourado mais visíveis. As outras classes e regras de combate são preservadas. Avaliação artística pelo jogador pendente.
+
 - 0.6.25: aura corporal verde, caminhada vertical redesenhada, habilidade 1 com três flechas em cone e Dash com a cor da classe. Poções compactas ao lado da barra: uma HP/uma mana, tipo selecionado, AUTO/MANUAL e limites persistentes. Revisão visual do jogador pendente. As próximas classes devem registrar sua cor, movimento e ícone do Dash em class-visuals.mjs.
 
 - 0.6.24: arqueira revisada após dois vídeos: soltura sincronizada, flechas orientadas corretamente, Chuva com pose própria e três ondas, efeitos de buffs com menos sobreposição e mira estável. Afastamento curto entre disparos sob pressão próxima, com colisão e intervalo. Guerreiro aprovado preservado; revisão visual da arqueira pelo jogador pendente.

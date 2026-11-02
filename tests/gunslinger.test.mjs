@@ -87,9 +87,9 @@ test("gunslinger alternates two hands and delivers the normal total attack only 
     fx.map((f) => f.releaseMs),
     [150, 350],
   );
-  assert.equal(fx[0].x, client.x + 45);
-  assert.equal(fx[0].y, client.y - 95);
-  assert.equal(fx[1].y, client.y - 95);
+  assert.equal(fx[0].x, client.x + 36);
+  assert.equal(fx[0].y, client.y - 97);
+  assert.equal(fx[1].y, client.y - 97);
   assert.equal(m.hp, 1000);
   client.hunt.nextAttack = Infinity;
   s.step(259);

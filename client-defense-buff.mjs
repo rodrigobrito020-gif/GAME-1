@@ -112,6 +112,21 @@ export function withDefenseBuffUi(bytes) {
     "setDoll(e,t,n,r=null){this.stand()",
     "setDoll(e,t,n,r=null){if(this.doll&&this.doll.key!==e)this.act=null;this.stand()",
   );
+  code = replaceOnce(
+    code,
+    "this.baseScale=2,this.height=Ky,this.plateLift=120-Ky,this.radius=34,this.shadow.setDisplaySize(36,12),this.body.setOrigin(32/64,60/64).setScale(2)}headHeight",
+    "this.baseScale=e.includes(`orc-berserker`)?2.6:2,this.height=Ky*(this.baseScale/2),this.plateLift=(120-Ky)*(this.baseScale/2),this.radius=34*(this.baseScale/2),this.shadow.setDisplaySize(36*(this.baseScale/2),12*(this.baseScale/2)),this.body.setOrigin(32/64,60/64).setScale(this.baseScale)}headHeight",
+  );
+  code = replaceOnce(
+    code,
+    "this.height-Cv(e.tex,this.body.frame)*2:this.height",
+    "this.height-Cv(e.tex,this.body.frame)*(e.key.includes(`orc-berserker`)?this.baseScale:2):this.height",
+  );
+  code = replaceOnce(
+    code,
+    "this.doll={key:e,tex:this.body.scene.textures.get(e),rig:t,sheet:null",
+    "this.doll={key:e,tex:this.body.scene.textures.get(e),rig:e.includes(`orc-berserker`)?{...t,loops:{...t.loops,walk:{...t.loops.walk,stride:t.loops.walk.stride*1.3},run:{...t.loops.run,stride:t.loops.run.stride*1.3}}}:t,sheet:null",
+  );
   const project = `
 window.__royalAegisVisuals?.update(this);
 window.__royalAvatarVisuals?.update(this);
@@ -119,6 +134,7 @@ window.__royalHD?.update(this);
 window.__royalCombatVisuals?.update(this);
 window.__royalArcherVisuals?.update(this);
 window.__royalGunslingerVisuals?.update(this);
+window.__royalBerserkerVisuals?.update(this);
 window.__royalAttachedEnergy?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);

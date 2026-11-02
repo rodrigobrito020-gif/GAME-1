@@ -230,6 +230,13 @@
   }
   function theme(actor) {
     const key = String(actor.body?.texture?.key ?? "");
+    if (key.includes("orc-berserker"))
+      return {
+        palette: "berserker",
+        hue: 330,
+        gold: 0xff5449,
+        white: 0xffe3bb,
+      };
     if (key.includes("elfa-arqueira"))
       return { palette: "archer", hue: 80, gold: 0x9bff5f, white: 0xf3ffcf };
     if (key.includes("dark-elf-pistoleira"))

@@ -13,6 +13,14 @@
     () => (castAt = performance.now()),
   );
   const looks = {
+    berserker: {
+      look: "berserker",
+      buff: "furia-ancestral",
+      color: 0xff4038,
+      light: 0xffdab0,
+      css: "255,64,56",
+      ki: true,
+    },
     guerreiro: {
       look: "warrior",
       buff: "avatar-da-luz",

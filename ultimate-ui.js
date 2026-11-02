@@ -93,10 +93,12 @@
   };
   meter.onclick = () => window.__royalRequestAvatar();
   function paint() {
-    meter.hidden = !state?.inHunt || !state.alive;
+    const hp = document.querySelector("#ui .slHudCard .slBar-hp");
+    if (hp && meter.nextElementSibling !== hp) hp.before(meter);
+    meter.hidden = !state || !hp;
+
     if (!state) return;
-    meter.querySelector("span").textContent =
-      `4 · ${(state.ultimateName ?? "Avatar da Luz").toUpperCase()}`;
+    meter.querySelector("span").textContent = "ULT";
     const active = remaining("activeMs"),
       cd = remaining("cooldownMs"),
       isReady = ready();
@@ -104,7 +106,7 @@
     meter.classList.toggle("ready", !!isReady);
     meter.classList.toggle("active", active > 0);
     meter.querySelector("strong").textContent = active
-      ? "ATIVO"
+      ? `${Math.ceil(active / 1000)}s`
       : `${state.charge} / 100`;
     meter.querySelector("i").style.width =
       `${active ? (100 * active) / (state.durationMs || 45000) : Math.max(0, Math.min(100, state.charge))}%`;
@@ -119,6 +121,13 @@
           : cd
             ? `Recarga · ${Math.ceil(cd / 1000)}s · energia por combate`
             : "Carrega ao causar e receber dano";
+    meter.style.setProperty(
+      "--royal-ultimate-color",
+      state.classVisuals?.color ?? "#ffe4a0",
+    );
+    const status = meter.querySelector("small").textContent;
+    meter.title = `${state.ultimateName ?? "Ultimate"} · ${state.charge}/100 · ${status}`;
+    meter.setAttribute("aria-label", meter.title);
     const button = document.querySelector(
       `.slHudSkill[aria-label="${state.ultimateName ?? "Avatar da Luz"}"]`,
     );

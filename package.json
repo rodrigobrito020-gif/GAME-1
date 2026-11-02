@@ -1,6 +1,6 @@
 {
   "name": "cliente-capturado-local",
-  "version": "0.6.37",
+  "version": "0.6.38",
   "private": true,
   "type": "module",
   "engines": {
@@ -15,13 +15,14 @@
     "art:clothes": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
     "art:avatar": "node tools/pack-avatar-vfx.mjs && python tools/pack-attached-energy.py --look warrior && python tools/pack-attached-energy.py --look warrior-training",
     "art:weapons": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
-    "art:hd": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
+    "art:hd": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:berserker",
     "art:archer": "python tools/pack-coherent-characters.py --class archer && python tools/pack-archer-energy.py && python tools/pack-attached-energy.py",
-    "art:characters": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py",
+    "art:characters": "python tools/pack-coherent-characters.py && python tools/pack-coherent-masks.py && node tools/pack-training-armor.mjs && python tools/pack-coherent-training.py && python tools/pack-attached-energy.py && npm run art:berserker",
     "art:steps": "python tools/soften-footsteps.py",
     "art:gunslinger": "python tools/pack-gunslinger.py && python tools/pack-gunslinger-energy.py && python tools/pack-attached-energy.py",
     "art:level": "python tools/pack-level-up.py",
-    "art:ranged-vfx": "python tools/pack-ranged-vfx.py"
+    "art:ranged-vfx": "python tools/pack-ranged-vfx.py",
+    "art:berserker": "python tools/pack-berserker.py && python tools/pack-berserker-vfx.py && python tools/pack-attached-energy.py --look berserker"
   },
   "dependencies": {
     "ws": "8.21.3"

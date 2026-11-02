@@ -1,8 +1,22 @@
-# Jogo local — 0.6.37: movimento e habilidades das classes a distância
+# Jogo local — 0.6.38: Berserker Orc e ultimate acima do HP
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.38
+
+O guerreiro continua sendo a **base principal de todas as classes**, como reforçado pelo jogador após aprovar a 0.6.37. Esta versão acrescenta a quarta classe inicial e a mudança de posição da barra de ultimate solicitada durante a construção.
+
+- **Berserker Orc:** pele verde, porte robusto e machado de duas mãos. É 30% mais alto que o guerreiro no mundo e na comparação de personagens, com escala uniforme fixa em todas as poses. Seis sequências completas, oito fases de caminhada, retrato, quatro cartas e Dash próprios. Proporções e âncoras seguem o contrato do guerreiro; a cadência de caminhada considera a passada maior do Orc.
+- **Vermelho é a cor da classe:** cortes, impactos, ruptura, Dash, brilho do corpo e Ki da ultimate seguem a paleta vermelha. Realces claros são secundários; o level up também usa vermelho. A energia acompanha a silhueta, a superfície e a pose real do corpo, usando a mesma apresentação de Ki aprovada no guerreiro.
+- **Habilidades:** Corte Selvagem (cone de machado de 140°, 220% ATK); Ruptura da Terra (salto e impacto em área na aterrissagem, 250% ATK); Grito de Guerra (+30% de velocidade de ataque por 30s); Fúria Ancestral (100 de energia, 45s de transformação, velocidade +50%, dano recebido -25% e básicos em área). Golpes anunciam a preparação antes do impacto; efeitos têm 16 quadros distintos e dissipação. Valores iniciais para teste.
+- **Ultimate acima do HP nas quatro classes:** barra compacta integrada ao painel do personagem, na cor da classe, com carga/tempo de transformação e detalhes ao passar o mouse. Aparece também na cidade. A tecla 4, o ícone na barra de habilidades e as opções AUTO/MANUAL continuam funcionando; o medidor que ficava sobre as habilidades foi movido.
+- **Troca de classe:** quatro cartas e galeria com o porte maior do Orc. Conserva nível, inventários, ouro, equipamentos e escolhas independentes de habilidades. Equipamentos completos continuam para depois das cinco classes iniciais.
+
+**147 testes com o ZIP real**, mais conferência no Chromium/WebGL de caminhada, troca das quatro classes, posição da barra de ultimate, habilidades reais do Orc, escala fixa, Ki vermelho, Shift, sons e limpeza ao sair. Artes e regras aprovadas das outras três classes preservadas. A apresentação nova do Orc continua sujeita à avaliação do jogador.
+
+**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior. Mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.38**.
 
 ## Atualização 0.6.37
 

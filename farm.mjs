@@ -1,4 +1,14 @@
 import {
+  BERSERKER_CLASS,
+  BERSERKER_SKIN,
+  BERSERKER_SKILLS,
+  BERSERKER_CRY,
+  BERSERKER_ULTIMATE,
+  isBerserker,
+  berserkerConeTargets,
+} from "./berserker.mjs";
+import { berserkerBasic, castBerserker } from "./berserker-combat.mjs";
+import {
   GUNSLINGER_CLASS,
   GUNSLINGER_SKIN,
   GUNSLINGER_SKILLS,
@@ -166,6 +176,7 @@ export const ALL_SKILLS = [
   ...ACTIVE_SKILLS.filter((s) => !s.universal),
   ...ARCHER_SKILLS,
   ...GUNSLINGER_SKILLS,
+  ...BERSERKER_SKILLS,
   ...ACTIVE_SKILLS.filter((s) => s.universal),
 ];
 export const ITEMS = [
@@ -312,11 +323,13 @@ export class LocalFarm {
     this.recalculate();
   }
   get skills() {
-    const own = isGunslinger(this.character)
-      ? GUNSLINGER_SKILLS
-      : isArcher(this.character)
-        ? ARCHER_SKILLS
-        : null;
+    const own = isBerserker(this.character)
+      ? BERSERKER_SKILLS
+      : isGunslinger(this.character)
+        ? GUNSLINGER_SKILLS
+        : isArcher(this.character)
+          ? ARCHER_SKILLS
+          : null;
     return own
       ? [
           ...own,
@@ -328,15 +341,21 @@ export class LocalFarm {
       : ACTIVE_SKILLS;
   }
   get ultimateDefinition() {
-    return isGunslinger(this.character)
-      ? ECLIPSE
-      : isArcher(this.character)
-        ? ARCHER_SPIRIT
-        : LIGHT_AVATAR;
+    return isBerserker(this.character)
+      ? BERSERKER_ULTIMATE
+      : isGunslinger(this.character)
+        ? ECLIPSE
+        : isArcher(this.character)
+          ? ARCHER_SPIRIT
+          : LIGHT_AVATAR;
   }
   changeClass(client, id) {
     if (client.hunt) throw Error("local.city_only");
-    if (!["guerreiro", ARCHER_CLASS, GUNSLINGER_CLASS].includes(id))
+    if (
+      !["guerreiro", ARCHER_CLASS, GUNSLINGER_CLASS, BERSERKER_CLASS].includes(
+        id,
+      )
+    )
       throw Error("local.invalid_skill");
     const c = this.character,
       old = c.identity.classId;
@@ -347,17 +366,20 @@ export class LocalFarm {
       mana = c.progress.mana / c.derived.maxMana;
     c.identity.classId = id;
     c.identity.skinId =
-      id === GUNSLINGER_CLASS
-        ? GUNSLINGER_SKIN
-        : id === ARCHER_CLASS
-          ? ARCHER_SKIN
-          : "humano-guerreiro";
-    c.identity.gender = id === "guerreiro" ? 1 : 2;
+      id === BERSERKER_CLASS
+        ? BERSERKER_SKIN
+        : id === GUNSLINGER_CLASS
+          ? GUNSLINGER_SKIN
+          : id === ARCHER_CLASS
+            ? ARCHER_SKIN
+            : "humano-guerreiro";
+    c.identity.gender = ["guerreiro", BERSERKER_CLASS].includes(id) ? 1 : 2;
     c.identity.ownedSkins = [
       ...new Set([...(c.identity.ownedSkins ?? []), c.identity.skinId]),
     ];
     this.eyesUntil = 0;
     this.instinctUntil = 0;
+    this.warCryUntil = 0;
     this.avatar = new LightAvatar(c, {
       now: this.now,
       definition: this.ultimateDefinition,
@@ -393,6 +415,12 @@ export class LocalFarm {
         remainingMs: this.instinctUntil - now,
         totalMs: NIGHT_INSTINCT.durationMs,
       });
+    if (isBerserker(c) && this.warCryUntil > now)
+      ids.push({
+        id: BERSERKER_CRY.id,
+        remainingMs: this.warCryUntil - now,
+        totalMs: BERSERKER_CRY.durationMs,
+      });
     if (this.avatar.active())
       ids.push({
         id: this.ultimateDefinition.id,
@@ -415,21 +443,47 @@ export class LocalFarm {
       c.equipment.slots.reduce((n, e) => n + (e.item.stats?.[key] ?? 0), 0);
     Object.assign(c.derived, {
       atk: Math.round(
-        ((isGunslinger(c) ? 13 : isArcher(c) ? 14 : 15) +
+        ((isBerserker(c) ? 17 : isGunslinger(c) ? 13 : isArcher(c) ? 14 : 15) +
           (level - 1) * 2 +
           sum("atk")) *
           (isArcher(c) && this.eyesUntil > this.now() ? 1.2 : 1),
       ),
       def: this.defenseBuffs.defense(c, sum("def")),
       maxHp:
-        (isGunslinger(c) ? 230 : isArcher(c) ? 220 : 250) +
+        (isBerserker(c)
+          ? 280
+          : isGunslinger(c)
+            ? 230
+            : isArcher(c)
+              ? 220
+              : 250) +
         (level - 1) * 20 +
         sum("hp"),
       maxMana:
-        (isGunslinger(c) ? 110 : isArcher(c) ? 120 : 100) + (level - 1) * 5,
-      attackRange: isGunslinger(c) ? 300 : isArcher(c) ? 320 : 65,
-      attackCooldown:
-        isRanged(c) && this.avatar.active()
+        (isBerserker(c)
+          ? 90
+          : isGunslinger(c)
+            ? 110
+            : isArcher(c)
+              ? 120
+              : 100) +
+        (level - 1) * 5,
+      attackRange: isBerserker(c)
+        ? 80
+        : isGunslinger(c)
+          ? 300
+          : isArcher(c)
+            ? 320
+            : 65,
+      attackCooldown: isBerserker(c)
+        ? 1 /
+          ((this.warCryUntil > this.now()
+            ? 1 + BERSERKER_CRY.attackSpeedPercent
+            : 1) *
+            (this.avatar.active()
+              ? 1 + BERSERKER_ULTIMATE.attackSpeedPercent
+              : 1))
+        : isRanged(c) && this.avatar.active()
           ? 1 / (1 + this.ultimateDefinition.attackSpeedPercent)
           : 1,
       crit: isGunslinger(c)
@@ -535,6 +589,7 @@ export class LocalFarm {
     events.buffs.push(...this.avatar.clear(client.entityId ?? 1));
     this.eyesUntil = 0;
     this.instinctUntil = 0;
+    this.warCryUntil = 0;
     this.recalculate();
     client.hunt = null;
     client.evade = null;
@@ -704,6 +759,7 @@ export class LocalFarm {
       throw Error("local.invalid_target");
     if (now < h.nextAttack || now < h.actionUntil || client.evade)
       throw Error("local.cooldown");
+    if (isBerserker(c)) return berserkerBasic(this, client, target, events);
     if (isGunslinger(c)) return gunslingerBasic(this, client, target, events);
     if (isArcher(c)) return archerBasic(this, client, target, events);
     h.nextAttack = now + 1000;
@@ -821,6 +877,8 @@ export class LocalFarm {
       now = this.now();
     if (id === "ataque-basico") return this.basic(client, targetId, events);
     if (id === EVADE.id) return this.dash(client, {}, events, { free });
+    if (isBerserker(c))
+      return castBerserker(this, client, id, targetId, events, deltas);
     if (isGunslinger(c))
       return castGunslinger(this, client, id, targetId, events, deltas);
     if (isArcher(c))
@@ -1009,6 +1067,18 @@ export class LocalFarm {
         removed: true,
       });
     }
+    if (this.warCryUntil && this.warCryUntil <= now) {
+      this.warCryUntil = 0;
+      this.recalculate();
+      events.buffs.push({
+        entity: 1,
+        buffId: BERSERKER_CRY.id,
+        durationMs: 0,
+        removed: true,
+      });
+    }
+    if (h?.berserkerFx)
+      h.berserkerFx = h.berserkerFx.filter((f) => f.end > now);
     if (h?.gunslingerFx)
       h.gunslingerFx = h.gunslingerFx.filter((f) => f.end > now);
     if (h?.archerFx) h.archerFx = h.archerFx.filter((f) => f.end > now);
@@ -1074,6 +1144,17 @@ export class LocalFarm {
         this.recalculate();
         continue;
       }
+      if (impact.warCryBuff) {
+        this.warCryUntil = now + BERSERKER_CRY.durationMs;
+        this.recalculate();
+        events.buffs.push({
+          entity: 1,
+          buffId: BERSERKER_CRY.id,
+          durationMs: BERSERKER_CRY.durationMs,
+          removed: false,
+        });
+        continue;
+      }
       if (impact.instinctBuff) {
         this.instinctUntil = now + NIGHT_INSTINCT.durationMs;
         this.recalculate();
@@ -1110,33 +1191,35 @@ export class LocalFarm {
         : null;
       const cleave =
         impact.basic && !isRanged(c) && this.avatar.active() && primary;
-      const targets = impact.cone
-        ? [
-            ...new Set(
-              impact.cone.flatMap((ray) => piercedTargets(h.monsters, ray)),
-            ),
-          ]
-        : impact.pierce
-          ? piercedTargets(h.monsters, impact.pierce)
-          : cleave
-            ? h.monsters
-                .filter(
-                  (m) =>
-                    m.hp > 0 &&
-                    Math.hypot(m.x - primary.x, m.y - primary.y) <=
-                      LIGHT_AVATAR.cleaveRadius,
-                )
-                .map((m) => m.id)
-            : impact.area
+      const targets = impact.meleeCone
+        ? berserkerConeTargets(h.monsters, impact.meleeCone)
+        : impact.cone
+          ? [
+              ...new Set(
+                impact.cone.flatMap((ray) => piercedTargets(h.monsters, ray)),
+              ),
+            ]
+          : impact.pierce
+            ? piercedTargets(h.monsters, impact.pierce)
+            : cleave
               ? h.monsters
                   .filter(
                     (m) =>
                       m.hp > 0 &&
-                      Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
-                        impact.area.radius,
+                      Math.hypot(m.x - primary.x, m.y - primary.y) <=
+                        this.ultimateDefinition.cleaveRadius,
                   )
                   .map((m) => m.id)
-              : impact.targets;
+              : impact.area
+                ? h.monsters
+                    .filter(
+                      (m) =>
+                        m.hp > 0 &&
+                        Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
+                          impact.area.radius,
+                    )
+                    .map((m) => m.id)
+                : impact.targets;
       let landed = false;
       for (const id of targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
@@ -1151,7 +1234,7 @@ export class LocalFarm {
             h,
             monster,
             impact.amount,
-            cleave ? LIGHT_AVATAR.id : impact.skillId,
+            cleave ? this.ultimateDefinition.id : impact.skillId,
             events,
             deltas,
           );
@@ -1449,11 +1532,13 @@ export class LocalFarm {
           h.actionUntil = now + 100;
           events.moves.push({
             entity: 1,
-            move: isGunslinger(c)
-              ? "dark-elf-ferida"
-              : isArcher(c)
-                ? "elfa-ferida"
-                : "humano-ferido",
+            move: isBerserker(c)
+              ? "orc-ferido"
+              : isGunslinger(c)
+                ? "dark-elf-ferida"
+                : isArcher(c)
+                  ? "elfa-ferida"
+                  : "humano-ferido",
             target: m.id,
             dirX: 0,
             dirY: 0,
@@ -1468,6 +1553,8 @@ export class LocalFarm {
           for (const enemy of h.monsters) enemy.cast = null;
           this.eyesUntil = 0;
           this.instinctUntil = 0;
+          this.warCryUntil = 0;
+          h.berserkerFx = [];
           h.gunslingerFx = [];
           h.gunslingerBurns?.clear();
           h.archerFx = [];

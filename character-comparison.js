@@ -3,6 +3,7 @@ const canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d"),
   images = new Map();
 const definitions = {
+  berserker: ["idle", "walk", "run1", "weapon", "axeheavy", "special"],
   warrior: ["idle", "walk", "run1", "weapon", "special", "axeheavy"],
   archer: ["idle", "walk", "run1", "weapon", "axeheavy", "special"],
   gunslinger: ["idle", "walk", "run1", "weapon", "axeheavy", "special"],
@@ -70,6 +71,12 @@ const moves = {
     buff: "dark-elf-instinto",
     ultimate: "dark-elf-eclipse",
   },
+  berserker: {
+    attack: "orc-machado",
+    area: "orc-ruptura",
+    buff: "orc-grito",
+    ultimate: "orc-furia",
+  },
   warrior: {
     attack: "humano-espada",
     area: "humano-impacto-luz",
@@ -100,10 +107,12 @@ function render(now) {
   ctx.stroke();
   const t = Math.max(0, now - start);
   for (const [cl, x] of [
-    ["warrior", 240],
-    ["archer", 720],
-    ["gunslinger", 1200],
+    ["warrior", 200],
+    ["archer", 600],
+    ["gunslinger", 1000],
+    ["berserker", 1400],
   ]) {
+    const bodyScale = cl === "berserker" ? 1.3 : 1;
     let sheet = "idle",
       col = Math.floor(t / 400) % 4,
       lift = 0;
@@ -125,7 +134,7 @@ function render(now) {
         if (sheet === "walk" || sheet === "run1") col *= 2;
         if (
           action === "area" &&
-          cl === "warrior" &&
+          ["warrior", "berserker"].includes(cl) &&
           phase >= 100 &&
           phase < 550
         )
@@ -144,10 +153,10 @@ function render(now) {
       direction * ART.frame,
       ART.frame,
       ART.frame,
-      x - ART.feet[0] * (4 / ART.nativeSampleStep),
-      370 - ART.feet[1] * (4 / ART.nativeSampleStep) - lift,
-      ART.frame * (4 / ART.nativeSampleStep),
-      ART.frame * (4 / ART.nativeSampleStep),
+      x - ART.feet[0] * (4 / ART.nativeSampleStep) * bodyScale,
+      370 - ART.feet[1] * (4 / ART.nativeSampleStep) * bodyScale - lift,
+      ART.frame * (4 / ART.nativeSampleStep) * bodyScale,
+      ART.frame * (4 / ART.nativeSampleStep) * bodyScale,
     );
   }
   requestAnimationFrame(render);

@@ -1,4 +1,9 @@
 import {
+  BERSERKER_SKIN,
+  BERSERKER_SHEETS,
+  berserkerRig,
+} from "./berserker.mjs";
+import {
   GUNSLINGER_SKIN,
   GUNSLINGER_SHEETS,
   gunslingerRig,
@@ -36,6 +41,8 @@ export function localAssets(byName, status) {
   looks.looks[ARCHER_SKIN] = { entity: ARCHER_SKIN };
   looks.entities[GUNSLINGER_SKIN] = Object.keys(GUNSLINGER_SHEETS);
   looks.looks[GUNSLINGER_SKIN] = { entity: GUNSLINGER_SKIN };
+  looks.entities[BERSERKER_SKIN] = Object.keys(BERSERKER_SHEETS);
+  looks.looks[BERSERKER_SKIN] = { entity: BERSERKER_SKIN };
   const errors = JSON.parse(first("errors.json"));
   Object.assign(errors, {
     "errors.local.not_implemented":
@@ -72,6 +79,37 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const orcSheet =
+      /^\/assets\/paperdoll\/entities\/orc-berserker\/(idle|walk|run1|weapon|axeheavy|special)\.png$/.exec(
+        pathname,
+      );
+    const orcHd =
+      /^\/assets\/fx\/royal-berserker\/hd\/base\/(idle|walk|run1|weapon|axeheavy|special)\.png$/.exec(
+        pathname,
+      );
+    const orcIcon =
+      /^\/assets\/ui\/royal-berserker\/(corte-selvagem|ruptura-da-terra|grito-de-guerra|furia-ancestral|dash)\.png$/.exec(
+        pathname,
+      );
+    const orcFx = /^\/assets\/fx\/royal-berserker\/(cleave|quake)\.png$/.exec(
+      pathname,
+    );
+    const orcFile = orcSheet
+      ? orcSheet[1] + ".png"
+      : orcHd
+        ? "hd/" + orcHd[1] + ".png"
+        : orcIcon
+          ? "icons/" + orcIcon[1] + ".png"
+          : orcFx
+            ? "vfx/" + orcFx[1] + ".png"
+            : null;
+    if (orcFile)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL("./art/berserker/" + orcFile, import.meta.url),
+        ),
+      };
     const ranged =
       /^\/assets\/fx\/royal-ranged\/(arqueira|pistoleira)-impact\.png$/.exec(
         pathname,
@@ -116,7 +154,7 @@ export function localAssets(byName, status) {
         ),
       };
     const energy =
-      /^\/assets\/fx\/royal-energy\/(archer|gunslinger|warrior|warrior-training)\/(emitters\.json|(?:idle|walk|run1|weapon|axeheavy|special)-(?:surface|contour)\.png)$/.exec(
+      /^\/assets\/fx\/royal-energy\/(archer|gunslinger|warrior|warrior-training|berserker)\/(emitters\.json|(?:idle|walk|run1|weapon|axeheavy|special)-(?:surface|contour)\.png)$/.exec(
         pathname,
       );
     if (energy)
@@ -221,7 +259,7 @@ export function localAssets(byName, status) {
         ),
       };
     const classPortrait =
-      /^\/assets\/ui\/royal-classes\/(warrior|archer|gunslinger)\.png$/.exec(
+      /^\/assets\/ui\/royal-classes\/(warrior|archer|gunslinger|berserker)\.png$/.exec(
         pathname,
       );
     if (classPortrait)
@@ -229,11 +267,13 @@ export function localAssets(byName, status) {
         type: "image/png",
         bytes: readFileSync(
           new URL(
-            classPortrait[1] === "gunslinger"
-              ? "./art/gunslinger/portrait.png"
-              : classPortrait[1] === "archer"
-                ? "./art/archer/portrait.png"
-                : "./art/classes/warrior.png",
+            classPortrait[1] === "berserker"
+              ? "./art/berserker/portrait.png"
+              : classPortrait[1] === "gunslinger"
+                ? "./art/gunslinger/portrait.png"
+                : classPortrait[1] === "archer"
+                  ? "./art/archer/portrait.png"
+                  : "./art/classes/warrior.png",
             import.meta.url,
           ),
         ),
@@ -318,7 +358,9 @@ export function localAssets(byName, status) {
         bytes: Buffer.from(
           JSON.stringify(
             name === "paperdoll.json"
-              ? gunslingerRig(archerRig(warriorRig(JSON.parse(original))))
+              ? berserkerRig(
+                  gunslingerRig(archerRig(warriorRig(JSON.parse(original)))),
+                )
               : warriorEffects(JSON.parse(original)),
           ),
         ),

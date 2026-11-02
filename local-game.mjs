@@ -1,4 +1,10 @@
 import {
+  BERSERKER_CLASS,
+  BERSERKER_SKIN,
+  BERSERKER_SKILLS,
+} from "./berserker.mjs";
+import { berserkerFxState } from "./berserker-combat.mjs";
+import {
   GUNSLINGER_CLASS,
   GUNSLINGER_SKIN,
   GUNSLINGER_SKILLS,
@@ -71,7 +77,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-classes-37";
+  catalog.version = "local-classes-38";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -110,6 +116,16 @@ export function attachLocalGame(
     range: 300,
     hpBase: 230,
     manaBase: 110,
+    attacksPerSecond: 1,
+    initialStats: [],
+  });
+  catalog.classes.push({
+    id: BERSERKER_CLASS,
+    name: "Berserker Orc",
+    icon: "ataque_24",
+    range: 80,
+    hpBase: 280,
+    manaBase: 90,
     attacksPerSecond: 1,
     initialStats: [],
   });
@@ -167,6 +183,14 @@ export function attachLocalGame(
     forSale: false,
     kit: [],
   });
+  catalog.skins.push({
+    id: BERSERKER_SKIN,
+    name: "Berserker Orc",
+    gender: 1,
+    classId: BERSERKER_CLASS,
+    forSale: false,
+    kit: [],
+  });
   catalog.scenes = [
     {
       id: "cidade-local",
@@ -184,16 +208,18 @@ export function attachLocalGame(
     ...skill,
     classId: skill.universal
       ? "universal"
-      : GUNSLINGER_SKILLS.some((s) => s.id === skill.id)
-        ? GUNSLINGER_CLASS
-        : [
-              "tiro-perfurante",
-              "chuva-de-flechas",
-              "olhos-da-floresta",
-              "espirito-da-floresta",
-            ].includes(skill.id)
-          ? ARCHER_CLASS
-          : "guerreiro",
+      : BERSERKER_SKILLS.some((s) => s.id === skill.id)
+        ? BERSERKER_CLASS
+        : GUNSLINGER_SKILLS.some((s) => s.id === skill.id)
+          ? GUNSLINGER_CLASS
+          : [
+                "tiro-perfurante",
+                "chuva-de-flechas",
+                "olhos-da-floresta",
+                "espirito-da-floresta",
+              ].includes(skill.id)
+            ? ARCHER_CLASS
+            : "guerreiro",
     kind: skill.kind ?? (skill.radius ? "area" : "damage"),
     source: "physical",
     description:
@@ -592,16 +618,19 @@ export function attachLocalGame(
             ),
           ...combatState(account, client, Date.now()),
           activeBuffs: farm.activeBuffs(),
+          berserkerFx: berserkerFxState(client, Date.now()),
           archerFx: archerFxState(client, Date.now()),
           gunslingerFx: gunslingerFxState(client, Date.now()),
           classId: account.character.identity.classId,
           classVisuals: classVisuals(account.character.identity.classId),
           className:
-            account.character.identity.classId === GUNSLINGER_CLASS
-              ? "Pistoleira Dark Elf"
-              : account.character.identity.classId === ARCHER_CLASS
-                ? "Arqueira Elfa"
-                : "Guerreiro Humano",
+            account.character.identity.classId === BERSERKER_CLASS
+              ? "Berserker Orc"
+              : account.character.identity.classId === GUNSLINGER_CLASS
+                ? "Pistoleira Dark Elf"
+                : account.character.identity.classId === ARCHER_CLASS
+                  ? "Arqueira Elfa"
+                  : "Guerreiro Humano",
           ...potionState(account, Date.now(), farm.nextPotion ?? 0),
           level: account.character.progress.level,
           hp: account.character.progress.hp,
@@ -1074,9 +1103,10 @@ export function attachLocalGame(
               );
             } else if (kind === "setTarget") farm.target(client, value.entity);
             else if (kind === "useSkill") {
-              const change = /^classe:(guerreiro|arqueira|pistoleira)$/.exec(
-                value.skillId,
-              );
+              const change =
+                /^classe:(guerreiro|arqueira|pistoleira|berserker)$/.exec(
+                  value.skillId,
+                );
               if (change) {
                 farm.changeClass(client, change[1]);
                 patch(client);

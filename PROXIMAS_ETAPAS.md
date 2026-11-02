@@ -2,6 +2,18 @@
 
 Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os recursos já fornecidos. O pacote não contém o servidor original. Não apresentar regras reconstruídas como se fossem as originais.
 
+## Referência principal de todas as classes — 02/11/2026
+
+Orientação expressa do jogador: **o guerreiro é a base para todas as outras classes, atuais e futuras**. Usar o guerreiro aprovado como referência de proporções estáveis, fluidez e peso dos movimentos, preparação/disparo/recuperação das habilidades, impactos, Dash e energia de Ki vinculada ao corpo nas ultimates. Cada classe mantém sua identidade, armas, cores e mecânicas próprias, seguindo esse padrão de qualidade e coerência.
+
+O jogador aprovou o resultado da 0.6.37 após a revisão da arqueira e pistoleira. Preservar essa versão aprovada e comparar futuras alterações com o guerreiro antes de entregar. A arqueira e a pistoleira aprovadas complementam a referência; o guerreiro continua sendo a base principal.
+
+## Berserker Orc e recurso de ultimate — 02/11/2026
+
+Quarta classe escolhida expressamente pelo jogador: Berserker da raça Orc. O jogador esclareceu que o Orc tem porte bem maior e que sua cor predominante é vermelha. Primeira versão 0.6.38: pele verde, machado de duas mãos, corpo robusto, 30% mais alto que o guerreiro e escala fixa em todas as poses. Corte Selvagem, Ruptura da Terra, Grito de Guerra e Fúria Ancestral são o conjunto inicial para teste. Mesma base de animação/impacto/Ki do guerreiro, com identidade vermelha; manter as outras classes aprovadas.
+
+Pedido adicional do jogador: todas as classes devem ter a barra de ultimate acima do HP no painel do personagem, em vez de sobre a interface de habilidades. A tecla 4 e as opções por habilidade permanecem na barra. A 0.6.38 integra o medidor ao painel, na cor da classe, também na cidade.
+
 ## Decisão sobre ultimates — 02/11/2026
 
 Todas as próximas ultimates devem usar energia de Ki vinculada ao corpo e às armas, com a apresentação do guerreiro como referência e a cor da própria classe. A 0.6.36 aplica o mesmo movimento às três classes. Não reintroduzir molduras ou imagens fixas atrás dos personagens.
@@ -12,9 +24,11 @@ Arqueira e pistoleira usam a família de fontes coherent-v36, exportada por tool
 
 ## Habilidades a distância — 02/11/2026
 
-O jogador confirmou que a diferença para o guerreiro inclui o movimento do corpo e os efeitos. A 0.6.37 acrescenta transferência de peso/recuo por tempo da ação e impactos com 16 quadros distintos, além de chuvas com queda acelerada/rastros e campos móveis. Os corpos da 0.6.36, escala fixa, caminhada, Ki e level up ficam preservados. Não compensar animação ausente aumentando uma imagem estática nem alterar dano/cadência para sincronizar efeitos. Auras devem usar o deslocamento/rotação da exibição HD. Avaliação artística da nova apresentação pendente.
+O jogador confirmou que a diferença para o guerreiro inclui o movimento do corpo e os efeitos. A 0.6.37 acrescenta transferência de peso/recuo por tempo da ação e impactos com 16 quadros distintos, além de chuvas com queda acelerada/rastros e campos móveis. Os corpos da 0.6.36, escala fixa, caminhada, Ki e level up ficam preservados. Não compensar animação ausente aumentando uma imagem estática nem alterar dano/cadência para sincronizar efeitos. Auras devem usar o deslocamento/rotação da exibição HD. Apresentação da 0.6.37 aprovada pelo jogador em 02/11/2026.
 
 ## Entregue
+
+- 0.6.38: Berserker Orc, porte 30% maior, machado de duas mãos, quatro habilidades iniciais e energia vermelha no padrão do guerreiro; barra de ultimate acima do HP nas quatro classes. Avaliação artística do Orc pendente.
 
 - 0.6.37: movimento de preparação/recuo/recuperação das classes a distância e habilidades com impactos animados. Chuvas em três ondas, rastros e partículas móveis, sem o grande desenho fixo de área. Guerreiro e restante aprovado preservados.
 
@@ -71,8 +85,8 @@ O jogador confirmou que a diferença para o guerreiro inclui o movimento do corp
 
 ## Próximas partes da construção
 
-1. Revisar a pistoleira no jogo após a 0.6.33: energia no corpo da arqueira/pistoleira, sons e animações de impacto das habilidades. Dano contínuo e duração da queimadura são valores iniciais para teste. Guerreiro e arqueira aprovados preservados; preferências de habilidades e poções permanecem independentes.
-2. Após concluir a pistoleira, definir e construir as duas classes restantes das cinco iniciais. **Somente depois das cinco, trabalhar nos equipamentos**, conforme decisão de 01/11/2026. Não inventar silenciosamente as próximas classes.
+1. Guerreiro, arqueira e pistoleira aprovados pelo jogador na 0.6.37. Revisar o Berserker Orc no jogo após a 0.6.38. Registro histórico da revisão anterior da pistoleira na 0.6.33: energia no corpo da arqueira/pistoleira, sons e animações de impacto das habilidades. Dano contínuo e duração da queimadura são valores iniciais para teste. Guerreiro e arqueira aprovados preservados; preferências de habilidades e poções permanecem independentes.
+2. Após concluir o Berserker Orc (quarta classe), o jogador definirá a quinta classe inicial. **Somente depois das cinco, trabalhar nos equipamentos**, conforme decisão de 01/11/2026. Não inventar silenciosamente as próximas classes.
 3. Ambientes de caça próprios, inimigos variados e chefes. Cidade e arena já têm mapas próprios; faltam novos ambientes e inimigos com artes distintas.
 4. Reaproveitar os sets do Lineage 2 já preparados no GAME-1: comum/No Grade, incomum/D, raro/C, épico/B e lendário/A. Adaptar os modelos/texturas 3D para as poses 2D e vincular cada peça ao slot equipado, com bônus de conjunto completo. Não substituir esse catálogo por equipamentos novos genéricos. Fontes e limites atuais em `LINEAGE_SETS.md`. Balancear recompensas com testes de jogo.
 5. Expandir os demais sistemas escolhidos para o nosso jogo. Menus existentes no cliente não significam que o servidor desses sistemas foi implementado.

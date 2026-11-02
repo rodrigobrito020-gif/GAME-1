@@ -1,5 +1,11 @@
 // Class energy is shared by the skill card, hotbar icon and dash trail.
 export const CLASS_VISUALS = Object.freeze({
+  berserker: Object.freeze({
+    color: "#ff5148",
+    trailColor: 0xff5148,
+    dashMove: "orc-esquiva",
+    dashIcon: "/assets/ui/royal-berserker/dash.png",
+  }),
   guerreiro: Object.freeze({
     color: "#ffe4a0",
     trailColor: 0xffe4a0,

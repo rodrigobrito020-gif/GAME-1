@@ -4,7 +4,7 @@ frames. No body artwork is repainted, resized or replaced by this build step.
 from pathlib import Path
 from PIL import Image,ImageFilter,ImageChops
 import json,math,argparse
-parser=argparse.ArgumentParser();parser.add_argument("--look",choices=["archer","gunslinger","warrior","warrior-training"]);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument("--look",choices=["archer","gunslinger","warrior","warrior-training","berserker"]);args=parser.parse_args()
 root=Path(__file__).resolve().parents[1]/'art'
 for look in ([args.look] if args.look else ['archer','gunslinger','warrior','warrior-training']):
     folder=root/'energy'/look;folder.mkdir(parents=True,exist_ok=True)

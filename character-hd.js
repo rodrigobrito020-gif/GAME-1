@@ -16,6 +16,7 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
     ["training", "warrior/hd/training"],
     ["archer", "archer/hd/base"],
     ["gunslinger", "gunslinger/hd/base"],
+    ["berserker", "berserker/hd/base"],
   ])
     for (const sheet of [
       "idle",
@@ -48,8 +49,14 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       return;
     }
     const elf = String(b.texture?.key).includes("elfa-arqueira"),
-      gun = String(b.texture?.key).includes("dark-elf-pistoleira");
-    if (!elf && !gun && !String(b.texture?.key).includes("humano-guerreiro")) {
+      gun = String(b.texture?.key).includes("dark-elf-pistoleira"),
+      orc = String(b.texture?.key).includes("orc-berserker");
+    if (
+      !elf &&
+      !gun &&
+      !orc &&
+      !String(b.texture?.key).includes("humano-guerreiro")
+    ) {
       cleanup(a);
       return;
     }
@@ -78,13 +85,15 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
         action: !!(a.act || a.seat || a.dead),
       });
     const { sheet, row, col } = pose,
-      look = gun
-        ? "gunslinger"
-        : elf
-          ? "archer"
-          : b.texture.key.includes("peitoral-treino")
-            ? "training"
-            : "base",
+      look = orc
+        ? "berserker"
+        : gun
+          ? "gunslinger"
+          : elf
+            ? "archer"
+            : b.texture.key.includes("peitoral-treino")
+              ? "training"
+              : "base",
       key = `royal-hd:${look}:${sheet}`,
       im = art.get(`${look}:${sheet}`);
     if (!im) {
@@ -112,7 +121,7 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       actors.set(a, s);
     }
     const motion = rangedMotion(
-      gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
+      orc ? "berserker" : gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
       nativeMoveName(a),
       a.act?.t,
       row,
@@ -120,7 +129,7 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
     s.royalOffset = { x: b.x + motion.x, y: b.y + motion.y };
     s.royalMotion = motion;
     const displayScale = characterDisplayScale(
-      gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
+      orc ? "berserker" : gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
       b,
     );
     s.setTexture(key, `${row}:${col}`)
@@ -133,7 +142,11 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       .setVisible(a.root.visible && b.visible && !a.hidden);
     s.setAlpha(a.pose?.alpha ?? 1);
     s.royalPose = pose;
-    updateDashTrail(a, s, gun ? "pistoleira" : elf ? "arqueira" : "guerreiro");
+    updateDashTrail(
+      a,
+      s,
+      orc ? "berserker" : gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
+    );
     b.setAlpha(0);
   }
   window.__royalHD = {
@@ -160,7 +173,7 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       }
       if (
         !actors.has(a) &&
-        /humano-guerreiro|elfa-arqueira|dark-elf-pistoleira/.test(
+        /humano-guerreiro|elfa-arqueira|dark-elf-pistoleira|orc-berserker/.test(
           String(a.body.texture?.key),
         )
       )

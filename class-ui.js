@@ -50,6 +50,12 @@
         icon: "/assets/ui/royal-classes/gunslinger.png",
         desc: "Duas pistolas · combate à distância",
       },
+      {
+        id: "berserker",
+        name: "Berserker Orc",
+        icon: "/assets/ui/royal-classes/berserker.png",
+        desc: "Orc · machado de duas mãos · combate próximo",
+      },
     ]) {
       const card = el("section"),
         im = new Image();
@@ -68,7 +74,11 @@
         });
         panel.hidden = true;
       };
-      card.append(im, el("h3", c.name), el("p", c.desc), choose);
+      const portrait = el("div");
+      portrait.className = "royal-class-portrait";
+      portrait.dataset.class = c.id;
+      portrait.append(im);
+      card.append(portrait, el("h3", c.name), el("p", c.desc), choose);
       row.append(card);
     }
     panel.append(row);
@@ -85,6 +95,9 @@
   };
   window.addEventListener("royal-ultimate-state", (e) => {
     state = e.detail;
+    const card = document.querySelector("#ui .slHudCard");
+    if (card)
+      button.style.top = `${Math.round(card.getBoundingClientRect().bottom + 10)}px`;
     button.hidden = state.inHunt || !state.alive;
     button.textContent = `${state.className ?? "Personagem"} · Trocar classe`;
   });

@@ -70,7 +70,9 @@
     events(events, own) {
       for (const m of events.moves ?? []) {
         if (m.entity !== own) continue;
-        if (m.move === "dark-elf-tiros") {
+        if (["orc-machado", "orc-retorno"].includes(m.move))
+          play("golpe-pesado-1", Math.round(m.durationMs * 0.375), 0.85);
+        else if (m.move === "dark-elf-tiros") {
           play("disparo-1", 150, 0.9);
           play("disparo-2", 350, 0.9);
         } else if (m.move === "elfa-flecha")
@@ -88,6 +90,21 @@
           }),
         );
         switch (cast.skillId) {
+          case "corte-selvagem":
+            play("corte-poderoso", 200, 0.9);
+            play("golpe-pesado-1", 300, 0.8);
+            break;
+          case "ruptura-da-terra":
+            play("golpe-destruidor", 100, 0.75);
+            play("impacto-destruidor", 550, 0.9);
+            break;
+          case "grito-de-guerra":
+            play("furia", 200, 0.8);
+            break;
+          case "furia-ancestral":
+            play("sobrecarga-arcana", 0, 0.55);
+            play("furia", 300, 0.8);
+            break;
           case "disparo-sombrio":
             play("disparo-pesado-1", 150, 1);
             play("bola-de-fogo", 150, 0.45);
@@ -130,20 +147,19 @@
       if (damage.dot) return;
       stats.hits++;
       const cls = window.__royalUltimateState?.classId;
-      const clip =
-        cls === "guerreiro"
+      const clip = ["guerreiro", "berserker"].includes(cls)
+        ? damage.critical
+          ? "impacto-critico"
+          : "impacto-corte"
+        : cls === "arqueira"
           ? damage.critical
             ? "impacto-critico"
-            : "impacto-corte"
-          : cls === "arqueira"
-            ? damage.critical
-              ? "impacto-critico"
-              : turn % 2
-                ? "impacto-1"
-                : "impacto-2"
-            : damage.critical
-              ? "impacto-magico-critico"
-              : "impacto-magico-1";
+            : turn % 2
+              ? "impacto-1"
+              : "impacto-2"
+          : damage.critical
+            ? "impacto-magico-critico"
+            : "impacto-magico-1";
       play(clip, 0, damage.critical ? 0.7 : 0.45);
     },
   };

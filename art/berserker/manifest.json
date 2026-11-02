@@ -1,0 +1,3391 @@
+{
+  "character": "Berserker Orc",
+  "version": 38,
+  "base": "approved-warrior-v37",
+  "frame": [
+    384,
+    384
+  ],
+  "feet": [
+    192,
+    352
+  ],
+  "bodyHeight": 224,
+  "worldBodyHeight": 145.6,
+  "fixedDisplayScale": 0.65,
+  "sizeRelativeToWarrior": 1.3,
+  "sources": {
+    "idle": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      }
+    ],
+    "walk": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          8,
+          15,
+          229,
+          424
+        ],
+        "bounds": [
+          121,
+          125,
+          245,
+          353
+        ],
+        "mirrored": false,
+        "center": 137.0
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          239,
+          14,
+          453,
+          418
+        ],
+        "bounds": [
+          124,
+          127,
+          244,
+          352
+        ],
+        "mirrored": false,
+        "center": 131.0
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          466,
+          16,
+          675,
+          419
+        ],
+        "bounds": [
+          127,
+          128,
+          244,
+          353
+        ],
+        "mirrored": false,
+        "center": 126
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          689,
+          16,
+          897,
+          422
+        ],
+        "bounds": [
+          126,
+          126,
+          242,
+          352
+        ],
+        "mirrored": false,
+        "center": 128.0
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          912,
+          17,
+          1117,
+          422
+        ],
+        "bounds": [
+          128,
+          127,
+          243,
+          353
+        ],
+        "mirrored": false,
+        "center": 125
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          1135,
+          16,
+          1340,
+          419
+        ],
+        "bounds": [
+          129,
+          128,
+          244,
+          353
+        ],
+        "mirrored": false,
+        "center": 123
+      },
+      {
+        "row": 0,
+        "col": 6,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          1356,
+          17,
+          1556,
+          419
+        ],
+        "bounds": [
+          129,
+          129,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 122.0
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          1579,
+          16,
+          1770,
+          421
+        ],
+        "bounds": [
+          130,
+          126,
+          237,
+          352
+        ],
+        "mirrored": false,
+        "center": 121
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          83,
+          189,
+          274,
+          548
+        ],
+        "bounds": [
+          131,
+          131,
+          248,
+          352
+        ],
+        "mirrored": true,
+        "center": 102.0
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          350,
+          188,
+          528,
+          553
+        ],
+        "bounds": [
+          138,
+          127,
+          247,
+          352
+        ],
+        "mirrored": true,
+        "center": 100.0
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          640,
+          187,
+          787,
+          553
+        ],
+        "bounds": [
+          137,
+          128,
+          229,
+          353
+        ],
+        "mirrored": true,
+        "center": 68
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          865,
+          187,
+          1043,
+          542
+        ],
+        "bounds": [
+          137,
+          135,
+          246,
+          353
+        ],
+        "mirrored": true,
+        "center": 98.0
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1116,
+          190,
+          1309,
+          553
+        ],
+        "bounds": [
+          132,
+          128,
+          250,
+          352
+        ],
+        "mirrored": true,
+        "center": 105.0
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1390,
+          190,
+          1558,
+          549
+        ],
+        "bounds": [
+          136,
+          131,
+          240,
+          353
+        ],
+        "mirrored": true,
+        "center": 88.0
+      },
+      {
+        "row": 1,
+        "col": 6,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1663,
+          190,
+          1816,
+          547
+        ],
+        "bounds": [
+          136,
+          132,
+          231,
+          353
+        ],
+        "mirrored": true,
+        "center": 73
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1870,
+          189,
+          2086,
+          552
+        ],
+        "bounds": [
+          131,
+          128,
+          264,
+          352
+        ],
+        "mirrored": true,
+        "center": 125
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          83,
+          189,
+          274,
+          548
+        ],
+        "bounds": [
+          136,
+          131,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 102.0
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          350,
+          188,
+          528,
+          553
+        ],
+        "bounds": [
+          137,
+          127,
+          246,
+          352
+        ],
+        "mirrored": false,
+        "center": 100.0
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          640,
+          187,
+          787,
+          553
+        ],
+        "bounds": [
+          155,
+          128,
+          247,
+          353
+        ],
+        "mirrored": false,
+        "center": 68
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          865,
+          187,
+          1043,
+          542
+        ],
+        "bounds": [
+          138,
+          135,
+          247,
+          353
+        ],
+        "mirrored": false,
+        "center": 98.0
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1116,
+          190,
+          1309,
+          553
+        ],
+        "bounds": [
+          134,
+          128,
+          252,
+          352
+        ],
+        "mirrored": false,
+        "center": 105.0
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1390,
+          190,
+          1558,
+          549
+        ],
+        "bounds": [
+          144,
+          131,
+          248,
+          353
+        ],
+        "mirrored": false,
+        "center": 88.0
+      },
+      {
+        "row": 2,
+        "col": 6,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1663,
+          190,
+          1816,
+          547
+        ],
+        "bounds": [
+          153,
+          132,
+          248,
+          353
+        ],
+        "mirrored": false,
+        "center": 73
+      },
+      {
+        "row": 2,
+        "col": 7,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1870,
+          189,
+          2086,
+          552
+        ],
+        "bounds": [
+          120,
+          128,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 125
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          22,
+          462,
+          234,
+          869
+        ],
+        "bounds": [
+          138,
+          125,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 106.0
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          247,
+          462,
+          455,
+          868
+        ],
+        "bounds": [
+          139,
+          125,
+          256,
+          352
+        ],
+        "mirrored": false,
+        "center": 104
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          477,
+          462,
+          677,
+          865
+        ],
+        "bounds": [
+          141,
+          127,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 100
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          698,
+          463,
+          893,
+          868
+        ],
+        "bounds": [
+          143,
+          126,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 97
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          921,
+          462,
+          1115,
+          869
+        ],
+        "bounds": [
+          144,
+          125,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 96.0
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          1145,
+          463,
+          1338,
+          867
+        ],
+        "bounds": [
+          145,
+          127,
+          253,
+          353
+        ],
+        "mirrored": false,
+        "center": 94.0
+      },
+      {
+        "row": 3,
+        "col": 6,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          1367,
+          462,
+          1561,
+          861
+        ],
+        "bounds": [
+          143,
+          129,
+          252,
+          352
+        ],
+        "mirrored": false,
+        "center": 98
+      },
+      {
+        "row": 3,
+        "col": 7,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          1587,
+          463,
+          1772,
+          868
+        ],
+        "bounds": [
+          144,
+          126,
+          248,
+          352
+        ],
+        "mirrored": false,
+        "center": 96
+      }
+    ],
+    "run1": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          8,
+          15,
+          229,
+          424
+        ],
+        "bounds": [
+          121,
+          125,
+          245,
+          353
+        ],
+        "mirrored": false,
+        "center": 137.0
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          239,
+          14,
+          453,
+          418
+        ],
+        "bounds": [
+          124,
+          127,
+          244,
+          352
+        ],
+        "mirrored": false,
+        "center": 131.0
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          466,
+          16,
+          675,
+          419
+        ],
+        "bounds": [
+          127,
+          128,
+          244,
+          353
+        ],
+        "mirrored": false,
+        "center": 126
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          689,
+          16,
+          897,
+          422
+        ],
+        "bounds": [
+          126,
+          126,
+          242,
+          352
+        ],
+        "mirrored": false,
+        "center": 128.0
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          912,
+          17,
+          1117,
+          422
+        ],
+        "bounds": [
+          128,
+          127,
+          243,
+          353
+        ],
+        "mirrored": false,
+        "center": 125
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          1135,
+          16,
+          1340,
+          419
+        ],
+        "bounds": [
+          129,
+          128,
+          244,
+          353
+        ],
+        "mirrored": false,
+        "center": 123
+      },
+      {
+        "row": 0,
+        "col": 6,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          1356,
+          17,
+          1556,
+          419
+        ],
+        "bounds": [
+          129,
+          129,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 122.0
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "source": "walk-vertical",
+        "sourceScale": 0.5544554455445545,
+        "sourceBodyHeight": 404,
+        "sourceGlobalBox": [
+          1579,
+          16,
+          1770,
+          421
+        ],
+        "bounds": [
+          130,
+          126,
+          237,
+          352
+        ],
+        "mirrored": false,
+        "center": 121
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          83,
+          189,
+          274,
+          548
+        ],
+        "bounds": [
+          131,
+          131,
+          248,
+          352
+        ],
+        "mirrored": true,
+        "center": 102.0
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          350,
+          188,
+          528,
+          553
+        ],
+        "bounds": [
+          138,
+          127,
+          247,
+          352
+        ],
+        "mirrored": true,
+        "center": 100.0
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          640,
+          187,
+          787,
+          553
+        ],
+        "bounds": [
+          137,
+          128,
+          229,
+          353
+        ],
+        "mirrored": true,
+        "center": 68
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          865,
+          187,
+          1043,
+          542
+        ],
+        "bounds": [
+          137,
+          135,
+          246,
+          353
+        ],
+        "mirrored": true,
+        "center": 98.0
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1116,
+          190,
+          1309,
+          553
+        ],
+        "bounds": [
+          132,
+          128,
+          250,
+          352
+        ],
+        "mirrored": true,
+        "center": 105.0
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1390,
+          190,
+          1558,
+          549
+        ],
+        "bounds": [
+          136,
+          131,
+          240,
+          353
+        ],
+        "mirrored": true,
+        "center": 88.0
+      },
+      {
+        "row": 1,
+        "col": 6,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1663,
+          190,
+          1816,
+          547
+        ],
+        "bounds": [
+          136,
+          132,
+          231,
+          353
+        ],
+        "mirrored": true,
+        "center": 73
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1870,
+          189,
+          2086,
+          552
+        ],
+        "bounds": [
+          131,
+          128,
+          264,
+          352
+        ],
+        "mirrored": true,
+        "center": 125
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          83,
+          189,
+          274,
+          548
+        ],
+        "bounds": [
+          136,
+          131,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 102.0
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          350,
+          188,
+          528,
+          553
+        ],
+        "bounds": [
+          137,
+          127,
+          246,
+          352
+        ],
+        "mirrored": false,
+        "center": 100.0
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          640,
+          187,
+          787,
+          553
+        ],
+        "bounds": [
+          155,
+          128,
+          247,
+          353
+        ],
+        "mirrored": false,
+        "center": 68
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          865,
+          187,
+          1043,
+          542
+        ],
+        "bounds": [
+          138,
+          135,
+          247,
+          353
+        ],
+        "mirrored": false,
+        "center": 98.0
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1116,
+          190,
+          1309,
+          553
+        ],
+        "bounds": [
+          134,
+          128,
+          252,
+          352
+        ],
+        "mirrored": false,
+        "center": 105.0
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1390,
+          190,
+          1558,
+          549
+        ],
+        "bounds": [
+          144,
+          131,
+          248,
+          353
+        ],
+        "mirrored": false,
+        "center": 88.0
+      },
+      {
+        "row": 2,
+        "col": 6,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1663,
+          190,
+          1816,
+          547
+        ],
+        "bounds": [
+          153,
+          132,
+          248,
+          353
+        ],
+        "mirrored": false,
+        "center": 73
+      },
+      {
+        "row": 2,
+        "col": 7,
+        "source": "walk-side",
+        "sourceScale": 0.6120218579234973,
+        "sourceBodyHeight": 366,
+        "sourceGlobalBox": [
+          1870,
+          189,
+          2086,
+          552
+        ],
+        "bounds": [
+          120,
+          128,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 125
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          22,
+          462,
+          234,
+          869
+        ],
+        "bounds": [
+          138,
+          125,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 106.0
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          247,
+          462,
+          455,
+          868
+        ],
+        "bounds": [
+          139,
+          125,
+          256,
+          352
+        ],
+        "mirrored": false,
+        "center": 104
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          477,
+          462,
+          677,
+          865
+        ],
+        "bounds": [
+          141,
+          127,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 100
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          698,
+          463,
+          893,
+          868
+        ],
+        "bounds": [
+          143,
+          126,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 97
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          921,
+          462,
+          1115,
+          869
+        ],
+        "bounds": [
+          144,
+          125,
+          253,
+          352
+        ],
+        "mirrored": false,
+        "center": 96.0
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          1145,
+          463,
+          1338,
+          867
+        ],
+        "bounds": [
+          145,
+          127,
+          253,
+          353
+        ],
+        "mirrored": false,
+        "center": 94.0
+      },
+      {
+        "row": 3,
+        "col": 6,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          1367,
+          462,
+          1561,
+          861
+        ],
+        "bounds": [
+          143,
+          129,
+          252,
+          352
+        ],
+        "mirrored": false,
+        "center": 98
+      },
+      {
+        "row": 3,
+        "col": 7,
+        "source": "walk-vertical",
+        "sourceScale": 0.5558312655086849,
+        "sourceBodyHeight": 403,
+        "sourceGlobalBox": [
+          1587,
+          463,
+          1772,
+          868
+        ],
+        "bounds": [
+          144,
+          126,
+          248,
+          352
+        ],
+        "mirrored": false,
+        "center": 96
+      }
+    ],
+    "weapon": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          342,
+          12,
+          526,
+          290
+        ],
+        "bounds": [
+          99,
+          128,
+          249,
+          352
+        ],
+        "mirrored": false,
+        "center": 125
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          651,
+          6,
+          814,
+          290
+        ],
+        "bounds": [
+          116,
+          123,
+          249,
+          352
+        ],
+        "mirrored": false,
+        "center": 104.0
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          934,
+          20,
+          1180,
+          289
+        ],
+        "bounds": [
+          124,
+          135,
+          324,
+          353
+        ],
+        "mirrored": false,
+        "center": 94
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          1240,
+          16,
+          1425,
+          289
+        ],
+        "bounds": [
+          128,
+          131,
+          278,
+          352
+        ],
+        "mirrored": false,
+        "center": 89
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          355,
+          311,
+          489,
+          584
+        ],
+        "bounds": [
+          154,
+          128,
+          266,
+          353
+        ],
+        "mirrored": true,
+        "center": 99
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          643,
+          298,
+          782,
+          583
+        ],
+        "bounds": [
+          148,
+          118,
+          263,
+          352
+        ],
+        "mirrored": true,
+        "center": 96
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          947,
+          315,
+          1181,
+          584
+        ],
+        "bounds": [
+          27,
+          131,
+          219,
+          352
+        ],
+        "mirrored": true,
+        "center": 43
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          1268,
+          315,
+          1443,
+          584
+        ],
+        "bounds": [
+          84,
+          131,
+          227,
+          352
+        ],
+        "mirrored": true,
+        "center": 53
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          355,
+          311,
+          489,
+          584
+        ],
+        "bounds": [
+          118,
+          128,
+          230,
+          353
+        ],
+        "mirrored": false,
+        "center": 99
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          643,
+          298,
+          782,
+          583
+        ],
+        "bounds": [
+          121,
+          118,
+          236,
+          352
+        ],
+        "mirrored": false,
+        "center": 96
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          947,
+          315,
+          1181,
+          584
+        ],
+        "bounds": [
+          165,
+          131,
+          357,
+          352
+        ],
+        "mirrored": false,
+        "center": 43
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          1268,
+          315,
+          1443,
+          584
+        ],
+        "bounds": [
+          157,
+          131,
+          300,
+          352
+        ],
+        "mirrored": false,
+        "center": 53
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          380,
+          603,
+          561,
+          881
+        ],
+        "bounds": [
+          140,
+          129,
+          285,
+          352
+        ],
+        "mirrored": false,
+        "center": 74
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          666,
+          592,
+          809,
+          881
+        ],
+        "bounds": [
+          146,
+          121,
+          261,
+          352
+        ],
+        "mirrored": false,
+        "center": 67.0
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          935,
+          607,
+          1175,
+          881
+        ],
+        "bounds": [
+          148,
+          133,
+          340,
+          353
+        ],
+        "mirrored": false,
+        "center": 64
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          1227,
+          604,
+          1402,
+          881
+        ],
+        "bounds": [
+          123,
+          130,
+          263,
+          352
+        ],
+        "mirrored": false,
+        "center": 97
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      }
+    ],
+    "axeheavy": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": "slam",
+        "sourceScale": 0.6037735849056604,
+        "sourceBodyHeight": 371,
+        "sourceGlobalBox": [
+          289,
+          17,
+          464,
+          503
+        ],
+        "bounds": [
+          140,
+          57,
+          248,
+          353
+        ],
+        "mirrored": false,
+        "center": 94
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": "slam",
+        "sourceScale": 0.6037735849056604,
+        "sourceBodyHeight": 371,
+        "sourceGlobalBox": [
+          289,
+          17,
+          464,
+          503
+        ],
+        "bounds": [
+          140,
+          57,
+          248,
+          353
+        ],
+        "mirrored": false,
+        "center": 94
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": "slam",
+        "sourceScale": 0.6037735849056604,
+        "sourceBodyHeight": 371,
+        "sourceGlobalBox": [
+          523,
+          153,
+          729,
+          504
+        ],
+        "bounds": [
+          125,
+          140,
+          250,
+          352
+        ],
+        "mirrored": false,
+        "center": 120
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": "slam",
+        "sourceScale": 0.6037735849056604,
+        "sourceBodyHeight": 371,
+        "sourceGlobalBox": [
+          781,
+          212,
+          1008,
+          504
+        ],
+        "bounds": [
+          120,
+          175,
+          259,
+          352
+        ],
+        "mirrored": false,
+        "center": 127.0
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 6,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          300,
+          519,
+          432,
+          1011
+        ],
+        "bounds": [
+          150,
+          65,
+          228,
+          352
+        ],
+        "mirrored": true,
+        "center": 70
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          300,
+          519,
+          432,
+          1011
+        ],
+        "bounds": [
+          150,
+          65,
+          228,
+          352
+        ],
+        "mirrored": true,
+        "center": 70
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          508,
+          642,
+          750,
+          1011
+        ],
+        "bounds": [
+          84,
+          137,
+          225,
+          352
+        ],
+        "mirrored": true,
+        "center": 65.0
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          767,
+          720,
+          976,
+          1011
+        ],
+        "bounds": [
+          110,
+          182,
+          232,
+          352
+        ],
+        "mirrored": true,
+        "center": 78
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 6,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          300,
+          519,
+          432,
+          1011
+        ],
+        "bounds": [
+          156,
+          65,
+          234,
+          352
+        ],
+        "mirrored": false,
+        "center": 70
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          300,
+          519,
+          432,
+          1011
+        ],
+        "bounds": [
+          156,
+          65,
+          234,
+          352
+        ],
+        "mirrored": false,
+        "center": 70
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          508,
+          642,
+          750,
+          1011
+        ],
+        "bounds": [
+          159,
+          137,
+          300,
+          352
+        ],
+        "mirrored": false,
+        "center": 65.0
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": "slam",
+        "sourceScale": 0.5803108808290155,
+        "sourceBodyHeight": 386,
+        "sourceGlobalBox": [
+          767,
+          720,
+          976,
+          1011
+        ],
+        "bounds": [
+          152,
+          182,
+          274,
+          352
+        ],
+        "mirrored": false,
+        "center": 78
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 6,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 7,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": "slam",
+        "sourceScale": 0.5773195876288659,
+        "sourceBodyHeight": 388,
+        "sourceGlobalBox": [
+          289,
+          1030,
+          475,
+          1525
+        ],
+        "bounds": [
+          139,
+          65,
+          248,
+          352
+        ],
+        "mirrored": false,
+        "center": 101
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": "slam",
+        "sourceScale": 0.5773195876288659,
+        "sourceBodyHeight": 388,
+        "sourceGlobalBox": [
+          289,
+          1030,
+          475,
+          1525
+        ],
+        "bounds": [
+          139,
+          65,
+          248,
+          352
+        ],
+        "mirrored": false,
+        "center": 101
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": "slam",
+        "sourceScale": 0.5773195876288659,
+        "sourceBodyHeight": 388,
+        "sourceGlobalBox": [
+          519,
+          1145,
+          737,
+          1525
+        ],
+        "bounds": [
+          140,
+          132,
+          267,
+          353
+        ],
+        "mirrored": false,
+        "center": 98.0
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": "slam",
+        "sourceScale": 0.5773195876288659,
+        "sourceBodyHeight": 388,
+        "sourceGlobalBox": [
+          774,
+          1228,
+          999,
+          1525
+        ],
+        "bounds": [
+          127,
+          180,
+          258,
+          353
+        ],
+        "mirrored": false,
+        "center": 122
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 6,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 7,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      }
+    ],
+    "special": [
+      {
+        "row": 0,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "source": "reactions",
+        "sourceScale": 0.656891495601173,
+        "sourceBodyHeight": 341,
+        "sourceGlobalBox": [
+          380,
+          14,
+          605,
+          355
+        ],
+        "bounds": [
+          110,
+          126,
+          259,
+          352
+        ],
+        "mirrored": false,
+        "center": 134
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8028673835125448,
+        "sourceBodyHeight": 279,
+        "sourceGlobalBox": [
+          48,
+          11,
+          231,
+          290
+        ],
+        "bounds": [
+          108,
+          127,
+          257,
+          352
+        ],
+        "mirrored": false,
+        "center": 113.0
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "source": "reactions",
+        "sourceScale": 0.656891495601173,
+        "sourceBodyHeight": 341,
+        "sourceGlobalBox": [
+          711,
+          10,
+          952,
+          353
+        ],
+        "bounds": [
+          105,
+          125,
+          264,
+          351
+        ],
+        "mirrored": false,
+        "center": 142.0
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "source": "reactions",
+        "sourceScale": 0.656891495601173,
+        "sourceBodyHeight": 341,
+        "sourceGlobalBox": [
+          1039,
+          213,
+          1425,
+          348
+        ],
+        "bounds": [
+          65,
+          262,
+          320,
+          352
+        ],
+        "mirrored": false,
+        "center": 202.5
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "source": "reactions",
+        "sourceScale": 0.6436781609195402,
+        "sourceBodyHeight": 348,
+        "sourceGlobalBox": [
+          403,
+          374,
+          565,
+          716
+        ],
+        "bounds": [
+          140,
+          131,
+          245,
+          352
+        ],
+        "mirrored": true,
+        "center": 91.0
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          143,
+          128,
+          228,
+          353
+        ],
+        "mirrored": true,
+        "center": 52
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "source": "reactions",
+        "sourceScale": 0.6436781609195402,
+        "sourceBodyHeight": 348,
+        "sourceGlobalBox": [
+          755,
+          369,
+          941,
+          715
+        ],
+        "bounds": [
+          134,
+          128,
+          255,
+          353
+        ],
+        "mirrored": true,
+        "center": 107
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "source": "reactions",
+        "sourceScale": 0.6436781609195402,
+        "sourceBodyHeight": 348,
+        "sourceGlobalBox": [
+          1038,
+          594,
+          1423,
+          718
+        ],
+        "bounds": [
+          67,
+          272,
+          317,
+          353
+        ],
+        "mirrored": true,
+        "center": 202.0
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "source": "reactions",
+        "sourceScale": 0.6436781609195402,
+        "sourceBodyHeight": 348,
+        "sourceGlobalBox": [
+          403,
+          374,
+          565,
+          716
+        ],
+        "bounds": [
+          139,
+          131,
+          244,
+          352
+        ],
+        "mirrored": false,
+        "center": 91.0
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.8175182481751825,
+        "sourceBodyHeight": 274,
+        "sourceGlobalBox": [
+          117,
+          311,
+          218,
+          584
+        ],
+        "bounds": [
+          156,
+          128,
+          241,
+          353
+        ],
+        "mirrored": false,
+        "center": 52
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "source": "reactions",
+        "sourceScale": 0.6436781609195402,
+        "sourceBodyHeight": 348,
+        "sourceGlobalBox": [
+          755,
+          369,
+          941,
+          715
+        ],
+        "bounds": [
+          129,
+          128,
+          250,
+          353
+        ],
+        "mirrored": false,
+        "center": 107
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "source": "reactions",
+        "sourceScale": 0.6436781609195402,
+        "sourceBodyHeight": 348,
+        "sourceGlobalBox": [
+          1038,
+          594,
+          1423,
+          718
+        ],
+        "bounds": [
+          67,
+          272,
+          317,
+          353
+        ],
+        "mirrored": false,
+        "center": 202.0
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "source": "reactions",
+        "sourceScale": 0.64,
+        "sourceBodyHeight": 350,
+        "sourceGlobalBox": [
+          429,
+          732,
+          639,
+          1074
+        ],
+        "bounds": [
+          132,
+          131,
+          268,
+          352
+        ],
+        "mirrored": false,
+        "center": 102.0
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "source": "attack",
+        "sourceScale": 0.7943262411347518,
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          79,
+          601,
+          259,
+          881
+        ],
+        "bounds": [
+          128,
+          128,
+          273,
+          352
+        ],
+        "mirrored": false,
+        "center": 90.0
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "source": "reactions",
+        "sourceScale": 0.64,
+        "sourceBodyHeight": 350,
+        "sourceGlobalBox": [
+          737,
+          730,
+          965,
+          1078
+        ],
+        "bounds": [
+          124,
+          128,
+          271,
+          352
+        ],
+        "mirrored": false,
+        "center": 115.0
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "source": "reactions",
+        "sourceScale": 0.64,
+        "sourceBodyHeight": 350,
+        "sourceGlobalBox": [
+          1038,
+          961,
+          1427,
+          1080
+        ],
+        "bounds": [
+          66,
+          275,
+          317,
+          352
+        ],
+        "mirrored": false,
+        "center": 204.0
+      }
+    ]
+  }
+}

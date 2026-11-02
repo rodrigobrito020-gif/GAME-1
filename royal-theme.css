@@ -651,3 +651,18 @@ body {
 
 /* Three initial classes share the approved ivory and gold selector. */
 .royal-class-panel{width:min(880px,calc(100vw - 28px));max-height:calc(100vh - 32px);overflow-y:auto}.royal-class-cards{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:650px){.royal-class-cards{grid-template-columns:1fr}.royal-class-cards img{height:135px}}
+
+/* Ultimate is a character resource, immediately above HP in every class. */
+#ui .slHudCard .royal-ultimate-meter{position:relative;left:auto;bottom:auto;transform:none;display:block;box-sizing:border-box;width:100%;height:14px;min-height:14px;margin:3px 0;padding:0 5px;border:0;border-radius:0;background:#3b2a29;color:#fff9e9;font:700 9px/14px system-ui;text-align:left;box-shadow:none;overflow:hidden;text-shadow:0 1px 1px #24160c,1px 0 1px #24160c;z-index:0}
+#ui .slHudCard .royal-ultimate-meter[hidden],#ui .slHudCardMini .royal-ultimate-meter{display:none}
+#ui .slHudCard .royal-ultimate-meter>span{position:relative;z-index:1;font-size:9px;letter-spacing:.8px}
+#ui .slHudCard .royal-ultimate-meter>strong{position:relative;z-index:1;font:700 9px/14px system-ui}
+#ui .slHudCard .royal-ultimate-meter>div{position:absolute;inset:0;height:auto;margin:0;border-radius:0;background:transparent;z-index:0}
+#ui .slHudCard .royal-ultimate-meter i{background:linear-gradient(90deg,color-mix(in srgb,var(--royal-ultimate-color) 65%,#40212a),var(--royal-ultimate-color));transition:width .12s linear}
+#ui .slHudCard .royal-ultimate-meter small{display:none}
+#ui .slHudCard .royal-ultimate-meter.ready{box-shadow:inset 0 0 0 1px #fff0ad}
+.royal-class-cards{grid-template-columns:repeat(4,minmax(0,1fr))}.royal-class-panel{width:min(1120px,calc(100vw - 28px))}
+@media(max-width:850px){.royal-class-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:500px){.royal-class-cards{grid-template-columns:1fr}}
+
+.royal-class-portrait{height:208px;display:flex;align-items:flex-end;justify-content:center}.royal-class-cards .royal-class-portrait img{width:160px;height:160px;max-width:none;flex-shrink:0}.royal-class-cards .royal-class-portrait[data-class="berserker"] img{width:208px;height:208px}
+.royal-class-cards section{display:flex;flex-direction:column;align-items:center}.royal-class-portrait{width:100%}.royal-class-cards section p{min-height:32px;display:flex;align-items:center;justify-content:center}.royal-class-cards section button{margin-top:auto}

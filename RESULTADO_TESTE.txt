@@ -1,49 +1,65 @@
-VERSAO 0.6.37 — MOVIMENTO E HABILIDADES A DISTANCIA
+VERSAO 0.6.38 — BERSERKER ORC E ULTIMATE ACIMA DO HP
 Data: 02/11/2026
 
-ALTERACOES
-- Revisao guiada pelos dois videos: movimento do corpo e efeitos das skills.
-- Arqueira com preparacao do arco, transferencia de peso na soltura e volta
-  continua a postura. Pistoleira com recuo curto em cada disparo, incluindo
-  lancamentos para o alto. Ativacoes tambem recebem movimento discreto.
-- Tempo da propria animacao usado, incluindo velocidade de ataque. Apenas
-  deslocamento/rotacao visual; escala fixa 0,5 x 0,5 nas duas classes.
-- Impactos de habilidades com duas sequencias originais de 16 quadros. O desenho
-  abre, fragmenta e dissipa, sem ampliar uma imagem unica. Disparados pelo dano
-  real e acompanhando o monstro. Numeros e criticos preservados.
-- Chuvas sem o grande desenho fixo no chao: arcos segmentados e particulas
-  moveis, queda acelerada e rastros. Explosoes nas mesmas posicoes dos projeteis
-  e nos mesmos horarios das tres ondas. Atualizar a rede nao reinicia efeitos.
-- Cone com fios de energia, projetil incendiario/queimadura com filamentos e
-  brasas moveis, buffs com particulas ascendentes. Cores de cada classe mantidas.
-- Transparencia dos novos conjuntos revisada para retirar os blocos claros
-  encontrados na primeira conferencia visual. Composicao por alpha.
+PEDIDOS DO JOGADOR
+- Guerreiro e a referencia principal de todas as classes atuais e futuras.
+- Quarta classe: Berserker da raca Orc, com porte bem maior e cor vermelha.
+- Barra de ultimate de todas as classes acima do HP no painel do personagem.
 
-PRESERVADO
-- Artes do corpo, rostos, proporcoes e caminhada aprovados na 0.6.36.
-- Guerreiro, regras de combate, dano/cadencia, custos/duracoes/recargas, Ki,
-  level up, sons/passos, Dash, numeros de dano, equipamentos, UI e pocoes.
-- Contas reais e progresso nao usados nos testes nem alterados.
+ENTREGUE
+- Orc de pele verde, corpo robusto e machado de duas maos. 30% mais alto que
+  o guerreiro, com escala uniforme fixa 0,65 x 0,65 em todas as poses.
+- Seis sequencias completas: repouso, caminhar/correr, machado, salto/impacto,
+  reacoes/buffs/derrota. Oito fases de caminhada com passada proporcional.
+  Figura neutra compartilhada pixel a pixel entre os estados equivalentes.
+- Mesma base de movimento, ancoras, preparacao, impacto e recuperacao do
+  guerreiro. Sem refazer as artes aprovadas das outras tres classes.
+- Corte Selvagem: cone de 140 graus, 220% ATK, cada ocupante atingido uma vez.
+- Ruptura da Terra: salto e aterrissagem em 550ms, 250% ATK em raio de 150;
+  resolve os inimigos presentes na area no momento do impacto.
+- Grito de Guerra: velocidade de ataque +30% por 30s, recarga de 60s.
+- Furia Ancestral: consome 100 energia, dura 45s; velocidade +50%, dano recebido
+  -25% e ataques basicos em area. Intervalo minimo de 60s. Ki vermelho ligado
+  ao corpo/armas e acompanhando a pose, usando a apresentacao do guerreiro.
+- Cortes, impactos e ruptura com sequencias originais de 16 quadros, preparacao
+  antes do dano e dissipacao. Dash vermelho e sons de machado/impacto/rugido,
+  respeitando o volume e silenciar existentes. Numeros de dano reais mantidos.
+- Cartas, icones, retrato, comparacao das quatro classes e troca na cidade.
+  Nivel, itens, ouro, equipamentos e escolhas independentes preservados.
+- Medidor de ultimate compacto acima do HP nas quatro classes, na cor propria,
+  tambem na cidade. Mostra carga/tempo ativo e detalhes ao passar o mouse.
+  Clique ativa a ultimate quando pronta. Tecla 4 e opcoes por skill mantidas.
+  O medidor anterior sobre a barra de habilidades foi movido.
+- Valores do novo Orc sao iniciais para teste. Equipamentos completos continuam
+  adiados ate terminar as cinco classes iniciais; quinta classe ainda nao definida.
 
 VERIFICACAO
-- 139 testes com recursos-publicos.zip real, sem falhas ou ignorados.
-- Novos testes: continuidade/limites do movimento, recuperacao, sem escala;
-  ausencia de alteracao no guerreiro/repouso/caminhada/Dash; mesmos horarios e
-  pontos de queda; 16 quadros diferentes e margens transparentes; avance dos
-  quadros sem aumento de tamanho, deduplicacao, acompanhamento e limpeza.
-- Chromium/WebGL: quatro habilidades reais nas tres classes. Escala fixa nas
-  duas classes a distancia; movimento nativo, Ki alinhado ao quadro/posicao/
-  rotacao, Shift e limpeza ao sair. Audio real e silenciar preservados.
-- Habilidades ofensivas e chuvas das duas classes produzem sequencias de quadros
-  diferentes durante o combate. Guerreiro com deslocamento adicional zero.
-- Conferencia visual repetida apos a correcao de transparencia. Nenhum erro JS.
-- Arquivos do corpo/mascaras de energia/level up/regras e restante protegido
-  comparados byte a byte com a 0.6.36. Avaliacao artistica continua com o jogador.
+- 147 testes com o recursos-publicos.zip real, sem falhas ou ignorados.
+- Regras novas: cone, entradas/saidas da area na aterrissagem, custos/recargas,
+  buffs independentes, velocidade sem inflar ATK, gasto/ganho de energia,
+  limpeza, troca de classe e preservacao de dados/preferencias.
+- Arte: figuras inteiras, coroas/botas/machado sem cortes, margens transparentes,
+  neutros identicos, mesma escala e mascaras de Ki correspondentes; dezesseis
+  quadros diferentes por efeito e vermelho como cor predominante.
+- Chromium/WebGL: caminhada real nas quatro direcoes, retorno ao repouso,
+  quatro cartas e troca das quatro classes sem recarregar, Dash vermelho,
+  escalas fixas, pocoes compactas e escolhas salvas. Nenhum erro JavaScript.
+- Combate nativo: quatro habilidades reais do Orc, cobrindo seis sequencias;
+  salto/lunge/rotacao do corpo nativos, escala sempre 0,65; Ki alinhado a pose,
+  posicao e rotacao; efeitos avancando quadros; Shift, som real, mute e limpeza.
+- Barra acima do HP conferida nas quatro classes. Clique consumiu energia e
+  ativou a ultimate correta em cada uma. Ao voltar a cidade, efeitos removidos
+  e medidor desativado, sem uma segunda barra sobre as habilidades.
+- Level up real do Orc: recompensa sobe nivel, efeito vermelho acompanha o
+  personagem, expira e nao se repete ao reconectar.
+- Artes originais das tres classes, seus modulos de habilidades, Dash e efeitos
+  aprovados comparados byte a byte com 0.6.37. Contas isoladas usadas; progresso
+  real nunca foi usado nem alterado. Avaliacao artistica do Orc com o jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.37.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.38.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

@@ -60,7 +60,7 @@ export function localAssets(byName, status) {
       "A ultimate precisa de 100 de energia. Carregue a barra em combate.",
     buff_active: "Essa transformação ou proteção já está ativa.",
     target_too_close:
-      "Alvo muito próximo. Use o Avanço de Luz para alcançar inimigos distantes.",
+      "Alvo muito próximo. Use o avanço para alcançar inimigos distantes.",
     not_hunting: "Entre em uma caçada para usar habilidades de combate.",
     invalid_skill: "Habilidade inválida para este personagem local.",
     cooldown: "A habilidade ainda está recarregando.",

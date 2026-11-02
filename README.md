@@ -1,8 +1,22 @@
-# Jogo local — 0.6.38: Berserker Orc e ultimate acima do HP
+# Jogo local — 0.6.39: avanço dos melees e modo de fúria do Orc
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.39
+
+O jogador aprovou a aparência do Orc na 0.6.38 e pediu avanço na primeira habilidade de todos os melees, além de um modo de fúria mais forte para o Berserker. O guerreiro continua sendo a referência aprovada.
+
+- **Avanço Selvagem, tecla 1:** o antigo identificador `corte-selvagem` foi mantido para preservar escolhas salvas. Avança até um alvo entre 160 e 300 unidades, para a 66 e golpeia na chegada (220% ATK). Usa a mesma lógica do Avanço de Luz: percurso validado antes do custo, deslocamento real, rastro HD, respeito a paredes e cancelamento do dano se o alvo morrer ou escapar. O golpe é dirigido ao alvo; não mantém o antigo cone parado.
+- **Padrão dos melees:** primeira habilidade de aproximação/avanço nas classes de combate corpo a corpo atuais e futuras. O guerreiro já segue o padrão e conserva seus valores, animação e efeito dourado; o Orc usa seu machado e rastro vermelho.
+- **Fúria Ancestral:** 100 de energia, **1 minuto ativo** e **3 minutos de recarga contados a partir do uso**. Bônus iniciais: **ATK +30%**, **velocidade de ataque +50%**, **regeneração de 2% da vida máxima por segundo** e **corrida a 300 unidades/s para alcançar o alvo**. Mantém a redução de dano de 25% e os básicos em área da versão anterior. Grito de Guerra continua independente; seus +30% de velocidade de ataque podem coexistir com a fúria.
+- **Corrida de verdade:** novas oito fases nas quatro direções, com inclinação do tronco e alternância de apoio e elevação dos joelhos, mesma escala fixa do Orc (30% maior) e machado completo. A caminhada, o repouso e os golpes aprovados são preservados. Ao terminar a fúria, a aproximação volta a 160 unidades/s e à caminhada habitual. A galeria inclui o botão Correr.
+- **Regeneração real:** cura em pulsos de 1s pelo servidor, com frações acumuladas para respeitar os 2%, limite de vida máxima e sem armazenar cura quando cheio. Não revive, não continua ao sair/morrer e os bônus não se acumulam a cada atualização. Barra da ultimate continua acima do HP.
+
+**154 testes com o ZIP real**, incluindo avanço nas oito direções, colisões, alcance/cancelamento, uso automático, regeneração, expiração, recarga persistente e retorno dos atributos. A conferência no Chromium/WebGL usa o avanço real e acompanha o minuto inteiro de fúria: corrida, cura, Ki ligado às novas poses e volta à caminhada. Guerreiro e classes a distância preservados; números dos bônus são valores iniciais para teste.
+
+**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior. Mantenha `recursos-publicos.zip`, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.39**.
 
 ## Atualização 0.6.38
 

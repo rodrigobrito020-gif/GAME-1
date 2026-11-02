@@ -47,6 +47,7 @@ menu(
   [
     ["idle", "Repouso"],
     ["walk", "Caminhar"],
+    ["run", "Correr"],
     ["attack", "Ataque"],
     ["area", "Habilidade em área"],
     ["buff", "Buff"],
@@ -117,11 +118,15 @@ function render(now) {
       col = Math.floor(t / 400) % 4,
       lift = 0;
     const move = rig.moves[moves[cl][action]];
-    if (action === "walk") {
-      sheet = "walk";
+    if (action === "walk" || action === "run") {
+      sheet = action === "run" ? "run1" : "walk";
       col =
-        Math.floor(t / (((ART.walkStride / 160) * 1000) / ART.walkFrames)) %
-        ART.walkFrames;
+        Math.floor(
+          t /
+            ((((ART.walkStride * bodyScale) / (action === "run" ? 300 : 160)) *
+              1000) /
+              ART.walkFrames),
+        ) % ART.walkFrames;
     } else if (move) {
       const total = move.frames.length * rig.stepMs,
         phase = t % (total + 700);

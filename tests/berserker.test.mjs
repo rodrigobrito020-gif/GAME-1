@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { LocalFarm } from "../farm.mjs";
 import {
   BERSERKER_ACTIONS,
+  BERSERKER_ADVANCE,
   BERSERKER_CRY,
   BERSERKER_ULTIMATE,
   berserkerRig,
@@ -62,43 +63,61 @@ function fixture() {
       });
       return m;
     },
-    step(ms) {
+    step(ms, options = { free: () => false }) {
       now += ms;
-      return farm.step(client, { free: () => false });
+      return farm.step(client, options);
     },
   };
 }
-test("Berserker cone hits current live occupants once, excludes behind/outside, and costs nothing on invalid use", () => {
-  const { farm, client, place, step } = fixture(),
-    front = place(0, 70),
-    side = place(1, 50, 50),
-    behind = place(2, -40),
-    outside = place(3, 106),
-    entrant = place(4, 140);
-  const hp = front.hp;
-  farm.cast(client, "corte-selvagem", front.id);
-  assert.equal(step(299).events.damage.length, 0);
-  entrant.x = client.x + 60;
-  entrant.y = client.y + 10;
-  const hits = step(1).events.damage.filter((d) => d.source === 1);
-  assert.deepEqual(
-    hits.map((d) => d.target).sort((a, b) => a - b),
-    [front.id, side.id, entrant.id].sort((a, b) => a - b),
-  );
-  assert.equal(new Set(hits.map((d) => d.target)).size, 3);
-  assert.ok(front.hp < hp);
-  assert.equal(behind.hp, hp);
-  assert.equal(outside.hp, hp);
-  assert.equal(
-    step(50).events.damage.filter((d) => d.skillId === "corte-selvagem").length,
-    0,
-  );
-  const mana = farm.character.progress.mana;
-  assert.throws(
-    () => farm.cast(client, "corte-selvagem", front.id),
-    /cooldown/,
-  );
-  assert.equal(farm.character.progress.mana, mana);
+test("Orc first-slot advance travels in eight directions and hits only its target on arrival", () => {
+  for (const [dx, dy] of [
+    [260, 0],
+    [-260, 0],
+    [0, 260],
+    [0, -260],
+    [180, 180],
+    [-180, 180],
+    [180, -180],
+    [-180, -180],
+  ]) {
+    const { farm, client, place, step } = fixture(),
+      target = place(0, dx, dy),
+      side = place(1, 70, 20),
+      from = { x: client.x, y: client.y },
+      distance = Math.hypot(dx, dy);
+    const result = farm.cast(client, BERSERKER_ADVANCE.id, target.id);
+    assert.equal(result.events.damage.length, 0);
+    assert.equal(client.x, from.x);
+    const hits = [];
+    for (let i = 0; i < 6; i++) {
+      const out = step(50, { free: () => true });
+      hits.push(
+        ...out.events.damage.filter((d) => d.skillId === BERSERKER_ADVANCE.id),
+      );
+      if (i < 5) assert.equal(hits.length, 0);
+      if (i === 2)
+        assert.ok(Math.hypot(client.x - from.x, client.y - from.y) > 5);
+    }
+    assert.ok(
+      Math.abs(
+        client.x -
+          from.x -
+          (dx / distance) * (distance - BERSERKER_ADVANCE.stopDistance),
+      ) < 1e-6,
+    );
+    assert.ok(
+      Math.abs(
+        client.y -
+          from.y -
+          (dy / distance) * (distance - BERSERKER_ADVANCE.stopDistance),
+      ) < 1e-6,
+    );
+    assert.equal(hits.length, 1);
+    assert.equal(hits[0].target, target.id);
+    assert.equal(hits[0].amount, Math.round(farm.character.derived.atk * 2.2));
+    assert.equal(side.hp, 10000);
+    assert.equal(client.hunt.dash, null);
+  }
 });
 test("Orc rupture uses warrior landing timing and resolves the area at landing", () => {
   const { farm, client, place, step } = fixture(),
@@ -120,7 +139,7 @@ test("Orc rupture uses warrior landing timing and resolves the area at landing",
   assert.equal(out.hp, 10000);
   assert.equal(leave.hp, 10000);
 });
-test("War cry and ultimate give independent attack speed without inflating per-hit attack and clear on exit", () => {
+test("War cry only speeds attacks; fury adds attack and speed independently and clears on exit", () => {
   const { farm, client, place, step } = fixture(),
     base = farm.character.derived.atk;
   farm.cast(client, BERSERKER_CRY.id, 0);
@@ -138,7 +157,7 @@ test("War cry and ultimate give independent attack speed without inflating per-h
   assert.ok(
     Math.abs(farm.character.derived.attackCooldown - 1 / (1.3 * 1.5)) < 1e-10,
   );
-  assert.equal(farm.character.derived.atk, base);
+  assert.equal(farm.character.derived.atk, Math.round(base * 1.3));
   assert.equal(farm.activeBuffs().length, 2);
   step(300);
   client.hunt.nextAttack = 0;
@@ -150,6 +169,8 @@ test("War cry and ultimate give independent attack speed without inflating per-h
   assert.equal(farm.avatar.active(), false);
   assert.equal(farm.warCryUntil, 0);
   assert.equal(farm.character.derived.attackCooldown, 1);
+  assert.equal(farm.character.derived.atk, base);
+  assert.equal(farm.character.derived.moveSpeed, 160);
   assert.deepEqual(farm.activeBuffs(), []);
 });
 test("Orc buff expires independently and real basic hits/received damage charge its ultimate", () => {
@@ -366,4 +387,193 @@ test("Orc effects have sixteen distinct red frames and transparent padding; mask
     for (let i = 3; i < base.pixels.length; i += 4)
       assert.ok(surface.pixels[i] <= base.pixels[i]);
   }
+});
+
+test("advance rejects close/far/blocked targets without spending resources; dynamic walls and target death cancel damage", () => {
+  for (const d of [159, 301]) {
+    const { farm, client, place } = fixture(),
+      m = place(0, d),
+      mana = farm.character.progress.mana;
+    assert.throws(
+      () => farm.cast(client, BERSERKER_ADVANCE.id, m.id),
+      /target_too_close|invalid_target/,
+    );
+    assert.equal(farm.character.progress.mana, mana);
+    assert.equal(client.hunt.cooldowns[BERSERKER_ADVANCE.id], undefined);
+  }
+  {
+    const { farm, client, place } = fixture(),
+      m = place(0, 260),
+      mana = farm.character.progress.mana;
+    assert.throws(
+      () =>
+        farm.cast(client, BERSERKER_ADVANCE.id, m.id, undefined, undefined, {
+          free: (x) => x < client.x + 80,
+        }),
+      /invalid_target/,
+    );
+    assert.equal(farm.character.progress.mana, mana);
+    assert.equal(client.hunt.dash, undefined);
+  }
+  for (const cancel of ["wall", "death", "exit"]) {
+    const { farm, client, place, step } = fixture(),
+      m = place(0, 260),
+      start = client.x;
+    farm.cast(client, BERSERKER_ADVANCE.id, m.id);
+    step(100, { free: () => true });
+    if (cancel === "death") m.hp = 0;
+    if (cancel === "exit") farm.stop(client);
+    const out = step(200, { free: (x) => cancel !== "wall" || x < start + 90 });
+    assert.equal(
+      out.events.damage.filter((d) => d.skillId === BERSERKER_ADVANCE.id)
+        .length,
+      0,
+    );
+    if (cancel === "wall") assert.ok(client.x < start + 90);
+  }
+});
+test("automatic melee opener advances at range and never stalls basic attacks nearby", () => {
+  const { farm, client, place, step } = fixture(),
+    m = place(0, 260);
+  farm.character.automation.skillOrder = [BERSERKER_ADVANCE.id];
+  const out = step(50, { free: () => true });
+  assert.ok(out.events.casts.some((c) => c.skillId === BERSERKER_ADVANCE.id));
+  assert.ok(client.hunt.dash);
+  step(550, { free: () => true });
+  const near = step(1000, { free: () => true });
+  assert.ok(!near.events.casts.some((c) => c.skillId === BERSERKER_ADVANCE.id));
+  assert.ok(
+    near.events.moves.some((c) => /^orc-(machado|retorno)$/.test(c.move)),
+  );
+  assert.ok(m.hp < 10000);
+});
+test("fury lasts exactly one minute and the three-minute cooldown survives restart", () => {
+  const { farm, client, account, step } = fixture(),
+    start = farm.now();
+  farm.cast(client, BERSERKER_ULTIMATE.id, 0);
+  assert.equal(farm.avatar.saved.readyAt, start + 180000);
+  step(300);
+  assert.equal(farm.avatar.state(client).activeMs, 60000);
+  assert.equal(farm.character.derived.moveSpeed, 300);
+  assert.ok(Math.abs(farm.character.derived.hpRegen - 5.6) < 1e-10);
+  assert.equal(farm.character.derived.atk, 22);
+  step(59999);
+  assert.equal(farm.avatar.active(), true);
+  const end = step(1);
+  assert.ok(
+    end.events.buffs.some(
+      (b) => b.buffId === BERSERKER_ULTIMATE.id && b.removed,
+    ),
+  );
+  assert.equal(farm.character.derived.atk, 17);
+  assert.equal(farm.character.derived.moveSpeed, 160);
+  assert.equal(farm.character.derived.hpRegen, 0);
+  assert.equal(farm.character.derived.attackCooldown, 1);
+  farm.avatar.gain(100);
+  assert.throws(() => farm.cast(client, BERSERKER_ULTIMATE.id, 0), /cooldown/);
+  const reloaded = new LocalFarm(account, { now: farm.now });
+  assert.equal(reloaded.avatar.saved.readyAt, start + 180000);
+  step(119699);
+  assert.throws(() => farm.cast(client, BERSERKER_ULTIMATE.id, 0), /cooldown/);
+  step(1);
+  assert.equal(farm.avatar.state(client).cooldownMs, 0);
+});
+test("fury regeneration starts on a real one-second tick, carries fractions, caps at max and never banks full-health healing", () => {
+  const { farm, client, step } = fixture();
+  farm.character.progress.hp = 1;
+  farm.cast(client, BERSERKER_ULTIMATE.id, 0);
+  step(300);
+  assert.equal(step(999).events.heals.length, 0);
+  const first = step(1);
+  assert.equal(first.events.heals[0].amount, 5);
+  assert.equal(farm.character.progress.hp, 6);
+  const delayed = step(4000);
+  assert.equal(delayed.events.heals[0].amount, 23);
+  assert.equal(farm.character.progress.hp, 29);
+  farm.character.progress.hp = 279;
+  assert.equal(step(1000).events.heals[0].amount, 1);
+  assert.equal(farm.character.progress.hp, 280);
+  assert.equal(step(10000).events.heals.length, 0);
+  farm.character.progress.hp = 10;
+  const one = step(1000);
+  assert.ok(one.events.heals[0].amount <= 6);
+  assert.ok(farm.character.progress.hp <= 16);
+  step(43000);
+  assert.equal(farm.avatar.active(), false);
+  farm.character.progress.hp = 10;
+  assert.equal(step(1000).events.heals.length, 0);
+  assert.equal(farm.character.progress.hp, 10);
+});
+test("fury regeneration cannot revive a dead Orc or continue after leaving hunt or changing class", () => {
+  for (const mode of ["death", "exit", "class"]) {
+    const { farm, client, step } = fixture();
+    farm.character.progress.hp = 10;
+    farm.cast(client, BERSERKER_ULTIMATE.id, 0);
+    step(300);
+    if (mode === "death") {
+      farm.character.progress.hp = 0;
+      client.hunt.deadAt = farm.now();
+    } else {
+      farm.stop(client);
+      if (mode === "class") farm.changeClass(client, "guerreiro");
+    }
+    const hp = farm.character.progress.hp,
+      out = step(5000);
+    assert.equal(out.events.heals.length, 0);
+    assert.equal(farm.character.progress.hp, hp);
+  }
+});
+test("fury chases a distant target at a real running speed, ordinary pursuit retains the approved walk", () => {
+  for (const fury of [false, true]) {
+    const { farm, client, place, step } = fixture();
+    if (fury) {
+      farm.cast(client, BERSERKER_ULTIMATE.id, 0);
+      step(600);
+    }
+    place(0, 400);
+    const start = client.x;
+    step(50, { free: () => true });
+    assert.ok(Math.abs(client.x - start - (fury ? 15 : 8)) < 0.001);
+    assert.equal(farm.character.derived.moveSpeed, fury ? 300 : 160);
+  }
+});
+
+test("running uses eight distinct whole-body poses per direction with one standing calibration and preserves fixed scale", async () => {
+  const { readFileSync } = await import("node:fs"),
+    { createHash } = await import("node:crypto"),
+    { decodeRgba } = await import("../png.mjs");
+  const run = decodeRgba(
+      readFileSync(new URL("../art/berserker/hd/run1.png", import.meta.url)),
+    ),
+    walk = readFileSync(
+      new URL("../art/berserker/hd/walk.png", import.meta.url),
+    ),
+    meta = JSON.parse(
+      readFileSync(new URL("../art/berserker/manifest.json", import.meta.url)),
+    );
+  assert.notDeepEqual(
+    readFileSync(new URL("../art/berserker/hd/run1.png", import.meta.url)),
+    walk,
+    "running is not the walking sheet at another speed",
+  );
+  for (let row = 0; row < 4; row++) {
+    const frames = [];
+    for (let col = 0; col < 8; col++) {
+      const bytes = Buffer.alloc(384 * 384 * 4);
+      for (let y = 0; y < 384; y++)
+        Buffer.from(
+          run.pixels.buffer,
+          run.pixels.byteOffset + ((row * 384 + y) * run.width + col * 384) * 4,
+          384 * 4,
+        ).copy(bytes, y * 384 * 4);
+      frames.push(createHash("sha256").update(bytes).digest("hex"));
+    }
+    assert.equal(new Set(frames).size, 8);
+    const poses = meta.sources.run1.filter((p) => p.row === row);
+    assert.equal(new Set(poses.map((p) => p.sourceScale)).size, 1);
+    assert.equal(new Set(poses.map((p) => p.sourceBodyHeight)).size, 1);
+    assert.ok(poses.every((p) => p.source.startsWith("run-")));
+  }
+  assert.equal(meta.fixedDisplayScale, 0.65);
+  assert.equal(meta.sizeRelativeToWarrior, 1.3);
 });

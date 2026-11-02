@@ -8,6 +8,12 @@ Orientação expressa do jogador: **o guerreiro é a base para todas as outras c
 
 O jogador aprovou o resultado da 0.6.37 após a revisão da arqueira e pistoleira. Preservar essa versão aprovada e comparar futuras alterações com o guerreiro antes de entregar. A arqueira e a pistoleira aprovadas complementam a referência; o guerreiro continua sendo a base principal.
 
+## Primeira habilidade dos melees e fúria do Orc — 02/11/2026
+
+Pedido expresso do jogador após aprovar o Orc: **toda classe de combate corpo a corpo deve ter avanço na primeira habilidade**. Guerreiro mantém Avanço de Luz; Berserker recebe Avanço Selvagem no slot 1, preservando o identificador salvo `corte-selvagem`. Usar a mesma validação de percurso, chegada, colisão e dano do guerreiro. Aplicar esse padrão aos futuros melees.
+
+Fúria Ancestral do Orc: pedido de 1 minuto ativo, recarga de 3 minutos, mais regeneração de vida, corrida em direção ao alvo, ataque e velocidade de ataque. Bônus iniciais implementados na 0.6.39: ATK +30%, AS +50%, regeneração de 2% HP máximo/s, corrida real a 300 unidades/s. Mantidos os bônus anteriores de redução de dano e básicos em área. A convenção foi informada ao jogador: recarga de 180s a partir do uso (60s ativos e cerca de 120s restantes após o fim). Corrida com poses próprias; caminhada, aparência, porte e identidade vermelha aprovados preservados. Todos os bônus voltam ao normal quando a fúria acaba.
+
 ## Berserker Orc e recurso de ultimate — 02/11/2026
 
 Quarta classe escolhida expressamente pelo jogador: Berserker da raça Orc. O jogador esclareceu que o Orc tem porte bem maior e que sua cor predominante é vermelha. Primeira versão 0.6.38: pele verde, machado de duas mãos, corpo robusto, 30% mais alto que o guerreiro e escala fixa em todas as poses. Corte Selvagem, Ruptura da Terra, Grito de Guerra e Fúria Ancestral são o conjunto inicial para teste. Mesma base de animação/impacto/Ki do guerreiro, com identidade vermelha; manter as outras classes aprovadas.
@@ -28,7 +34,9 @@ O jogador confirmou que a diferença para o guerreiro inclui o movimento do corp
 
 ## Entregue
 
-- 0.6.38: Berserker Orc, porte 30% maior, machado de duas mãos, quatro habilidades iniciais e energia vermelha no padrão do guerreiro; barra de ultimate acima do HP nas quatro classes. Avaliação artística do Orc pendente.
+- 0.6.39: avanço na primeira habilidade do Orc no padrão do guerreiro; Fúria Ancestral com 60s ativos/180s de recarga, ATK, AS, regeneração e corrida própria.
+
+- 0.6.38: Berserker Orc, porte 30% maior, machado de duas mãos, quatro habilidades iniciais e energia vermelha no padrão do guerreiro; barra de ultimate acima do HP nas quatro classes. Aparência do Orc aprovada pelo jogador; combate ajustado na 0.6.39 conforme o pedido.
 
 - 0.6.37: movimento de preparação/recuo/recuperação das classes a distância e habilidades com impactos animados. Chuvas em três ondas, rastros e partículas móveis, sem o grande desenho fixo de área. Guerreiro e restante aprovado preservados.
 

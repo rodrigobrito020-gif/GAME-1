@@ -91,7 +91,7 @@
         );
         switch (cast.skillId) {
           case "corte-selvagem":
-            play("corte-poderoso", 200, 0.9);
+            play("investida", 50, 0.85);
             play("golpe-pesado-1", 300, 0.8);
             break;
           case "ruptura-da-terra":

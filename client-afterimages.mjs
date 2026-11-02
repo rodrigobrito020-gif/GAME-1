@@ -19,8 +19,8 @@ for(const ghost of this.ghosts) if(ghost.img.visible){
 }
 if(this.trailLeft>0){
   this.trailLeft-=e;this.trailNext-=e;
-  if(this.act?.move.id==="humano-avanco-luz")this.royalLightTrail=true;
-  if(this.trailNext<=0&&this.body.visible&&(!this.royalLightTrail||(this.alive&&!this.dead&&this.stepDist>1&&this.act?.move.id==="humano-avanco-luz"&&this.act.t<=${FX.emissionUntilMs}))){
+  if(["humano-avanco-luz","orc-avanco"].includes(this.act?.move.id))this.royalLightTrail=true;
+  if(this.trailNext<=0&&this.body.visible&&(!this.royalLightTrail||(this.alive&&!this.dead&&this.stepDist>1&&["humano-avanco-luz","orc-avanco"].includes(this.act?.move.id)&&this.act.t<=${FX.emissionUntilMs}))){
     this.trailNext=this.royalLightTrail?${FX.intervalMs / 1000}:Qy;
     if(this.royalLightTrail||Pl().trails)this.afterimage();
   }

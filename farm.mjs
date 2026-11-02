@@ -1,13 +1,18 @@
+import { planMeleeAdvance } from "./melee-advance.mjs";
 import {
   BERSERKER_CLASS,
+  BERSERKER_ADVANCE,
   BERSERKER_SKIN,
   BERSERKER_SKILLS,
   BERSERKER_CRY,
   BERSERKER_ULTIMATE,
   isBerserker,
-  berserkerConeTargets,
 } from "./berserker.mjs";
-import { berserkerBasic, castBerserker } from "./berserker-combat.mjs";
+import {
+  berserkerBasic,
+  castBerserker,
+  tickBerserkerRegeneration,
+} from "./berserker-combat.mjs";
 import {
   GUNSLINGER_CLASS,
   GUNSLINGER_SKIN,
@@ -349,6 +354,13 @@ export class LocalFarm {
           ? ARCHER_SPIRIT
           : LIGHT_AVATAR;
   }
+  get meleeAdvance() {
+    return isBerserker(this.character)
+      ? BERSERKER_ADVANCE
+      : isRanged(this.character)
+        ? null
+        : WARRIOR_LIGHT_DASH;
+  }
   changeClass(client, id) {
     if (client.hunt) throw Error("local.city_only");
     if (
@@ -446,7 +458,10 @@ export class LocalFarm {
         ((isBerserker(c) ? 17 : isGunslinger(c) ? 13 : isArcher(c) ? 14 : 15) +
           (level - 1) * 2 +
           sum("atk")) *
-          (isArcher(c) && this.eyesUntil > this.now() ? 1.2 : 1),
+          (isArcher(c) && this.eyesUntil > this.now() ? 1.2 : 1) *
+          (isBerserker(c) && this.avatar.active()
+            ? 1 + BERSERKER_ULTIMATE.attackPercent
+            : 1),
       ),
       def: this.defenseBuffs.defense(c, sum("def")),
       maxHp:
@@ -491,11 +506,18 @@ export class LocalFarm {
           (this.instinctUntil > this.now() ? NIGHT_INSTINCT.critBonus : 0)
         : 0,
       critMult: 1.5,
-      moveSpeed: 160,
+      moveSpeed:
+        isBerserker(c) && this.avatar.active()
+          ? BERSERKER_ULTIMATE.chaseSpeed
+          : 160,
       manaRegen: 3,
       cooldownMult: 1,
       damageCooldownMult: 1,
     });
+    c.derived.hpRegen =
+      isBerserker(c) && this.avatar.active()
+        ? c.derived.maxHp * BERSERKER_ULTIMATE.healthRegenPercentPerSecond
+        : 0;
     c.derived.power = Math.round(c.derived.atk * 2 + c.derived.def * 3);
     c.progress.hp = Math.min(c.progress.hp, c.derived.maxHp);
     c.progress.mana = Math.min(c.progress.mana, c.derived.maxMana);
@@ -878,7 +900,9 @@ export class LocalFarm {
     if (id === "ataque-basico") return this.basic(client, targetId, events);
     if (id === EVADE.id) return this.dash(client, {}, events, { free });
     if (isBerserker(c))
-      return castBerserker(this, client, id, targetId, events, deltas);
+      return castBerserker(this, client, id, targetId, events, deltas, {
+        free,
+      });
     if (isGunslinger(c))
       return castGunslinger(this, client, id, targetId, events, deltas);
     if (isArcher(c))
@@ -956,35 +980,8 @@ export class LocalFarm {
     )
       throw Error("local.invalid_target");
     let dash = null;
-    if (id === WARRIOR_LIGHT_DASH.id) {
-      const distance = Math.hypot(target.x - client.x, target.y - client.y);
-      if (distance < WARRIOR_LIGHT_DASH.minRange)
-        throw Error("local.target_too_close");
-      const travel = distance - WARRIOR_LIGHT_DASH.stopDistance;
-      const from = { x: client.x, y: client.y },
-        to = {
-          x: client.x + ((target.x - client.x) / (distance || 1)) * travel,
-          y: client.y + ((target.y - client.y) / (distance || 1)) * travel,
-        };
-      // Sample the complete swept body corridor before charging mana/cooldown.
-      const samples = Math.max(1, Math.ceil(travel / 4));
-      for (let i = 0; i <= samples; i++)
-        if (
-          !free(
-            from.x + ((to.x - from.x) * i) / samples,
-            from.y + ((to.y - from.y) * i) / samples,
-          )
-        )
-          throw Error("local.invalid_target");
-      dash = {
-        from,
-        to,
-        target: target.id,
-        startsAt: now + WARRIOR_LIGHT_DASH.start,
-        endsAt: now + WARRIOR_LIGHT_DASH.end,
-        blocked: false,
-      };
-    }
+    if (id === WARRIOR_LIGHT_DASH.id)
+      dash = planMeleeAdvance(client, target, WARRIOR_LIGHT_DASH, now, free);
     c.progress.mana -= skill.manaCost;
     h.cooldowns[id] = now + skill.cooldownMs;
     const action = WARRIOR_ACTIONS[id];
@@ -1042,6 +1039,7 @@ export class LocalFarm {
       deltas = [],
       spawned = [],
       despawned = [];
+    if (isBerserker(c)) tickBerserkerRegeneration(this, client, events);
     events.buffs.push(...this.defenseBuffs.expire());
     if (this.avatar.until && !this.avatar.active()) {
       events.buffs.push(...this.avatar.clear(client.entityId ?? 1));
@@ -1141,6 +1139,10 @@ export class LocalFarm {
       tickGunslingerBurns(this, client, events, deltas, impact.at);
       if (impact.avatarBuff) {
         events.buffs.push(this.avatar.activate(client.entityId ?? 1));
+        if (isBerserker(c)) {
+          h.nextFuryRegen = now + 1000;
+          h.furyRegenFraction = 0;
+        }
         this.recalculate();
         continue;
       }
@@ -1191,35 +1193,33 @@ export class LocalFarm {
         : null;
       const cleave =
         impact.basic && !isRanged(c) && this.avatar.active() && primary;
-      const targets = impact.meleeCone
-        ? berserkerConeTargets(h.monsters, impact.meleeCone)
-        : impact.cone
-          ? [
-              ...new Set(
-                impact.cone.flatMap((ray) => piercedTargets(h.monsters, ray)),
-              ),
-            ]
-          : impact.pierce
-            ? piercedTargets(h.monsters, impact.pierce)
-            : cleave
+      const targets = impact.cone
+        ? [
+            ...new Set(
+              impact.cone.flatMap((ray) => piercedTargets(h.monsters, ray)),
+            ),
+          ]
+        : impact.pierce
+          ? piercedTargets(h.monsters, impact.pierce)
+          : cleave
+            ? h.monsters
+                .filter(
+                  (m) =>
+                    m.hp > 0 &&
+                    Math.hypot(m.x - primary.x, m.y - primary.y) <=
+                      this.ultimateDefinition.cleaveRadius,
+                )
+                .map((m) => m.id)
+            : impact.area
               ? h.monsters
                   .filter(
                     (m) =>
                       m.hp > 0 &&
-                      Math.hypot(m.x - primary.x, m.y - primary.y) <=
-                        this.ultimateDefinition.cleaveRadius,
+                      Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
+                        impact.area.radius,
                   )
                   .map((m) => m.id)
-              : impact.area
-                ? h.monsters
-                    .filter(
-                      (m) =>
-                        m.hp > 0 &&
-                        Math.hypot(m.x - impact.area.x, m.y - impact.area.y) <=
-                          impact.area.radius,
-                    )
-                    .map((m) => m.id)
-                : impact.targets;
+              : impact.targets;
       let landed = false;
       for (const id of targets) {
         const monster = h.monsters.find((m) => m.id === id && m.hp > 0);
@@ -1228,7 +1228,7 @@ export class LocalFarm {
           (!impact.dash ||
             (!h.dash?.blocked &&
               Math.hypot(monster.x - client.x, monster.y - client.y) <=
-                WARRIOR_LIGHT_DASH.hitRange))
+                (impact.hitRange ?? WARRIOR_LIGHT_DASH.hitRange)))
         ) {
           this.hit(
             h,
@@ -1387,22 +1387,16 @@ export class LocalFarm {
         c.derived.attackRange
       ) {
         let dashed = false;
+        const advance = this.meleeAdvance;
         if (
-          (c.automation.skillOrder ?? []).includes(WARRIOR_LIGHT_DASH.id) &&
+          advance &&
+          (c.automation.skillOrder ?? []).includes(advance.id) &&
           Math.hypot(target.x - client.x, target.y - client.y) >=
-            WARRIOR_LIGHT_DASH.minRange &&
-          Math.hypot(target.x - client.x, target.y - client.y) <=
-            WARRIOR_LIGHT_DASH.range
+            advance.minRange &&
+          Math.hypot(target.x - client.x, target.y - client.y) <= advance.range
         ) {
           try {
-            this.cast(
-              client,
-              WARRIOR_LIGHT_DASH.id,
-              target.id,
-              events,
-              deltas,
-              { free },
-            );
+            this.cast(client, advance.id, target.id, events, deltas, { free });
             dashed = true;
           } catch {
             /* A blocked/unavailable dash falls back to normal navigation. */
@@ -1432,9 +1426,9 @@ export class LocalFarm {
         for (const id of c.automation.skillOrder ?? []) {
           if (id === EVADE.id) continue;
           if (
-            id === WARRIOR_LIGHT_DASH.id &&
+            id === this.meleeAdvance?.id &&
             Math.hypot(target.x - client.x, target.y - client.y) <
-              WARRIOR_LIGHT_DASH.minRange
+              this.meleeAdvance.minRange
           )
             continue;
           try {

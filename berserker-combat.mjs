@@ -1,5 +1,7 @@
+import { planMeleeAdvance } from "./melee-advance.mjs";
 import {
   BERSERKER_ACTIONS,
+  BERSERKER_ADVANCE,
   BERSERKER_CRY,
   BERSERKER_ULTIMATE,
 } from "./berserker.mjs";
@@ -60,7 +62,15 @@ export function berserkerBasic(farm, client, target, events) {
   effect(h, "swing", client, now, impact, impact + 300, dx / d, dy / d);
   return { events, deltas: [] };
 }
-export function castBerserker(farm, client, id, targetId, events, deltas) {
+export function castBerserker(
+  farm,
+  client,
+  id,
+  targetId,
+  events,
+  deltas,
+  { free = () => true } = {},
+) {
   const h = client.hunt,
     c = farm.character,
     now = farm.now(),
@@ -99,6 +109,10 @@ export function castBerserker(farm, client, id, targetId, events, deltas) {
     client.facing =
       Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 2 : 1) : dy > 0 ? 0 : 3;
   }
+  const advance =
+    id === BERSERKER_ADVANCE.id
+      ? planMeleeAdvance(client, target, BERSERKER_ADVANCE, now, free)
+      : null;
   if (ultimate) {
     farm.avatar.reserve();
     h.avatarQueued = false;
@@ -107,13 +121,19 @@ export function castBerserker(farm, client, id, targetId, events, deltas) {
   h.cooldowns[id] = now + skill.cooldownMs;
   h.nextCast = h.actionUntil = now + action.duration;
   client.combatAnimUntil = h.actionUntil;
+  if (advance) {
+    h.dash = advance;
+    h.target = target.id;
+  }
   const origin = { x: Math.round(client.x * 10), y: Math.round(client.y * 10) };
   events.casts.push({
     caster: client.entityId ?? 1,
     skillId: id,
     target: target?.id ?? client.entityId ?? 1,
     origin,
-    dest: { ...origin },
+    dest: advance
+      ? { x: Math.round(advance.to.x * 10), y: Math.round(advance.to.y * 10) }
+      : { ...origin },
     facing: client.facing,
   });
   events.cooldowns.push({
@@ -128,7 +148,7 @@ export function castBerserker(farm, client, id, targetId, events, deltas) {
     });
     effect(h, "roar", client, now, action.impact, 950);
   } else {
-    const slash = id === "corte-selvagem";
+    const slash = !!advance;
     h.impacts.push({
       at: now + action.impact,
       targets: [target.id],
@@ -137,7 +157,8 @@ export function castBerserker(farm, client, id, targetId, events, deltas) {
       heal: 0,
       ...(slash
         ? {
-            meleeCone: { x: client.x, y: client.y, dx, dy, range: skill.range },
+            dash: true,
+            hitRange: BERSERKER_ADVANCE.hitRange,
           }
         : { area: { x: client.x, y: client.y, radius: skill.radius } }),
     });
@@ -153,4 +174,33 @@ export function castBerserker(farm, client, id, targetId, events, deltas) {
     );
   }
   return { events, deltas };
+}
+
+// Time-based, server-side regeneration. Fractional carry keeps the 2% rate
+// accurate, full health cannot bank healing, and death/exit cannot revive.
+export function tickBerserkerRegeneration(farm, client, events) {
+  const h = client.hunt,
+    c = farm.character,
+    until = farm.avatar.until,
+    now = farm.now();
+  if (!h || h.deadAt || !(c.progress.hp > 0) || !until || !h.nextFuryRegen)
+    return;
+  const through = Math.min(now, until);
+  if (h.nextFuryRegen > through) return;
+  const ticks = Math.floor((through - h.nextFuryRegen) / 1000) + 1;
+  h.nextFuryRegen += ticks * 1000;
+  const exact =
+    ticks * c.derived.maxHp * BERSERKER_ULTIMATE.healthRegenPercentPerSecond +
+    (h.furyRegenFraction ?? 0);
+  const requested = Math.floor(exact + 1e-9);
+  h.furyRegenFraction = Math.max(0, exact - requested);
+  const amount = Math.min(requested, c.derived.maxHp - c.progress.hp);
+  if (amount > 0) {
+    c.progress.hp += amount;
+    events.heals.push({
+      source: client.entityId ?? 1,
+      target: client.entityId ?? 1,
+      amount,
+    });
+  }
 }

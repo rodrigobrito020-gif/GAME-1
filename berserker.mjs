@@ -22,17 +22,29 @@ export const BERSERKER_CRY = Object.freeze({
 export const BERSERKER_ULTIMATE = Object.freeze({
   id: "furia-ancestral",
   name: "Fúria Ancestral",
-  durationMs: 45000,
-  cooldownMs: 60000,
+  durationMs: 60000,
+  cooldownMs: 180000,
   maxCharge: 100,
   damageReduction: 0.25,
+  attackPercent: 0.3,
   attackSpeedPercent: 0.5,
+  healthRegenPercentPerSecond: 0.02,
+  chaseSpeed: 300,
   cleaveRadius: 110,
   castMs: 600,
   applyAtMs: 300,
 });
+export const BERSERKER_ADVANCE = Object.freeze({
+  id: "corte-selvagem",
+  start: 50,
+  end: 300,
+  range: 300,
+  minRange: 160,
+  stopDistance: 66,
+  hitRange: 90,
+});
 export const BERSERKER_ACTIONS = Object.freeze({
-  "corte-selvagem": { move: "orc-corte", duration: 650, impact: 300 },
+  "corte-selvagem": { move: "orc-avanco", duration: 550, impact: 300 },
   "ruptura-da-terra": { move: "orc-ruptura", duration: 950, impact: 550 },
   "grito-de-guerra": { move: "orc-grito", duration: 600, impact: 300 },
   "furia-ancestral": { move: "orc-furia", duration: 600, impact: 300 },
@@ -40,15 +52,15 @@ export const BERSERKER_ACTIONS = Object.freeze({
 export const BERSERKER_SKILLS = [
   {
     id: "corte-selvagem",
-    name: "Corte Selvagem",
+    name: "Avanço Selvagem",
     key: "1",
     kind: "damage",
     manaCost: 8,
     cooldownMs: 5000,
-    range: 105,
+    range: BERSERKER_ADVANCE.range,
     multiplier: 2.2,
     description:
-      "Varre um cone de 140° à frente com o machado. Causa 220% do ataque a cada inimigo atingido, uma única vez.",
+      "Avança até um inimigo distante e golpeia com o machado na chegada, causando 220% do ataque. Alcance de 160 a 300. Respeita paredes e para antes do alvo.",
     icon: "/assets/ui/royal-berserker/corte-selvagem.png",
   },
   {
@@ -88,7 +100,7 @@ export const BERSERKER_SKILLS = [
     range: 0,
     durationMs: BERSERKER_ULTIMATE.durationMs,
     description:
-      "Consome 100 de energia. Transforma o Orc por 45s: velocidade de ataque +50%, dano recebido -25% e golpes básicos em área. Intervalo mínimo de 60s.",
+      "Consome 100 de energia e entra em fúria por 1 minuto: ataque +30%, velocidade de ataque +50%, regeneração de 2% da vida máxima por segundo e corrida para alcançar o alvo. Mantém dano recebido -25% e básicos em área. Recarga de 3 minutos a partir do uso.",
     icon: "/assets/ui/royal-berserker/furia-ancestral.png",
   },
 ];
@@ -98,6 +110,7 @@ export function berserkerRig(original) {
   const rig = structuredClone(original);
   for (const [dest, source] of [
     ["orc-machado", "humano-espada"],
+    ["orc-avanco", "humano-avanco-luz"],
     ["orc-retorno", "humano-retorno"],
     ["orc-ruptura", "humano-impacto-luz"],
     ["orc-grito", "humano-avatar-luz"],
@@ -108,18 +121,7 @@ export function berserkerRig(original) {
     rig.moves[dest] = structuredClone(rig.moves[source]);
     delete rig.moves[dest].hit;
   }
-  rig.moves["orc-corte"] = {
-    frames: [
-      ...hold("weapon", 0, 2),
-      ...hold("weapon", 1, 2),
-      ...hold("weapon", 2, 2),
-      ...hold("weapon", 3, 1),
-      ...hold("weapon", 4, 3),
-      ...hold("weapon", 5, 3),
-    ],
-    impacts: [300],
-    motion: { lunge: { windup: 2, reach: 10, lift: -1, tilt: 2 } },
-  };
+  rig.moves["orc-avanco"].motion.trail.color = "#ff5148";
   for (const move of ["orc-grito", "orc-furia"])
     rig.moves[move].motion = {
       glow: { at: [100, 500], color: "#ff493f", pulse: false },
@@ -131,19 +133,4 @@ export function berserkerRig(original) {
   for (const [id, a] of Object.entries(BERSERKER_ACTIONS))
     rig.skills[id] = { move: a.move };
   return rig;
-}
-export function berserkerConeTargets(monsters, cone) {
-  return monsters
-    .filter((m) => {
-      if (!(m.hp > 0)) return false;
-      const dx = m.x - cone.x,
-        dy = m.y - cone.y,
-        d = Math.hypot(dx, dy);
-      return (
-        d <= cone.range &&
-        (!d ||
-          (dx * cone.dx + dy * cone.dy) / d >= Math.cos((70 * Math.PI) / 180))
-      );
-    })
-    .map((m) => m.id);
 }

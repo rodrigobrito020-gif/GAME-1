@@ -4,7 +4,7 @@ per-pose resizing, or rewriting the three approved classes. Pillow is build-only
 from pathlib import Path
 from statistics import median
 from PIL import Image, ImageFilter
-import json
+import json,sys
 ROOT=Path(__file__).resolve().parents[1];FOLDER=ROOT/'art/berserker';SOURCE=FOLDER/'source'
 FRAME=384;FEET=(192,352);HEIGHT=224;cache={}
 def part(name,rows,cols,row,col):
@@ -52,6 +52,23 @@ def save(name,rows):
                 native.alpha_composite(proxy,(col//sample*64,row*64))
             meta.append({'row':row,'col':col,**m})
     hd.save(FOLDER/'hd'/f'{name}.png');native.save(FOLDER/f'{name}.png');return meta
+def running_rows():
+    rows=[]
+    for row in range(4):
+        mirror=row==1
+        if row in (1,2):name,rs,rr='run-side',1,0
+        else:name,rs,rr='run-vertical',2,0 if row==0 else 1
+        # The standing calibration column fixes the physical size of this row.
+        # Bent running knees are never fitted up to standing height.
+        ref=part(name,rs,9,rr,0)
+        rows.append([frame(part(name,rs,9,rr,col),ref,mirror)for col in range(1,9)])
+    return rows
+if '--run-only' in sys.argv:
+    manifest=json.loads((FOLDER/'manifest.json').read_text());manifest['version']=39
+    manifest['sources']['run1']=save('run1',running_rows())
+    manifest['runningCalibration']='one standing reference per row; fixed scale for all eight running phases'
+    (FOLDER/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    print('Orc running atlas exported; approved idle/walk/combat art preserved.');sys.exit(0)
 sets={name:[]for name in ('idle','walk','run1','weapon','axeheavy','special')}
 for row in range(4):
     sr=0 if row==0 else 2 if row==3 else 1;mirror=row==1
@@ -61,11 +78,13 @@ for row in range(4):
         ref=part('walk-side',1,8,0,2);walk=[frame(part('walk-side',1,8,0,c),ref,mirror)for c in range(8)]
     else:
         wr=0 if row==0 else 1;ref=part('walk-vertical',2,8,wr,2);walk=[frame(part('walk-vertical',2,8,wr,c),ref)for c in range(8)]
-    sets['walk'].append(walk);sets['run1'].append(walk)
+    sets['walk'].append(walk)
     ref=part('attack',3,6,sr,0);sets['weapon'].append([neutral if c in (0,5)else frame(part('attack',3,6,sr,c),ref,mirror)for c in range(6)])
     ref=part('slam',3,4,sr,0);sets['axeheavy'].append([neutral if c in (0,5,6,7)else frame(part('slam',3,4,sr,p),ref,mirror)for c,p in enumerate([0,1,1,2,3,0,0,0])])
     ref=part('reactions',3,4,sr,0);sets['special'].append([neutral if c in (0,1,3)else frame(part('reactions',3,4,sr,p),ref,mirror,dead=c==5)for c,p in enumerate([0,0,1,0,2,3])])
-manifest={'character':'Berserker Orc','version':38,'base':'approved-warrior-v37','frame':[384,384],'feet':FEET,'bodyHeight':HEIGHT,'worldBodyHeight':145.6,'fixedDisplayScale':.65,'sizeRelativeToWarrior':1.3,'sources':{name:save(name,rows)for name,rows in sets.items()}}
+sets['run1']=running_rows()
+manifest={'character':'Berserker Orc','version':39,'base':'approved-warrior-v37','frame':[384,384],'feet':FEET,'bodyHeight':HEIGHT,'worldBodyHeight':145.6,'fixedDisplayScale':.65,'sizeRelativeToWarrior':1.3,'sources':{name:save(name,rows)for name,rows in sets.items()}}
+manifest['runningCalibration']='one standing reference per row; fixed scale for all eight running phases'
 (FOLDER/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 sets['idle'][0][0][0].crop((64,112,320,368)).resize((128,128),Image.Resampling.LANCZOS).save(FOLDER/'portrait.png')
 for col,name in enumerate(['corte-selvagem','ruptura-da-terra','grito-de-guerra','furia-ancestral','dash']):

@@ -137,17 +137,39 @@ im=Image.open(SOURCE/'icons.png').convert('RGBA');w,h=im.size
 for i,name in enumerate(['disparo-sombrio','rajada-do-crepusculo','instinto-noturno','eclipse','dash']):
     r,c=divmod(i,3);side=min(w//3,h//2);x=round(c*w/3+(w/3-side)/2);y=round(r*h/2+(h/2-side)/2)
     im.crop((x,y,x+side,y+side)).resize((256,256),Image.Resampling.LANCZOS).save(folder/'icons'/f'{name}.png')
-im=Image.open(SOURCE/'vfx-v30.png').convert('RGBA');w,h=im.size
-for name,box in [('bullet',(0,0,.5,.5)),('muzzle',(.5,0,1,.475)),('impact',(0,.5,.5,1)),('aura',(.5,.5,1,1))]:
-    effect=im.crop(tuple(round(v*(w if i%2==0 else h)) for i,v in enumerate(box)))
-    bounds=effect.getchannel('A').point(lambda a:255 if a>8 else 0).getbbox()
-    if bounds:effect=effect.crop(bounds)
-    effect.thumbnail((256,256),Image.Resampling.LANCZOS);out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
-print('Pistoleira: six HD/native atlases, complete figures in four directions, five skill icons and four textured effects.')
+def effect_parts(name):
+    # Isolate complete painted effects before layout cuts, just as for bodies.
+    # The bullet tip crosses the nominal midpoint of the source sheet.
+    im=Image.open(SOURCE/(name+'.png')).convert('RGBA');w,h=im.size;a=im.getchannel('A');ap=a.load()
+    pending={y*w+x for y in range(h)for x in range(w)if ap[x,y]>8};groups=[]
+    while pending:
+        seed=pending.pop();q=[seed]
+        for n in q:
+            x,y=n%w,n//w
+            for nx,ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                nn=ny*w+nx
+                if 0<=nx<w and 0<=ny<h and nn in pending:pending.remove(nn);q.append(nn)
+        groups.append(q)
+    mains=sorted(groups,key=len,reverse=True)[:4]
+    centers=[(sum(n%w for n in g)/len(g),sum(n//w for n in g)/len(g))for g in mains]
+    assigned=[[]for _ in mains]
+    for g in groups:
+        x=sum(n%w for n in g)/len(g);y=sum(n//w for n in g)/len(g)
+        nearest=min(range(4),key=lambda i:(x-centers[i][0])**2+(y-centers[i][1])**2)
+        assigned[nearest].extend(g)
+    result={}
+    for (cx,cy),g in zip(centers,assigned):
+        mask=Image.new('L',im.size);mp=mask.load()
+        for n in g:mp[n%w,n//w]=255
+        mask=mask.filter(ImageFilter.MaxFilter(3));part=im.copy()
+        part.putalpha(Image.composite(a,Image.new('L',im.size),mask))
+        part=part.crop(part.getchannel('A').getbbox())
+        result[(int(cy*2/h),int(cx*2/w))]=part
+    return result
 
-im=Image.open(SOURCE/'skills-v30.png').convert('RGBA');w,h=im.size
-for name,box in [('power',(0,0,.5,.5)),('volley',(.5,0,1,.5)),('powerimpact',(0,.5,.5,1)),('orbit',(.5,.5,1,1))]:
-    effect=im.crop(tuple(round(v*(w if i%2==0 else h))for i,v in enumerate(box)))
-    bounds=effect.getchannel('A').point(lambda a:255 if a>8 else 0).getbbox()
-    if bounds:effect=effect.crop(bounds)
-    effect.thumbnail((256,256),Image.Resampling.LANCZOS);out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
+for source,names in [('vfx-v30',['bullet','muzzle','impact','aura']),('skills-v30',['power','volley','powerimpact','orbit'])]:
+    parts=effect_parts(source)
+    for i,name in enumerate(names):
+        effect=parts[divmod(i,2)];effect.thumbnail((256,256),Image.Resampling.LANCZOS)
+        out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
+print('Pistoleira: six HD/native atlases, complete figures in four directions, five skill icons and eight isolated painted effects.')

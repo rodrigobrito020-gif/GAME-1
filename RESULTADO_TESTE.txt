@@ -12,6 +12,8 @@ ALTERACOES
 - Tiros e impactos maiores, violeta saturado e detalhes dourados. Desaparecimento
   dos impactos mais gradual; Rajada e Eclipse com maior opacidade.
 - Centro da aura aberto, mantendo a leitura do personagem.
+- Extracao de efeitos completos antes de separar a imagem de origem: ponta
+  inteira dos projeteis e nenhum fragmento de bala no clarao da pistola.
 
 VERIFICACAO
 - 119 testes automatizados passaram com o ZIP real; zero falhas/ignorados.

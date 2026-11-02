@@ -10,7 +10,7 @@ A pistoleira recebeu um novo modelo de corpo inteiro: rosto maior, tronco e quad
 
 - Repouso, oito fases de caminhada em cada direção, disparos alternados, buff, ferimento e derrota reconstruídos a partir do mesmo modelo. As figuras são exportadas inteiras, com altura e linha dos pés comuns às três classes.
 - Pares de mira/disparo alinhados à mesma mão e origem dos projéteis recalibrada para as novas pistolas.
-- Projéteis, clarões e impactos com núcleo violeta mais saturado e detalhes dourados. Tiros básicos e Disparo Sombrio maiores; impactos permanecem legíveis por mais tempo.
+- Projéteis, clarões e impactos com núcleo violeta mais saturado e detalhes dourados. Tiros básicos e Disparo Sombrio maiores; impactos permanecem legíveis por mais tempo. Cada efeito é isolado inteiro antes da exportação, evitando pontas cortadas ou pedaços de um efeito no outro.
 - Marca da Rajada e órbita do Eclipse com maior opacidade. O centro da aura continua aberto para permitir a leitura do personagem.
 
 As artes aprovadas do guerreiro e da arqueira, valores das habilidades, regras de combate e poções são preservados. Conferência no cliente real e 119 testes automatizados sem falhas; a avaliação artística final cabe ao jogador.

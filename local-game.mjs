@@ -77,7 +77,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-classes-40";
+  catalog.version = "local-classes-41";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,

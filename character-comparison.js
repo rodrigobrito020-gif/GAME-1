@@ -1,3 +1,4 @@
+import { vortexPose } from "/berserker-vortex.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 const canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d"),
@@ -136,6 +137,13 @@ function render(now) {
             Math.min(move.frames.length - 1, Math.floor(phase / rig.stepMs))
           ];
         [sheet, col] = Array.isArray(entry) ? entry : [move.sheet, entry];
+        if (cl === "berserker" && action === "area") {
+          const spin = vortexPose(phase, direction);
+          if (spin) {
+            sheet = spin.sheet;
+            col = spin.col;
+          }
+        }
         if (sheet === "walk" || sheet === "run1") col *= 2;
         if (
           action === "area" &&

@@ -84,6 +84,8 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
           !a.dead,
         action: !!(a.act || a.seat || a.dead),
       });
+    const spin = orc ? window.__royalBerserkerVisuals?.spinPose(a) : null;
+    if (spin) pose = spin;
     const { sheet, row, col } = pose,
       look = orc
         ? "berserker"
@@ -126,7 +128,9 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       a.act?.t,
       row,
     );
-    s.royalOffset = { x: b.x + motion.x, y: b.y + motion.y };
+    s.royalOffset = spin
+      ? { x: 0, y: 0 }
+      : { x: b.x + motion.x, y: b.y + motion.y };
     s.royalMotion = motion;
     const displayScale = characterDisplayScale(
       orc ? "berserker" : gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
@@ -136,8 +140,8 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       .setPosition(a.x + s.royalOffset.x, a.y + s.royalOffset.y)
       .setOrigin(ART.feet[0] / ART.frame, ART.feet[1] / ART.frame)
       .setScale(displayScale.x, displayScale.y)
-      .setAngle(b.angle + motion.angle)
-      .setFlipX(b.flipX)
+      .setAngle(spin ? 0 : b.angle + motion.angle)
+      .setFlipX(spin ? false : b.flipX)
       .setDepth(a.root.depth + 0.015)
       .setVisible(a.root.visible && b.visible && !a.hidden);
     s.setAlpha(a.pose?.alpha ?? 1);

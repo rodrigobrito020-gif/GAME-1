@@ -1,8 +1,10 @@
-// Orc effects use independently animated crimson flipbooks. Body and collision
-// remain on the approved warrior rig; the ultimate uses attached-energy.js.
+import { vortexPose, drawVortex } from "./berserker-vortex.mjs";
+// Animated crimson impacts and a continuous projected hurricane. Collision
+// stays authoritative; the ultimate retains the approved attached-energy.js.
 (() => {
   const art = new Map(),
-    scenes = new Map();
+    scenes = new Map(),
+    spinClocks = new WeakMap();
   let state = null,
     at = 0,
     serial = 0;
@@ -17,16 +19,56 @@
     state = e.detail;
     at = performance.now();
   });
+  // Sample once per rendered frame. Body and both halves of the funnel use
+  // this same clock even when a damage packet draws an impact between frames.
+  function currentSpin(a) {
+    if (
+      a.id !== 1 ||
+      !state?.inHunt ||
+      !state.alive ||
+      state.classId !== "berserker" ||
+      !a.alive
+    )
+      return null;
+    const now = performance.now();
+    const fx = state.berserkerFx?.find(
+      (f) => f.kind === "spin" && f.remainingMs - (now - at) > 0,
+    );
+    if (!fx) {
+      spinClocks.delete(a);
+      return null;
+    }
+    let clock = spinClocks.get(a);
+    if (clock?.id !== fx.id) {
+      clock = {
+        id: fx.id,
+        origin: now - (fx.durationMs - fx.remainingMs + now - at),
+        frame: -1,
+        age: 0,
+      };
+      spinClocks.set(a, clock);
+    }
+    const frame = a.root.scene.game.loop.frame;
+    if (clock.frame !== frame) {
+      clock.frame = frame;
+      clock.age = now - clock.origin;
+    }
+    return { fx, age: clock.age };
+  }
   function clear(e) {
     for (const s of e.images.values()) s.destroy();
     e.images.clear();
     e.hits.clear();
     e.g.clear();
+    e.vortexBack.clear();
+    e.vortexFront.clear();
   }
   function draw(scene, e) {
     const now = performance.now(),
       seen = new Set();
     e.g.clear();
+    e.vortexBack.clear();
+    e.vortexFront.clear();
     for (const [name, im] of art)
       if (!scene.textures.exists("orc-fx:" + name))
         scene.textures
@@ -74,7 +116,10 @@
       state?.inHunt &&
       state.alive &&
       state.classId === "berserker" &&
-      e.actor?.root.active;
+      e.actor?.root.active &&
+      e.actor.root.visible &&
+      !e.actor.hidden &&
+      e.actor.alive;
     if (active) {
       const a = e.actor;
       for (const fx of state.berserkerFx ?? []) {
@@ -84,36 +129,20 @@
         const after = age - fx.impactMs,
           angle = (Math.atan2(fx.dy, fx.dx) * 180) / Math.PI;
         if (fx.kind === "spin") {
-          // Two opposing hatchet arcs orbit at waist height with the rotating
-          // body. Each revolution advances the authored flipbook, not a still.
-          const turn = (age / 800) * Math.PI * 2;
-          for (let i = 0; i < 2; i++) {
-            const theta = turn + i * Math.PI;
-            burst(
-              fx.id + ":" + i,
-              "cleave",
-              a.x + Math.cos(theta) * 36,
-              a.y - 62 + Math.sin(theta) * 15,
-              age % 800,
-              800,
-              205,
-              (theta * 180) / Math.PI,
-              a.root.depth + (Math.sin(theta) > 0 ? 0.3 : -0.3),
-              0.9,
-              true,
-            );
-          }
-          for (let i = 0; i < 12; i++) {
-            const p = (age / 600 + i / 12) % 1,
-              theta = turn + i * 2.399963;
-            e.g
-              .fillStyle(i % 4 ? 0xff4038 : 0xffdab0, (1 - p) * 0.65)
-              .fillEllipse(
-                a.x + Math.cos(theta) * (35 + p * 45),
-                a.y - 12 + Math.sin(theta) * 15 - p * 20,
-                2,
-                4,
-              );
+          e.vortexBack.setPosition(a.x, a.y).setDepth(a.root.depth - 0.03);
+          e.vortexFront.setPosition(a.x, a.y).setDepth(a.root.depth + 0.03);
+          const sample = currentSpin(a);
+          const spinAge = sample?.fx.id === fx.id ? sample.age : age;
+          const geometry = drawVortex(
+            e.vortexBack,
+            e.vortexFront,
+            spinAge,
+            fx.facing ?? 0,
+          );
+          for (const g of [e.vortexBack, e.vortexFront]) {
+            g.royalVortexAge = spinAge;
+            g.royalVortexTurn = geometry?.turn;
+            g.royalVortexId = fx.id;
           }
         } else if (fx.kind === "cleave" || fx.kind === "swing") {
           const size = fx.kind === "swing" ? 145 : 240,
@@ -182,7 +211,11 @@
       images: new Map(),
       hits: new Map(),
       g: scene.add.graphics().setDepth(1000001),
+      vortexBack: scene.add.graphics(),
+      vortexFront: scene.add.graphics(),
     };
+    e.vortexBack.royalBerserkerVortex = "back";
+    e.vortexFront.royalBerserkerVortex = "front";
     scenes.set(scene, e);
     const callback = () => draw(scene, e);
     scene.events.on("postupdate", callback);
@@ -190,11 +223,17 @@
       scene.events.off("postupdate", callback);
       clear(e);
       e.g.destroy();
+      e.vortexBack.destroy();
+      e.vortexFront.destroy();
       scenes.delete(scene);
     });
     return e;
   }
   window.__royalBerserkerVisuals = {
+    spinPose(a) {
+      const sample = currentSpin(a);
+      return sample ? vortexPose(sample.age, sample.fx.facing ?? 0) : null;
+    },
     ready() {
       return art.size === 2;
     },

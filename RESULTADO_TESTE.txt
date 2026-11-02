@@ -1,38 +1,36 @@
-VERSAO 0.6.40 — DUAS MACHADINHAS, REDEMOINHO E ULTIMATE NO PERSONAGEM
+VERSAO 0.6.41 — FURACAO DO ORC POR TRES SEGUNDOS
 Data: 02/11/2026
 
+PEDIDO
+- Giro da 0.6.40 reprovado no video: deve parecer um furacao por cerca de 3s.
+
 ENTREGUE
-- Orc com duas machadinhas, uma por mao, em todas as poses. Porte 30% maior,
-  corpo/rosto/roupas e identidade vermelha mantidos, escala fixa 0,65.
-- Tecla 2: Redemoinho Selvagem, mantendo o ID ruptura-da-terra e preferencias.
-  Giro com oito vistas durante 2,4s e perseguicao real do alvo. Troca de alvo
-  morto por outro proximo. Caminho com colisao, parada antes do inimigo.
-  Cinco pulsos de 50% ATK atingem ocupantes atuais em raio de 110 ao redor do
-  Orc. Alcance inicial 300, custo 12 MP, recarga 8s. Duas laminas com arcos
-  vermelhos animados e som de golpes durante as voltas.
-- Ultimate tambem na placa sobre a cabeca, imediatamente acima do HP, nas quatro
-  classes. Nome com espaco proprio, posicao/zoom/visibilidade nativos. Carga
-  real e tempo restante ativo, cor da classe; sem barras extras em NPCs.
-- Barra do painel mantida. Tecla 4 e AUTO/MANUAL continuam funcionando.
-- Avanco no slot 1 e Furia 60s/180s preservados com todos os bonus anteriores.
-- Guerreiro, arqueira e pistoleira: arte e regras especificas preservadas.
+- Skill 2, Redemoinho Selvagem: duracao real de 3000ms e dez voltas do corpo.
+- Corpo em pe, escala fixa, usando as mesmas oito vistas existentes e as duas
+  machadinhas. Tempo angular compartilhado com o vento, atualizado por quadro.
+  Reacoes cosmeticas de inclinacao/deslocamento nao interrompem a postura.
+- Volume de vento vermelho em helices, com geometria na frente e atras do Orc,
+  rastros opostos das laminas, particulas ascendentes e poeira no chao. Sem usar
+  duas imagens grandes girando ao redor do personagem.
+- Perseguicao real, colisao e troca de alvo mantidas. Alcance 300, raio 110,
+  custo 12 MP, recarga 8s e cinco acertos de 50% ATK preservados. Acertos em
+  300, 900, 1500, 2100 e 2700ms. A duracao permanece 3s durante a Furia.
+- Som durante as voltas, entrada/dissipacao dentro dos tres segundos e limpeza
+  na saida/morte. Galeria usa a mesma cadencia rapida de rotacao.
+- Artes, corpo/rosto/roupas, primeira habilidade, Furia, barras, pocoes e
+  demais classes preservados. Conta real nunca usada ou alterada.
 
 VERIFICACAO
-- 156 testes passaram com o recursos-publicos.zip real: perseguicao, colisao, troca de alvo,
-  pulsos ao redor da posicao atual, entrada/saida da area e cancelamento.
-- Fontes completas, margens transparentes, escala unica por sequencia e novas
-  mascaras de Ki para as seis folhas. Retrato e icones com duas machadinhas.
-- Chromium/WebGL com contas isoladas: barra no painel e sobre a cabeca nas quatro
-  classes, caminhada, troca de classe, preferencias e pocoes.
-- Combate real: Avanco, oito vistas do giro em perseguicao com as duas laminas,
-  Grito e Furia; tempo/carga da barra sobre a cabeca e limpeza na saida.
-- Nenhum progresso real usado ou alterado. Quinta classe/equipamentos completos
-  continuam para as etapas combinadas. Avaliacao artistica final e do jogador.
+- 158 testes com o recursos-publicos.zip real: duracao, dez voltas, oito vistas,
+  continuidade e volume do vento, acertos, perseguicao, colisao e cancelamento.
+- Chromium/WebGL com conta isolada: furacao real com e sem Furia, movimento,
+  corpo em pe, escala 0,65, partes na frente/atras, camera e limpeza.
+- Apresentacao nova para avaliacao do jogador; a 0.6.40 nao foi aprovada no giro.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.40.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.41.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

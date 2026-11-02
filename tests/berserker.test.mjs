@@ -128,7 +128,7 @@ test("spin pulses resolve live occupants around the actual Orc, not a saved cast
     enter = place(3, 180),
     leave = place(4, 80);
   farm.cast(client, BERSERKER_SPIN.id, near.id);
-  assert.equal(step(399).events.damage.length, 0);
+  assert.equal(step(299).events.damage.length, 0);
   enter.x = client.x + 100;
   leave.x = client.x + 170;
   const hits = step(1).events.damage.filter(
@@ -143,7 +143,7 @@ test("spin pulses resolve live occupants around the actual Orc, not a saved cast
   // Move the real authoritative body between pulses: old occupants leave area.
   client.x += 300;
   enter.x = client.x + 70;
-  const next = step(400).events.damage.filter(
+  const next = step(600).events.damage.filter(
     (d) => d.skillId === BERSERKER_SPIN.id,
   );
   assert.deepEqual(
@@ -153,7 +153,7 @@ test("spin pulses resolve live occupants around the actual Orc, not a saved cast
   const all = [...hits, ...next];
   for (let i = 0; i < 3; i++)
     all.push(
-      ...step(400).events.damage.filter((d) => d.skillId === BERSERKER_SPIN.id),
+      ...step(600).events.damage.filter((d) => d.skillId === BERSERKER_SPIN.id),
     );
   assert.equal(all.filter((d) => d.target === enter.id).length, 5);
   assert.equal(all.filter((d) => d.target === near.id).length, 1);
@@ -174,7 +174,7 @@ test("spin pursues, retargets, stops before the enemy, respects walls and ends w
   for (let i = 0; i < 8; i++) step(50, { free });
   assert.equal(client.hunt.spin.target, second.id);
   assert.ok(client.y > from.y + 20);
-  for (let i = 0; i < 28; i++) step(50, { free });
+  for (let i = 0; i < 40; i++) step(50, { free });
   assert.equal(client.hunt.spin, null);
   assert.equal(
     client.hunt.impacts.some((p) => p.spin),
@@ -308,7 +308,7 @@ test("Orc inherits approved warrior action mechanics, has fixed 30 percent large
     assert.equal(move.frames.length * 50, action.duration);
     assert.deepEqual(
       move.impacts,
-      id === BERSERKER_SPIN.id ? [400, 800, 1200, 1600, 2000] : [action.impact],
+      id === BERSERKER_SPIN.id ? [300, 900, 1500, 2100, 2700] : [action.impact],
     );
   }
   assert.deepEqual(rig.moves["orc-machado"].frames[3], ["weapon", 2]);

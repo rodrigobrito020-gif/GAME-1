@@ -45,8 +45,10 @@ export const BERSERKER_ADVANCE = Object.freeze({
 });
 export const BERSERKER_SPIN = Object.freeze({
   id: "ruptura-da-terra",
-  durationMs: 2400,
-  pulseMs: 400,
+  durationMs: 3000,
+  revolutionMs: 300,
+  firstPulseMs: 300,
+  pulseMs: 600,
   pulses: 5,
   range: 300,
   radius: 110,
@@ -58,7 +60,7 @@ export const BERSERKER_ACTIONS = Object.freeze({
   "ruptura-da-terra": {
     move: "orc-ruptura",
     duration: BERSERKER_SPIN.durationMs,
-    impact: BERSERKER_SPIN.pulseMs,
+    impact: BERSERKER_SPIN.firstPulseMs,
   },
   "grito-de-guerra": { move: "orc-grito", duration: 600, impact: 300 },
   "furia-ancestral": { move: "orc-furia", duration: 600, impact: 300 },
@@ -88,7 +90,7 @@ export const BERSERKER_SKILLS = [
     radius: BERSERKER_SPIN.radius,
     multiplier: 2.5,
     description:
-      "Gira com duas machadinhas por 2,4s enquanto persegue os inimigos. Acerta 5 vezes por 50% do ataque em raio de 110. Alcance inicial de 300; respeita paredes.",
+      "Forma um furacão vermelho com duas machadinhas por 3s enquanto persegue os inimigos. Acerta 5 vezes por 50% do ataque em raio de 110. Alcance inicial de 300; respeita paredes.",
     icon: "/assets/ui/royal-berserker/ruptura-da-terra.png",
   },
   {
@@ -160,12 +162,13 @@ export function berserkerRig(original) {
     ...hold("weapon", 5, 3),
   ];
   rig.moves["orc-ruptura"] = {
-    frames: Array.from({ length: 3 }, () =>
-      Array.from({ length: 8 }, (_, col) => hold("axeheavy", col, 2)),
-    ).flat(2),
+    frames: Array.from({ length: BERSERKER_SPIN.durationMs / 50 }, (_, i) => [
+      "axeheavy",
+      Math.floor(((i * 50) / BERSERKER_SPIN.revolutionMs) * 8) % 8,
+    ]),
     impacts: Array.from(
       { length: BERSERKER_SPIN.pulses },
-      (_, i) => (i + 1) * BERSERKER_SPIN.pulseMs,
+      (_, i) => BERSERKER_SPIN.firstPulseMs + i * BERSERKER_SPIN.pulseMs,
     ),
     motion: {},
   };

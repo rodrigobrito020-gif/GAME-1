@@ -15,6 +15,7 @@ function effect(h, kind, client, now, impact, duration, dx = 0, dy = 1) {
     y: client.y,
     dx,
     dy,
+    facing: client.facing,
     impactMs: impact,
     start: now,
     end: now + duration,
@@ -158,7 +159,8 @@ export function castBerserker(
     h.target = target.id;
     for (let i = 1; i <= BERSERKER_SPIN.pulses; i++)
       h.impacts.push({
-        at: now + i * BERSERKER_SPIN.pulseMs,
+        at:
+          now + BERSERKER_SPIN.firstPulseMs + (i - 1) * BERSERKER_SPIN.pulseMs,
         spin: true,
         targets: [],
         amount: (c.derived.atk * skill.multiplier) / BERSERKER_SPIN.pulses,

@@ -1,8 +1,21 @@
-# Jogo local — 0.6.40: duas machadinhas, giro e ultimate no personagem
+# Jogo local — 0.6.41: furacão do Orc por três segundos
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.41
+
+Revisão da skill 2 após o vídeo enviado pelo jogador. O giro anterior foi reprovado: o pedido é um **furacão durante cerca de três segundos**.
+
+- **Redemoinho Selvagem:** duração real de **3 segundos**, com cerca de dez voltas do corpo e das duas machadinhas. A apresentação segue a mesma fase de rotação do vento; não depende de reaplicar uma imagem nem fica parada entre atualizações da rede. O corpo gira em pé, na mesma escala fixa, sem a inclinação/deslocamento de reações cosméticas interromper o furacão.
+- **Vórtice vermelho contínuo:** faixas de vento em hélice formam um volume afunilado dos pés até acima da cabeça. Geometria projetada com partes à frente e atrás do Orc, dois rastros de lâmina na altura das mãos, partículas ascendentes e poeira no chão. Acompanha a posição real durante a perseguição; entrada e dissipação curtas dentro dos três segundos.
+- **Combate preservado:** perseguição, colisões e troca de alvo continuam. Mantidos alcance 300, raio 110, custo 12 MP, recarga 8s e cinco acertos de 50% ATK. Os acertos agora acontecem em 0,3 / 0,9 / 1,5 / 2,1 / 2,7s. Sons acompanham a nova duração. Não altera a duração com Fúria ou Grito de Guerra.
+- **Escopo:** mesmas artes do Orc e das três classes anteriores; avanço, ultimates, barras, poções e progresso preservados. Galeria usa a nova cadência do giro.
+
+**158 testes com o ZIP real**, incluindo duração, rotações, continuidade do vórtice, profundidade e acertos. Conferência adicional no Chromium/WebGL de perseguição, corpo, vento, Fúria, zoom e limpeza. A avaliação visual continua com o jogador.
+
+**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior. Mantenha `recursos-publicos.zip`, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.41**.
 
 ## Atualização 0.6.40
 

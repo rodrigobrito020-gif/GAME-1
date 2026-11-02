@@ -208,6 +208,7 @@ const server = createServer((req, res) => {
       "/gunslinger.mjs",
       "/berserker.mjs",
       "/berserker-visuals.js",
+      "/berserker-vortex.mjs",
       "/gunslinger-vfx.mjs",
       "/archer-vfx.mjs",
       "/class-visuals.mjs",

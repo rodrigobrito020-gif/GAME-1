@@ -63,10 +63,6 @@ menu(
     [1, "Esquerda"],
     [2, "Direita"],
     [3, "Costas"],
-    [4, "Diagonal frente direita"],
-    [5, "Diagonal frente esquerda"],
-    [6, "Diagonal costas direita"],
-    [7, "Diagonal costas esquerda"],
   ],
   (v) => (direction = Number(v)),
 );
@@ -119,8 +115,6 @@ function render(now) {
     ["berserker", 1400],
   ]) {
     const bodyScale = cl === "berserker" ? 1.3 : 1;
-    const viewRow =
-      cl === "warrior" ? direction : [0, 1, 2, 3, 0, 0, 3, 3][direction];
     let sheet = "idle",
       col = Math.floor(t / 400) % 4,
       lift = 0;
@@ -143,13 +137,6 @@ function render(now) {
             Math.min(move.frames.length - 1, Math.floor(phase / rig.stepMs))
           ];
         [sheet, col] = Array.isArray(entry) ? entry : [move.sheet, entry];
-        if (cl === "warrior" && viewRow >= 4 && action === "attack")
-          col =
-            phase < 200
-              ? Math.min(3, Math.floor(phase / 50))
-              : phase < 300
-                ? 4
-                : 5;
         if (cl === "berserker" && action === "area") {
           const spin = vortexPose(phase, direction);
           if (spin) {
@@ -176,7 +163,7 @@ function render(now) {
     ctx.drawImage(
       images.get(cl + ":" + sheet),
       col * ART.frame,
-      viewRow * ART.frame,
+      direction * ART.frame,
       ART.frame,
       ART.frame,
       x - ART.feet[0] * (4 / ART.nativeSampleStep) * bodyScale,

@@ -2,19 +2,19 @@
 
 Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os recursos já fornecidos. O pacote não contém o servidor original. Não apresentar regras reconstruídas como se fossem as originais.
 
+## Protótipo de oito direções reprovado — 02/11/2026
+
+O jogador escolheu manter o 2D para melhorar movimentos robóticos. A tentativa 0.6.43 no guerreiro foi **expressamente reprovada**: "ficou pior agora", com vídeo de 18:32:42. A passagem de caminhada para combate e as trocas de postura não preservaram a continuidade da base aprovada. Mais poses e testes técnicos passando não significam aprovação visual.
+
+A 0.6.44 retira a tentativa e restaura exatamente a apresentação da 0.6.42: corpo, direção, caminhada, combate, peitoral, máscaras de armas, Ki e galeria. Mantém as melhorias de desempenho e todo o combate/progresso das quatro classes. As artes e os scripts de exportação da tentativa foram retirados do pacote; o histórico Git preserva o protótipo para análise.
+
+**Não aplicar a 0.6.43 às outras classes nem tratá-la como nova referência.** A escolha por 2D permanece; a naturalidade continua pendente. Próxima tentativa deve partir do guerreiro anterior, preservar a silhueta e validar passagem entre repouso, passada, mira, ataque e recuperação em movimento, em vez de aprovar apenas direções isoladas. Não prometer que a restauração resolve esse pedido de naturalidade.
+
 ## Referência principal de todas as classes — 02/11/2026
 
 Orientação expressa do jogador: **o guerreiro é a base para todas as outras classes, atuais e futuras**. Usar o guerreiro aprovado como referência de proporções estáveis, fluidez e peso dos movimentos, preparação/disparo/recuperação das habilidades, impactos, Dash e energia de Ki vinculada ao corpo nas ultimates. Cada classe mantém sua identidade, armas, cores e mecânicas próprias, seguindo esse padrão de qualidade e coerência.
 
 O jogador aprovou o resultado da 0.6.37 após a revisão da arqueira e pistoleira. Preservar essa versão aprovada e comparar futuras alterações com o guerreiro antes de entregar. A arqueira e a pistoleira aprovadas complementam a referência; o guerreiro continua sendo a base principal.
-
-## Escolha de animação 2D e primeiro protótipo — 02/11/2026
-
-Após a 0.6.42, o jogador pediu movimentos menos robóticos, com mais detalhes e ações naturais em qualquer direção. Pediu recomendação entre 2D com mais poses/oito direções e migração para personagens 3D. Aceitou a recomendação de manter o 2D e começar pelo guerreiro, por ser a referência e haver pouco tempo.
-
-A 0.6.43 entrega o primeiro protótipo no guerreiro: oito vistas completas, oito passos distintos por direção, virada sem reiniciar a passada, finalização do apoio ao parar, poses diagonais de combate e máscaras/peitoral/Ki correspondentes. Nas cenas com previsão local, usa o mesmo vetor de entrada do movimento nativo para que a reconciliação de posição não provoque uma virada indevida. Combate cardinal anterior preservado. Não altera velocidade, hitboxes, tempos de impacto, regras ou progresso.
-
-**Aguardar a avaliação visual do jogador sobre este protótipo antes de aplicar o novo padrão à arqueira, pistoleira e Orc.** Essas três classes permanecem como na versão aprovada, incluindo o furacão de 3s e a Fúria do Orc. Não interpretar a escolha por 2D como aprovação antecipada de qualquer arte nova nem reiniciar os equipamentos/quinta classe neste passo.
 
 ## Fluidez geral e aprovação do furacão — 02/11/2026
 
@@ -56,7 +56,7 @@ O jogador confirmou que a diferença para o guerreiro inclui o movimento do corp
 
 ## Entregue
 
-- 0.6.43: primeiro protótipo 2D do guerreiro em oito direções, com passos distintos, viradas/parada e máscaras de corpo correspondentes. Avaliação visual pendente antes de estender às demais classes.
+- 0.6.44: protótipo 0.6.43 reprovado e retirado; guerreiro restaurado à apresentação da 0.6.42, com corpo, armadura e Ki correspondentes. Naturalidade dos movimentos permanece pendente.
 
 - 0.6.42: posições a 20Hz com buffer menor, interface medida/escrita em lotes e preparação das texturas da classe; quatro classes e visual aprovados preservados.
 

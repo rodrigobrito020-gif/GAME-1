@@ -151,23 +151,21 @@ for (const name of Object.keys(WARRIOR_SHEETS)) {
   const weaponMask = decodeRgba(
     readFileSync(new URL(`weapon-masks/${name}.png`, folder)),
   );
-  for (let row = 0; row < image.height / 64; row++)
+  for (let row = 0; row < 4; row++)
     for (let col = 0; col < cols; col++) {
-      const orientation = row < 4 ? row : row < 6 ? (row === 4 ? 2 : 1) : 3;
-      const faceRow = row === 3 ? 0 : row >= 6 ? row - 2 : row;
-      const face = faceOf(reference, col, faceRow);
+      const face = faceOf(reference, col, row === 3 ? 0 : row);
       if (!face) continue;
       const dead = name === "special" && col === 5;
       const cx = (face.x0 + face.x1) / 2;
       let box = dead
         ? { x: face.x1 + 1, y: Math.max(1, face.y0 - 1), w: 14, h: 10 }
         : {
-            x: Math.round(cx - (orientation === 0 ? 6 : 5)),
+            x: Math.round(cx - (row === 0 ? 6 : 5)),
             y: face.y1 + 1,
-            w: orientation === 0 ? 13 : 10,
+            w: row === 0 ? 13 : 10,
             h: face.y1 > 30 ? 10 : 12,
           };
-      const part = parts[orientation];
+      const part = parts[row === 0 ? 0 : row === 1 ? 1 : row === 2 ? 2 : 3];
       let changed = 0;
       for (let y = 0; y < box.h; y++)
         for (let x = 0; x < box.w; x++) {

@@ -1,4 +1,3 @@
-import { warriorPresentation } from "/warrior-motion.mjs";
 import { gunslingerDisplayPose } from "/gunslinger.mjs";
 import { rangedMotion, nativeMoveName } from "/ranged-motion.mjs";
 import { characterDisplayScale } from "/character-proportions.mjs";
@@ -11,7 +10,6 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
   const art = new Map(),
     actors = new Map(),
     locomotion = new WeakMap(),
-    warriorStates = new WeakMap(),
     scenes = new Map();
   for (const [look, path] of [
     ["base", "warrior/hd/base"],
@@ -40,7 +38,7 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       im = art.get(`${look}:${sheet}`);
     if (!im || scene.textures.exists(key)) return;
     const tex = scene.textures.addImage(key, im);
-    for (let r = 0; r < im.height / ART.frame; r++)
+    for (let r = 0; r < 4; r++)
       for (let c = 0; c < im.width / ART.frame; c++)
         tex.add(
           `${r}:${c}`,
@@ -121,33 +119,6 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
           !a.dead,
         action: !!(a.act || a.seat || a.dead),
       });
-    let warriorMotion = null;
-    if (!orc && !elf && !gun) {
-      if (!warriorStates.has(a)) warriorStates.set(a, {});
-      const target = a.target ? a.root.scene.entities?.get(a.target) : null;
-      const local =
-        a.id === scene.entities?.own && !scene.entities?.serverDriven;
-      const motion = local ? scene.motion : null;
-      const view = warriorPresentation(warriorStates.get(a), pose, {
-        x: a.x,
-        y: a.y,
-        now: scene.time.now,
-        action: a.act,
-        move: nativeMoveName(a),
-        age: a.act?.t,
-        aim: target,
-        dead: a.dead || !a.alive,
-        cycle: a.cycle,
-        travel: local
-          ? {
-              x: motion?.active ? motion.faceX : 0,
-              y: motion?.active ? motion.faceY : 0,
-            }
-          : null,
-      });
-      pose = view.pose;
-      warriorMotion = view.motion;
-    } else warriorStates.delete(a);
     const spin = orc ? window.__royalBerserkerVisuals?.spinPose(a) : null;
     if (spin) pose = spin;
     const { sheet, row, col } = pose,
@@ -174,14 +145,12 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       s = scene.add.image(0, 0, key, `${row}:${col}`);
       actors.set(a, s);
     }
-    const motion =
-      warriorMotion ??
-      rangedMotion(
-        orc ? "berserker" : gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
-        nativeMoveName(a),
-        a.act?.t,
-        row,
-      );
+    const motion = rangedMotion(
+      orc ? "berserker" : gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
+      nativeMoveName(a),
+      a.act?.t,
+      row,
+    );
     s.royalOffset = spin
       ? { x: 0, y: 0 }
       : { x: b.x + motion.x, y: b.y + motion.y };

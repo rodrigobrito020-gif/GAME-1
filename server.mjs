@@ -193,7 +193,6 @@ const server = createServer((req, res) => {
       "/character-hd.js",
       "/character-art.mjs",
       "/character-locomotion.mjs",
-      "/warrior-motion.mjs",
       "/character-proportions.mjs",
       "/ranged-motion.mjs",
       "/ranged-effects.js",

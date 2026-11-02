@@ -1,38 +1,35 @@
-VERSAO 0.6.43 — GUERREIRO EM OITO DIRECOES
+VERSAO 0.6.44 — RESTAURACAO DO GUERREIRO
 Data: 02/11/2026
 
 PEDIDO
-- Manter 2D e melhorar os movimentos, com o guerreiro como primeira referencia.
-- Prototipo do guerreiro para avaliacao antes das outras classes.
+- Jogador reprovou a 0.6.43: "ficou pior agora", com video de combate.
+- A tentativa de oito direcoes nao substitui a base anteriormente aprovada.
 
 ENTREGUE
-- Oito direcoes proprias e oito passos distintos em cada vista do guerreiro.
-- Virada gradual preserva a fase da passada. Parada termina o apoio.
-- Correcao da previsao local nao provoca virada indevida ao soltar a tecla.
-- Poses diagonais completas para repouso, ataque, salto, reacao e derrota.
-- Preparacao, contato e recuperacao da espada nas diagonais; tempos nativos.
-- Peitoral de treino, mascaras de arma e Ki acompanham as oito direcoes.
-- Mesma escala/ancora do guerreiro; figuras completas sem montagem de membros.
-- Combate cardinal anterior preservado pixel a pixel nas duas aparencias.
-- Galeria com quatro novas direcoes de comparacao para o guerreiro.
-- Outras tres classes, valores de combate, progresso e melhorias da 0.6.42
-  preservados. Orc conserva furacao de 3s e Furia de 60s/180s.
+- Retirado o prototipo de oito direcoes e seu controlador de virada.
+- Restaurada a apresentacao do guerreiro da 0.6.42: poses, direcao, passada,
+  repouso, golpes, salto, reacoes, transformacao e galeria de quatro vistas.
+- Corpo, peitoral, mascaras de armas e Ki correspondentes restaurados juntos.
+- Rotas do jogo voltam a entregar os arquivos da familia aprovada.
+- Removidas as artes rejeitadas e os comandos que reconstruiriam o prototipo.
+- Melhorias de desempenho da 0.6.42 preservadas, assim como as outras classes,
+  regras, valores, tempos, barras, pocoes e progresso.
+- Restauracao nao e uma nova solucao para naturalidade: esse pedido permanece
+  pendente. Nao propagar a 0.6.43 as outras classes.
 
 VERIFICACAO
-- 169 testes passaram com recursos-publicos.zip real.
-- Direcoes e viradas a 30/60/144Hz, continuidade da passada, parada, morte,
-  deslocamento de esquiva, teleporte e correcao da previsao local.
-- Poses completas com margens, oito passos unicos, quadros antigos identicos,
-  luz dentro do corpo e particulas emitidas pela silhueta atual em oito vistas.
-- Conferencia no Chromium/WebGL: cidade, diagonais, combate e ultimate.
-- Contas isoladas; nenhum progresso real usado ou alterado.
-- A avaliacao visual permanece com o jogador antes de estender o novo padrao.
+- 163 testes com recursos-publicos.zip real.
+- Novo teste de regressao verifica os arquivos realmente entregues pelo jogo,
+  incluindo corpo e armadura, mascaras das armas, superficies e contornos do
+  Ki e suas origens de particulas, contra a familia aprovada da 0.6.42.
+- Chromium/WebGL: movimento, parada, Dash e troca entre quatro classes;
+  combate do guerreiro e Ki alinhado a pose e transformacao do peitoral.
+- Testes em contas isoladas. Nenhum progresso real usado ou alterado.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.43.
-6. Selecione Guerreiro Humano e teste tambem W+A, W+D, S+A e S+D.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.44.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

@@ -1,21 +1,23 @@
-# Jogo local — 0.6.43: movimentos do guerreiro em oito direções
+# Jogo local — 0.6.44: restauração do guerreiro aprovado
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
 
-## Atualização 0.6.43
+## Atualização 0.6.44
 
-O jogador escolheu manter o visual 2D e melhorar as animações. Este primeiro protótipo aplica o novo padrão ao **guerreiro**, que continua sendo a referência para as outras classes. A avaliação visual fica com o jogador antes de estender o trabalho à arqueira, pistoleira e Orc.
+O jogador reprovou o protótipo de oito direções da 0.6.43 após enviar um vídeo: o movimento ficou pior. Esta versão **retira esse protótipo e restaura a apresentação do guerreiro da 0.6.42**, a base anterior à tentativa.
 
-- **Oito direções próprias:** frente, costas, laterais e quatro diagonais, com figuras completas para caminhar, repousar e atacar. A caminhada tem oito poses distintas em cada direção; a virada mantém a fase da passada. Ao parar, conclui o apoio e conserva a direção. Pequenas correções da posição prevista deixam de virar o personagem para trás.
-- **Peso e continuidade:** viradas graduais e discretas mudanças de apoio, acompanhando a distância percorrida. Não aumenta a velocidade real, não acrescenta espera ao comando e não monta membros ou sobrepõe dois corpos para simular uma pose intermediária.
-- **Combate e aparência:** poses diagonais de espada com preparação, contato e recuperação; salto e impacto mantêm os tempos nativos. Peitoral de treino, máscaras das armas e Ki acompanham todas as novas poses. Quadros de combate nas quatro direções anteriores foram preservados pixel a pixel. Sem redimensionamento individual por quadro.
-- **Escopo preservado:** arqueira, pistoleira, Orc, furacão, valores das habilidades, barras, poções, progresso e as melhorias de desempenho da 0.6.42. A galeria permite comparar as novas diagonais do guerreiro; as outras classes ainda mostram suas vistas atuais.
+- Voltam as poses de caminhada, repouso, espada, salto, reações e transformação da família anterior, com o mesmo controle de direção e passada. Removidas a rotação gradual e as novas poses diagonais do protótipo reprovado.
+- Peitoral de treino, brilho das armas e Ki voltam juntos à família correspondente ao corpo aprovado. Os caminhos servidos pelo jogo foram conferidos contra os arquivos efetivamente usados na 0.6.42; não basta validar imagens que o jogo não carrega.
+- Preservadas as melhorias de desempenho da 0.6.42, as outras três classes, o furacão do Orc, os tempos e valores de combate, as barras, poções e o progresso salvo.
+- A galeria retorna às quatro vistas anteriores. O protótipo rejeitado foi retirado do pacote e dos comandos de reconstrução das artes.
 
-**169 testes passaram com o ZIP real**, incluindo direção em diferentes taxas de quadros, parada, correção da previsão local, ataques, integridade das poses e máscaras. Conferência adicional em Chromium/WebGL de cidade, oito direções, combate e ultimate. Testes com contas isoladas; progresso real excluído. Mais poses não garantem determinada taxa de FPS no computador do jogador.
+**163 testes com o ZIP real**, incluindo uma regressão que compara os arquivos de corpo, armadura, armas e Ki entregues pelos caminhos do jogo com a família aprovada. Conferência adicional no Chromium/WebGL de movimento das quatro classes e combate/transformação do guerreiro. Contas isoladas; nenhum progresso real usado nos testes.
 
-**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior com os servidores fechados. Mantenha `recursos-publicos.zip`, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.43**. Selecione Guerreiro Humano e experimente também W+A, W+D, S+A e S+D. A comparação das animações está no link da janela de classes.
+Esta é uma restauração da base anterior, **não uma nova solução para movimentos mais naturais**. A 0.6.43 não deve ser tratada como aprovada nem propagada às outras classes. A escolha de manter 2D continua registrada; próximas mudanças precisam preservar o personagem e demonstrar continuidade entre repouso, caminhada e golpes antes de substituir a base.
+
+**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior com os servidores fechados. Mantenha `recursos-publicos.zip`, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.44**.
 
 ## Atualização 0.6.42
 

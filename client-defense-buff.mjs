@@ -12,7 +12,7 @@ export function withDefenseBuffUi(bytes) {
   code = replaceOnce(
     code,
     damageNumbers,
-    "(i.kind===Ft.MONSTER&&e.source===o&&window.__royalHitFeedback?.apply(r,i,{amount:e.amount,critical:!!(e.flags&Tm.CRIT),dot:!!(e.flags&Tm.DOT)}))||(" +
+    "(i.kind===Ft.MONSTER&&e.source===o&&window.__royalHitFeedback?.apply(r,i,{amount:e.amount,critical:!!(e.flags&Tm.CRIT),dot:!!(e.flags&Tm.DOT),skillId:e.skillId}))||(" +
       damageNumbers +
       ")",
   );
@@ -30,12 +30,12 @@ export function withDefenseBuffUi(bytes) {
   code = replaceOnce(
     code,
     "r.on(`worldEvents`,e=>{for(let t of e.cooldowns)",
-    'r.on(`worldEvents`,e=>{for(const cd of e.cooldowns)if(cd.skillId==="avatar-da-luz")window.dispatchEvent(new CustomEvent("royal-avatar-cooldown",{detail:cd}));for(let t of e.cooldowns)',
+    'r.on(`worldEvents`,e=>{window.__royalCombatAudio?.events(e,this.entities.own);for(const cd of e.cooldowns)if(cd.skillId==="avatar-da-luz")window.dispatchEvent(new CustomEvent("royal-avatar-cooldown",{detail:cd}));for(let t of e.cooldowns)',
   );
   code = replaceOnce(
     code,
     "function rte(e,t,n){let r=",
-    'function rte(e,t,n){window.__royalCombatSend=(kind,value)=>e.net.send(kind,value);window.__royalCombatCatalog=()=>[...e.catalog.skills.values()];window.__royalCastUltimate=()=>e.net.send(`useSkill`,{skillId:window.__royalUltimateState?.ultimateSkillId??"avatar-da-luz",target:0});let r=',
+    'function rte(e,t,n){window.__royalAudioBridge={load:w_,play:T_,has:p=>!!u_.get(p),defaults:()=>{try{if(localStorage.getItem("leveling.sfx-volume")===null)E_(.25)}catch{}}};window.__royalCombatSend=(kind,value)=>e.net.send(kind,value);window.__royalCombatCatalog=()=>[...e.catalog.skills.values()];window.__royalCastUltimate=()=>e.net.send(`useSkill`,{skillId:window.__royalUltimateState?.ultimateSkillId??"avatar-da-luz",target:0});let r=',
   );
   code = replaceOnce(
     code,
@@ -113,6 +113,7 @@ window.__royalHD?.update(this);
 window.__royalCombatVisuals?.update(this);
 window.__royalArcherVisuals?.update(this);
 window.__royalGunslingerVisuals?.update(this);
+window.__royalAttachedEnergy?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);
   return Buffer.from(code);

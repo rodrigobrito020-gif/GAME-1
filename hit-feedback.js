@@ -74,8 +74,14 @@
     apply(scene, actor, damage) {
       if (!actor?.root?.scene || !actor.root.active || !(damage.amount > 0))
         return false;
+      window.__royalCombatAudio?.hit(damage);
       const s = sceneState(scene),
         dot = damage.dot,
+        cls = window.__royalUltimateState?.classId,
+        skillImpact =
+          !!damage.skillId &&
+          ["arqueira", "pistoleira"].includes(cls) &&
+          !damage.dot,
         crit = damage.critical,
         lane = (s.lanes.get(actor.id) ?? 0) % 3;
       s.lanes.set(actor.id, lane + 1);
@@ -121,9 +127,9 @@
           duration: crit ? 1050 : 850,
           fx: actor.x,
           fy: actor.y - actor.height * 0.5,
-          size: crit ? 104 : 82,
+          size: skillImpact ? (crit ? 114 : 96) : crit ? 104 : 82,
           turn: lane * 47,
-          flashDuration: crit ? 240 : 190,
+          flashDuration: skillImpact ? 260 : crit ? 240 : 190,
         };
       if (!dot && impactArt) {
         if (!scene.textures.exists("royal-soulshot"))
@@ -131,6 +137,15 @@
         entry.flash = scene.add
           .image(entry.fx, entry.fy, "royal-soulshot")
           .setDepth(1000002);
+        if (skillImpact)
+          entry.flash.setTint(
+            cls === "arqueira"
+              ? 0xd4ffb8
+              : damage.skillId === "disparo-sombrio"
+                ? 0xffd1a0
+                : 0xe4c8ff,
+          );
+        entry.flash.royalSkillImpact = skillImpact;
         entry.flash.royalSoulshot = true;
       }
       s.entries.push(entry);

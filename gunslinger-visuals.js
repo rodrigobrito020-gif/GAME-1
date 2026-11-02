@@ -252,32 +252,6 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
             0,
             Math.min(1, age / 200, (eclipse.remainingMs - (now - at)) / 350),
           );
-        const width = 128,
-          height = 145;
-        image(
-          "eclipse:body",
-          "eclipse",
-          a.x,
-          a.y + 5,
-          width,
-          height,
-          (0.8 + 0.06 * Math.sin(phase * 3)) * fade,
-          0,
-          a.root.depth - 0.2,
-        )?.setOrigin(0.5, 0.94);
-        image(
-          "eclipse:feet",
-          "eclipse",
-          a.x,
-          a.y + 5,
-          width,
-          height,
-          0.32 * fade,
-          0,
-          a.root.depth + 0.035,
-        )
-          ?.setOrigin(0.5, 0.94)
-          .setCrop(0, 198, 256, 58);
         const body = window.__royalHD?.capture(a),
           pose = body?.pose;
         if (body && pose && art.has(`weapons:${pose.sheet}`)) {

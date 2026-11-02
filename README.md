@@ -1,8 +1,20 @@
-# Jogo local — 0.6.32: disparos com mais impacto e dano legível
+# Jogo local — 0.6.33: energia no corpo, sons e impactos
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.33
+
+**Arqueira e pistoleira:** a energia das ultimates agora usa a silhueta real de cada pose. Um brilho suave acompanha o contorno do corpo e das armas, faixas de luz se movem sobre a roupa e partículas nascem nas bordas dos braços, pernas e cabelo, passando à frente e atrás. As máscaras acompanham caminhada, disparos, esquiva e recuo; a região central do rosto recebe pouca luz para manter os traços legíveis. A apresentação da ultimate do guerreiro é preservada.
+
+**Impactos das habilidades:** os acertos da arqueira recebem energia verde/dourada; os da pistoleira usam fogo/dourado no projétil com queimadura e violeta na Chuva de Balas. Os clarões aparecem no evento real de dano. Os números legíveis, críticos e efeitos básicos inspirados em Soulshot continuam presentes.
+
+**Sons nas três classes:** gravações de espada, arco, disparos, esquiva, impactos, buffs e ultimates do próprio pacote passam a tocar nos instantes das ações. O áudio usa o controle de efeitos, o botão de silenciar e o limite de vozes já existentes. Quando não existe preferência de volume salva, os efeitos começam em 25%; escolhas anteriores são respeitadas. O navegador libera áudio após uma interação com o jogo, como clicar ou usar uma tecla.
+
+Dano, cadência, alcance, duração e recarga das habilidades são mantidos. As artes e proporções aprovadas dos personagens são preservadas. Conferência nas três classes no cliente real e 126 testes automatizados sem falhas; a avaliação visual continua com o jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.33**.
 
 ## Atualização 0.6.32
 

@@ -8,6 +8,8 @@ Todas as próximas ultimates devem transformar visualmente o personagem, tendo a
 
 ## Entregue
 
+- 0.6.33: energia das ultimates da arqueira e pistoleira vinculada à silhueta e superfície de cada pose, com luz animada no corpo/armas e partículas em camadas. Visual do guerreiro preservado. Impactos de habilidades com cores próprias e sons do pacote nas três classes, usando volume/mute nativos. “Animais” foi esclarecido pelo jogador como animações de impacto, sem pedido de animais no cenário. Revisão visual do jogador pendente.
+
 - 0.6.32: tiros da pistoleira com clarão direcional, rastro luminoso, cartuchos e recuo visual curto; números de dano maiores e impacto inspirado em Soulshot nos acertos reais contra monstros das três classes. Apresentação da queimadura separada dos tiros. Valores e cadência preservados; revisão visual do jogador pendente.
 
 - 0.6.31: Disparo Sombrio com queimadura de 5s sem acúmulo; Chuva de Balas com pose para o alto e três ondas de dano na área; Eclipse com energia de corpo inteiro e armas iluminadas acompanhando todas as poses. Ícones/cartas atualizados. Proporções e movimento aprovados preservados.
@@ -53,7 +55,7 @@ Todas as próximas ultimates devem transformar visualmente o personagem, tendo a
 
 ## Próximas partes da construção
 
-1. Revisar a pistoleira no jogo após a 0.6.32: apresentação dos tiros, números de dano, Soulshot, queimadura, Chuva de Balas e transformação da Eclipse. Dano contínuo e duração da queimadura são valores iniciais para teste. Guerreiro e arqueira aprovados preservados; preferências de habilidades e poções permanecem independentes.
+1. Revisar a pistoleira no jogo após a 0.6.33: energia no corpo da arqueira/pistoleira, sons e animações de impacto das habilidades. Dano contínuo e duração da queimadura são valores iniciais para teste. Guerreiro e arqueira aprovados preservados; preferências de habilidades e poções permanecem independentes.
 2. Após concluir a pistoleira, definir e construir as duas classes restantes das cinco iniciais. **Somente depois das cinco, trabalhar nos equipamentos**, conforme decisão de 01/11/2026. Não inventar silenciosamente as próximas classes.
 3. Ambientes de caça próprios, inimigos variados e chefes. Cidade e arena já têm mapas próprios; faltam novos ambientes e inimigos com artes distintas.
 4. Reaproveitar os sets do Lineage 2 já preparados no GAME-1: comum/No Grade, incomum/D, raro/C, épico/B e lendário/A. Adaptar os modelos/texturas 3D para as poses 2D e vincular cada peça ao slot equipado, com bônus de conjunto completo. Não substituir esse catálogo por equipamentos novos genéricos. Fontes e limites atuais em `LINEAGE_SETS.md`. Balancear recompensas com testes de jogo.

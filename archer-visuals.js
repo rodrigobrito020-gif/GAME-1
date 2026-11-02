@@ -216,7 +216,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
     const buffs = active ? (state.activeBuffs ?? []) : [],
       eyes = buffs.find((b) => b.id === "olhos-da-floresta"),
       spirit = buffs.find((b) => b.id === "espirito-da-floresta");
-    if ((eyes || spirit) && art.has("ring")) {
+    if (eyes && !spirit && art.has("ring")) {
       entry.ring ??= scene.add.image(0, 0, "elf-fx:ring");
       entry.ring
         .setPosition(a.x, a.y + 3)
@@ -226,36 +226,6 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         .setDepth(a.root.depth - 0.2)
         .setVisible(true);
     } else entry.ring?.setVisible(false);
-    if (spirit && art.has("aura")) {
-      const age = spirit.totalMs - spirit.remainingMs + (now - at),
-        cam = scene.cameras.main,
-        canvas = scene.game.canvas.getBoundingClientRect(),
-        css = canvas.width / scene.scale.width,
-        size = Math.max(
-          ART.worldBodyHeight * 1.35,
-          a.height * 1.4,
-          90 / (cam.zoom * css),
-        ),
-        fade = Math.min(1, age / 180, (spirit.remainingMs - (now - at)) / 350),
-        body = window.__royalHD?.capture(a) ?? a.body;
-      entry.aura ??= scene.add.image(0, 0, "elf-fx:aura").setOrigin(0.5, 0.9);
-      entry.aura
-        .setPosition(a.x + body.x, a.y + body.y + 4)
-        .setDisplaySize(size * 0.85, size)
-        .setAlpha((0.67 + 0.08 * Math.sin(age / 270)) * Math.max(0, fade))
-        .setDepth(a.root.depth - 0.2)
-        .setVisible(!a.hidden && a.root.visible && a.body.visible);
-      for (let i = 0; i < 5; i++) {
-        const t = now / 850 + (i * Math.PI * 2) / 5;
-        g.fillStyle(0xcdf3a1, 0.45);
-        g.fillEllipse(
-          a.x + Math.cos(t) * 39,
-          a.y - 48 + Math.sin(t) * 24,
-          3,
-          6,
-        );
-      }
-    } else entry.aura?.setVisible(false);
     for (const buff of [eyes, spirit])
       if (buff) {
         const age = buff.totalMs - buff.remainingMs + (now - at),

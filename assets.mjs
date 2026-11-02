@@ -72,6 +72,17 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const energy =
+      /^\/assets\/fx\/royal-energy\/(archer|gunslinger)\/(emitters\.json|(?:idle|walk|run1|weapon|axeheavy|special)-(?:surface|contour)\.png)$/.exec(
+        pathname,
+      );
+    if (energy)
+      return {
+        type: energy[2].endsWith(".json") ? "application/json" : "image/png",
+        bytes: readFileSync(
+          new URL(`./art/energy/${energy[1]}/${energy[2]}`, import.meta.url),
+        ),
+      };
     const gun =
         /^\/assets\/paperdoll\/entities\/dark-elf-pistoleira\/([a-z0-9]+)\.png$/.exec(
           pathname,

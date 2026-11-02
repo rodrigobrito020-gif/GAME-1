@@ -1,41 +1,46 @@
-VERSAO 0.6.32 — TIROS COM MAIS IMPACTO, NUMEROS DE DANO E SOULSHOT
+VERSAO 0.6.33 — ENERGIA NO CORPO, SONS E IMPACTOS
 Data: 02/11/2026
 
 ALTERACOES
-- Pistoleira: claroes direcionais branco/dourado/violeta, rastros luminosos
-  com ponta alinhada, pequenos cartuchos e recuo visual breve em cada disparo.
-  Posicao do servidor e pes mantidos; recuperacao do recuo em 130ms.
-- Numeros de dano dos ataques do jogador contra monstros maiores e com contorno,
-  posicoes alternadas, subida suave e desaparecimento gradual. Criticos dourados
-  maiores; dano continuo em laranja. Usa o valor do evento real de acerto.
-- Impacto inspirado no Soulshot, com nucleo branco e faiscas azuladas/violeta,
-  sincronizado ao acerto nativo. Aplicado tambem ao guerreiro e a arqueira.
-- Queimadura identificada com DamageFlags.DOT do cliente real: sem repeticao
-  de claroes e travas visuais de tiro em cada tick. Dano e cinco ticks mantidos.
-- Claros da pistoleira mais breves no inimigo. Preservados valores das skills,
-  cadencia de ataque, queimadura, Chuva de Balas, Instinto e Eclipse.
+- Arqueira e pistoleira: removida a apresentacao fixa atras do corpo. Mascaras
+  derivadas da transparencia das poses reais para luz na superficie, halo suave
+  e particulas nas bordas. Faixas de luz animadas sobre roupa, cabelo e armas.
+- Pose HD atual determina quadro, origem, escala e rotacao da energia, inclusive
+  nas oito fases da caminhada e no recuo. Rosto protegido com baixa intensidade.
+- Energia verde/dourada na arqueira e violeta/dourada na pistoleira. Visual
+  aprovado do Avatar da Luz do guerreiro preservado.
+- Impactos das habilidades da arqueira/pistoleira com cores proprias, disparados
+  pelo acerto real; fogo/dourado no Disparo Sombrio, verde na arqueira.
+- Sons existentes do pacote para golpes, arco, tiros, esquiva, impactos, buffs e
+  ultimates das tres classes. Integrados ao mixer, volume/mute e limite de vozes
+  do cliente. Volume inicial 25% apenas quando nao ha escolha anterior salva.
+- Valores de combate, artes e proporcoes preservados. Confirmado com o jogador:
+  o pedido era animacoes de impacto, nao animais no cenario.
 
 VERIFICACAO
-- 124 testes automatizados passaram com o ZIP real, sem falhas/ignorados.
-- Teste de apresentacao verifica soltura, recuo/retorno, expiracao e ausencia de
-  alteracao dos dados autoritativos. Queimadura verifica DOT sem critico.
-- Cliente real Chromium/WebGL pt-BR: tiros, rastros, cartuchos, recuo, numeros,
-  impacto Soulshot, ticks laranja, quatro skills e duas duracoes independentes.
-- Teste compartilhado nas tres classes confirma dano real legivel e Soulshot,
-  com limpeza dos numeros/efeitos ao sair da hunt; zero erros JavaScript.
-- Cidade: tres classes, caminhada nas quatro direcoes, Dash violeta HD, trocas
-  sem reabrir, preferencias salvas, duas pocoes e galeria conferidos.
-- Equipamento da Eclipse continua alinhado a pose HD em movimento.
-- 214 arquivos de arte aprovados das tres classes comparados byte a byte com
-  0.6.31: iguais. Novas texturas sao adicionais; proporcoes preservadas.
-- Contas isoladas; progresso real nao foi alterado. Capturas nativas revisadas.
-- A avaliacao artistica final cabe ao jogador.
+- 126 testes automatizados passaram com o ZIP real, sem falhas/ignorados.
+- Mascaras de superficie verificadas contra a transparencia de todas as poses:
+  luz contida no corpo, rosto protegido e halo acompanhando a silhueta.
+- Emissores sobre pixels reais dos personagens, incluindo 8 fases de caminhada.
+- Chromium/WebGL pt-BR: arqueira e pistoleira com energia alinhada ao quadro HD,
+  escala, posicao e recuo nas quatro direcoes; Shift nao retorna a cidade.
+- Antigas imagens de aura ausentes na exibicao. Duas duracoes independentes;
+  textura dinamica e particulas removidas ao sair, sem residuos de recursos.
+- Guerreiro conserva sua aura e nao recebe a nova camada visual.
+- Sons realmente decodificados e iniciados no AudioContext em execucao, com
+  amostras nao silenciosas nas tres classes. Mute nativo bloqueia novas vozes.
+- Impactos especificos de habilidades observados em eventos reais de dano.
+- Zero erros JavaScript; contas isoladas e capturas do jogo revisadas.
+- 220 arquivos de arte aprovados comparados byte a byte com 0.6.32: iguais.
+  avatar-visuals.js do guerreiro tambem preservado byte a byte.
+- Progresso real nao foi alterado. Avaliacao artistica final cabe ao jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.32.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.33.
+6. Clique no jogo para liberar audio; use os controles de efeitos/silenciar.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-Reconstrucao opcional das artes: npm run art:gunslinger (Python/Pillow).
+Reconstrucao das mascaras: python tools/pack-attached-energy.py (Python/Pillow).

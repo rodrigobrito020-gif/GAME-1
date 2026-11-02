@@ -3,6 +3,7 @@ import {
   BERSERKER_ACTIONS,
   BERSERKER_ADVANCE,
   BERSERKER_CRY,
+  BERSERKER_SPIN,
   BERSERKER_ULTIMATE,
 } from "./berserker.mjs";
 function effect(h, kind, client, now, impact, duration, dx = 0, dy = 1) {
@@ -147,6 +148,24 @@ export function castBerserker(
       ...(ultimate ? { avatarBuff: true } : { warCryBuff: true }),
     });
     effect(h, "roar", client, now, action.impact, 950);
+  } else if (id === BERSERKER_SPIN.id) {
+    h.spin = {
+      startsAt: now,
+      endsAt: now + BERSERKER_SPIN.durationMs,
+      lastAt: now,
+      target: target.id,
+    };
+    h.target = target.id;
+    for (let i = 1; i <= BERSERKER_SPIN.pulses; i++)
+      h.impacts.push({
+        at: now + i * BERSERKER_SPIN.pulseMs,
+        spin: true,
+        targets: [],
+        amount: (c.derived.atk * skill.multiplier) / BERSERKER_SPIN.pulses,
+        skillId: id,
+        heal: 0,
+      });
+    effect(h, "spin", client, now, 0, BERSERKER_SPIN.durationMs, dx, dy);
   } else {
     const slash = !!advance;
     h.impacts.push({
@@ -203,4 +222,60 @@ export function tickBerserkerRegeneration(farm, client, events) {
       amount,
     });
   }
+}
+
+// Translation is authoritative and sampled along the path, never a cosmetic
+// displacement on top of the body. Pulse areas use this actual position.
+export function tickBerserkerSpin(farm, client, free, route) {
+  const h = client.hunt,
+    spin = h?.spin,
+    now = farm.now();
+  if (!spin) return false;
+  if (h.deadAt || farm.character.progress.hp <= 0) {
+    h.spin = null;
+    h.impacts = h.impacts.filter((p) => !p.spin);
+    return false;
+  }
+  const through = Math.min(now, spin.endsAt);
+  const dt = Math.max(0, Math.min(100, through - spin.lastAt));
+  spin.lastAt = through;
+  let target = h.monsters.find((m) => m.id === spin.target && m.hp > 0);
+  if (!target)
+    target = h.monsters
+      .filter(
+        (m) => m.hp > 0 && Math.hypot(m.x - client.x, m.y - client.y) <= 350,
+      )
+      .sort(
+        (a, b) =>
+          Math.hypot(a.x - client.x, a.y - client.y) -
+          Math.hypot(b.x - client.x, b.y - client.y),
+      )[0];
+  let moved = false;
+  if (target && dt > 0) {
+    spin.target = h.target = target.id;
+    const distance = Math.hypot(target.x - client.x, target.y - client.y);
+    const way = route(client, target)[0] ?? target;
+    const dx = way.x - client.x,
+      dy = way.y - client.y,
+      length = Math.hypot(dx, dy);
+    const amount = Math.min(
+      (Math.max(BERSERKER_SPIN.speed, farm.character.derived.moveSpeed) * dt) /
+        1000,
+      Math.max(0, distance - BERSERKER_SPIN.stopDistance),
+      length,
+    );
+    const steps = Math.ceil(amount / 4),
+      from = { x: client.x, y: client.y };
+    for (let i = 1; i <= steps; i++) {
+      const x = from.x + ((dx / length) * amount * i) / steps,
+        y = from.y + ((dy / length) * amount * i) / steps;
+      if (!free(x, y)) break;
+      moved ||= x !== client.x || y !== client.y;
+      client.x = x;
+      client.y = y;
+    }
+    // Keep the starting facing for the atlas' continuous rotation.
+  }
+  if (now >= spin.endsAt) h.spin = null;
+  return moved;
 }

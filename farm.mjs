@@ -2,6 +2,7 @@ import { planMeleeAdvance } from "./melee-advance.mjs";
 import {
   BERSERKER_CLASS,
   BERSERKER_ADVANCE,
+  BERSERKER_SPIN,
   BERSERKER_SKIN,
   BERSERKER_SKILLS,
   BERSERKER_CRY,
@@ -12,6 +13,7 @@ import {
   berserkerBasic,
   castBerserker,
   tickBerserkerRegeneration,
+  tickBerserkerSpin,
 } from "./berserker-combat.mjs";
 import {
   GUNSLINGER_CLASS,
@@ -1133,6 +1135,7 @@ export class LocalFarm {
         }
       }
     }
+    const spinMoved = tickBerserkerSpin(this, client, free, route);
     for (const impact of h.impacts
       .filter((p) => p.at <= now)
       .sort((a, b) => a.at - b.at)) {
@@ -1188,6 +1191,12 @@ export class LocalFarm {
         );
         continue;
       }
+      if (impact.spin)
+        impact.area = {
+          x: client.x,
+          y: client.y,
+          radius: BERSERKER_SPIN.radius,
+        };
       const primary = impact.basic
         ? h.monsters.find((m) => m.id === impact.targets[0] && m.hp > 0)
         : null;
@@ -1327,7 +1336,7 @@ export class LocalFarm {
       h.attackOrder = 0;
     }
     h.target = target?.id ?? 0;
-    client.moving = dashMoved;
+    client.moving = dashMoved || spinMoved;
     if (
       automatic &&
       target &&
@@ -1400,6 +1409,22 @@ export class LocalFarm {
             dashed = true;
           } catch {
             /* A blocked/unavailable dash falls back to normal navigation. */
+          }
+        }
+        if (
+          !dashed &&
+          isBerserker(c) &&
+          (c.automation.skillOrder ?? []).includes(BERSERKER_SPIN.id) &&
+          Math.hypot(target.x - client.x, target.y - client.y) <=
+            BERSERKER_SPIN.range
+        ) {
+          try {
+            this.cast(client, BERSERKER_SPIN.id, target.id, events, deltas, {
+              free,
+            });
+            dashed = true;
+          } catch {
+            /* Normal movement continues while spin is unavailable. */
           }
         }
         if (!dashed) {
@@ -1542,6 +1567,7 @@ export class LocalFarm {
         if (!c.progress.hp) {
           h.deadAt = now;
           h.dash = null;
+          h.spin = null;
           client.evade = null;
           h.impacts = [];
           for (const enemy of h.monsters) enemy.cast = null;

@@ -95,8 +95,10 @@
             play("golpe-pesado-1", 300, 0.8);
             break;
           case "ruptura-da-terra":
-            play("golpe-destruidor", 100, 0.75);
-            play("impacto-destruidor", 550, 0.9);
+            for (const t of [100, 900, 1700]) {
+              play("golpe-leve-1", t, 0.65);
+              play("golpe-leve-2", t + 380, 0.6);
+            }
             break;
           case "grito-de-guerra":
             play("furia", 200, 0.8);

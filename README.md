@@ -1,8 +1,19 @@
-# Jogo local — 0.6.39: avanço dos melees e modo de fúria do Orc
+# Jogo local — 0.6.40: duas machadinhas, giro e ultimate no personagem
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.40
+
+- **Duas machadinhas:** uma em cada mão nas poses de repouso, caminhada, corrida, ataques, giro, reações e Fúria. Retrato, cartas e máscaras de Ki reconstruídos para as novas armas. Porte do Orc 30% maior e escala fixa mantidos.
+- **Redemoinho Selvagem, tecla 2:** substitui a Ruptura da Terra, mantendo o identificador salvo `ruptura-da-terra`. O corpo gira por oito vistas e avança de verdade em direção ao inimigo durante 2,4s. Retoma outro alvo próximo se o primeiro morrer, respeita paredes e para antes do alvo. Cinco pulsos de 50% ATK atingem os ocupantes atuais em raio de 110 ao redor do Orc; alcance inicial 300, custo 12 MP e recarga 8s. Arcos vermelhos animados nas duas armas e sons durante as voltas.
+- **Ultimate no personagem nas quatro classes:** barra na cor da classe imediatamente acima do HP sobre a cabeça. Acompanha a posição, o zoom e a visibilidade da placa nativa, com espaço para o nome. Usa carga real e mostra a fração de tempo restante durante a transformação. A barra do painel acima do HP foi mantida.
+- **Fúria e primeira habilidade preservadas:** Avanço Selvagem continua no slot 1. Fúria mantém 60s ativos, recarga de 180s a partir do uso, ATK +30%, AS +50%, regeneração de 2% HP máximo/s e corrida até o alvo. Guerreiro continua como referência; arte e regras das três classes aprovadas preservadas.
+
+**156 testes passaram com o ZIP real**, incluindo perseguição/colisão/acertos. Conferência no Chromium/WebGL nas quatro classes e combate real do Orc com o minuto completo de Fúria. A apresentação nova continua sujeita à avaliação do jogador. Nenhuma conta real foi usada nos testes.
+
+**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior. Mantenha `recursos-publicos.zip`, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.40**.
 
 ## Atualização 0.6.39
 

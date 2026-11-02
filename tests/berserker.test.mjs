@@ -5,6 +5,7 @@ import {
   BERSERKER_ACTIONS,
   BERSERKER_ADVANCE,
   BERSERKER_CRY,
+  BERSERKER_SPIN,
   BERSERKER_ULTIMATE,
   berserkerRig,
 } from "../berserker.mjs";
@@ -119,25 +120,100 @@ test("Orc first-slot advance travels in eight directions and hits only its targe
     assert.equal(client.hunt.dash, null);
   }
 });
-test("Orc rupture uses warrior landing timing and resolves the area at landing", () => {
+test("spin pulses resolve live occupants around the actual Orc, not a saved cast area", () => {
   const { farm, client, place, step } = fixture(),
     near = place(0, 60),
-    back = place(1, -149),
-    out = place(2, 151),
+    back = place(1, -109),
+    outside = place(2, 111),
     enter = place(3, 180),
     leave = place(4, 80);
-  const result = farm.cast(client, "ruptura-da-terra", near.id);
-  assert.equal(result.events.casts[0].dest.x, client.x * 10);
-  assert.equal(step(549).events.damage.length, 0);
-  enter.x = client.x + 120;
+  farm.cast(client, BERSERKER_SPIN.id, near.id);
+  assert.equal(step(399).events.damage.length, 0);
+  enter.x = client.x + 100;
   leave.x = client.x + 170;
-  const hits = step(1).events.damage.filter((d) => d.source === 1);
+  const hits = step(1).events.damage.filter(
+    (d) => d.skillId === BERSERKER_SPIN.id,
+  );
   assert.deepEqual(
     hits.map((d) => d.target).sort((a, b) => a - b),
     [near.id, back.id, enter.id].sort((a, b) => a - b),
   );
-  assert.equal(out.hp, 10000);
+  assert.equal(outside.hp, 10000);
   assert.equal(leave.hp, 10000);
+  // Move the real authoritative body between pulses: old occupants leave area.
+  client.x += 300;
+  enter.x = client.x + 70;
+  const next = step(400).events.damage.filter(
+    (d) => d.skillId === BERSERKER_SPIN.id,
+  );
+  assert.deepEqual(
+    next.map((d) => d.target),
+    [enter.id],
+  );
+  const all = [...hits, ...next];
+  for (let i = 0; i < 3; i++)
+    all.push(
+      ...step(400).events.damage.filter((d) => d.skillId === BERSERKER_SPIN.id),
+    );
+  assert.equal(all.filter((d) => d.target === enter.id).length, 5);
+  assert.equal(all.filter((d) => d.target === near.id).length, 1);
+  assert.ok(
+    all.every((d) => d.amount === Math.round(farm.character.derived.atk * 0.5)),
+  );
+});
+test("spin pursues, retargets, stops before the enemy, respects walls and ends without residual damage", () => {
+  const { farm, client, place, step } = fixture(),
+    first = place(0, 290),
+    second = place(1, 0, 250),
+    from = { x: client.x, y: client.y };
+  farm.cast(client, BERSERKER_SPIN.id, first.id);
+  const free = (x, y) => x < from.x + 60;
+  for (let i = 0; i < 12; i++) step(50, { free });
+  assert.ok(client.x > from.x + 30 && client.x < from.x + 60);
+  first.hp = 0;
+  for (let i = 0; i < 8; i++) step(50, { free });
+  assert.equal(client.hunt.spin.target, second.id);
+  assert.ok(client.y > from.y + 20);
+  for (let i = 0; i < 28; i++) step(50, { free });
+  assert.equal(client.hunt.spin, null);
+  assert.equal(
+    client.hunt.impacts.some((p) => p.spin),
+    false,
+  );
+  assert.equal(
+    client.hunt.berserkerFx.some((f) => f.kind === "spin"),
+    false,
+  );
+  assert.equal(
+    farm.skills.find((s) => s.id === BERSERKER_SPIN.id).cooldownMs,
+    8000,
+  );
+});
+test("automatic spin starts from range and leaving or dying cancels its pending pulses", () => {
+  for (const mode of ["exit", "death"]) {
+    const { farm, client, place, step } = fixture(),
+      m = place(0, 260);
+    farm.character.automation.skillOrder = [BERSERKER_SPIN.id];
+    const cast = step(50, { free: () => true });
+    assert.ok(cast.events.casts.some((c) => c.skillId === BERSERKER_SPIN.id));
+    assert.ok(client.hunt.spin);
+    if (mode === "exit") farm.stop(client);
+    else {
+      farm.character.progress.hp = 1;
+      m.x = client.x + 40;
+      m.y = client.y;
+      m.nextAttack = 0;
+      assert.equal(step(50).died, true);
+      assert.equal(client.hunt.spin, null);
+      assert.equal(client.hunt.impacts.length, 0);
+    }
+    for (let i = 0; i < 50; i++)
+      assert.equal(
+        step(50).events.damage.some((d) => d.skillId === BERSERKER_SPIN.id),
+        false,
+      );
+    assert.equal(m.hp, 10000);
+  }
 });
 test("War cry only speeds attacks; fury adds attack and speed independently and clears on exit", () => {
   const { farm, client, place, step } = fixture(),
@@ -230,12 +306,15 @@ test("Orc inherits approved warrior action mechanics, has fixed 30 percent large
   for (const [id, action] of Object.entries(BERSERKER_ACTIONS)) {
     const move = rig.moves[action.move];
     assert.equal(move.frames.length * 50, action.duration);
-    assert.deepEqual(move.impacts, [action.impact]);
+    assert.deepEqual(
+      move.impacts,
+      id === BERSERKER_SPIN.id ? [400, 800, 1200, 1600, 2000] : [action.impact],
+    );
   }
-  assert.deepEqual(
-    rig.moves["orc-ruptura"].motion.jump,
-    warrior.moves["humano-impacto-luz"].motion.jump,
-  );
+  assert.deepEqual(rig.moves["orc-machado"].frames[3], ["weapon", 2]);
+  assert.deepEqual(rig.moves["orc-retorno"].frames[3], ["weapon", 4]);
+  assert.deepEqual(rig.moves["orc-avanco"].frames[6], ["weapon", 2]);
+  assert.equal(rig.moves["orc-ruptura"].motion.jump, undefined);
   assert.equal(rig.moves["orc-esquiva"].motion?.trail, undefined);
   for (const native of [
     { scaleX: 2, scaleY: 2 },
@@ -305,8 +384,7 @@ test("Orc whole-figure atlases have full crowns/boots, transparent margins and s
         if (
           name === "idle" ||
           (name === "weapon" && [0, 5].includes(col)) ||
-          (name === "special" && [0, 1, 3].includes(col)) ||
-          (name === "axeheavy" && [0, 5, 6, 7].includes(col))
+          (name === "special" && [0, 1, 3].includes(col))
         )
           assert.deepEqual(
             pixels,

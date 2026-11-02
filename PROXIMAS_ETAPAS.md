@@ -8,6 +8,10 @@ Orientação expressa do jogador: **o guerreiro é a base para todas as outras c
 
 O jogador aprovou o resultado da 0.6.37 após a revisão da arqueira e pistoleira. Preservar essa versão aprovada e comparar futuras alterações com o guerreiro antes de entregar. A arqueira e a pistoleira aprovadas complementam a referência; o guerreiro continua sendo a base principal.
 
+## Duas machadinhas, giro e medidor no personagem — 02/11/2026
+
+Pedido do jogador: Orc com duas machadinhas, skill 2 girando e indo até os inimigos; manter a barra de ultimate do painel e acrescentar também sobre o personagem. A 0.6.40 implementa as duas armas em todas as poses e o Redemoinho Selvagem, mantendo o ID `ruptura-da-terra` e as preferências salvas. Giro de 2,4s com perseguição real, troca de alvo morto, colisões e cinco pulsos ao redor da posição atual. Medidor de carga/tempo ativo imediatamente acima do HP da placa nativa nas quatro classes, sem carga inventada para NPCs ou outros jogadores. Não altera as regras de Fúria/avanço já combinadas nem a arte das outras classes. Novas poses do Orc são para avaliação visual do jogador.
+
 ## Primeira habilidade dos melees e fúria do Orc — 02/11/2026
 
 Pedido expresso do jogador após aprovar o Orc: **toda classe de combate corpo a corpo deve ter avanço na primeira habilidade**. Guerreiro mantém Avanço de Luz; Berserker recebe Avanço Selvagem no slot 1, preservando o identificador salvo `corte-selvagem`. Usar a mesma validação de percurso, chegada, colisão e dano do guerreiro. Aplicar esse padrão aos futuros melees.
@@ -33,6 +37,8 @@ Arqueira e pistoleira usam a família de fontes coherent-v36, exportada por tool
 O jogador confirmou que a diferença para o guerreiro inclui o movimento do corpo e os efeitos. A 0.6.37 acrescenta transferência de peso/recuo por tempo da ação e impactos com 16 quadros distintos, além de chuvas com queda acelerada/rastros e campos móveis. Os corpos da 0.6.36, escala fixa, caminhada, Ki e level up ficam preservados. Não compensar animação ausente aumentando uma imagem estática nem alterar dano/cadência para sincronizar efeitos. Auras devem usar o deslocamento/rotação da exibição HD. Apresentação da 0.6.37 aprovada pelo jogador em 02/11/2026.
 
 ## Entregue
+
+- 0.6.40: Orc com duas machadinhas em todas as poses; Redemoinho Selvagem em movimento; barra de ultimate também sobre o HP do personagem nas quatro classes.
 
 - 0.6.39: avanço na primeira habilidade do Orc no padrão do guerreiro; Fúria Ancestral com 60s ativos/180s de recarga, ATK, AS, regeneração e corrida própria.
 

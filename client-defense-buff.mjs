@@ -136,6 +136,7 @@ window.__royalArcherVisuals?.update(this);
 window.__royalGunslingerVisuals?.update(this);
 window.__royalBerserkerVisuals?.update(this);
 window.__royalAttachedEnergy?.update(this);
+window.__royalOverheadUltimate?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);
   return Buffer.from(code);

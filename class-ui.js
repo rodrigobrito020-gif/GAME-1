@@ -54,7 +54,7 @@
         id: "berserker",
         name: "Berserker Orc",
         icon: "/assets/ui/royal-classes/berserker.png",
-        desc: "Orc · machado de duas mãos · combate próximo",
+        desc: "Orc · duas machadinhas · combate próximo",
       },
     ]) {
       const card = el("section"),

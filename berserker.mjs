@@ -43,9 +43,23 @@ export const BERSERKER_ADVANCE = Object.freeze({
   stopDistance: 66,
   hitRange: 90,
 });
+export const BERSERKER_SPIN = Object.freeze({
+  id: "ruptura-da-terra",
+  durationMs: 2400,
+  pulseMs: 400,
+  pulses: 5,
+  range: 300,
+  radius: 110,
+  speed: 200,
+  stopDistance: 66,
+});
 export const BERSERKER_ACTIONS = Object.freeze({
   "corte-selvagem": { move: "orc-avanco", duration: 550, impact: 300 },
-  "ruptura-da-terra": { move: "orc-ruptura", duration: 950, impact: 550 },
+  "ruptura-da-terra": {
+    move: "orc-ruptura",
+    duration: BERSERKER_SPIN.durationMs,
+    impact: BERSERKER_SPIN.pulseMs,
+  },
   "grito-de-guerra": { move: "orc-grito", duration: 600, impact: 300 },
   "furia-ancestral": { move: "orc-furia", duration: 600, impact: 300 },
 });
@@ -60,21 +74,21 @@ export const BERSERKER_SKILLS = [
     range: BERSERKER_ADVANCE.range,
     multiplier: 2.2,
     description:
-      "Avança até um inimigo distante e golpeia com o machado na chegada, causando 220% do ataque. Alcance de 160 a 300. Respeita paredes e para antes do alvo.",
+      "Avança até um inimigo distante e golpeia com as duas machadinhas na chegada, causando 220% do ataque. Alcance de 160 a 300. Respeita paredes e para antes do alvo.",
     icon: "/assets/ui/royal-berserker/corte-selvagem.png",
   },
   {
     id: "ruptura-da-terra",
-    name: "Ruptura da Terra",
+    name: "Redemoinho Selvagem",
     key: "2",
     kind: "area",
     manaCost: 12,
     cooldownMs: 8000,
-    range: 80,
-    radius: 150,
+    range: BERSERKER_SPIN.range,
+    radius: BERSERKER_SPIN.radius,
     multiplier: 2.5,
     description:
-      "Ergue o machado com as duas mãos, salta e golpeia o chão. A aterrissagem causa 250% do ataque aos inimigos num raio de 150.",
+      "Gira com duas machadinhas por 2,4s enquanto persegue os inimigos. Acerta 5 vezes por 50% do ataque em raio de 110. Alcance inicial de 300; respeita paredes.",
     icon: "/assets/ui/royal-berserker/ruptura-da-terra.png",
   },
   {
@@ -121,6 +135,40 @@ export function berserkerRig(original) {
     rig.moves[dest] = structuredClone(rig.moves[source]);
     delete rig.moves[dest].hit;
   }
+  // The two authored swings each strike on the same 150 ms beat as the
+  // warrior. Alternate hands without playing the swing backwards.
+  rig.moves["orc-machado"].frames = [
+    ...hold("weapon", 0, 1),
+    ...hold("weapon", 1, 2),
+    ...hold("weapon", 2, 2),
+    ...hold("weapon", 5, 3),
+  ];
+  rig.moves["orc-retorno"].frames = [
+    ...hold("weapon", 5, 1),
+    ...hold("weapon", 3, 2),
+    ...hold("weapon", 4, 2),
+    ...hold("weapon", 5, 3),
+  ];
+  rig.moves["orc-avanco"].frames = [
+    ...hold("special", 1, 1),
+    ...hold("run1", 0, 1),
+    ...hold("run1", 1, 1),
+    ...hold("run1", 2, 1),
+    ...hold("run1", 3, 1),
+    ...hold("weapon", 1, 1),
+    ...hold("weapon", 2, 2),
+    ...hold("weapon", 5, 3),
+  ];
+  rig.moves["orc-ruptura"] = {
+    frames: Array.from({ length: 3 }, () =>
+      Array.from({ length: 8 }, (_, col) => hold("axeheavy", col, 2)),
+    ).flat(2),
+    impacts: Array.from(
+      { length: BERSERKER_SPIN.pulses },
+      (_, i) => (i + 1) * BERSERKER_SPIN.pulseMs,
+    ),
+    motion: {},
+  };
   rig.moves["orc-avanco"].motion.trail.color = "#ff5148";
   for (const move of ["orc-grito", "orc-furia"])
     rig.moves[move].motion = {

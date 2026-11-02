@@ -139,7 +139,7 @@ function render(now) {
         if (sheet === "walk" || sheet === "run1") col *= 2;
         if (
           action === "area" &&
-          ["warrior", "berserker"].includes(cl) &&
+          cl === "warrior" &&
           phase >= 100 &&
           phase < 550
         )

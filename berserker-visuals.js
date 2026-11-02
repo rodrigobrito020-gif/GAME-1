@@ -83,34 +83,38 @@
         if (left <= 0) continue;
         const after = age - fx.impactMs,
           angle = (Math.atan2(fx.dy, fx.dx) * 180) / Math.PI;
-        if (fx.kind === "quake") {
-          burst(
-            fx.id,
-            "quake",
-            fx.x,
-            fx.y,
-            after,
-            750,
-            330,
-            0,
-            a.root.depth - 0.2,
-            1,
-            true,
-          );
-          // Cast anticipation: ember motes rise into the raised axe, then stop
-          // at the exact authoritative landing rather than a screen flash.
-          if (after < 0 && age > 100)
-            for (let i = 0; i < 10; i++) {
-              const p = (age / 550 + i / 10) % 1,
-                x = fx.x + Math.cos(i * 2.4) * (27 - 18 * p),
-                y = fx.y - 25 - p * 110;
-              e.g
-                .fillStyle(
-                  i % 3 ? 0xff4038 : 0xffd7a4,
-                  Math.sin(p * Math.PI) * 0.7,
-                )
-                .fillEllipse(x, y, 2, 5);
-            }
+        if (fx.kind === "spin") {
+          // Two opposing hatchet arcs orbit at waist height with the rotating
+          // body. Each revolution advances the authored flipbook, not a still.
+          const turn = (age / 800) * Math.PI * 2;
+          for (let i = 0; i < 2; i++) {
+            const theta = turn + i * Math.PI;
+            burst(
+              fx.id + ":" + i,
+              "cleave",
+              a.x + Math.cos(theta) * 36,
+              a.y - 62 + Math.sin(theta) * 15,
+              age % 800,
+              800,
+              205,
+              (theta * 180) / Math.PI,
+              a.root.depth + (Math.sin(theta) > 0 ? 0.3 : -0.3),
+              0.9,
+              true,
+            );
+          }
+          for (let i = 0; i < 12; i++) {
+            const p = (age / 600 + i / 12) % 1,
+              theta = turn + i * 2.399963;
+            e.g
+              .fillStyle(i % 4 ? 0xff4038 : 0xffdab0, (1 - p) * 0.65)
+              .fillEllipse(
+                a.x + Math.cos(theta) * (35 + p * 45),
+                a.y - 12 + Math.sin(theta) * 15 - p * 20,
+                2,
+                4,
+              );
+          }
         } else if (fx.kind === "cleave" || fx.kind === "swing") {
           const size = fx.kind === "swing" ? 145 : 240,
             duration = fx.kind === "swing" ? 300 : 500;

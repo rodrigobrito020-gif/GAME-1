@@ -652,7 +652,15 @@ export class LocalFarm {
     this.recalculate();
     return { added, updated };
   }
-  hit(hunt, monster, amount, skillId, events, deltas, { canCrit = true } = {}) {
+  hit(
+    hunt,
+    monster,
+    amount,
+    skillId,
+    events,
+    deltas,
+    { canCrit = true, dot = false } = {},
+  ) {
     if (monster.hp <= 0) return;
     const critical =
       canCrit &&
@@ -668,7 +676,9 @@ export class LocalFarm {
       target: monster.id,
       amount,
       skillId,
-      ...(critical ? { flags: 1 } : {}),
+      // Native DamageFlags: CRIT=1, DOT=4. Continuous burns must not replay
+      // weapon-impact flashes or native hit holds as if each tick were a shot.
+      ...(critical || dot ? { flags: (critical ? 1 : 0) | (dot ? 4 : 0) } : {}),
     });
     if (!monster.hp) {
       monster.respawnAt = this.now() + monster.respawnDelay;

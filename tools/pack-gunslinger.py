@@ -108,7 +108,7 @@ def save_sheet(cl, name, rows):
 
 
 # Whole-figure exports share the approved 384px frame, 224px body and foot plane.
-manifest={'character':'Pistoleira Dark Elf','version':31,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+manifest={'character':'Pistoleira Dark Elf','version':32,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
 idle=[];walk=[];weapon=[];special=[];burst=[]
 for row in range(4):
     ref=whole_cell('idle-v30',1,4,0,row)
@@ -192,3 +192,9 @@ if (SOURCE/'eclipse-v31.png').exists():
 im=Image.open(SOURCE/'icons-v31.png').convert('RGBA');w,h=im.size
 for col,name in enumerate(['disparo-sombrio','rajada-do-crepusculo']):
     im.crop((round(col*w/2),0,round((col+1)*w/2),h)).resize((256,256),Image.Resampling.LANCZOS).save(folder/'icons'/f'{name}.png')
+
+# Separate complete authored flashes/tracers/impacts/shells before atlas cuts.
+parts=effect_parts('shots-v32')
+for i,name in enumerate(['shotflash','tracer','soulshot','casing']):
+    effect=parts[divmod(i,2)];effect.thumbnail((256,256),Image.Resampling.LANCZOS)
+    out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')

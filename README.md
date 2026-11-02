@@ -1,8 +1,21 @@
-# Jogo local — 0.6.31: queimadura, Chuva de Balas e transformação Eclipse
+# Jogo local — 0.6.32: disparos com mais impacto e dano legível
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.32
+
+A pistoleira recebeu uma apresentação mais marcante nos tiros, com inspiração no ritmo visual dos jogos de ação com duas pistolas:
+
+- Clarão direcional branco/dourado com vapor violeta, rastros luminosos mais longos e pequenos cartuchos em arco. Recuo visual curto em cada disparo, com retorno suave; os pés e a posição do servidor permanecem fixos.
+- O tamanho do rastro cresce com a distância percorrida pela bala, e a ponta acompanha a direção do tiro. O projétil com queimadura mantém a própria chama; Chuva de Balas e Eclipse continuam com seus efeitos.
+- **Dano nos monstros mais legível:** números maiores, contorno escuro, posições alternadas e subida suave. Críticos maiores e dourados; queimadura em laranja. O número usa o dano efetivamente aplicado.
+- **Impacto inspirado no Soulshot:** clarão curto com núcleo branco, faíscas azuladas e violeta no corpo do inimigo, sincronizado com o acerto real. Números e impactos também aparecem nos ataques do guerreiro e da arqueira. Ticks de queimadura usam sua própria apresentação, sem repetir o clarão de bala.
+
+A revisão mantém dano, alcance, cadência, duração e recarga das habilidades. As artes e proporções aprovadas dos três personagens são preservadas. Conferência no cliente real e 124 testes automatizados sem falhas; a avaliação visual continua com o jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.32**.
 
 ## Atualização 0.6.31
 

@@ -1,5 +1,5 @@
 import { projectilePose } from "/archer-vfx.mjs";
-import { gunslingerRainPose } from "/gunslinger-vfx.mjs";
+import { gunslingerRainPose, gunShotPresentation } from "/gunslinger-vfx.mjs";
 import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
 // Fire projectile and damage-over-time flames, three skyward bullet waves,
 // and a full-body Eclipse transformation following the warrior presentation.
@@ -14,6 +14,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
     "impact",
     "power",
     "powerimpact",
+    "shotflash",
+    "tracer",
+    "casing",
     "volley",
     "firebullet",
     "burn",
@@ -46,14 +49,12 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
   function clear(e) {
     for (const s of e.images.values()) s.destroy();
     e.images.clear();
-    e.shots.clear();
+    e.shells.clear();
     e.actors.clear();
-    e.hits = [];
   }
   function draw(scene, e) {
     const now = performance.now(),
-      seen = new Set(),
-      shots = new Set();
+      seen = new Set();
     for (const [name, im] of art)
       if (!scene.textures.exists(`gun-fx:${name}`))
         if (name.startsWith("weapons:"))
@@ -178,10 +179,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           render = target?.root.active
             ? { ...fx, tx: target.x, ty: target.y - 70 }
             : fx,
-          power = fx.skillId === "disparo-sombrio",
-          burst = fx.skillId === "rajada-do-crepusculo";
-        shots.add(fx.id);
-        e.shots.set(fx.id, { fx: render, due: now + left });
+          power = fx.skillId === "disparo-sombrio";
+        if (!e.shells.has(fx.id))
+          e.shells.set(fx.id, { fx: render, at: now - age });
         const pose = projectilePose(render, age);
         if (!pose) {
           if (power) {
@@ -198,59 +198,47 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           }
           continue;
         }
-        if (age - fx.releaseMs < 110) {
-          const p = (age - fx.releaseMs) / 110;
+        const presentation = gunShotPresentation(render, age);
+        if (presentation?.flash > 0) {
+          const p = 1 - presentation.flash;
           image(
             fx.id + ":muzzle",
-            "muzzle",
+            "shotflash",
             fx.x,
             fx.y,
-            (power ? 50 : 32) + p * 8,
-            (power ? 42 : 28) + p * 6,
-            Math.pow(1 - p, 0.7),
+            (power ? 82 : 62) + p * 14,
+            (power ? 50 : 40) + p * 8,
+            Math.pow(1 - p, 0.6),
             pose.angle,
-          );
+          )?.setOrigin(0.27, 0.5);
         }
         image(
           fx.id,
-          power ? "firebullet" : "bullet",
+          power ? "firebullet" : "tracer",
           pose.x,
           pose.y,
-          power ? 128 : burst ? 66 : state.activeMs > 0 ? 58 : 50,
-          power ? 58 : burst ? 28 : 23,
+          power
+            ? 128
+            : Math.min(
+                state.activeMs > 0 ? 108 : 86,
+                20 + Math.hypot(pose.x - render.x, pose.y - render.y) * 0.9,
+              ),
+          power ? 58 : state.activeMs > 0 ? 24 : 20,
           1,
           pose.angle,
-        );
+        )?.setOrigin(0.94, 0.5);
       }
-    for (const [id, shot] of e.shots)
-      if (!shots.has(id)) {
-        if (active && Math.abs(now - shot.due) < 180)
-          e.hits.push({
-            id,
-            x: shot.fx.tx,
-            y: shot.fx.ty,
-            at: now,
-            power: shot.fx.skillId === "disparo-sombrio",
-            angle:
-              (Math.atan2(shot.fx.ty - shot.fx.y, shot.fx.tx - shot.fx.x) *
-                180) /
-              Math.PI,
-          });
-        e.shots.delete(id);
+    for (const [id, shell] of e.shells) {
+      const age = now - shell.at,
+        shot = gunShotPresentation(shell.fx, age);
+      if (!active || age > shell.fx.releaseMs + 420) {
+        e.shells.delete(id);
+        continue;
       }
-    e.hits = e.hits.filter((h) => active && now - h.at < 320);
-    for (const h of e.hits) {
-      const p = (now - h.at) / 320;
-      image(
-        h.id + ":impact",
-        h.power ? "burn" : "impact",
-        h.x,
-        h.y,
-        (h.power ? 85 : 36) + p * 18,
-        (h.power ? 60 : 36) + p * 15,
-        Math.pow(1 - p, 1.3) * 0.95,
-        0,
-      );
+      if (shot?.casing) {
+        const c = shot.casing;
+        image(`${id}:casing`, "casing", c.x, c.y, 14, 12, c.alpha, c.angle);
+      }
     }
     if (active) {
       const a = e.actor,
@@ -355,6 +343,9 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
     ready() {
       return [
         "firebullet",
+        "shotflash",
+        "tracer",
+        "casing",
         "burn",
         "eclipse",
         "weapons:weapon",
@@ -369,8 +360,7 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           actor: null,
           actors: new Map(),
           images: new Map(),
-          shots: new Map(),
-          hits: [],
+          shells: new Map(),
         };
         scenes.set(scene, e);
         const update = () => draw(scene, e);

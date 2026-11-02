@@ -91,7 +91,7 @@ const types = {
   ".html": "text/html; charset=utf-8",
   ".mjs": "text/javascript; charset=utf-8",
 };
-const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praça da Coroa — RPG local</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"><link rel="stylesheet" href="/royal-theme.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" class="local-city-badge">PRAÇA DA COROA · v${version}</a><div id="game"></div><div id="ui"></div><script src="/ultimate-ui.js" defer></script><script src="/avatar-visuals.js" defer></script><script type="module" src="/character-hd.js"></script><script src="/combat-visuals.js" defer></script><script src="/class-ui.js" defer></script><script src="/potions-ui.js" defer></script><script type="module" src="/archer-visuals.js"></script><script type="module" src="/gunslinger-visuals.js"></script><script src="/combat-ui.js" defer></script><script src="/aegis-visuals.js" defer></script><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
+const html = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praça da Coroa — RPG local</title><link rel="stylesheet" href="/assets/overlays-BfDeQoSF.css"><link rel="stylesheet" href="/assets/main-CfDhE7HM.css"><link rel="stylesheet" href="/royal-theme.css"></head><body><a href="/diagnostico" target="_blank" rel="noopener" class="local-city-badge">PRAÇA DA COROA · v${version}</a><div id="game"></div><div id="ui"></div><script src="/ultimate-ui.js" defer></script><script src="/avatar-visuals.js" defer></script><script type="module" src="/character-hd.js"></script><script src="/combat-visuals.js" defer></script><script src="/hit-feedback.js" defer></script><script src="/class-ui.js" defer></script><script src="/potions-ui.js" defer></script><script type="module" src="/archer-visuals.js"></script><script type="module" src="/gunslinger-visuals.js"></script><script src="/combat-ui.js" defer></script><script src="/aegis-visuals.js" defer></script><script src="/local-boot.js" defer></script><script type="module" src="/assets/main-Du8N-0Wf.js"></script></body></html>`;
 const server = createServer((req, res) => {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -193,6 +193,7 @@ const server = createServer((req, res) => {
       "/character-locomotion.mjs",
       "/character-comparison.js",
       "/combat-visuals.js",
+      "/hit-feedback.js",
       "/combat-ui.js",
       "/potions-ui.js",
       "/class-ui.js",

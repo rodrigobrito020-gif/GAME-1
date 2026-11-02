@@ -1,43 +1,41 @@
-VERSAO 0.6.31 — QUEIMADURA, CHUVA DE BALAS E TRANSFORMACAO ECLIPSE
+VERSAO 0.6.32 — TIROS COM MAIS IMPACTO, NUMEROS DE DANO E SOULSHOT
 Data: 02/11/2026
 
 ALTERACOES
-- Disparo Sombrio mantem dano inicial de 220% e trajetoria perfurante, agora com
-  projetil em chamas e queimadura de 20% do ataque/segundo por 5s. Valores de
-  teste. Sem criticos no dano continuo; reaplicacao renova sem acumular.
-- Chuva de Balas substitui a Rajada na apresentacao da habilidade 2. Mantido o
-  identificador salvo para preservar preferencias. Pose propria com duas
-  pistolas para o alto e tres ondas na area, em 700/1200/1700ms, de 110% cada.
-  Custo 18 MP, recarga 10s e raio 125 mantidos; a morte do alvo nao cancela a area.
-- Eclipse com energia de corpo inteiro seguindo a referencia do guerreiro e
-  mascaras de luz das pistolas para cada pose HD, incluindo caminhada de 8 fases.
-  Substitui a orbita; rosto visivel. Bonus, energia, duracao e recarga mantidos.
-- Novas artes e cartas das habilidades 1 e 2; preferencias AUTO/MANUAL mantidas.
+- Pistoleira: claroes direcionais branco/dourado/violeta, rastros luminosos
+  com ponta alinhada, pequenos cartuchos e recuo visual breve em cada disparo.
+  Posicao do servidor e pes mantidos; recuperacao do recuo em 130ms.
+- Numeros de dano dos ataques do jogador contra monstros maiores e com contorno,
+  posicoes alternadas, subida suave e desaparecimento gradual. Criticos dourados
+  maiores; dano continuo em laranja. Usa o valor do evento real de acerto.
+- Impacto inspirado no Soulshot, com nucleo branco e faiscas azuladas/violeta,
+  sincronizado ao acerto nativo. Aplicado tambem ao guerreiro e a arqueira.
+- Queimadura identificada com DamageFlags.DOT do cliente real: sem repeticao
+  de claroes e travas visuais de tiro em cada tick. Dano e cinco ticks mantidos.
+- Claros da pistoleira mais breves no inimigo. Preservados valores das skills,
+  cadencia de ataque, queimadura, Chuva de Balas, Instinto e Eclipse.
 
 VERIFICACAO
-- 123 testes automatizados passaram com o ZIP real, sem falhas/ignorados.
-- Queimadura testada desde o impacto, cinco ticks sem critico, renovacao sem
-  acumulo/atraso do tick, recompensa unica ao matar e isolamento por identidade
-  de monstro/instancia. Ticks atrasados e impactos processados cronologicamente.
-- Chuva testada em tres instantes: saida e retorno de inimigo a area, alvo
-  inicial morto e posicoes visuais deterministicas alinhadas aos danos.
-- Chromium/WebGL pt-BR real: tres classes, caminhada nas quatro direcoes,
-  Dash HD violeta, troca sem reabrir, escolhas salvas, duas pocoes e galeria.
-- Combate nativo: queimadura recebida pelo cliente, animacao para o alto,
-  chuva com pelo menos 10 balas descendentes simultaneas, quatro skills,
-  critico/velocidade reais, dois buffs, cartas e AUTO. Zero erros JavaScript.
-- Equipamento iluminado do Eclipse acompanha o quadro HD real em movimento.
-- Efeitos e indicadores limpos ao sair da hunt. Capturas do jogo revisadas.
-- 163 arquivos das outras classes, artes-base, movimento e pocoes e 13 arquivos
-  das poses aprovadas da pistoleira comparados byte a byte com 0.6.30: iguais.
-- Contas isoladas nos testes; progresso real nao foi alterado.
-- Avaliacao artistica e equilibrio final da revisao continuam com o jogador.
+- 124 testes automatizados passaram com o ZIP real, sem falhas/ignorados.
+- Teste de apresentacao verifica soltura, recuo/retorno, expiracao e ausencia de
+  alteracao dos dados autoritativos. Queimadura verifica DOT sem critico.
+- Cliente real Chromium/WebGL pt-BR: tiros, rastros, cartuchos, recuo, numeros,
+  impacto Soulshot, ticks laranja, quatro skills e duas duracoes independentes.
+- Teste compartilhado nas tres classes confirma dano real legivel e Soulshot,
+  com limpeza dos numeros/efeitos ao sair da hunt; zero erros JavaScript.
+- Cidade: tres classes, caminhada nas quatro direcoes, Dash violeta HD, trocas
+  sem reabrir, preferencias salvas, duas pocoes e galeria conferidos.
+- Equipamento da Eclipse continua alinhado a pose HD em movimento.
+- 214 arquivos de arte aprovados das tres classes comparados byte a byte com
+  0.6.31: iguais. Novas texturas sao adicionais; proporcoes preservadas.
+- Contas isoladas; progresso real nao foi alterado. Capturas nativas revisadas.
+- A avaliacao artistica final cabe ao jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.31.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.32.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
 Reconstrucao opcional das artes: npm run art:gunslinger (Python/Pillow).

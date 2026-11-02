@@ -266,6 +266,7 @@ export function tickGunslingerBurns(
       while (monster.hp > 0 && burn.next <= now && burn.next <= burn.until) {
         farm.hit(h, monster, burn.amount, "disparo-sombrio", events, deltas, {
           canCrit: false,
+          dot: true,
         });
         burn.next += GUNSLINGER_BURN.intervalMs;
       }

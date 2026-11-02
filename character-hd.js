@@ -1,4 +1,5 @@
 import { gunslingerDisplayPose } from "/gunslinger.mjs";
+import { gunShotPresentation } from "/gunslinger-vfx.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 import { locomotionPose } from "/character-locomotion.mjs";
 import { updateDashTrail } from "/dash-visuals.mjs";
@@ -9,6 +10,12 @@ import { updateDashTrail } from "/dash-visuals.mjs";
     actors = new Map(),
     locomotion = new WeakMap(),
     scenes = new Map();
+  let gunState = null,
+    gunStateAt = 0;
+  window.addEventListener("royal-ultimate-state", (e) => {
+    gunState = e.detail;
+    gunStateAt = performance.now();
+  });
   for (const [look, path] of [
     ["base", "warrior/hd/base"],
     ["training", "warrior/hd/training"],
@@ -108,6 +115,23 @@ import { updateDashTrail } from "/dash-visuals.mjs";
       s = scene.add.image(0, 0, key, `${row}:${col}`);
       actors.set(a, s);
     }
+    let recoil = 0;
+    if (
+      gun &&
+      a.id === 1 &&
+      sheet === "weapon" &&
+      gunState?.inHunt &&
+      gunState.alive
+    ) {
+      for (const fx of gunState.gunslingerFx ?? []) {
+        if (fx.kind !== "bullet") continue;
+        const age =
+          fx.durationMs - fx.remainingMs + performance.now() - gunStateAt;
+        const shot = gunShotPresentation(fx, age);
+        if (shot && Math.abs(shot.recoilAngle) > Math.abs(recoil))
+          recoil = shot.recoilAngle;
+      }
+    }
     s.setTexture(key, `${row}:${col}`)
       .setPosition(a.x + b.x, a.y + b.y)
       .setOrigin(ART.feet[0] / ART.frame, ART.feet[1] / ART.frame)
@@ -115,7 +139,7 @@ import { updateDashTrail } from "/dash-visuals.mjs";
         b.scaleX / ART.nativeSampleStep,
         b.scaleY / ART.nativeSampleStep,
       )
-      .setAngle(b.angle)
+      .setAngle(b.angle + recoil)
       .setFlipX(b.flipX)
       .setDepth(a.root.depth + 0.015)
       .setVisible(a.root.visible && b.visible && !a.hidden);

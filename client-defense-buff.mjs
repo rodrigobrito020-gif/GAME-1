@@ -7,6 +7,20 @@ function replaceOnce(code, needle, replacement) {
 }
 export function withDefenseBuffUi(bytes) {
   let code = bytes.toString("utf8");
+  const damageNumbers =
+    "e.flags&Tm.DOT?t.show(s,c+10,tt(e.amount),Dw.dot):l?t.show(s,c,`-${tt(e.amount)}`,e.flags&Tm.CRIT?Dw.crit:Dw.hurt):e.flags&Tm.CRIT?t.show(s,c-6,tt(e.amount),Dw.crit):t.show(s,c,tt(e.amount),e.flags&Tm.MAGIC?Dw.magic:Dw.hit)";
+  code = replaceOnce(
+    code,
+    damageNumbers,
+    "(i.kind===Ft.MONSTER&&e.source===o&&window.__royalHitFeedback?.apply(r,i,{amount:e.amount,critical:!!(e.flags&Tm.CRIT),dot:!!(e.flags&Tm.DOT)}))||(" +
+      damageNumbers +
+      ")",
+  );
+  code = replaceOnce(
+    code,
+    "t.flash(16777215,UD);let c=WD*2",
+    't.flash(window.__royalUltimateState?.classId==="pistoleira"?0xe6dcff:16777215,window.__royalUltimateState?.classId==="pistoleira"?60:UD);let c=WD*2',
+  );
   const buff = "buff(e,t=!1){let n=this.actor(e.entity);";
   code = replaceOnce(
     code,

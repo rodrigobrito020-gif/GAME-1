@@ -14,7 +14,7 @@ import {
   gunslingerRig,
 } from "../gunslinger.mjs";
 import { gunslingerFxState } from "../gunslinger-combat.mjs";
-import { gunslingerRainPose } from "../gunslinger-vfx.mjs";
+import { gunslingerRainPose, gunShotPresentation } from "../gunslinger-vfx.mjs";
 import { decodeRgba } from "../png.mjs";
 function setup() {
   let clock = 10000;
@@ -277,7 +277,7 @@ test("burn applies at projectile impact, ticks five times without criticals and 
     damage.map((d) => d.amount),
     [3, 3],
   );
-  assert.ok(damage.every((d) => !d.flags));
+  assert.ok(damage.every((d) => (d.flags & 1) === 0 && (d.flags & 4) !== 0));
   damage = s.step(4000).events.damage;
   assert.equal(damage.length, 8);
   assert.equal(a.hp, 956);
@@ -358,6 +358,25 @@ test("bullet rain positions are deterministic, stay inside the server area and l
     }
   }
   assert.equal(GUNSLINGER_BURN.durationMs, 5000);
+});
+
+test("gun presentation follows release times, recovers quickly and never changes authoritative flight data", () => {
+  for (const [tx, ty] of [
+    [300, 0],
+    [-300, 0],
+    [0, -300],
+    [0, 300],
+  ]) {
+    const fx = { x: 0, y: 0, tx, ty, hand: 0, releaseMs: 150, skillId: "" },
+      saved = structuredClone(fx);
+    assert.equal(gunShotPresentation(fx, 149), null);
+    assert.equal(gunShotPresentation(fx, 150).kick, 0);
+    assert.ok(Math.abs(gunShotPresentation(fx, 168).recoilAngle) > 0);
+    assert.equal(gunShotPresentation(fx, 280).kick, 0);
+    assert.equal(gunShotPresentation(fx, 510).casing, null);
+    assert.equal(gunShotPresentation(fx, 570), null);
+    assert.deepEqual(fx, saved);
+  }
 });
 test("gunslinger exports whole figures and all native/HD sheets with matching anchors and transparent gutters", () => {
   const manifest = JSON.parse(

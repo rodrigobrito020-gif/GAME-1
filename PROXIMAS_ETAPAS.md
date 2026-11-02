@@ -11,6 +11,8 @@ O jogador decidiu manter as melhorias do sistema e de desempenho, com o guerreir
 - Deixar a melhoria da naturalidade das animações para uma atualização futura. Ela está adiada, não concluída, e não deve ser retomada automaticamente ao trabalhar em outros sistemas.
 - Manter o protótipo 0.6.43 reprovado fora do jogo; não propagá-lo às outras classes.
 
+**Objetivo da próxima revisão dos personagens:** criar personagens com movimentação fluida e natural, conforme reforçado pelo jogador. Trabalhar a continuidade entre repouso, caminhada, corrida, mudança de direção, preparação do ataque, golpe, recuperação, salto e Dash. Manter rosto, proporções, escala e apoio dos pés coerentes durante as transições, com armas e Ki acompanhando a pose real. Preservar a escolha por 2D e o guerreiro aprovado como referência. Avaliar sequências completas de movimentação e combate no jogo antes de substituir a base ou estender a mudança às demais classes; a contagem de poses e os testes técnicos não demonstram, sozinhos, a naturalidade do resultado.
+
 ## Protótipo de oito direções reprovado — 02/11/2026
 
 O jogador escolheu manter o 2D para melhorar movimentos robóticos. A tentativa 0.6.43 no guerreiro foi **expressamente reprovada**: "ficou pior agora", com vídeo de 18:32:42. A passagem de caminhada para combate e as trocas de postura não preservaram a continuidade da base aprovada. Mais poses e testes técnicos passando não significam aprovação visual.

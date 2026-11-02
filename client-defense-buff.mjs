@@ -1,3 +1,4 @@
+import { withLocalInterpolation } from "./client-latency.mjs";
 // Version-checked bridges from the native renderer to our own small HUD.
 // The overhead timer uses the authoritative buff lifetime. Native recharge UI stays intact.
 function replaceOnce(code, needle, replacement) {
@@ -139,5 +140,5 @@ window.__royalAttachedEnergy?.update(this);
 window.__royalOverheadUltimate?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);
-  return Buffer.from(code);
+  return withLocalInterpolation(Buffer.from(code));
 }

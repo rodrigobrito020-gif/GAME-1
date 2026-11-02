@@ -1,5 +1,6 @@
 // One card renderer for hotbar skills and active effects over the player.
 (() => {
+  const ui = window.__royalUiFrame;
   const card = document.createElement("aside");
   card.className = "royal-skill-card";
   card.hidden = true;
@@ -39,9 +40,9 @@
         : s.name === button?.getAttribute("aria-label"),
     );
   }
-  function position() {
+  function position(measured) {
     if (!currentButton) return;
-    const box = currentButton.getBoundingClientRect(),
+    const box = measured?.box ?? currentButton.getBoundingClientRect(),
       width = Math.min(300, innerWidth - 24);
     card.style.width = width + "px";
     card.style.left =
@@ -49,7 +50,9 @@
         innerWidth - width - 12,
         Math.max(12, box.left + box.width / 2 - width / 2),
       ) + "px";
-    card.style.top = Math.max(12, box.top - card.offsetHeight - 15) + "px";
+    card.style.top =
+      Math.max(12, box.top - (measured?.height ?? card.offsetHeight) - 15) +
+      "px";
   }
   function show(button) {
     const s = find(button);
@@ -135,9 +138,9 @@
     currentButton = null;
     shownId = "";
   }
-  function refreshCard() {
+  function refreshCard(measured) {
     if (!currentButton || card.hidden) return;
-    if (!currentButton.checkVisibility()) {
+    if (!(measured?.visible ?? currentButton.checkVisibility())) {
       hide();
       return;
     }
@@ -147,19 +150,20 @@
       return;
     }
     const mode = card.querySelector(".royal-card-mode");
-    if (mode)
-      mode.textContent = order().includes(s.id) ? "Automático" : "Manual";
+    if (mode) ui.text(mode, order().includes(s.id) ? "Automático" : "Manual");
     const left = card.querySelector(".royal-card-remaining");
     if (left) {
       const seconds = Math.ceil(
         Number(currentButton.dataset.remainingMs ?? 0) / 1000,
       );
-      left.textContent =
+      ui.text(
+        left,
         seconds >= 60
           ? `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`
-          : `${seconds}s`;
+          : `${seconds}s`,
+      );
     }
-    position();
+    position(measured);
   }
   const buttonOf = (e) =>
     e.target.closest?.(
@@ -304,13 +308,44 @@
     paint();
   }
   function paint() {
+    ui.schedule(
+      "combat-controls",
+      () => {
+        const catalog = skills();
+        const rows = [
+          ...document.querySelectorAll(".slHudSkill:not(.slHudRoll)"),
+        ].map((slot) => {
+          const skill = catalog.find((s) =>
+            slot.dataset.skill
+              ? s.id === slot.dataset.skill
+              : s.name === slot.getAttribute("aria-label"),
+          );
+          const visible = !!state?.inHunt && slot.checkVisibility();
+          return {
+            slot,
+            skill,
+            visible,
+            box: visible ? slot.getBoundingClientRect() : null,
+          };
+        });
+        const tooltip =
+          currentButton && !card.hidden
+            ? {
+                visible: currentButton.checkVisibility(),
+                box: currentButton.getBoundingClientRect(),
+                height: card.offsetHeight,
+              }
+            : null;
+        return { rows, tooltip };
+      },
+      paintMeasured,
+    );
+  }
+  function paintMeasured({ rows, tooltip }) {
     if (pendingOrder && performance.now() - pendingAt > 2000)
       pendingOrder = null;
     const seen = new Set();
-    for (const slot of document.querySelectorAll(
-      ".slHudSkill:not(.slHudRoll)",
-    )) {
-      const skill = find(slot);
+    for (const { slot, skill, visible, box } of rows) {
       if (!skill) continue;
       const art = slot.querySelector("img");
       if (art && skill.icon && art.getAttribute("src") !== skill.icon)
@@ -326,22 +361,21 @@
         document.body.append(button);
         switches.set(skill.id, button);
       }
-      const visible = state?.inHunt && slot.checkVisibility(),
-        automatic = order().includes(skill.id);
-      button.hidden = !visible;
-      button.textContent = automatic ? "AUTO" : "MANUAL";
-      button.dataset.automatic = String(automatic);
-      button.setAttribute("aria-pressed", String(automatic));
-      button.setAttribute(
+      const automatic = order().includes(skill.id);
+      if (button.hidden !== !visible) button.hidden = !visible;
+      ui.text(button, automatic ? "AUTO" : "MANUAL");
+      ui.attr(button, "data-automatic", automatic);
+      ui.attr(button, "aria-pressed", automatic);
+      ui.attr(
+        button,
         "aria-label",
         `${skill.name}: ${automatic ? "automático" : "manual"}. Alterar para ${automatic ? "manual" : "automático"}`,
       );
-      slot.dataset.automatic = String(automatic);
+      ui.attr(slot, "data-automatic", automatic);
       if (visible) {
-        const box = slot.getBoundingClientRect();
-        button.style.left = box.left + "px";
-        button.style.top = box.top - 25 + "px";
-        button.style.width = box.width + "px";
+        ui.style(button, "left", box.left + "px");
+        ui.style(button, "top", box.top - 25 + "px");
+        ui.style(button, "width", box.width + "px");
       }
     }
     for (const [id, button] of switches)
@@ -349,7 +383,7 @@
         button.remove();
         switches.delete(id);
       } else if (!state?.inHunt) button.hidden = true;
-    refreshCard();
+    refreshCard(tooltip);
   }
   window.addEventListener("royal-ultimate-state", (e) => {
     state = e.detail;

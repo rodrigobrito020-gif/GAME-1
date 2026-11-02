@@ -1,6 +1,7 @@
 // Optional state extension on the existing authenticated protobuf connection.
 // It never invents charge locally or changes the authoritative character.
 (() => {
+  const ui = window.__royalUiFrame;
   let state = null,
     at = 0;
   const meter = document.createElement("button");
@@ -93,34 +94,44 @@
   };
   meter.onclick = () => window.__royalRequestAvatar();
   function paint() {
-    const hp = document.querySelector("#ui .slHudCard .slBar-hp");
+    ui.schedule(
+      "ultimate-meter",
+      () => document.querySelector("#ui .slHudCard .slBar-hp"),
+      paintMeasured,
+    );
+  }
+  function paintMeasured(hp) {
     if (hp && meter.nextElementSibling !== hp) hp.before(meter);
     meter.hidden = !state || !hp;
 
     if (!state) return;
-    meter.querySelector("span").textContent = "ULT";
+    ui.text(meter.querySelector("span"), "ULT");
     const active = remaining("activeMs"),
       cd = remaining("cooldownMs"),
       isReady = ready();
     meter.disabled = !isReady;
     meter.classList.toggle("ready", !!isReady);
     meter.classList.toggle("active", active > 0);
-    meter.querySelector("strong").textContent = active
-      ? `${Math.ceil(active / 1000)}s`
-      : `${state.charge} / 100`;
+    ui.text(
+      meter.querySelector("strong"),
+      active ? `${Math.ceil(active / 1000)}s` : `${state.charge} / 100`,
+    );
     meter.querySelector("i").style.width =
       `${active ? (100 * active) / (state.durationMs || 45000) : Math.max(0, Math.min(100, state.charge))}%`;
-    meter.querySelector("small").textContent = state.queued
-      ? `Preparando ${state.ultimateName ?? "Avatar da Luz"}…`
-      : active
-        ? `Transformado · ${Math.ceil(active / 1000)}s`
-        : isReady
-          ? state.automatic
-            ? "Pronta · ativação automática em combate"
-            : "Pronta · pressione 4"
-          : cd
-            ? `Recarga · ${Math.ceil(cd / 1000)}s · energia por combate`
-            : "Carrega ao causar e receber dano";
+    ui.text(
+      meter.querySelector("small"),
+      state.queued
+        ? `Preparando ${state.ultimateName ?? "Avatar da Luz"}…`
+        : active
+          ? `Transformado · ${Math.ceil(active / 1000)}s`
+          : isReady
+            ? state.automatic
+              ? "Pronta · ativação automática em combate"
+              : "Pronta · pressione 4"
+            : cd
+              ? `Recarga · ${Math.ceil(cd / 1000)}s · energia por combate`
+              : "Carrega ao causar e receber dano",
+    );
     meter.style.setProperty(
       "--royal-ultimate-color",
       state.classVisuals?.color ?? "#ffe4a0",

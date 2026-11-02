@@ -1,8 +1,21 @@
-# Jogo local — 0.6.41: furacão do Orc por três segundos
+# Jogo local — 0.6.42: resposta e fluidez
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.42
+
+O jogador aprovou o furacão da 0.6.41 e pediu uma revisão da fluidez geral. Esta versão reduz esperas de apresentação e trabalho repetido da interface, mantendo as artes e o combate aprovados.
+
+- **Movimentos atualizados a 20 Hz:** as posições passam a ser enviadas a cada 50ms, mantendo a simulação autoritativa em 20 Hz. O cliente usa um pacote de interpolação com margem adaptativa ao jitter, em vez dos dois pacotes de espera anteriores. A margem mínima continua existindo para interpolar sem extrapolação ou teleporte.
+- **Interface agrupada por quadro:** os controles de habilidades, poções e ultimate medem suas posições antes de alterar o DOM. Atualizações de rede/temporizadores no mesmo quadro são reunidas usando o estado mais recente; textos/atributos repetidos deixam de ser recriados sem necessidade. Cliques e atalhos continuam enviando os comandos imediatamente.
+- **Texturas preparadas antes dos golpes:** poses HD e contornos de Ki da classe são preparados gradualmente nos intervalos ociosos, reduzindo o trabalho pesado no primeiro uso de uma habilidade ou transformação. A animação, máscara, cor, escala e aparência da energia são as mesmas.
+- **Comparação medida:** no mesmo roteiro em Chromium/WebGL com renderização por software e janela 1440×900, o buffer mediano em combate caiu de cerca de **241 para 96ms**. Os recálculos de layout passaram de **2.250 para 776**; o percentil 95 dos intervalos entre quadros durante Fúria passou de aproximadamente **149 para 88ms**. O intervalo mediano durante o furacão ficou praticamente igual. Estes valores descrevem o ambiente de teste, não uma promessa de FPS no computador do jogador.
+
+**162 testes passaram com o ZIP real**, mais conferência no navegador das quatro classes, caminhada nas quatro direções, Dash, barras, AUTO/MANUAL, painel de poções, ultimates e dois furacões de 3s. Progresso real excluído dos testes. Não promete latência zero: hardware, navegador, rede e tempos deliberados das animações continuam relevantes.
+
+**Windows:** feche o servidor antigo, extraia em outra pasta e copie `.local-runtime` da versão anterior. Mantenha `recursos-publicos.zip`, abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.42**.
 
 ## Atualização 0.6.41
 

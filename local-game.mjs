@@ -1,3 +1,4 @@
+import { LOCAL_SNAPSHOT_HZ, LOCAL_TICK_HZ } from "./client-latency.mjs";
 import {
   BERSERKER_CLASS,
   BERSERKER_SKIN,
@@ -77,7 +78,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-classes-41";
+  catalog.version = "local-classes-42";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -587,8 +588,8 @@ export function attachLocalGame(
     spawn: { x: spawn.x * 10, y: spawn.y * 10 },
     channel: 1,
     kind: 1,
-    snapshotHz: 10,
-    tickHz: 20,
+    snapshotHz: LOCAL_SNAPSHOT_HZ,
+    tickHz: LOCAL_TICK_HZ,
     moveSpeed: 160,
     walk: {
       bodyRadius: 8,
@@ -1372,27 +1373,26 @@ export function attachLocalGame(
         y: Math.round(client.y),
         facing: client.facing,
       };
-      if (tick % 2 === 0)
-        send(client, "worldSnapshot", {
-          tick,
-          serverTimeMs: now,
-          entities: [
-            actor(client),
-            ...(client.hunt
-              ? client.hunt.monsters.map(monsterState)
-              : cityNpcs.map((n) => ({
-                  id: n.entity,
-                  kind: 4,
-                  x: n.pos.x,
-                  y: n.pos.y,
-                  facing: n.facing,
-                  anim: 0,
-                }))),
-          ],
-          full: true,
-        });
+      send(client, "worldSnapshot", {
+        tick,
+        serverTimeMs: now,
+        entities: [
+          actor(client),
+          ...(client.hunt
+            ? client.hunt.monsters.map(monsterState)
+            : cityNpcs.map((n) => ({
+                id: n.entity,
+                kind: 4,
+                x: n.pos.x,
+                y: n.pos.y,
+                facing: n.facing,
+                anim: 0,
+              }))),
+        ],
+        full: true,
+      });
     }
-  }, 50);
+  }, 1000 / LOCAL_TICK_HZ);
   timer.unref();
   server.on("close", () => {
     clearInterval(timer);

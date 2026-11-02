@@ -33,6 +33,41 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
         .then(() => art.set(`${look}:${sheet}`, image))
         .catch(() => {});
     }
+  function prepareTexture(scene, look, sheet) {
+    const key = `royal-hd:${look}:${sheet}`,
+      im = art.get(`${look}:${sheet}`);
+    if (!im || scene.textures.exists(key)) return;
+    const tex = scene.textures.addImage(key, im);
+    for (let r = 0; r < 4; r++)
+      for (let c = 0; c < im.width / ART.frame; c++)
+        tex.add(
+          `${r}:${c}`,
+          0,
+          c * ART.frame,
+          r * ART.frame,
+          ART.frame,
+          ART.frame,
+        );
+    tex.setFilter(0);
+  }
+  function prepareLook(a, look) {
+    const scene = a.root.scene;
+    for (const sheet of [
+      "idle",
+      "walk",
+      "run1",
+      "weapon",
+      "axeheavy",
+      "special",
+    ]) {
+      const key = `royal-hd:${look}:${sheet}`;
+      if (!art.has(`${look}:${sheet}`) || scene.textures.exists(key)) continue;
+      window.__royalUiFrame.warm(key, () => {
+        if (a.root.active && a.root.scene === scene)
+          prepareTexture(scene, look, sheet);
+      });
+    }
+  }
   function cleanup(a) {
     clearDashTrail(a);
     const s = actors.get(a);
@@ -103,20 +138,8 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
       b.setAlpha(1);
       return;
     }
-    if (!scene.textures.exists(key)) {
-      const tex = scene.textures.addImage(key, im);
-      for (let r = 0; r < 4; r++)
-        for (let c = 0; c < im.width / ART.frame; c++)
-          tex.add(
-            `${r}:${c}`,
-            0,
-            c * ART.frame,
-            r * ART.frame,
-            ART.frame,
-            ART.frame,
-          );
-      tex.setFilter(0);
-    }
+    prepareTexture(scene, look, sheet);
+    if (a.id === 1) prepareLook(a, look);
     let s = actors.get(a);
     if (!s) {
       s = scene.add.image(0, 0, key, `${row}:${col}`);

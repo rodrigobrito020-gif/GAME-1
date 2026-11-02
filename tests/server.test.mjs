@@ -171,6 +171,8 @@ test(
       assert.equal(catalog.consumables.length, 6);
       const scene = (await wait((m) => m.body?.case === "sceneEnter")).body
         .value;
+      assert.equal(scene.snapshotHz,20);
+      assert.equal(scene.tickHz,20);
       assert.equal(scene.map.source.case, "atlasMapId");
       assert.equal(scene.map.source.value, "praca-da-coroa");
       const monsterAnim = await (

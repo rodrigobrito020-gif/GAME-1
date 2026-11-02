@@ -76,6 +76,41 @@
     const config = looks[state?.classId];
     if (config) loadLook(config.look);
   });
+  function prepareContour(scene, stem, contour) {
+    const key = `energy-contour:${stem}`;
+    if (!scene.textures.exists(key))
+      scene.textures.addSpriteSheet(key, contour, {
+        frameWidth: 384,
+        frameHeight: 384,
+      });
+  }
+  function prepareLook(a) {
+    const config = looks[state?.classId];
+    if (!config) return;
+    const look =
+      config.look === "warrior" &&
+      a.body.texture?.key.includes("peitoral-treino")
+        ? "warrior-training"
+        : config.look;
+    const scene = a.root.scene;
+    for (const sheet of [
+      "idle",
+      "walk",
+      "run1",
+      "weapon",
+      "axeheavy",
+      "special",
+    ]) {
+      const stem = `${look}:${sheet}`,
+        im = art.get(stem + ":contour"),
+        key = `energy-contour:${stem}`;
+      if (!im || scene.textures.exists(key)) continue;
+      window.__royalUiFrame.warm(key, () => {
+        if (a.root.active && a.root.scene === scene)
+          prepareContour(scene, stem, im);
+      });
+    }
+  }
   function remove(a) {
     const s = actors.get(a);
     if (!s) return;
@@ -147,11 +182,7 @@
       cols = contour.width / 384,
       frame = pose.row * cols + pose.col;
     const contourKey = `energy-contour:${stem}`;
-    if (!scene.textures.exists(contourKey))
-      scene.textures.addSpriteSheet(contourKey, contour, {
-        frameWidth: 384,
-        frameHeight: 384,
-      });
+    prepareContour(scene, stem, contour);
     for (const [im, depth] of [
       [s.outer, a.root.depth + 0.008],
       [s.rim, a.root.depth + 0.025],
@@ -315,6 +346,7 @@
     update(a) {
       if (a.id !== 1) return;
       const scene = a.root.scene;
+      prepareLook(a);
       if (!scenes.has(scene)) {
         const targets = new Set(),
           cb = () => {

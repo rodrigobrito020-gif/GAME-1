@@ -1,4 +1,5 @@
 (() => {
+  const ui = window.__royalUiFrame;
   const dock = document.createElement("section");
   dock.className = "royal-potion-dock";
   dock.hidden = true;
@@ -192,24 +193,53 @@
       ) + "px";
     panel.style.bottom = Math.max(12, innerHeight - box.top + 30) + "px";
   }
-  function positionDock() {
+  function measureDock() {
     const bar = document.querySelector(".slHudSkills");
-    if (bar?.checkVisibility() && bar.getBoundingClientRect().width > 0) {
-      bar.style.marginLeft = "-60px";
-      const b = bar.getBoundingClientRect();
-      dock.style.left = b.right + 10 + "px";
-      dock.style.top = b.top + "px";
-      dock.style.bottom = "auto";
-      dock.dataset.anchor = "skills";
+    const box = bar?.checkVisibility() ? bar.getBoundingClientRect() : null;
+    const panelBox = !panel.hidden
+      ? { dock: dock.getBoundingClientRect(), width: panel.offsetWidth }
+      : null;
+    return { bar, box, panelBox };
+  }
+  function positionDock(measured) {
+    const { bar, box, panelBox } = measured;
+    if (box?.width > 0) {
+      const changed = bar.style.marginLeft !== "-60px";
+      ui.style(bar, "marginLeft", "-60px");
+      ui.style(dock, "left", box.right + 10 + "px");
+      ui.style(dock, "top", box.top + "px");
+      ui.style(dock, "bottom", "auto");
+      ui.attr(dock, "data-anchor", "skills");
+      if (changed) paint();
     } else {
-      dock.style.left = Math.max(8, innerWidth / 2 - 58) + "px";
-      dock.style.top = "auto";
-      dock.style.bottom = "18px";
-      dock.dataset.anchor = "city";
+      ui.style(dock, "left", Math.max(8, innerWidth / 2 - 58) + "px");
+      ui.style(dock, "top", "auto");
+      ui.style(dock, "bottom", "18px");
+      ui.attr(dock, "data-anchor", "city");
     }
-    positionPanel();
+    if (panelBox) {
+      ui.style(
+        panel,
+        "left",
+        Math.max(
+          8,
+          Math.min(
+            innerWidth - panelBox.width - 8,
+            panelBox.dock.right - panelBox.width,
+          ),
+        ) + "px",
+      );
+      ui.style(
+        panel,
+        "bottom",
+        Math.max(12, innerHeight - panelBox.dock.top + 30) + "px",
+      );
+    }
   }
   function paint() {
+    ui.schedule("potion-controls", measureDock, paintMeasured);
+  }
+  function paintMeasured(measured) {
     dock.hidden = !state?.alive;
     if (!state) return;
     for (const kind of [1, 2]) {
@@ -246,14 +276,14 @@
       const mode = cell.querySelector(".royal-potion-mode"),
         button = cell.querySelector(".royal-potion-slot"),
         im = button.querySelector("img");
-      button.dataset.potion = id(p);
-      button.setAttribute("aria-label", p.name);
-      button.title = `${p.name} · escolher tipo e limite`;
+      ui.attr(button, "data-potion", id(p));
+      ui.attr(button, "aria-label", p.name);
+      ui.attr(button, "title", `${p.name} · escolher tipo e limite`);
       if (im.getAttribute("src") !== p.icon) im.src = p.icon;
-      button.querySelector(".royal-potion-stock").textContent = `×${p.stock}`;
-      mode.textContent = p.automatic ? `AUTO ${p.threshold}%` : "MANUAL";
-      mode.dataset.automatic = String(p.automatic);
-      mode.setAttribute("aria-pressed", String(p.automatic));
+      ui.text(button.querySelector(".royal-potion-stock"), `×${p.stock}`);
+      ui.text(mode, p.automatic ? `AUTO ${p.threshold}%` : "MANUAL");
+      ui.attr(mode, "data-automatic", p.automatic);
+      ui.attr(mode, "aria-pressed", p.automatic);
       mode.setAttribute(
         "aria-label",
         `Poção ${kind === 1 ? "HP" : "Mana"}: ${p.automatic ? "automática" : "manual"}. Alterar modo`,
@@ -267,7 +297,7 @@
         `${Math.min(100, (cd / 1500) * 100)}%`,
       );
     }
-    positionDock();
+    positionDock(measured);
     updateUse();
   }
   window.addEventListener("royal-ultimate-state", (e) => {
@@ -315,6 +345,6 @@
     true,
   );
   window.addEventListener("royal-skill-scene-reset", close);
-  window.addEventListener("resize", positionDock);
+  window.addEventListener("resize", paint);
   setInterval(paint, 100);
 })();

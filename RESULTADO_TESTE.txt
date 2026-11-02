@@ -1,36 +1,48 @@
-VERSAO 0.6.41 — FURACAO DO ORC POR TRES SEGUNDOS
+VERSAO 0.6.42 — RESPOSTA E FLUIDEZ
 Data: 02/11/2026
 
 PEDIDO
-- Giro da 0.6.40 reprovado no video: deve parecer um furacao por cerca de 3s.
+- Furacao da 0.6.41 aprovado. Pedido de fluidez geral e resposta rapida.
 
 ENTREGUE
-- Skill 2, Redemoinho Selvagem: duracao real de 3000ms e dez voltas do corpo.
-- Corpo em pe, escala fixa, usando as mesmas oito vistas existentes e as duas
-  machadinhas. Tempo angular compartilhado com o vento, atualizado por quadro.
-  Reacoes cosmeticas de inclinacao/deslocamento nao interrompem a postura.
-- Volume de vento vermelho em helices, com geometria na frente e atras do Orc,
-  rastros opostos das laminas, particulas ascendentes e poeira no chao. Sem usar
-  duas imagens grandes girando ao redor do personagem.
-- Perseguicao real, colisao e troca de alvo mantidas. Alcance 300, raio 110,
-  custo 12 MP, recarga 8s e cinco acertos de 50% ATK preservados. Acertos em
-  300, 900, 1500, 2100 e 2700ms. A duracao permanece 3s durante a Furia.
-- Som durante as voltas, entrada/dissipacao dentro dos tres segundos e limpeza
-  na saida/morte. Galeria usa a mesma cadencia rapida de rotacao.
-- Artes, corpo/rosto/roupas, primeira habilidade, Furia, barras, pocoes e
-  demais classes preservados. Conta real nunca usada ou alterada.
+- Simulacao autoritativa permanece em 20Hz. Posicoes passam de 10 para 20Hz.
+- Buffer nativo reduzido para um pacote com margem adaptativa ao jitter.
+  Mantem interpolacao; sem extrapolar, teleportar ou mudar a velocidade real.
+- Controles de skills, pocoes e ultimate agrupam atualizacoes no mesmo quadro.
+  Medicoes de layout acontecem antes das alteracoes no DOM, evitando trabalho
+  repetido. Textos/atributos iguais deixam de ser escritos sem necessidade.
+- Cliques e atalhos continuam enviando comandos imediatamente. O agrupamento
+  e apenas da apresentacao da interface, sem criar fila de comandos de combate.
+- Poses HD e contornos de Ki da classe preparados gradualmente em tempo ocioso,
+  reduzindo criacao/upload de texturas durante o primeiro golpe/transformacao.
+- Artes, mascaras, rosto, proporcoes, animacoes, auras e valores de combate
+  preservados. Furacao continua com 3s e Furia do Orc com 60s/180s.
+
+COMPARACAO MEDIDA
+- Chromium/WebGL, renderizacao por software, janela 1440x900, mesmo roteiro.
+- Buffer mediano na caca: 241 para 96ms; durante Furia: 242 para 101ms.
+- Recalculos de layout: 2250 para 776 no roteiro comparativo.
+- P95 de intervalo entre quadros na Furia: 149 para 88ms; na caca: 123 para 81ms.
+- Mediana do furacao quase inalterada (66,5 para 65,7ms neste ambiente).
+- Preparacao inicial de texturas concentra algum trabalho na entrada da classe.
+- Numeros do ambiente de teste; nao sao garantia de FPS no PC do jogador.
+  Latencia zero absoluta depende de limites fisicos e nao e prometida.
 
 VERIFICACAO
-- 158 testes com o recursos-publicos.zip real: duracao, dez voltas, oito vistas,
-  continuidade e volume do vento, acertos, perseguicao, colisao e cancelamento.
-- Chromium/WebGL com conta isolada: furacao real com e sem Furia, movimento,
-  corpo em pe, escala 0,65, partes na frente/atras, camera e limpeza.
-- Apresentacao nova para avaliacao do jogador; a 0.6.40 nao foi aprovada no giro.
+- 162 testes com recursos-publicos.zip real: protocolo, saves/reinicio,
+  movimento, colisoes, combate, efeitos, carga/recargas e Pocoes.
+- Testes adicionais de interpolacao com jitter e agrupamento da interface,
+  preservando a atualizacao mais recente e medindo antes de escrever.
+- Chromium nas quatro classes: cidade, caminhada, Dash, mudanca de classe,
+  barras, controles AUTO/MANUAL, painel das tres pocoes e ultimates reais.
+- Dois furacoes reais com e sem Furia: tres segundos, oito vistas, partes na
+  frente/atras, escala fixa, perseguicao, zoom e limpeza. Sem erros JavaScript.
+- Testes com contas isoladas. Nenhum progresso real foi usado ou alterado.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.41.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.42.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

@@ -1,6 +1,6 @@
 {
   "character": "Pistoleira Dark Elf",
-  "version": 35,
+  "version": 36,
   "frame": [
     384,
     384
@@ -15,5137 +15,5458 @@
   ],
   "bodyHeight": 224,
   "method": "whole-authored-figures",
+  "bodyModel": "gunslinger-v36",
   "sources": {
     "idle": [
       {
         "row": 0,
         "col": 0,
-        "sourceScale": 0.2644628099173554,
-        "scale": 0.2644628099173554,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          468,
-          859
+          9,
+          10,
+          168,
+          290
         ],
-        "sourceFloor": 859,
-        "center": 244.0,
+        "sourceFloor": 290,
+        "center": 89,
         "mirrored": false,
         "bounds": [
-          130,
           128,
-          251,
-          352
-        ],
-        "sourceBodyHeight": 847,
-        "sourceGlobalBox": [
-          17,
-          70,
-          472,
-          917
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 1,
-        "sourceScale": 0.2644628099173554,
-        "scale": 0.2644628099173554,
-        "source": [
-          12,
-          12,
-          468,
-          859
-        ],
-        "sourceFloor": 859,
-        "center": 244.0,
-        "mirrored": false,
-        "bounds": [
-          130,
           127,
-          251,
-          352
-        ],
-        "sourceBodyHeight": 847,
-        "sourceGlobalBox": [
-          17,
-          70,
-          472,
-          917
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 2,
-        "sourceScale": 0.2644628099173554,
-        "scale": 0.2644628099173554,
-        "source": [
-          12,
-          12,
-          468,
-          859
-        ],
-        "sourceFloor": 859,
-        "center": 244.0,
-        "mirrored": false,
-        "bounds": [
-          130,
-          128,
-          251,
-          352
-        ],
-        "sourceBodyHeight": 847,
-        "sourceGlobalBox": [
-          17,
-          70,
-          472,
-          917
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 3,
-        "sourceScale": 0.2644628099173554,
-        "scale": 0.2644628099173554,
-        "source": [
-          12,
-          12,
-          468,
-          859
-        ],
-        "sourceFloor": 859,
-        "center": 244.0,
-        "mirrored": false,
-        "bounds": [
-          130,
-          129,
-          251,
+          256,
           353
         ],
-        "sourceBodyHeight": 847,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          17,
-          70,
-          472,
-          917
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 1,
-        "col": 0,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
-        "source": [
-          11,
-          12,
-          251,
-          857
-        ],
-        "sourceFloor": 857,
-        "center": 122,
-        "mirrored": false,
-        "bounds": [
-          163,
-          128,
-          226,
-          352
-        ],
-        "sourceBodyHeight": 845,
-        "sourceGlobalBox": [
-          858,
-          72,
-          1095,
-          917
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
+        "row": 0,
         "col": 1,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          11,
-          12,
-          251,
-          857
+          9,
+          10,
+          168,
+          290
         ],
-        "sourceFloor": 857,
-        "center": 122,
+        "sourceFloor": 290,
+        "center": 89,
         "mirrored": false,
         "bounds": [
-          163,
-          127,
-          226,
-          352
-        ],
-        "sourceBodyHeight": 845,
-        "sourceGlobalBox": [
-          858,
-          72,
-          1095,
-          917
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 2,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
-        "source": [
-          11,
-          12,
-          251,
-          857
-        ],
-        "sourceFloor": 857,
-        "center": 122,
-        "mirrored": false,
-        "bounds": [
-          163,
           128,
-          226,
-          352
-        ],
-        "sourceBodyHeight": 845,
-        "sourceGlobalBox": [
-          858,
-          72,
-          1095,
-          917
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 3,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
-        "source": [
-          11,
-          12,
-          251,
-          857
-        ],
-        "sourceFloor": 857,
-        "center": 122,
-        "mirrored": false,
-        "bounds": [
-          163,
-          129,
-          226,
+          127,
+          256,
           353
         ],
-        "sourceBodyHeight": 845,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          858,
-          72,
-          1095,
-          917
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "sourceScale": 0.8,
+        "scale": 0.8,
+        "source": [
+          9,
+          10,
+          168,
+          290
+        ],
+        "sourceFloor": 290,
+        "center": 89,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 280,
+        "sourceGlobalBox": [
+          55,
+          59,
+          212,
+          339
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "sourceScale": 0.8,
+        "scale": 0.8,
+        "source": [
+          9,
+          10,
+          168,
+          290
+        ],
+        "sourceFloor": 290,
+        "center": 89,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 280,
+        "sourceGlobalBox": [
+          55,
+          59,
+          212,
+          339
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
+        "bounds": [
+          172,
+          128,
+          234,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
+        "bounds": [
+          172,
+          128,
+          234,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
+        "bounds": [
+          172,
+          128,
+          234,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 3,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
+        "bounds": [
+          172,
+          128,
+          234,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 0,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          10,
-          11,
-          234,
-          856
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 856,
-        "center": 132,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
-          160,
+          150,
           128,
-          219,
+          212,
           352
         ],
-        "sourceBodyHeight": 845,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          491,
-          73,
-          712,
-          916
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 1,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          10,
-          11,
-          234,
-          856
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 856,
-        "center": 132,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
-          160,
-          127,
-          219,
+          150,
+          128,
+          212,
           352
         ],
-        "sourceBodyHeight": 845,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          491,
-          73,
-          712,
-          916
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 2,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          10,
-          11,
-          234,
-          856
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 856,
-        "center": 132,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
-          160,
+          150,
           128,
-          219,
+          212,
           352
         ],
-        "sourceBodyHeight": 845,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          491,
-          73,
-          712,
-          916
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 3,
-        "sourceScale": 0.2650887573964497,
-        "scale": 0.2650887573964497,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          10,
-          11,
-          234,
-          856
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 856,
-        "center": 132,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
-          160,
-          129,
-          219,
+          150,
+          128,
+          212,
           352
         ],
-        "sourceBodyHeight": 845,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          491,
-          73,
-          712,
-          916
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 0,
-        "sourceScale": 0.2641509433962264,
-        "scale": 0.2641509433962264,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          12,
-          11,
-          450,
-          859
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 859,
-        "center": 232.0,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          134,
           128,
-          250,
-          352
+          127,
+          256,
+          353
         ],
-        "sourceBodyHeight": 848,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          1085,
-          69,
-          1523,
-          916
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 1,
-        "sourceScale": 0.2641509433962264,
-        "scale": 0.2641509433962264,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          12,
-          11,
-          450,
-          859
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 859,
-        "center": 232.0,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          134,
+          128,
           127,
-          250,
-          352
+          256,
+          353
         ],
-        "sourceBodyHeight": 848,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          1085,
-          69,
-          1523,
-          916
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 2,
-        "sourceScale": 0.2641509433962264,
-        "scale": 0.2641509433962264,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          12,
-          11,
-          450,
-          859
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 859,
-        "center": 232.0,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          134,
           128,
-          250,
-          352
+          127,
+          256,
+          353
         ],
-        "sourceBodyHeight": 848,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          1085,
-          69,
-          1523,
-          916
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 3,
-        "sourceScale": 0.2641509433962264,
-        "scale": 0.2641509433962264,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          12,
-          11,
-          450,
-          859
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 859,
-        "center": 232.0,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          134,
-          129,
-          250,
-          352
+          128,
+          127,
+          256,
+          353
         ],
-        "sourceBodyHeight": 848,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          1085,
-          69,
-          1523,
-          916
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       }
     ],
     "walk": [
       {
         "row": 0,
         "col": 0,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          11,
-          311,
-          501
+          10,
+          9,
+          335,
+          620
         ],
-        "sourceFloor": 501,
-        "center": 163.0,
+        "sourceFloor": 620,
+        "center": 175.0,
         "mirrored": false,
         "bounds": [
-          122,
+          131,
           128,
-          260,
+          251,
           353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          94,
-          22,
-          393,
-          511
+          135,
+          57,
+          460,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 1,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          11,
-          300,
-          495
+          10,
+          9,
+          335,
+          620
         ],
-        "sourceFloor": 495,
-        "center": 157,
+        "sourceFloor": 620,
+        "center": 175.0,
         "mirrored": false,
         "bounds": [
-          125,
           131,
-          258,
-          352
+          128,
+          251,
+          353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          458,
-          23,
-          746,
-          505
+          135,
+          57,
+          460,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 2,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          12,
-          298,
-          499
+          9,
+          10,
+          333,
+          624
         ],
-        "sourceFloor": 499,
-        "center": 154.0,
+        "sourceFloor": 624,
+        "center": 170,
         "mirrored": false,
         "bounds": [
-          127,
-          129,
-          258,
-          353
+          133,
+          126,
+          253,
+          352
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          807,
-          21,
-          1092,
-          508
+          644,
+          53,
+          967,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 3,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          11,
-          300,
-          499
+          9,
+          10,
+          333,
+          624
         ],
-        "sourceFloor": 499,
-        "center": 155.0,
+        "sourceFloor": 624,
+        "center": 170,
         "mirrored": false,
         "bounds": [
+          133,
           126,
-          129,
-          259,
+          253,
           352
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          1152,
-          21,
-          1440,
-          507
+          644,
+          53,
+          967,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 4,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          12,
-          317,
-          493
+          10,
+          9,
+          334,
+          623
         ],
-        "sourceFloor": 493,
-        "center": 165.5,
+        "sourceFloor": 623,
+        "center": 171.5,
         "mirrored": false,
         "bounds": [
-          121,
           132,
-          261,
+          127,
+          252,
           353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          91,
-          522,
-          396,
-          1003
+          1196,
+          54,
+          1520,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 5,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          12,
-          308,
-          495
+          10,
+          9,
+          334,
+          623
         ],
-        "sourceFloor": 495,
-        "center": 160,
+        "sourceFloor": 623,
+        "center": 171.5,
         "mirrored": false,
         "bounds": [
-          124,
-          131,
-          260,
+          132,
+          127,
+          252,
           353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          449,
-          522,
-          744,
-          1005
+          1196,
+          54,
+          1520,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 6,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.5685279187817259,
+        "scale": 0.5685279187817259,
         "source": [
-          12,
-          12,
-          307,
-          497
+          10,
+          9,
+          224,
+          401
         ],
-        "sourceFloor": 497,
-        "center": 159,
+        "sourceFloor": 401,
+        "center": 117.0,
         "mirrored": false,
         "bounds": [
-          124,
           130,
-          260,
-          352
+          129,
+          253,
+          353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 394,
         "sourceGlobalBox": [
-          799,
-          522,
-          1094,
-          1006
+          1001,
+          28,
+          1215,
+          419
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1774,
+          887
+        ],
+        "sourceAtlas": "walk-vertical",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 7,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.5685279187817259,
+        "scale": 0.5685279187817259,
         "source": [
-          12,
-          12,
-          307,
-          496
+          10,
+          9,
+          224,
+          401
         ],
-        "sourceFloor": 496,
-        "center": 159,
+        "sourceFloor": 401,
+        "center": 117.0,
         "mirrored": false,
         "bounds": [
-          124,
           130,
-          260,
-          352
+          129,
+          253,
+          353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 394,
         "sourceGlobalBox": [
-          1154,
-          522,
-          1449,
-          1006
+          1001,
+          28,
+          1215,
+          419
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1774,
+          887
+        ],
+        "sourceAtlas": "walk-vertical",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 0,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          11,
-          332,
-          502
+          10,
+          10,
+          306,
+          492
         ],
-        "sourceFloor": 502,
-        "center": 170,
-        "mirrored": true,
-        "bounds": [
-          119,
-          128,
-          265,
-          352
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          106,
-          25,
-          425,
-          515
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 1,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          12,
-          307,
-          505
-        ],
-        "sourceFloor": 505,
-        "center": 162,
+        "sourceFloor": 492,
+        "center": 164.0,
         "mirrored": true,
         "bounds": [
           125,
           127,
-          261,
+          264,
           352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          463,
-          24,
-          758,
-          516
+          14,
+          138,
+          310,
+          620
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          10,
+          246,
+          492
+        ],
+        "sourceFloor": 492,
+        "center": 135,
+        "mirrored": true,
+        "bounds": [
+          140,
+          127,
+          251,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          314,
+          140,
+          550,
+          622
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 2,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          314,
-          503
+          9,
+          10,
+          147,
+          491
         ],
-        "sourceFloor": 503,
-        "center": 180,
+        "sourceFloor": 491,
+        "center": 99,
         "mirrored": true,
         "bounds": [
-          130,
+          169,
           128,
-          269,
+          234,
           353
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          794,
-          24,
-          1096,
-          515
+          619,
+          141,
+          756,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 3,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          328,
-          503
+          10,
+          10,
+          220,
+          490
         ],
-        "sourceFloor": 503,
-        "center": 173.0,
+        "sourceFloor": 490,
+        "center": 129,
         "mirrored": true,
         "bounds": [
-          121,
+          149,
           128,
-          266,
-          353
+          248,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          1169,
-          24,
-          1485,
-          515
+          849,
+          143,
+          1059,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 4,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          355,
-          485
+          10,
+          10,
+          301,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 179,
+        "sourceFloor": 488,
+        "center": 156,
         "mirrored": true,
         "bounds": [
-          112,
-          136,
-          269,
-          353
+          124,
+          129,
+          260,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          91,
-          528,
-          434,
-          1001
+          1085,
+          144,
+          1375,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 5,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          319,
-          485
+          10,
+          10,
+          250,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 167,
+        "sourceFloor": 488,
+        "center": 131,
         "mirrored": true,
         "bounds": [
-          122,
           136,
-          263,
-          353
+          129,
+          249,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          462,
-          528,
-          768,
-          1001
+          1386,
+          143,
+          1626,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 6,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          330,
-          485
+          9,
+          10,
+          162,
+          492
         ],
-        "sourceFloor": 485,
-        "center": 174,
+        "sourceFloor": 492,
+        "center": 100,
         "mirrored": true,
+        "bounds": [
+          163,
+          127,
+          234,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          1692,
+          139,
+          1843,
+          621
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          9,
+          265,
+          489
+        ],
+        "sourceFloor": 489,
+        "center": 142.0,
+        "mirrored": true,
+        "bounds": [
+          134,
+          129,
+          254,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          1916,
+          144,
+          2171,
+          622
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          10,
+          306,
+          492
+        ],
+        "sourceFloor": 492,
+        "center": 164.0,
+        "mirrored": false,
         "bounds": [
           120,
-          136,
-          266,
-          353
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          797,
-          528,
-          1115,
-          1001
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 7,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          12,
-          347,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 175,
-        "mirrored": true,
-        "bounds": [
-          114,
-          136,
-          267,
-          353
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          1165,
-          528,
-          1499,
-          1001
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 0,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          11,
-          332,
-          502
-        ],
-        "sourceFloor": 502,
-        "center": 170,
-        "mirrored": false,
-        "bounds": [
-          119,
-          128,
-          265,
-          352
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          106,
-          25,
-          425,
-          515
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 1,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          12,
-          307,
-          505
-        ],
-        "sourceFloor": 505,
-        "center": 162,
-        "mirrored": false,
-        "bounds": [
-          123,
           127,
           259,
           352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          463,
-          24,
-          758,
-          516
+          14,
+          138,
+          310,
+          620
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          10,
+          246,
+          492
+        ],
+        "sourceFloor": 492,
+        "center": 135,
+        "mirrored": false,
+        "bounds": [
+          133,
+          127,
+          244,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          314,
+          140,
+          550,
+          622
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 2,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          314,
-          503
+          9,
+          10,
+          147,
+          491
         ],
-        "sourceFloor": 503,
-        "center": 180,
+        "sourceFloor": 491,
+        "center": 99,
         "mirrored": false,
         "bounds": [
-          115,
+          150,
           128,
-          254,
+          215,
           353
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          794,
-          24,
-          1096,
-          515
+          619,
+          141,
+          756,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 3,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          328,
-          503
+          10,
+          10,
+          220,
+          490
         ],
-        "sourceFloor": 503,
-        "center": 173.0,
+        "sourceFloor": 490,
+        "center": 129,
         "mirrored": false,
         "bounds": [
-          118,
+          136,
           128,
-          263,
-          353
+          235,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          1169,
-          24,
-          1485,
-          515
+          849,
+          143,
+          1059,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 4,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          355,
-          485
+          10,
+          10,
+          301,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 179,
+        "sourceFloor": 488,
+        "center": 156,
         "mirrored": false,
         "bounds": [
-          115,
-          136,
-          272,
-          353
+          124,
+          129,
+          260,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          91,
-          528,
-          434,
-          1001
+          1085,
+          144,
+          1375,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 5,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          319,
-          485
+          10,
+          10,
+          250,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 167,
+        "sourceFloor": 488,
+        "center": 131,
         "mirrored": false,
         "bounds": [
-          121,
-          136,
-          262,
-          353
+          135,
+          129,
+          248,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          462,
-          528,
-          768,
-          1001
+          1386,
+          143,
+          1626,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 6,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          330,
-          485
+          9,
+          10,
+          162,
+          492
         ],
-        "sourceFloor": 485,
-        "center": 174,
+        "sourceFloor": 492,
+        "center": 100,
         "mirrored": false,
         "bounds": [
-          118,
-          136,
-          264,
-          353
+          150,
+          127,
+          221,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          797,
-          528,
-          1115,
-          1001
+          1692,
+          139,
+          1843,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 7,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          347,
-          485
+          10,
+          9,
+          265,
+          489
         ],
-        "sourceFloor": 485,
-        "center": 175,
+        "sourceFloor": 489,
+        "center": 142.0,
         "mirrored": false,
         "bounds": [
-          117,
-          136,
-          270,
-          353
+          130,
+          129,
+          250,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          1165,
-          528,
-          1499,
-          1001
+          1916,
+          144,
+          2171,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 0,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          12,
-          311,
-          504
+          10,
+          10,
+          303,
+          537
         ],
-        "sourceFloor": 504,
-        "center": 163,
-        "mirrored": false,
-        "bounds": [
-          123,
-          128,
-          260,
-          353
-        ],
-        "sourceBodyHeight": 492,
-        "sourceGlobalBox": [
-          83,
-          14,
-          382,
-          506
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 3,
-        "col": 1,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
-        "source": [
-          12,
-          12,
-          295,
-          503
-        ],
-        "sourceFloor": 503,
+        "sourceFloor": 537,
         "center": 154,
         "mirrored": false,
         "bounds": [
-          127,
+          131,
           128,
-          257,
-          352
+          256,
+          353
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          442,
-          13,
-          725,
-          504
+          142,
+          112,
+          435,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
+        "source": [
+          10,
+          10,
+          303,
+          537
+        ],
+        "sourceFloor": 537,
+        "center": 154,
+        "mirrored": false,
+        "bounds": [
+          131,
+          128,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 527,
+        "sourceGlobalBox": [
+          142,
+          112,
+          435,
+          639
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 2,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          12,
-          11,
-          301,
-          504
+          10,
+          10,
+          303,
+          539
         ],
-        "sourceFloor": 504,
-        "center": 157.0,
+        "sourceFloor": 539,
+        "center": 154,
         "mirrored": false,
         "bounds": [
-          126,
-          128,
-          259,
+          131,
+          127,
+          256,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          809,
-          14,
-          1098,
-          505
+          677,
+          110,
+          969,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 3,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          11,
-          299,
-          504
+          10,
+          10,
+          303,
+          539
         ],
-        "sourceFloor": 504,
-        "center": 155,
+        "sourceFloor": 539,
+        "center": 154,
         "mirrored": false,
         "bounds": [
-          126,
-          128,
-          258,
-          353
+          131,
+          127,
+          256,
+          352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          1175,
-          14,
-          1462,
-          506
+          677,
+          110,
+          969,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 4,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          11,
-          311,
-          498
+          9,
+          9,
+          305,
+          540
         ],
-        "sourceFloor": 498,
-        "center": 162.0,
+        "sourceFloor": 540,
+        "center": 159,
         "mirrored": false,
         "bounds": [
-          123,
-          130,
-          260,
+          128,
+          126,
+          254,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          83,
-          517,
-          382,
-          1003
+          1202,
+          111,
+          1497,
+          641
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 5,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          11,
+          9,
+          9,
           305,
-          497
+          540
         ],
-        "sourceFloor": 497,
-        "center": 160.0,
+        "sourceFloor": 540,
+        "center": 159,
         "mirrored": false,
         "bounds": [
-          124,
-          131,
-          258,
+          128,
+          126,
+          254,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          440,
-          517,
-          733,
-          1001
+          1202,
+          111,
+          1497,
+          641
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 6,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          12,
-          301,
-          497
+          10,
+          9,
+          302,
+          538
         ],
-        "sourceFloor": 497,
-        "center": 157.0,
+        "sourceFloor": 538,
+        "center": 159.0,
         "mirrored": false,
         "bounds": [
-          126,
-          131,
-          259,
-          353
+          128,
+          127,
+          252,
+          352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          802,
-          517,
-          1091,
-          1002
+          1738,
+          111,
+          2029,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 7,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          12,
-          12,
-          301,
-          498
+          10,
+          9,
+          302,
+          538
         ],
-        "sourceFloor": 498,
-        "center": 156.0,
+        "sourceFloor": 538,
+        "center": 159.0,
         "mirrored": false,
         "bounds": [
-          126,
-          130,
-          258,
+          128,
+          127,
+          252,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          1174,
-          517,
-          1462,
-          1002
+          1738,
+          111,
+          2029,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       }
     ],
     "run1": [
       {
         "row": 0,
         "col": 0,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          11,
-          311,
-          501
+          10,
+          9,
+          335,
+          620
         ],
-        "sourceFloor": 501,
-        "center": 163.0,
+        "sourceFloor": 620,
+        "center": 175.0,
         "mirrored": false,
         "bounds": [
-          122,
+          131,
           128,
-          260,
+          251,
           353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          94,
-          22,
-          393,
-          511
+          135,
+          57,
+          460,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 1,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          11,
-          300,
-          495
+          10,
+          9,
+          335,
+          620
         ],
-        "sourceFloor": 495,
-        "center": 157,
+        "sourceFloor": 620,
+        "center": 175.0,
         "mirrored": false,
         "bounds": [
-          125,
           131,
-          258,
-          352
+          128,
+          251,
+          353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          458,
-          23,
-          746,
-          505
+          135,
+          57,
+          460,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 2,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          12,
-          298,
-          499
+          9,
+          10,
+          333,
+          624
         ],
-        "sourceFloor": 499,
-        "center": 154.0,
+        "sourceFloor": 624,
+        "center": 170,
         "mirrored": false,
         "bounds": [
-          127,
-          129,
-          258,
-          353
+          133,
+          126,
+          253,
+          352
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          807,
-          21,
-          1092,
-          508
+          644,
+          53,
+          967,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 3,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          11,
-          300,
-          499
+          9,
+          10,
+          333,
+          624
         ],
-        "sourceFloor": 499,
-        "center": 155.0,
+        "sourceFloor": 624,
+        "center": 170,
         "mirrored": false,
         "bounds": [
+          133,
           126,
-          129,
-          259,
+          253,
           352
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          1152,
-          21,
-          1440,
-          507
+          644,
+          53,
+          967,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 4,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          12,
-          317,
-          493
+          10,
+          9,
+          334,
+          623
         ],
-        "sourceFloor": 493,
-        "center": 165.5,
+        "sourceFloor": 623,
+        "center": 171.5,
         "mirrored": false,
         "bounds": [
-          121,
           132,
-          261,
+          127,
+          252,
           353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          91,
-          522,
-          396,
-          1003
+          1196,
+          54,
+          1520,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 5,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.36661211129296234,
+        "scale": 0.36661211129296234,
         "source": [
-          12,
-          12,
-          308,
-          495
+          10,
+          9,
+          334,
+          623
         ],
-        "sourceFloor": 495,
-        "center": 160,
+        "sourceFloor": 623,
+        "center": 171.5,
         "mirrored": false,
         "bounds": [
-          124,
-          131,
-          260,
+          132,
+          127,
+          252,
           353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 611,
         "sourceGlobalBox": [
-          449,
-          522,
-          744,
-          1005
+          1196,
+          54,
+          1520,
+          667
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-front",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 6,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.5685279187817259,
+        "scale": 0.5685279187817259,
         "source": [
-          12,
-          12,
-          307,
-          497
+          10,
+          9,
+          224,
+          401
         ],
-        "sourceFloor": 497,
-        "center": 159,
+        "sourceFloor": 401,
+        "center": 117.0,
         "mirrored": false,
         "bounds": [
-          124,
           130,
-          260,
-          352
+          129,
+          253,
+          353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 394,
         "sourceGlobalBox": [
-          799,
-          522,
-          1094,
-          1006
+          1001,
+          28,
+          1215,
+          419
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1774,
+          887
+        ],
+        "sourceAtlas": "walk-vertical",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 7,
-        "sourceScale": 0.45714285714285713,
-        "scale": 0.45714285714285713,
+        "sourceScale": 0.5685279187817259,
+        "scale": 0.5685279187817259,
         "source": [
-          12,
-          12,
-          307,
-          496
+          10,
+          9,
+          224,
+          401
         ],
-        "sourceFloor": 496,
-        "center": 159,
+        "sourceFloor": 401,
+        "center": 117.0,
         "mirrored": false,
         "bounds": [
-          124,
           130,
-          260,
-          352
+          129,
+          253,
+          353
         ],
-        "sourceBodyHeight": 490,
+        "sourceBodyHeight": 394,
         "sourceGlobalBox": [
-          1154,
-          522,
-          1449,
-          1006
+          1001,
+          28,
+          1215,
+          419
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1774,
+          887
+        ],
+        "sourceAtlas": "walk-vertical",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 0,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          11,
-          332,
-          502
+          10,
+          10,
+          306,
+          492
         ],
-        "sourceFloor": 502,
-        "center": 170,
-        "mirrored": true,
-        "bounds": [
-          119,
-          128,
-          265,
-          352
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          106,
-          25,
-          425,
-          515
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 1,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          12,
-          307,
-          505
-        ],
-        "sourceFloor": 505,
-        "center": 162,
+        "sourceFloor": 492,
+        "center": 164.0,
         "mirrored": true,
         "bounds": [
           125,
           127,
-          261,
+          264,
           352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          463,
-          24,
-          758,
-          516
+          14,
+          138,
+          310,
+          620
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          10,
+          246,
+          492
+        ],
+        "sourceFloor": 492,
+        "center": 135,
+        "mirrored": true,
+        "bounds": [
+          140,
+          127,
+          251,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          314,
+          140,
+          550,
+          622
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 2,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          314,
-          503
+          9,
+          10,
+          147,
+          491
         ],
-        "sourceFloor": 503,
-        "center": 180,
+        "sourceFloor": 491,
+        "center": 99,
         "mirrored": true,
         "bounds": [
-          130,
+          169,
           128,
-          269,
+          234,
           353
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          794,
-          24,
-          1096,
-          515
+          619,
+          141,
+          756,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 3,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          328,
-          503
+          10,
+          10,
+          220,
+          490
         ],
-        "sourceFloor": 503,
-        "center": 173.0,
+        "sourceFloor": 490,
+        "center": 129,
         "mirrored": true,
         "bounds": [
-          121,
+          149,
           128,
-          266,
-          353
+          248,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          1169,
-          24,
-          1485,
-          515
+          849,
+          143,
+          1059,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 4,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          355,
-          485
+          10,
+          10,
+          301,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 179,
+        "sourceFloor": 488,
+        "center": 156,
         "mirrored": true,
         "bounds": [
-          112,
-          136,
-          269,
-          353
+          124,
+          129,
+          260,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          91,
-          528,
-          434,
-          1001
+          1085,
+          144,
+          1375,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 5,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          319,
-          485
+          10,
+          10,
+          250,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 167,
+        "sourceFloor": 488,
+        "center": 131,
         "mirrored": true,
         "bounds": [
-          122,
           136,
-          263,
-          353
+          129,
+          249,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          462,
-          528,
-          768,
-          1001
+          1386,
+          143,
+          1626,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 6,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          330,
-          485
+          9,
+          10,
+          162,
+          492
         ],
-        "sourceFloor": 485,
-        "center": 174,
+        "sourceFloor": 492,
+        "center": 100,
         "mirrored": true,
+        "bounds": [
+          163,
+          127,
+          234,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          1692,
+          139,
+          1843,
+          621
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 7,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          9,
+          265,
+          489
+        ],
+        "sourceFloor": 489,
+        "center": 142.0,
+        "mirrored": true,
+        "bounds": [
+          134,
+          129,
+          254,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          1916,
+          144,
+          2171,
+          622
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          10,
+          306,
+          492
+        ],
+        "sourceFloor": 492,
+        "center": 164.0,
+        "mirrored": false,
         "bounds": [
           120,
-          136,
-          266,
-          353
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          797,
-          528,
-          1115,
-          1001
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 7,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          12,
-          347,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 175,
-        "mirrored": true,
-        "bounds": [
-          114,
-          136,
-          267,
-          353
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          1165,
-          528,
-          1499,
-          1001
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 0,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          11,
-          332,
-          502
-        ],
-        "sourceFloor": 502,
-        "center": 170,
-        "mirrored": false,
-        "bounds": [
-          119,
-          128,
-          265,
-          352
-        ],
-        "sourceBodyHeight": 491,
-        "sourceGlobalBox": [
-          106,
-          25,
-          425,
-          515
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 1,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
-        "source": [
-          12,
-          12,
-          307,
-          505
-        ],
-        "sourceFloor": 505,
-        "center": 162,
-        "mirrored": false,
-        "bounds": [
-          123,
           127,
           259,
           352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          463,
-          24,
-          758,
-          516
+          14,
+          138,
+          310,
+          620
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
+        "source": [
+          10,
+          10,
+          246,
+          492
+        ],
+        "sourceFloor": 492,
+        "center": 135,
+        "mirrored": false,
+        "bounds": [
+          133,
+          127,
+          244,
+          352
+        ],
+        "sourceBodyHeight": 482,
+        "sourceGlobalBox": [
+          314,
+          140,
+          550,
+          622
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 2,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          314,
-          503
+          9,
+          10,
+          147,
+          491
         ],
-        "sourceFloor": 503,
-        "center": 180,
+        "sourceFloor": 491,
+        "center": 99,
         "mirrored": false,
         "bounds": [
-          115,
+          150,
           128,
-          254,
+          215,
           353
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          794,
-          24,
-          1096,
-          515
+          619,
+          141,
+          756,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 3,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          328,
-          503
+          10,
+          10,
+          220,
+          490
         ],
-        "sourceFloor": 503,
-        "center": 173.0,
+        "sourceFloor": 490,
+        "center": 129,
         "mirrored": false,
         "bounds": [
-          118,
+          136,
           128,
-          263,
-          353
+          235,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          1169,
-          24,
-          1485,
-          515
+          849,
+          143,
+          1059,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 4,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          355,
-          485
+          10,
+          10,
+          301,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 179,
+        "sourceFloor": 488,
+        "center": 156,
         "mirrored": false,
         "bounds": [
-          115,
-          136,
-          272,
-          353
+          124,
+          129,
+          260,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          91,
-          528,
-          434,
-          1001
+          1085,
+          144,
+          1375,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 5,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          11,
-          12,
-          319,
-          485
+          10,
+          10,
+          250,
+          488
         ],
-        "sourceFloor": 485,
-        "center": 167,
+        "sourceFloor": 488,
+        "center": 131,
         "mirrored": false,
         "bounds": [
-          121,
-          136,
-          262,
-          353
+          135,
+          129,
+          248,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          462,
-          528,
-          768,
-          1001
+          1386,
+          143,
+          1626,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 6,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          330,
-          485
+          9,
+          10,
+          162,
+          492
         ],
-        "sourceFloor": 485,
-        "center": 174,
+        "sourceFloor": 492,
+        "center": 100,
         "mirrored": false,
         "bounds": [
-          118,
-          136,
-          264,
-          353
+          150,
+          127,
+          221,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          797,
-          528,
-          1115,
-          1001
+          1692,
+          139,
+          1843,
+          621
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 7,
-        "sourceScale": 0.45621181262729127,
-        "scale": 0.45621181262729127,
+        "sourceScale": 0.46473029045643155,
+        "scale": 0.46473029045643155,
         "source": [
-          12,
-          12,
-          347,
-          485
+          10,
+          9,
+          265,
+          489
         ],
-        "sourceFloor": 485,
-        "center": 175,
+        "sourceFloor": 489,
+        "center": 142.0,
         "mirrored": false,
         "bounds": [
-          117,
-          136,
-          270,
-          353
+          130,
+          129,
+          250,
+          352
         ],
-        "sourceBodyHeight": 491,
+        "sourceBodyHeight": 482,
         "sourceGlobalBox": [
-          1165,
-          528,
-          1499,
-          1001
+          1916,
+          144,
+          2171,
+          622
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-side",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 0,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          12,
-          311,
-          504
+          10,
+          10,
+          303,
+          537
         ],
-        "sourceFloor": 504,
-        "center": 163,
-        "mirrored": false,
-        "bounds": [
-          123,
-          128,
-          260,
-          353
-        ],
-        "sourceBodyHeight": 492,
-        "sourceGlobalBox": [
-          83,
-          14,
-          382,
-          506
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 3,
-        "col": 1,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
-        "source": [
-          12,
-          12,
-          295,
-          503
-        ],
-        "sourceFloor": 503,
+        "sourceFloor": 537,
         "center": 154,
         "mirrored": false,
         "bounds": [
-          127,
+          131,
           128,
-          257,
-          352
+          256,
+          353
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          442,
-          13,
-          725,
-          504
+          142,
+          112,
+          435,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
+        "source": [
+          10,
+          10,
+          303,
+          537
+        ],
+        "sourceFloor": 537,
+        "center": 154,
+        "mirrored": false,
+        "bounds": [
+          131,
+          128,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 527,
+        "sourceGlobalBox": [
+          142,
+          112,
+          435,
+          639
+        ],
+        "sourceImageSize": [
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 2,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          12,
-          11,
-          301,
-          504
+          10,
+          10,
+          303,
+          539
         ],
-        "sourceFloor": 504,
-        "center": 157.0,
+        "sourceFloor": 539,
+        "center": 154,
         "mirrored": false,
         "bounds": [
-          126,
-          128,
-          259,
+          131,
+          127,
+          256,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          809,
-          14,
-          1098,
-          505
+          677,
+          110,
+          969,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 3,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          11,
-          299,
-          504
+          10,
+          10,
+          303,
+          539
         ],
-        "sourceFloor": 504,
-        "center": 155,
+        "sourceFloor": 539,
+        "center": 154,
         "mirrored": false,
         "bounds": [
-          126,
-          128,
-          258,
-          353
+          131,
+          127,
+          256,
+          352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          1175,
-          14,
-          1462,
-          506
+          677,
+          110,
+          969,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 4,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          11,
-          311,
-          498
+          9,
+          9,
+          305,
+          540
         ],
-        "sourceFloor": 498,
-        "center": 162.0,
+        "sourceFloor": 540,
+        "center": 159,
         "mirrored": false,
         "bounds": [
-          123,
-          130,
-          260,
+          128,
+          126,
+          254,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          83,
-          517,
-          382,
-          1003
+          1202,
+          111,
+          1497,
+          641
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 5,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          11,
+          9,
+          9,
           305,
-          497
+          540
         ],
-        "sourceFloor": 497,
-        "center": 160.0,
+        "sourceFloor": 540,
+        "center": 159,
         "mirrored": false,
         "bounds": [
-          124,
-          131,
-          258,
+          128,
+          126,
+          254,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          440,
-          517,
-          733,
-          1001
+          1202,
+          111,
+          1497,
+          641
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 6,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          11,
-          12,
-          301,
-          497
+          10,
+          9,
+          302,
+          538
         ],
-        "sourceFloor": 497,
-        "center": 157.0,
+        "sourceFloor": 538,
+        "center": 159.0,
         "mirrored": false,
         "bounds": [
-          126,
-          131,
-          259,
-          353
+          128,
+          127,
+          252,
+          352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          802,
-          517,
-          1091,
-          1002
+          1738,
+          111,
+          2029,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 7,
-        "sourceScale": 0.45528455284552843,
-        "scale": 0.45528455284552843,
+        "sourceScale": 0.4250474383301708,
+        "scale": 0.4250474383301708,
         "source": [
-          12,
-          12,
-          301,
-          498
+          10,
+          9,
+          302,
+          538
         ],
-        "sourceFloor": 498,
-        "center": 156.0,
+        "sourceFloor": 538,
+        "center": 159.0,
         "mirrored": false,
         "bounds": [
-          126,
-          130,
-          258,
+          128,
+          127,
+          252,
           352
         ],
-        "sourceBodyHeight": 492,
+        "sourceBodyHeight": 527,
         "sourceGlobalBox": [
-          1174,
-          517,
-          1462,
-          1002
+          1738,
+          111,
+          2029,
+          639
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          2172,
+          724
+        ],
+        "sourceAtlas": "walk-back",
+        "fixedBodyModel": "gunslinger-v36"
       }
     ],
     "weapon": [
       {
         "row": 0,
         "col": 0,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          11,
-          12,
-          256,
-          511
+          9,
+          10,
+          168,
+          290
         ],
-        "sourceFloor": 511,
-        "center": 134.0,
+        "sourceFloor": 290,
+        "center": 89,
         "mirrored": false,
         "bounds": [
-          137,
           128,
-          247,
+          127,
+          256,
           353
         ],
-        "sourceBodyHeight": 499,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          14,
-          17,
-          258,
-          516
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 1,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          239,
-          511
+          10,
+          10,
+          140,
+          292
         ],
-        "sourceFloor": 511,
-        "center": 126.0,
+        "sourceFloor": 292,
+        "center": 61,
         "mirrored": false,
         "bounds": [
-          140,
-          128,
-          243,
+          151,
+          126,
+          256,
           353
         ],
-        "sourceBodyHeight": 499,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          794,
-          17,
-          1021,
-          516
+          337,
+          57,
+          467,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 2,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          246,
-          511
+          10,
+          10,
+          141,
+          291
         ],
-        "sourceFloor": 511,
-        "center": 127.0,
+        "sourceFloor": 291,
+        "center": 62.0,
         "mirrored": false,
         "bounds": [
-          140,
-          128,
-          245,
+          150,
+          126,
+          255,
           353
         ],
-        "sourceBodyHeight": 499,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          535,
-          17,
-          768,
-          516
+          588,
+          58,
+          718,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 3,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          224,
-          511
+          10,
+          10,
+          132,
+          292
         ],
-        "sourceFloor": 511,
-        "center": 118.0,
+        "sourceFloor": 292,
+        "center": 81,
         "mirrored": false,
         "bounds": [
-          144,
-          128,
-          240,
+          134,
+          126,
+          233,
           353
         ],
-        "sourceBodyHeight": 499,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          276,
-          17,
-          488,
-          516
+          847,
+          57,
+          967,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 4,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          230,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 121.0,
-        "mirrored": false,
-        "bounds": [
-          143,
-          128,
-          241,
-          353
-        ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          1038,
-          17,
-          1255,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 5,
-        "sourceScale": 0.44889779559118237,
-        "scale": 0.44889779559118237,
-        "source": [
-          11,
-          12,
-          253,
-          511
-        ],
-        "sourceFloor": 511,
-        "center": 132.0,
-        "mirrored": false,
-        "bounds": [
+          10,
+          10,
           138,
-          128,
-          247,
-          353
+          292
         ],
-        "sourceBodyHeight": 499,
-        "sourceGlobalBox": [
-          1288,
-          17,
-          1528,
-          516
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 0,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          193,
-          486
-        ],
-        "sourceFloor": 486,
-        "center": 103,
-        "mirrored": true,
+        "sourceFloor": 292,
+        "center": 82.0,
+        "mirrored": false,
         "bounds": [
-          150,
-          127,
+          133,
+          125,
           236,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          26,
-          531,
-          206,
-          1005
+          1080,
+          57,
+          1208,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "sourceScale": 0.8,
+        "scale": 0.8,
+        "source": [
+          9,
+          10,
+          168,
+          290
+        ],
+        "sourceFloor": 290,
+        "center": 89,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 280,
+        "sourceGlobalBox": [
+          55,
+          59,
+          212,
+          339
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
+        "bounds": [
+          172,
+          128,
+          234,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 1,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
+          9,
           10,
-          12,
-          284,
-          485
+          194,
+          292
         ],
-        "sourceFloor": 485,
-        "center": 115.0,
+        "sourceFloor": 292,
+        "center": 64.0,
         "mirrored": true,
         "bounds": [
-          111,
-          128,
-          241,
+          89,
+          127,
+          237,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          234,
-          532,
-          506,
-          1004
+          331,
+          383,
+          515,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 2,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          11,
-          12,
-          283,
-          484
+          9,
+          10,
+          194,
+          292
         ],
-        "sourceFloor": 484,
-        "center": 116.0,
+        "sourceFloor": 292,
+        "center": 63,
         "mirrored": true,
         "bounds": [
-          114,
+          88,
           128,
-          242,
+          235,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          496,
-          533,
-          765,
-          1004
+          583,
+          383,
+          766,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 3,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          11,
-          11,
-          289,
-          484
+          10,
+          10,
+          212,
+          292
         ],
-        "sourceFloor": 484,
-        "center": 118,
+        "sourceFloor": 292,
+        "center": 57.0,
         "mirrored": true,
         "bounds": [
-          111,
-          128,
-          243,
+          68,
+          127,
+          230,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          760,
-          533,
-          1037,
-          1004
+          854,
+          383,
+          1056,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 4,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
+          9,
           10,
-          11,
-          315,
-          484
+          198,
+          292
         ],
-        "sourceFloor": 484,
-        "center": 117.0,
+        "sourceFloor": 292,
+        "center": 64,
         "mirrored": true,
         "bounds": [
-          98,
-          128,
-          242,
+          86,
+          127,
+          237,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          1038,
-          533,
-          1339,
-          1004
+          1099,
+          383,
+          1286,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 5,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          11,
-          12,
-          181,
-          485
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 485,
-        "center": 100,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": true,
         "bounds": [
-          153,
+          172,
           128,
           234,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 0,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          11,
-          12,
-          193,
-          486
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 486,
-        "center": 103,
-        "mirrored": false,
-        "bounds": [
-          148,
-          127,
-          234,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          26,
-          531,
-          206,
-          1005
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 1,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          10,
-          12,
-          284,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 115.0,
-        "mirrored": false,
-        "bounds": [
-          143,
-          128,
-          273,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          234,
-          532,
-          506,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 2,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          283,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 116.0,
-        "mirrored": false,
-        "bounds": [
-          142,
-          128,
-          270,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          496,
-          533,
-          765,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 3,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          11,
-          289,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 118,
-        "mirrored": false,
-        "bounds": [
-          141,
-          128,
-          273,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          760,
-          533,
-          1037,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 4,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          10,
-          11,
-          315,
-          484
-        ],
-        "sourceFloor": 484,
-        "center": 117.0,
-        "mirrored": false,
-        "bounds": [
-          142,
-          128,
-          286,
-          352
-        ],
-        "sourceBodyHeight": 474,
-        "sourceGlobalBox": [
-          1038,
-          533,
-          1339,
-          1004
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 5,
-        "sourceScale": 0.47257383966244726,
-        "scale": 0.47257383966244726,
-        "source": [
-          11,
-          12,
-          181,
-          485
-        ],
-        "sourceFloor": 485,
-        "center": 100,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
           150,
           128,
-          231,
+          212,
           352
         ],
-        "sourceBodyHeight": 474,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          1356,
-          532,
-          1525,
-          1004
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          10,
+          194,
+          292
+        ],
+        "sourceFloor": 292,
+        "center": 64.0,
+        "mirrored": false,
+        "bounds": [
+          147,
+          127,
+          295,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          331,
+          383,
+          515,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          10,
+          194,
+          292
+        ],
+        "sourceFloor": 292,
+        "center": 63,
+        "mirrored": false,
+        "bounds": [
+          149,
+          128,
+          296,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          583,
+          383,
+          766,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          10,
+          10,
+          212,
+          292
+        ],
+        "sourceFloor": 292,
+        "center": 57.0,
+        "mirrored": false,
+        "bounds": [
+          154,
+          127,
+          316,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          854,
+          383,
+          1056,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          10,
+          198,
+          292
+        ],
+        "sourceFloor": 292,
+        "center": 64,
+        "mirrored": false,
+        "bounds": [
+          147,
+          127,
+          298,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          1099,
+          383,
+          1286,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": false,
+        "bounds": [
+          150,
+          128,
+          212,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 0,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          12,
-          12,
-          343,
-          679
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 679,
-        "center": 178,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          136,
           128,
-          247,
-          352
+          127,
+          256,
+          353
         ],
-        "sourceBodyHeight": 667,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          17,
-          30,
-          348,
-          697
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
-          2172,
-          724
-        ]
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 1,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
+        "sourceScale": 0.34408602150537637,
+        "scale": 0.34408602150537637,
         "source": [
-          12,
-          11,
-          330,
-          678
+          10,
+          9,
+          314,
+          679
         ],
-        "sourceFloor": 678,
-        "center": 171.0,
+        "sourceFloor": 679,
+        "center": 177.0,
         "mirrored": false,
         "bounds": [
-          139,
-          128,
-          246,
+          134,
+          121,
+          239,
           352
         ],
-        "sourceBodyHeight": 667,
+        "sourceBodyHeight": 651,
         "sourceGlobalBox": [
-          375,
-          31,
-          692,
-          697
+          909,
+          32,
+          1212,
+          701
         ],
         "sourceImageSize": [
           2172,
           724
-        ]
+        ],
+        "sourceAtlas": "shoot-north",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 2,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
+        "sourceScale": 0.34408602150537637,
+        "scale": 0.34408602150537637,
         "source": [
-          12,
           10,
-          330,
-          680
+          10,
+          313,
+          695
         ],
-        "sourceFloor": 680,
-        "center": 171.0,
+        "sourceFloor": 695,
+        "center": 176.0,
         "mirrored": false,
         "bounds": [
-          139,
-          127,
-          246,
-          352
+          134,
+          116,
+          239,
+          353
         ],
-        "sourceBodyHeight": 667,
+        "sourceBodyHeight": 651,
         "sourceGlobalBox": [
-          737,
-          29,
-          1054,
-          697
+          1529,
+          16,
+          1832,
+          701
         ],
         "sourceImageSize": [
           2172,
           724
-        ]
+        ],
+        "sourceAtlas": "shoot-north",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 3,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
+        "sourceScale": 0.34408602150537637,
+        "scale": 0.34408602150537637,
         "source": [
-          12,
-          11,
-          330,
-          678
+          10,
+          9,
+          314,
+          679
         ],
-        "sourceFloor": 678,
-        "center": 171.0,
+        "sourceFloor": 679,
+        "center": 177.0,
         "mirrored": true,
         "bounds": [
-          138,
-          128,
-          245,
+          145,
+          121,
+          250,
           352
         ],
-        "sourceBodyHeight": 667,
+        "sourceBodyHeight": 651,
         "sourceGlobalBox": [
-          375,
-          31,
-          692,
-          697
+          909,
+          32,
+          1212,
+          701
         ],
         "sourceImageSize": [
           2172,
           724
-        ]
+        ],
+        "sourceAtlas": "shoot-north",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 4,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
+        "sourceScale": 0.34408602150537637,
+        "scale": 0.34408602150537637,
         "source": [
-          12,
           10,
-          330,
-          680
+          10,
+          313,
+          695
         ],
-        "sourceFloor": 680,
-        "center": 171.0,
+        "sourceFloor": 695,
+        "center": 176.0,
         "mirrored": true,
         "bounds": [
-          138,
-          127,
-          245,
-          352
+          145,
+          116,
+          250,
+          353
         ],
-        "sourceBodyHeight": 667,
+        "sourceBodyHeight": 651,
         "sourceGlobalBox": [
-          737,
-          29,
-          1054,
-          697
+          1529,
+          16,
+          1832,
+          701
         ],
         "sourceImageSize": [
           2172,
           724
-        ]
+        ],
+        "sourceAtlas": "shoot-north",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 5,
-        "sourceScale": 0.335832083958021,
-        "scale": 0.335832083958021,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          11,
-          12,
-          343,
-          679
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 679,
-        "center": 177,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          137,
           128,
-          248,
-          352
+          127,
+          256,
+          353
         ],
-        "sourceBodyHeight": 667,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          1825,
-          30,
-          2156,
-          697
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
-          2172,
-          724
-        ]
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       }
     ],
     "axeheavy": [
       {
         "row": 0,
         "col": 0,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          11,
-          234,
-          356
-        ],
-        "sourceFloor": 356,
-        "center": 118,
-        "mirrored": false,
-        "bounds": [
-          111,
-          91,
-          280,
-          353
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          175,
-          12,
-          396,
-          356
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 1,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
-        "source": [
-          12,
-          11,
-          234,
-          356
-        ],
-        "sourceFloor": 356,
-        "center": 118,
-        "mirrored": false,
-        "bounds": [
-          111,
-          91,
-          280,
-          353
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          175,
-          12,
-          396,
-          356
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 2,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
-        "source": [
+          9,
           10,
-          10,
-          218,
-          356
+          168,
+          290
         ],
-        "sourceFloor": 356,
-        "center": 111,
-        "mirrored": false,
-        "bounds": [
-          115,
-          90,
-          273,
-          353
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          524,
-          12,
-          730,
-          356
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 3,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
-        "source": [
-          10,
-          10,
-          218,
-          356
-        ],
-        "sourceFloor": 356,
-        "center": 111,
-        "mirrored": false,
-        "bounds": [
-          115,
-          90,
-          273,
-          353
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          524,
-          12,
-          730,
-          356
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 4,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
-        "source": [
-          12,
-          11,
-          196,
-          355
-        ],
-        "sourceFloor": 355,
-        "center": 101,
-        "mirrored": false,
-        "bounds": [
-          124,
-          91,
-          264,
-          352
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          844,
-          13,
-          1026,
-          356
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 5,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
-        "source": [
-          12,
-          11,
-          196,
-          355
-        ],
-        "sourceFloor": 355,
-        "center": 101,
-        "mirrored": false,
-        "bounds": [
-          124,
-          91,
-          264,
-          352
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          844,
-          13,
-          1026,
-          356
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 6,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
-        "source": [
-          12,
-          11,
-          228,
-          307
-        ],
-        "sourceFloor": 307,
-        "center": 120,
-        "mirrored": false,
-        "bounds": [
-          109,
-          128,
-          274,
-          353
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          1146,
-          60,
-          1361,
-          355
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 0,
-        "col": 7,
-        "sourceScale": 0.7567567567567568,
-        "scale": 0.7567567567567568,
-        "source": [
-          12,
-          11,
-          228,
-          307
-        ],
-        "sourceFloor": 307,
-        "center": 120,
-        "mirrored": false,
-        "bounds": [
-          109,
-          128,
-          274,
-          353
-        ],
-        "sourceBodyHeight": 296,
-        "sourceGlobalBox": [
-          1146,
-          60,
-          1361,
-          355
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 0,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          12,
-          204,
-          351
-        ],
-        "sourceFloor": 351,
-        "center": 94,
-        "mirrored": true,
-        "bounds": [
-          106,
-          86,
-          257,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          202,
-          346,
-          394,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 1,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          12,
-          204,
-          351
-        ],
-        "sourceFloor": 351,
-        "center": 94,
-        "mirrored": true,
-        "bounds": [
-          106,
-          86,
-          257,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          202,
-          346,
-          394,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 2,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          11,
-          11,
-          190,
-          328
-        ],
-        "sourceFloor": 328,
+        "sourceFloor": 290,
         "center": 89,
-        "mirrored": true,
-        "bounds": [
-          113,
-          103,
-          254,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          543,
-          369,
-          720,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 3,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          11,
-          11,
-          190,
-          328
-        ],
-        "sourceFloor": 328,
-        "center": 89,
-        "mirrored": true,
-        "bounds": [
-          113,
-          103,
-          254,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          543,
-          369,
-          720,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 4,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          10,
-          194,
-          345
-        ],
-        "sourceFloor": 345,
-        "center": 92.0,
-        "mirrored": true,
-        "bounds": [
-          112,
-          90,
-          255,
-          353
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          852,
-          353,
-          1032,
-          686
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 5,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          10,
-          194,
-          345
-        ],
-        "sourceFloor": 345,
-        "center": 92.0,
-        "mirrored": true,
-        "bounds": [
-          112,
-          90,
-          255,
-          353
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          852,
-          353,
-          1032,
-          686
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 6,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          12,
-          183,
-          298
-        ],
-        "sourceFloor": 298,
-        "center": 101.0,
-        "mirrored": true,
-        "bounds": [
-          128,
-          128,
-          262,
-          353
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          1184,
-          402,
-          1354,
-          688
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 1,
-        "col": 7,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          12,
-          183,
-          298
-        ],
-        "sourceFloor": 298,
-        "center": 101.0,
-        "mirrored": true,
-        "bounds": [
-          128,
-          128,
-          262,
-          353
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          1184,
-          402,
-          1354,
-          688
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 0,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          12,
-          204,
-          351
-        ],
-        "sourceFloor": 351,
-        "center": 94,
         "mirrored": false,
         "bounds": [
+          128,
           127,
-          86,
-          278,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          202,
-          346,
-          394,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 1,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          12,
-          204,
-          351
-        ],
-        "sourceFloor": 351,
-        "center": 94,
-        "mirrored": false,
-        "bounds": [
-          127,
-          86,
-          278,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          202,
-          346,
-          394,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 2,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          11,
-          11,
-          190,
-          328
-        ],
-        "sourceFloor": 328,
-        "center": 89,
-        "mirrored": false,
-        "bounds": [
-          130,
-          103,
-          271,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          543,
-          369,
-          720,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 3,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          11,
-          11,
-          190,
-          328
-        ],
-        "sourceFloor": 328,
-        "center": 89,
-        "mirrored": false,
-        "bounds": [
-          130,
-          103,
-          271,
-          352
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          543,
-          369,
-          720,
-          685
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 4,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          10,
-          194,
-          345
-        ],
-        "sourceFloor": 345,
-        "center": 92.0,
-        "mirrored": false,
-        "bounds": [
-          129,
-          90,
-          272,
-          353
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          852,
-          353,
-          1032,
-          686
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 5,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          10,
-          194,
-          345
-        ],
-        "sourceFloor": 345,
-        "center": 92.0,
-        "mirrored": false,
-        "bounds": [
-          129,
-          90,
-          272,
-          353
-        ],
-        "sourceBodyHeight": 286,
-        "sourceGlobalBox": [
-          852,
-          353,
-          1032,
-          686
-        ],
-        "sourceImageSize": [
-          1536,
-          1024
-        ]
-      },
-      {
-        "row": 2,
-        "col": 6,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
-        "source": [
-          12,
-          12,
-          183,
-          298
-        ],
-        "sourceFloor": 298,
-        "center": 101.0,
-        "mirrored": false,
-        "bounds": [
-          122,
-          128,
           256,
           353
         ],
-        "sourceBodyHeight": 286,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          1184,
-          402,
-          1354,
-          688
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 2,
-        "col": 7,
-        "sourceScale": 0.7832167832167832,
-        "scale": 0.7832167832167832,
+        "row": 0,
+        "col": 1,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          183,
-          298
+          9,
+          10,
+          168,
+          290
         ],
-        "sourceFloor": 298,
-        "center": 101.0,
+        "sourceFloor": 290,
+        "center": 89,
         "mirrored": false,
         "bounds": [
-          122,
           128,
+          127,
           256,
           353
         ],
-        "sourceBodyHeight": 286,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          1184,
-          402,
-          1354,
-          688
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 0,
+        "col": 2,
+        "sourceScale": 0.7671232876712328,
+        "scale": 0.7671232876712328,
+        "source": [
+          10,
+          10,
+          178,
+          368
+        ],
+        "sourceFloor": 368,
+        "center": 90.0,
+        "mirrored": false,
+        "bounds": [
+          130,
+          77,
+          259,
+          352
+        ],
+        "sourceBodyHeight": 292,
+        "sourceGlobalBox": [
+          472,
+          17,
+          639,
+          374
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "sourceScale": 0.7671232876712328,
+        "scale": 0.7671232876712328,
+        "source": [
+          10,
+          10,
+          178,
+          368
+        ],
+        "sourceFloor": 368,
+        "center": 90.0,
+        "mirrored": false,
+        "bounds": [
+          130,
+          77,
+          259,
+          352
+        ],
+        "sourceBodyHeight": 292,
+        "sourceGlobalBox": [
+          472,
+          17,
+          639,
+          374
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "sourceScale": 0.7671232876712328,
+        "scale": 0.7671232876712328,
+        "source": [
+          10,
+          9,
+          165,
+          373
+        ],
+        "sourceFloor": 373,
+        "center": 79.0,
+        "mirrored": false,
+        "bounds": [
+          138,
+          73,
+          257,
+          352
+        ],
+        "sourceBodyHeight": 292,
+        "sourceGlobalBox": [
+          823,
+          12,
+          977,
+          374
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "sourceScale": 0.7671232876712328,
+        "scale": 0.7671232876712328,
+        "source": [
+          10,
+          9,
+          165,
+          373
+        ],
+        "sourceFloor": 373,
+        "center": 79.0,
+        "mirrored": false,
+        "bounds": [
+          138,
+          73,
+          257,
+          352
+        ],
+        "sourceBodyHeight": 292,
+        "sourceGlobalBox": [
+          823,
+          12,
+          977,
+          374
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 6,
+        "sourceScale": 0.8,
+        "scale": 0.8,
+        "source": [
+          9,
+          10,
+          168,
+          290
+        ],
+        "sourceFloor": 290,
+        "center": 89,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 280,
+        "sourceGlobalBox": [
+          55,
+          59,
+          212,
+          339
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 0,
+        "col": 7,
+        "sourceScale": 0.8,
+        "scale": 0.8,
+        "source": [
+          9,
+          10,
+          168,
+          290
+        ],
+        "sourceFloor": 290,
+        "center": 89,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 280,
+        "sourceGlobalBox": [
+          55,
+          59,
+          212,
+          339
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 1,
         "col": 0,
         "sourceScale": 0.7943262411347518,
         "scale": 0.7943262411347518,
         "source": [
-          11,
-          11,
-          230,
-          336
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 336,
-        "center": 119,
-        "mirrored": false,
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
         "bounds": [
-          105,
-          93,
-          280,
+          172,
+          128,
+          234,
           352
         ],
         "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          175,
-          681,
-          393,
-          1005
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 1,
         "col": 1,
         "sourceScale": 0.7943262411347518,
         "scale": 0.7943262411347518,
         "source": [
-          11,
-          11,
-          230,
-          336
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 336,
-        "center": 119,
-        "mirrored": false,
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
         "bounds": [
-          105,
-          93,
-          280,
+          172,
+          128,
+          234,
           352
         ],
         "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          175,
-          681,
-          393,
-          1005
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 1,
         "col": 2,
-        "sourceScale": 0.7943262411347518,
-        "scale": 0.7943262411347518,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
         "source": [
-          11,
-          10,
-          211,
-          335
+          9,
+          9,
+          129,
+          366
         ],
-        "sourceFloor": 335,
-        "center": 117.0,
-        "mirrored": false,
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": true,
         "bounds": [
-          107,
-          94,
-          267,
+          142,
+          85,
+          233,
           353
         ],
-        "sourceBodyHeight": 282,
+        "sourceBodyHeight": 300,
         "sourceGlobalBox": [
-          519,
-          684,
-          718,
-          1007
+          501,
+          378,
+          620,
+          734
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 1,
         "col": 3,
-        "sourceScale": 0.7943262411347518,
-        "scale": 0.7943262411347518,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
         "source": [
-          11,
-          10,
-          211,
-          335
+          9,
+          9,
+          129,
+          366
         ],
-        "sourceFloor": 335,
-        "center": 117.0,
-        "mirrored": false,
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": true,
         "bounds": [
-          107,
-          94,
-          267,
+          142,
+          85,
+          233,
           353
         ],
-        "sourceBodyHeight": 282,
+        "sourceBodyHeight": 300,
         "sourceGlobalBox": [
-          519,
-          684,
-          718,
-          1007
+          501,
+          378,
+          620,
+          734
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 1,
         "col": 4,
-        "sourceScale": 0.7943262411347518,
-        "scale": 0.7943262411347518,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
         "source": [
-          12,
-          11,
-          208,
-          331
+          10,
+          9,
+          132,
+          366
         ],
-        "sourceFloor": 331,
-        "center": 106,
-        "mirrored": false,
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": true,
         "bounds": [
-          117,
-          98,
-          274,
-          352
+          140,
+          85,
+          232,
+          353
         ],
-        "sourceBodyHeight": 282,
+        "sourceBodyHeight": 300,
         "sourceGlobalBox": [
-          843,
-          688,
-          1038,
-          1007
+          834,
+          378,
+          956,
+          734
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 1,
         "col": 5,
-        "sourceScale": 0.7943262411347518,
-        "scale": 0.7943262411347518,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
         "source": [
-          12,
-          11,
-          208,
-          331
+          10,
+          9,
+          132,
+          366
         ],
-        "sourceFloor": 331,
-        "center": 106,
-        "mirrored": false,
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": true,
         "bounds": [
-          117,
-          98,
-          274,
-          352
+          140,
+          85,
+          232,
+          353
         ],
-        "sourceBodyHeight": 282,
+        "sourceBodyHeight": 300,
         "sourceGlobalBox": [
-          843,
-          688,
-          1038,
-          1007
+          834,
+          378,
+          956,
+          734
         ],
         "sourceImageSize": [
-          1536,
-          1024
-        ]
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 1,
         "col": 6,
         "sourceScale": 0.7943262411347518,
         "scale": 0.7943262411347518,
         "source": [
-          12,
-          11,
-          211,
-          293
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 293,
-        "center": 111.0,
-        "mirrored": false,
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
         "bounds": [
-          113,
+          172,
           128,
-          272,
+          234,
           352
         ],
         "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          1158,
-          724,
-          1357,
-          1005
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
-        "row": 3,
+        "row": 1,
         "col": 7,
         "sourceScale": 0.7943262411347518,
         "scale": 0.7943262411347518,
         "source": [
-          12,
-          11,
-          211,
-          293
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 293,
-        "center": 111.0,
-        "mirrored": false,
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": true,
         "bounds": [
-          113,
+          172,
           128,
-          272,
+          234,
           352
         ],
         "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          1158,
-          724,
-          1357,
-          1005
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 0,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": false,
+        "bounds": [
+          150,
+          128,
+          212,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": false,
+        "bounds": [
+          150,
+          128,
+          212,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 2,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
+        "source": [
+          9,
+          9,
+          129,
+          366
+        ],
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": false,
+        "bounds": [
+          151,
+          85,
+          242,
+          353
+        ],
+        "sourceBodyHeight": 300,
+        "sourceGlobalBox": [
+          501,
+          378,
+          620,
+          734
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 3,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
+        "source": [
+          9,
+          9,
+          129,
+          366
+        ],
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": false,
+        "bounds": [
+          151,
+          85,
+          242,
+          353
+        ],
+        "sourceBodyHeight": 300,
+        "sourceGlobalBox": [
+          501,
+          378,
+          620,
+          734
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
+        "source": [
+          10,
+          9,
+          132,
+          366
+        ],
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": false,
+        "bounds": [
+          152,
+          85,
+          244,
+          353
+        ],
+        "sourceBodyHeight": 300,
+        "sourceGlobalBox": [
+          834,
+          378,
+          956,
+          734
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 5,
+        "sourceScale": 0.7466666666666667,
+        "scale": 0.7466666666666667,
+        "source": [
+          10,
+          9,
+          132,
+          366
+        ],
+        "sourceFloor": 366,
+        "center": 63.0,
+        "mirrored": false,
+        "bounds": [
+          152,
+          85,
+          244,
+          353
+        ],
+        "sourceBodyHeight": 300,
+        "sourceGlobalBox": [
+          834,
+          378,
+          956,
+          734
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 6,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": false,
+        "bounds": [
+          150,
+          128,
+          212,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 2,
+        "col": 7,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
+        "source": [
+          9,
+          9,
+          86,
+          291
+        ],
+        "sourceFloor": 291,
+        "center": 60,
+        "mirrored": false,
+        "bounds": [
+          150,
+          128,
+          212,
+          352
+        ],
+        "sourceBodyHeight": 282,
+        "sourceGlobalBox": [
+          86,
+          384,
+          161,
+          664
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
+        "source": [
+          9,
+          10,
+          171,
+          294
+        ],
+        "sourceFloor": 294,
+        "center": 90.0,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 284,
+        "sourceGlobalBox": [
+          52,
+          696,
+          213,
+          980
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
+        "source": [
+          9,
+          10,
+          171,
+          294
+        ],
+        "sourceFloor": 294,
+        "center": 90.0,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 284,
+        "sourceGlobalBox": [
+          52,
+          696,
+          213,
+          980
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 2,
+        "sourceScale": 0.764505119453925,
+        "scale": 0.764505119453925,
+        "source": [
+          9,
+          9,
+          168,
+          354
+        ],
+        "sourceFloor": 354,
+        "center": 86,
+        "mirrored": false,
+        "bounds": [
+          133,
+          88,
+          255,
+          352
+        ],
+        "sourceBodyHeight": 293,
+        "sourceGlobalBox": [
+          477,
+          732,
+          635,
+          1076
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "sourceScale": 0.764505119453925,
+        "scale": 0.764505119453925,
+        "source": [
+          9,
+          9,
+          168,
+          354
+        ],
+        "sourceFloor": 354,
+        "center": 86,
+        "mirrored": false,
+        "bounds": [
+          133,
+          88,
+          255,
+          352
+        ],
+        "sourceBodyHeight": 293,
+        "sourceGlobalBox": [
+          477,
+          732,
+          635,
+          1076
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "sourceScale": 0.764505119453925,
+        "scale": 0.764505119453925,
+        "source": [
+          9,
+          10,
+          157,
+          355
+        ],
+        "sourceFloor": 355,
+        "center": 83.0,
+        "mirrored": false,
+        "bounds": [
+          136,
+          88,
+          250,
+          353
+        ],
+        "sourceBodyHeight": 293,
+        "sourceGlobalBox": [
+          822,
+          731,
+          969,
+          1076
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "sourceScale": 0.764505119453925,
+        "scale": 0.764505119453925,
+        "source": [
+          9,
+          10,
+          157,
+          355
+        ],
+        "sourceFloor": 355,
+        "center": 83.0,
+        "mirrored": false,
+        "bounds": [
+          136,
+          88,
+          250,
+          353
+        ],
+        "sourceBodyHeight": 293,
+        "sourceGlobalBox": [
+          822,
+          731,
+          969,
+          1076
+        ],
+        "sourceImageSize": [
+          1448,
+          1086
+        ],
+        "sourceAtlas": "rain",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 6,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
+        "source": [
+          9,
+          10,
+          171,
+          294
+        ],
+        "sourceFloor": 294,
+        "center": 90.0,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 284,
+        "sourceGlobalBox": [
+          52,
+          696,
+          213,
+          980
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
+      },
+      {
+        "row": 3,
+        "col": 7,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
+        "source": [
+          9,
+          10,
+          171,
+          294
+        ],
+        "sourceFloor": 294,
+        "center": 90.0,
+        "mirrored": false,
+        "bounds": [
+          128,
+          127,
+          256,
+          353
+        ],
+        "sourceBodyHeight": 284,
+        "sourceGlobalBox": [
+          52,
+          696,
+          213,
+          980
+        ],
+        "sourceImageSize": [
+          1536,
+          1024
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       }
     ],
     "special": [
       {
         "row": 0,
         "col": 0,
-        "sourceScale": 0.6473988439306358,
-        "scale": 0.6473988439306358,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          212,
-          358
+          9,
+          10,
+          168,
+          290
         ],
-        "sourceFloor": 358,
-        "center": 112,
+        "sourceFloor": 290,
+        "center": 89,
         "mirrored": false,
         "bounds": [
-          126,
+          128,
           127,
           256,
           353
         ],
-        "sourceBodyHeight": 346,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          136,
-          11,
-          336,
-          357
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 1,
-        "sourceScale": 0.6473988439306358,
-        "scale": 0.6473988439306358,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          212,
-          358
+          9,
+          10,
+          168,
+          290
         ],
-        "sourceFloor": 358,
-        "center": 112,
+        "sourceFloor": 290,
+        "center": 89,
         "mirrored": false,
         "bounds": [
-          126,
+          128,
           127,
           256,
           353
         ],
-        "sourceBodyHeight": 346,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          136,
-          11,
-          336,
-          357
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 2,
-        "sourceScale": 0.6473988439306358,
-        "scale": 0.6473988439306358,
+        "sourceScale": 0.7320261437908496,
+        "scale": 0.7320261437908496,
         "source": [
-          12,
-          12,
-          174,
-          355
+          9,
+          9,
+          167,
+          310
         ],
-        "sourceFloor": 355,
-        "center": 94.0,
+        "sourceFloor": 310,
+        "center": 104,
         "mirrored": false,
         "bounds": [
-          138,
-          129,
-          244,
+          122,
+          131,
+          239,
           353
         ],
-        "sourceBodyHeight": 346,
+        "sourceBodyHeight": 306,
         "sourceGlobalBox": [
-          486,
-          10,
-          648,
-          353
+          453,
+          33,
+          610,
+          332
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 3,
-        "sourceScale": 0.6473988439306358,
-        "scale": 0.6473988439306358,
+        "sourceScale": 0.8,
+        "scale": 0.8,
         "source": [
-          12,
-          12,
-          212,
-          358
+          9,
+          10,
+          168,
+          290
         ],
-        "sourceFloor": 358,
-        "center": 112,
+        "sourceFloor": 290,
+        "center": 89,
         "mirrored": false,
         "bounds": [
-          126,
+          128,
           127,
           256,
           353
         ],
-        "sourceBodyHeight": 346,
+        "sourceBodyHeight": 280,
         "sourceGlobalBox": [
-          136,
-          11,
-          336,
-          357
+          55,
+          59,
+          212,
+          339
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 4,
-        "sourceScale": 0.6473988439306358,
-        "scale": 0.6473988439306358,
+        "sourceScale": 0.7320261437908496,
+        "scale": 0.7320261437908496,
         "source": [
-          11,
-          12,
-          337,
-          362
+          10,
+          10,
+          386,
+          316
         ],
-        "sourceFloor": 362,
-        "center": 154,
+        "sourceFloor": 316,
+        "center": 199,
         "mirrored": false,
         "bounds": [
-          99,
-          125,
-          311,
-          352
+          53,
+          128,
+          329,
+          353
         ],
-        "sourceBodyHeight": 346,
+        "sourceBodyHeight": 306,
         "sourceGlobalBox": [
-          1138,
-          9,
-          1461,
-          358
+          719,
+          27,
+          1095,
+          333
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 0,
         "col": 5,
-        "sourceScale": 0.6473988439306358,
-        "scale": 0.6473988439306358,
+        "sourceScale": 0.7320261437908496,
+        "scale": 0.7320261437908496,
         "source": [
-          12,
-          12,
-          197,
-          265
+          8,
+          9,
+          338,
+          93
         ],
-        "sourceFloor": 265,
-        "center": 104.5,
+        "sourceFloor": 93,
+        "center": 173.0,
         "mirrored": false,
         "bounds": [
-          131,
-          187,
-          252,
+          71,
+          290,
+          313,
           352
         ],
-        "sourceBodyHeight": 346,
+        "sourceBodyHeight": 306,
         "sourceGlobalBox": [
-          829,
-          103,
-          1014,
-          356
+          1156,
+          239,
+          1484,
+          322
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 0,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          12,
-          12,
-          152,
-          348
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 348,
-        "center": 88,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": true,
         "bounds": [
-          149,
+          172,
           128,
-          243,
+          234,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          170,
-          352,
-          309,
-          687
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 1,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          12,
-          12,
-          152,
-          348
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 348,
-        "center": 88,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": true,
         "bounds": [
-          149,
+          172,
           128,
-          243,
+          234,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          170,
-          352,
-          309,
-          687
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 2,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7344262295081967,
+        "scale": 0.7344262295081967,
         "source": [
-          11,
-          12,
-          167,
-          343
+          10,
+          10,
+          107,
+          313
         ],
-        "sourceFloor": 343,
-        "center": 103.0,
+        "sourceFloor": 313,
+        "center": 50.0,
         "mirrored": true,
         "bounds": [
           150,
-          130,
-          254,
-          353
+          129,
+          222,
+          352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 305,
         "sourceGlobalBox": [
-          500,
-          352,
-          653,
-          683
+          498,
+          361,
+          594,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 3,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          12,
-          12,
-          152,
-          348
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 348,
-        "center": 88,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": true,
         "bounds": [
-          149,
+          172,
           128,
-          243,
+          234,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          170,
-          352,
-          309,
-          687
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 4,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7344262295081967,
+        "scale": 0.7344262295081967,
         "source": [
-          12,
-          12,
-          298,
-          348
+          8,
+          10,
+          214,
+          313
         ],
-        "sourceFloor": 348,
-        "center": 121.0,
+        "sourceFloor": 313,
+        "center": 55,
         "mirrored": true,
         "bounds": [
           74,
-          127,
-          265,
+          129,
+          226,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 305,
         "sourceGlobalBox": [
-          1194,
-          352,
-          1479,
-          687
+          843,
+          360,
+          1046,
+          663
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 1,
         "col": 5,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7344262295081967,
+        "scale": 0.7344262295081967,
         "source": [
-          12,
-          12,
-          205,
-          253
+          10,
+          9,
+          359,
+          85
         ],
-        "sourceFloor": 253,
-        "center": 108.5,
+        "sourceFloor": 85,
+        "center": 184.5,
         "mirrored": true,
         "bounds": [
-          127,
-          191,
-          257,
-          352
+          64,
+          296,
+          321,
+          353
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 305,
         "sourceGlobalBox": [
-          831,
-          445,
-          1023,
-          685
+          1152,
+          590,
+          1501,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 0,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          12,
-          12,
-          152,
-          348
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 348,
-        "center": 88,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
-          141,
+          150,
           128,
-          235,
+          212,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          170,
-          352,
-          309,
-          687
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 1,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          12,
-          12,
-          152,
-          348
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 348,
-        "center": 88,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
-          141,
+          150,
           128,
-          235,
+          212,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          170,
-          352,
-          309,
-          687
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 2,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7344262295081967,
+        "scale": 0.7344262295081967,
         "source": [
-          11,
-          12,
-          167,
-          343
+          10,
+          10,
+          107,
+          313
         ],
-        "sourceFloor": 343,
-        "center": 103.0,
+        "sourceFloor": 313,
+        "center": 50.0,
         "mirrored": false,
         "bounds": [
-          130,
-          130,
+          162,
+          129,
           234,
-          353
+          352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 305,
         "sourceGlobalBox": [
-          500,
-          352,
-          653,
-          683
+          498,
+          361,
+          594,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 3,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7943262411347518,
+        "scale": 0.7943262411347518,
         "source": [
-          12,
-          12,
-          152,
-          348
+          9,
+          9,
+          86,
+          291
         ],
-        "sourceFloor": 348,
-        "center": 88,
+        "sourceFloor": 291,
+        "center": 60,
         "mirrored": false,
         "bounds": [
-          141,
+          150,
           128,
-          235,
+          212,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 282,
         "sourceGlobalBox": [
-          170,
-          352,
-          309,
-          687
+          86,
+          384,
+          161,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 4,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7344262295081967,
+        "scale": 0.7344262295081967,
         "source": [
-          12,
-          12,
-          298,
-          348
+          8,
+          10,
+          214,
+          313
         ],
-        "sourceFloor": 348,
-        "center": 121.0,
+        "sourceFloor": 313,
+        "center": 55,
         "mirrored": false,
         "bounds": [
-          119,
-          127,
+          158,
+          129,
           310,
           352
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 305,
         "sourceGlobalBox": [
-          1194,
-          352,
-          1479,
-          687
+          843,
+          360,
+          1046,
+          663
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 2,
         "col": 5,
-        "sourceScale": 0.6666666666666666,
-        "scale": 0.6666666666666666,
+        "sourceScale": 0.7344262295081967,
+        "scale": 0.7344262295081967,
         "source": [
-          12,
-          12,
-          205,
-          253
+          10,
+          9,
+          359,
+          85
         ],
-        "sourceFloor": 253,
-        "center": 108.5,
+        "sourceFloor": 85,
+        "center": 184.5,
         "mirrored": false,
         "bounds": [
-          127,
-          191,
-          257,
-          352
+          63,
+          296,
+          320,
+          353
         ],
-        "sourceBodyHeight": 336,
+        "sourceBodyHeight": 305,
         "sourceGlobalBox": [
-          831,
-          445,
-          1023,
-          685
+          1152,
+          590,
+          1501,
+          664
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 0,
-        "sourceScale": 0.6850152905198776,
-        "scale": 0.6850152905198776,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          11,
-          11,
-          207,
-          338
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 338,
-        "center": 109.0,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          124,
+          128,
           127,
-          259,
-          352
+          256,
+          353
         ],
-        "sourceBodyHeight": 327,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          137,
-          687,
-          332,
-          1012
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 1,
-        "sourceScale": 0.6850152905198776,
-        "scale": 0.6850152905198776,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          11,
-          11,
-          207,
-          338
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 338,
-        "center": 109.0,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          124,
+          128,
           127,
-          259,
-          352
+          256,
+          353
         ],
-        "sourceBodyHeight": 327,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          137,
-          687,
-          332,
-          1012
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 2,
-        "sourceScale": 0.6850152905198776,
-        "scale": 0.6850152905198776,
+        "sourceScale": 0.7202572347266881,
+        "scale": 0.7202572347266881,
         "source": [
-          12,
-          11,
-          159,
-          331
+          9,
+          10,
+          151,
+          316
         ],
-        "sourceFloor": 331,
-        "center": 85.0,
+        "sourceFloor": 316,
+        "center": 68,
         "mirrored": false,
         "bounds": [
-          142,
-          132,
-          243,
+          149,
+          131,
+          253,
           352
         ],
-        "sourceBodyHeight": 327,
+        "sourceBodyHeight": 311,
         "sourceGlobalBox": [
-          501,
+          473,
           691,
-          648,
-          1010
+          614,
+          997
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 3,
-        "sourceScale": 0.6850152905198776,
-        "scale": 0.6850152905198776,
+        "sourceScale": 0.7887323943661971,
+        "scale": 0.7887323943661971,
         "source": [
-          11,
-          11,
-          207,
-          338
+          9,
+          10,
+          171,
+          294
         ],
-        "sourceFloor": 338,
-        "center": 109.0,
+        "sourceFloor": 294,
+        "center": 90.0,
         "mirrored": false,
         "bounds": [
-          124,
+          128,
           127,
-          259,
-          352
+          256,
+          353
         ],
-        "sourceBodyHeight": 327,
+        "sourceBodyHeight": 284,
         "sourceGlobalBox": [
-          137,
-          687,
-          332,
-          1012
+          52,
+          696,
+          213,
+          980
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "shoot",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 4,
-        "sourceScale": 0.6850152905198776,
-        "scale": 0.6850152905198776,
+        "sourceScale": 0.7202572347266881,
+        "scale": 0.7202572347266881,
         "source": [
           10,
-          12,
-          343,
-          339
+          9,
+          380,
+          319
         ],
-        "sourceFloor": 339,
-        "center": 176.0,
+        "sourceFloor": 319,
+        "center": 194.0,
         "mirrored": false,
         "bounds": [
-          78,
-          127,
-          306,
+          58,
+          128,
+          327,
           353
         ],
-        "sourceBodyHeight": 327,
+        "sourceBodyHeight": 311,
         "sourceGlobalBox": [
-          1125,
-          685,
-          1454,
-          1012
+          718,
+          688,
+          1088,
+          997
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       },
       {
         "row": 3,
         "col": 5,
-        "sourceScale": 0.6850152905198776,
-        "scale": 0.6850152905198776,
+        "sourceScale": 0.7202572347266881,
+        "scale": 0.7202572347266881,
         "source": [
-          11,
-          12,
-          178,
-          262
+          9,
+          10,
+          352,
+          88
         ],
-        "sourceFloor": 262,
-        "center": 94.5,
+        "sourceFloor": 88,
+        "center": 180.5,
         "mirrored": false,
         "bounds": [
-          134,
-          180,
-          249,
+          68,
+          295,
+          315,
           353
         ],
-        "sourceBodyHeight": 327,
+        "sourceBodyHeight": 311,
         "sourceGlobalBox": [
-          839,
-          760,
-          1005,
-          1010
+          1156,
+          905,
+          1496,
+          982
         ],
         "sourceImageSize": [
           1536,
           1024
-        ]
+        ],
+        "sourceAtlas": "reactions",
+        "fixedBodyModel": "gunslinger-v36"
       }
     ]
   }

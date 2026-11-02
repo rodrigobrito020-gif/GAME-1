@@ -4,9 +4,15 @@ Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os r
 
 ## Decisão sobre ultimates — 02/11/2026
 
-Todas as próximas ultimates devem transformar visualmente o personagem, tendo a transformação do guerreiro como referência e respeitando a identidade de cada classe. A revisão 0.6.31 aplica esse padrão à Eclipse da pistoleira, junto do projétil com queimadura e da Chuva de Balas combinados na sessão anterior. A avaliação visual e de equilíbrio desta nova revisão continua com o jogador.
+Todas as próximas ultimates devem usar energia de Ki vinculada ao corpo e às armas, com a apresentação do guerreiro como referência e a cor da própria classe. A 0.6.36 aplica o mesmo movimento às três classes. Não reintroduzir molduras ou imagens fixas atrás dos personagens.
+
+## Padrão de proporções — 02/11/2026
+
+Arqueira e pistoleira usam a família de fontes coherent-v36, exportada por tools/pack-class-animations.py. Uma figura neutra é compartilhada pelos estados equivalentes. A exibição dessas classes tem escala fixa; os quadros mudam pose, sem ajuste de tamanho por animação. Reações e ultimates também precisam respeitar esse padrão. Ao alterar uma fonte, reconstruir retratos e todas as máscaras de energia e conferir repouso, caminhada nas quatro direções, ataques, buffs, ultimate e derrota. As ferramentas antigas encaminham a exportação para a família atual, para evitar regressão às poses anteriores.
 
 ## Entregue
+
+- 0.6.36: arqueira e pistoleira com revisão de todas as poses, escala uniforme fixa e uma figura neutra compartilhada entre repouso/preparação/recuperação. Passadas com apoio alternado e figuras completas no padrão do guerreiro. Ki nas três ultimates com cores próprias. Level up com anel texturizado, runas, descargas, espirais e setas conforme as duas referências. Avaliação visual do jogador pendente.
 
 - 0.6.35: Avatar da Luz com Ki dourado gerado junto à silhueta, superfície e bordas das poses, incluindo peitoral de treino; retirada da imagem de fundo. Celebração original de nível inspirada no Ragnarok nas três classes, por evento real e sem repetir no login. Repouso da pistoleira alinhado ao modelo atual da caminhada após o vídeo. Restante do jogo preservado; avaliação visual do jogador pendente.
 

@@ -1,5 +1,6 @@
 import { gunslingerDisplayPose } from "/gunslinger.mjs";
 import { gunShotPresentation } from "/gunslinger-vfx.mjs";
+import { characterDisplayScale } from "/character-proportions.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 import { locomotionPose } from "/character-locomotion.mjs";
 import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
@@ -133,13 +134,14 @@ import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
           recoil = shot.recoilAngle;
       }
     }
+    const displayScale = characterDisplayScale(
+      gun ? "pistoleira" : elf ? "arqueira" : "guerreiro",
+      b,
+    );
     s.setTexture(key, `${row}:${col}`)
       .setPosition(a.x + b.x, a.y + b.y)
       .setOrigin(ART.feet[0] / ART.frame, ART.feet[1] / ART.frame)
-      .setScale(
-        b.scaleX / ART.nativeSampleStep,
-        b.scaleY / ART.nativeSampleStep,
-      )
+      .setScale(displayScale.x, displayScale.y)
       .setAngle(b.angle + recoil)
       .setFlipX(b.flipX)
       .setDepth(a.root.depth + 0.015)

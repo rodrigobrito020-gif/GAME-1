@@ -3,12 +3,60 @@
 (() => {
   const active = new Map(),
     scenes = new Map();
-  const duration = 2200;
+  const duration = 2200,
+    art = new Map();
+  let serial = 0;
+  for (const name of ["ring", "helix", "arrow", "spark"]) {
+    const im = new Image();
+    im.src = `/assets/fx/royal-level-up/${name}.png`;
+    im.decode()
+      .then(() => art.set(name, im))
+      .catch(() => {});
+  }
+  function pieces(s) {
+    if (s.pieces.length || art.size < 4) return;
+    const scene = s.scene;
+    for (const [name, im] of art) {
+      if (name === "ring") continue;
+      const key = `royal-level:${s.palette}:${name}`;
+      if (!scene.textures.exists(key)) {
+        if (!s.hue) scene.textures.addImage(key, im);
+        else {
+          const tex = scene.textures.createCanvas(key, im.width, im.height),
+            ctx = tex.getContext();
+          ctx.filter = `hue-rotate(${s.hue}deg)`;
+          ctx.drawImage(im, 0, 0);
+          tex.refresh();
+        }
+      }
+    }
+    s.ringKey = "royal-level-ring:" + ++serial;
+    s.ringTex = scene.textures.createCanvas(s.ringKey, 512, 512);
+    s.ctx = s.ringTex.getContext();
+    s.ringBack = scene.add.image(0, 0, s.ringKey).setCrop(0, 0, 512, 256);
+    s.ringFront = scene.add.image(0, 0, s.ringKey).setCrop(0, 256, 512, 256);
+    s.beams = [0, 1].map(() =>
+      scene.add
+        .image(0, 0, `royal-level:${s.palette}:helix`)
+        .setOrigin(0.5, 0.94),
+    );
+    s.arrows = [0, 1, 2].map(() =>
+      scene.add.image(0, 0, `royal-level:${s.palette}:arrow`),
+    );
+    s.stars = Array.from({ length: 8 }, () =>
+      scene.add.image(0, 0, `royal-level:${s.palette}:spark`),
+    );
+    s.pieces = [s.ringBack, s.ringFront, ...s.beams, ...s.arrows, ...s.stars];
+    for (const im of s.pieces) im.royalLevelUp = true;
+  }
   function remove(actor) {
     const s = active.get(actor);
     if (!s) return;
     for (const object of [s.ground, s.back, s.front, s.title, s.level])
       object.destroy();
+    for (const object of s.pieces) object.destroy();
+    if (s.ringKey && s.scene.textures.exists(s.ringKey))
+      s.scene.textures.remove(s.ringKey);
     active.delete(actor);
   }
   function draw(actor, s) {
@@ -18,88 +66,142 @@
       return;
     }
     const p = age / duration,
-      enter = Math.min(1, age / 180),
-      fade = Math.min(enter, (duration - age) / 550),
-      burst = Math.sin(Math.min(1, age / 1100) * Math.PI),
+      enter = Math.min(1, age / 220),
+      fade = Math.min(enter, (duration - age) / 650),
       visible = actor.root.visible && !actor.hidden,
-      height = Math.max(70, actor.height),
+      height = Math.max(85, actor.height),
       depth = actor.root.depth,
-      gold = 0xffd077,
-      white = 0xfff5da;
+      gold = s.gold,
+      white = s.white,
+      phase = age / 400,
+      radius = height * 0.6 * (0.35 + 0.65 * (1 - Math.exp(-age / 150)));
     for (const g of [s.ground, s.back, s.front])
       g.clear().setPosition(actor.x, actor.y).setVisible(visible);
-    s.ground.setDepth(depth - 0.04);
+    s.ground.setDepth(depth - 0.05);
     s.back.setDepth(depth + 0.005);
     s.front.setDepth(depth + 0.09);
-    // Perspective seal opens at the feet, then releases two receding rings.
-    const radius = 22 + 22 * Math.min(1, age / 450);
-    s.ground
-      .lineStyle(8, gold, 0.1 * fade)
-      .strokeEllipse(0, 0, radius * 2, radius * 0.65);
-    s.ground
-      .lineStyle(2, white, 0.85 * fade)
-      .strokeEllipse(0, 0, radius * 2, radius * 0.65);
-    s.ground
-      .lineStyle(1, gold, 0.6 * fade)
-      .strokeEllipse(0, 0, radius * 1.65, radius * 0.5);
-    for (let i = 0; i < 12; i++) {
-      const a = (i * Math.PI) / 6 + age * 0.00025,
-        x = Math.cos(a) * radius,
-        y = Math.sin(a) * radius * 0.325;
-      s.ground
-        .lineStyle(1.5, gold, 0.7 * fade)
-        .lineBetween(x * 0.85, y * 0.85, x * 1.1, y * 1.1);
-    }
-    // Layered narrow beams glow through the figure without obscuring its face.
-    for (let i = 0; i < 7; i++) {
-      const width = 6 + i * 6;
-      s.back
-        .fillStyle(i < 2 ? white : gold, (0.055 - i * 0.005) * burst * fade)
-        .fillRect(-width / 2, -height - 48 * enter, width, height + 48 * enter);
-    }
-    const rise = Math.max(0, 1 - age / 1000),
-      haloY = -height * 0.42 - age * 0.035;
-    s.back
-      .lineStyle(2, gold, rise * 0.7)
-      .strokeEllipse(0, haloY, 40 + age * 0.035, 12 + age * 0.012);
-    // Radiating feather-like strokes, an original nod to classic Ragnarok.
-    for (const side of [-1, 1])
-      for (let i = 0; i < 5; i++) {
-        const spread = enter * (24 + i * 9),
-          y = -height * 0.65 - i * 6,
-          baseX = side * 8,
-          tipX = side * spread,
-          tipY = y - 12 - i * 3 + Math.sin(age * 0.005 + i) * 2;
-        s.back
-          .lineStyle(8, gold, burst * 0.1 * fade)
-          .lineBetween(baseX, y + 18, tipX, tipY);
-        s.back
-          .lineStyle(2.5, white, burst * 0.72 * fade)
-          .lineBetween(baseX, y + 18, tipX, tipY);
-        s.back
-          .lineStyle(1, gold, burst * 0.8 * fade)
-          .lineBetween(tipX, tipY, tipX - side * 7, tipY + 13);
+    pieces(s);
+    if (s.ringTex) {
+      if (age - s.lastRing > 40) {
+        const c = s.ctx;
+        c.clearRect(0, 0, 512, 512);
+        c.save();
+        c.translate(256, 256);
+        c.rotate(age * 0.0012);
+        c.filter = `hue-rotate(${s.hue}deg)`;
+        c.drawImage(art.get("ring"), -256, -256, 512, 512);
+        c.restore();
+        s.ringTex.refresh();
+        s.lastRing = age;
       }
-    for (let i = 0; i < 28; i++) {
-      const t = (p * 1.35 + i * 0.137) % 1,
-        x = Math.sin(i * 12.989 + age * 0.0008) * (18 + (i % 4) * 9),
-        y = -t * (height + 50),
+      for (const [im, d] of [
+        [s.ringBack, depth - 0.04],
+        [s.ringFront, depth + 0.085],
+      ])
+        im.setPosition(actor.x, actor.y)
+          .setDisplaySize(radius * 2.4, radius * 0.85)
+          .setDepth(d)
+          .setAlpha(fade * 0.95)
+          .setVisible(visible);
+      for (const [i, im] of s.beams.entries())
+        im.setPosition(actor.x + Math.sin(phase + i * Math.PI) * 5, actor.y + 3)
+          .setDisplaySize(
+            height * (i ? 0.78 : 1.06),
+            height * (1.85 + 0.04 * Math.sin(phase)),
+          )
+          .setFlipX(!!i)
+          .setDepth(i ? depth + 0.065 : depth + 0.004)
+          .setAlpha(fade * (i ? 0.26 : 0.88))
+          .setVisible(visible);
+      for (const [i, im] of s.arrows.entries()) {
+        const t = (age / 1000 + i * 0.3) % 1,
+          size = (35 - i * 5) * (0.88 + 0.12 * enter);
+        im.setPosition(actor.x, actor.y - height * (1.18 + t * 0.75))
+          .setDisplaySize(size, size * 0.77)
+          .setAlpha(Math.sin(t * Math.PI) * fade)
+          .setDepth(depth + 0.12)
+          .setVisible(visible);
+      }
+      for (const [i, im] of s.stars.entries()) {
+        const t = (age / 1500 + i * 0.137) % 1,
+          theta = i * 2.399 + phase * 0.2,
+          life = Math.sin(t * Math.PI),
+          size = (i % 3 ? 9 : 17) * life;
+        im.setPosition(
+          actor.x + Math.sin(theta) * radius * (0.5 + t * 0.25),
+          actor.y - t * height * 1.8,
+        )
+          .setDisplaySize(size, size)
+          .setAngle(age * 0.035 + i * 45)
+          .setAlpha(life * fade)
+          .setDepth(i % 2 ? depth + 0.1 : depth + 0.002)
+          .setVisible(visible);
+      }
+    }
+    // Arcane seal and branching energy spread along the floor plane.
+    s.ground
+      .lineStyle(1.2, white, fade * 0.8)
+      .strokeEllipse(0, 0, radius * 1.35, radius * 0.43);
+    for (let layer = 0; layer < 2; layer++) {
+      const turn = phase * 0.16 + layer * Math.PI;
+      s.ground.lineStyle(1, gold, fade * 0.8).beginPath();
+      for (let k = 0; k <= 3; k++) {
+        const a = turn + (k * Math.PI * 2) / 3;
+        const x = Math.cos(a) * radius * 0.62,
+          y = Math.sin(a) * radius * 0.2;
+        k ? s.ground.lineTo(x, y) : s.ground.moveTo(x, y);
+      }
+      s.ground.strokePath();
+    }
+    for (let i = 0; i < 10; i++) {
+      const angle = (i * Math.PI) / 5 + phase * 0.12,
+        pulse = (age / 800 + i * 0.163) % 1,
+        a = Math.sin(pulse * Math.PI) * fade,
+        r = radius * (0.7 + pulse * 0.45);
+      s.ground.lineStyle(1.1, white, a * 0.7).beginPath();
+      for (let n = 0; n < 5; n++) {
+        const rr = r * (0.8 + n * 0.12),
+          aa = angle + Math.sin(i * 9 + n * 4 + phase) * 0.06,
+          x = Math.cos(aa) * rr,
+          y = Math.sin(aa) * rr * 0.34;
+        n ? s.ground.lineTo(x, y) : s.ground.moveTo(x, y);
+      }
+      s.ground.strokePath();
+    }
+    // Volumetric helix: each segment switches depth as it passes the figure.
+    for (let strand = 0; strand < 3; strand++)
+      for (let n = 0; n < 32; n++) {
+        const u = n / 32,
+          v = (n + 1) / 32,
+          theta = u * Math.PI * 4 - phase * 1.1 + (strand * Math.PI * 2) / 3,
+          next = v * Math.PI * 4 - phase * 1.1 + (strand * Math.PI * 2) / 3,
+          r = radius * (0.42 - 0.18 * u),
+          g = Math.cos(theta) > 0 ? s.front : s.back,
+          x = Math.sin(theta) * r,
+          y = -u * height * 1.72,
+          xx = Math.sin(next) * r,
+          yy = -v * height * 1.72,
+          a = fade * Math.sin(u * Math.PI) * 0.8;
+        g.lineStyle(7, gold, a * 0.1).lineBetween(x, y, xx, yy);
+        g.lineStyle(2.6, gold, a * 0.7).lineBetween(x, y, xx, yy);
+        g.lineStyle(0.9, white, a).lineBetween(x, y, xx, yy);
+      }
+    for (let i = 0; i < 36; i++) {
+      const t = (p * 1.6 + i * 0.137) % 1,
+        x = Math.sin(i * 12.989 + phase * 0.2) * radius * 0.8,
+        y = -t * height * 1.8,
         a = Math.sin(t * Math.PI) * fade,
         g = i % 2 ? s.front : s.back;
-      g.fillStyle(i % 3 ? gold : white, a * 0.85).fillCircle(
+      g.fillStyle(i % 3 ? gold : white, a).fillCircle(
         x,
         y,
-        i % 4 === 0 ? 1.7 : 1,
+        i % 4 === 0 ? 1.8 : 0.9,
       );
-      if (i % 4 === 0)
-        g.lineStyle(1, white, a * 0.75)
-          .lineBetween(x - 3, y, x + 3, y)
-          .lineBetween(x, y - 3, x, y + 3);
     }
-    const labelY = actor.y - height - 46 - Math.min(1, age / 1000) * 12,
+    const labelY = actor.y - height * 2.05 - Math.min(1, age / 1000) * 5,
       labelAlpha =
-        Math.min(1, Math.max(0, (age - 100) / 180)) *
-        Math.min(1, (duration - age) / 600);
+        Math.min(1, Math.max(0, (age - 180) / 200)) *
+        Math.min(1, (duration - age) / 650);
     s.title
       .setPosition(actor.x, labelY)
       .setScale(0.9 + 0.1 * enter)
@@ -107,7 +209,7 @@
       .setDepth(depth + 0.2)
       .setVisible(visible);
     s.level
-      .setPosition(actor.x, labelY + 21)
+      .setPosition(actor.x, labelY + 18)
       .setAlpha(labelAlpha)
       .setDepth(depth + 0.2)
       .setVisible(visible);
@@ -126,7 +228,23 @@
       scenes.delete(scene);
     });
   }
+  function theme(actor) {
+    const key = String(actor.body?.texture?.key ?? "");
+    if (key.includes("elfa-arqueira"))
+      return { palette: "archer", hue: 80, gold: 0x9bff5f, white: 0xf3ffcf };
+    if (key.includes("dark-elf-pistoleira"))
+      return {
+        palette: "gunslinger",
+        hue: 235,
+        gold: 0xce8aff,
+        white: 0xffe4ff,
+      };
+    return { palette: "warrior", hue: 0, gold: 0xffb62b, white: 0xfff2bd };
+  }
   window.__royalLevelUp = {
+    ready() {
+      return art.size === 4;
+    },
     apply(actor, level, sound) {
       if (
         !actor?.root?.active ||
@@ -150,7 +268,7 @@
         style = {
           fontFamily: "Georgia, serif",
           fontStyle: "bold",
-          fontSize: "22px",
+          fontSize: "18px",
           color: "#fff3cd",
           stroke: "#694118",
           strokeThickness: 4,
@@ -166,6 +284,9 @@
         scene,
         at: performance.now(),
         value: level,
+        ...theme(actor),
+        pieces: [],
+        lastRing: -Infinity,
         ground: scene.add.graphics(),
         back: scene.add.graphics(),
         front: scene.add.graphics(),
@@ -174,7 +295,7 @@
           .text(0, 0, "NÍVEL " + level, {
             ...style,
             fontFamily: "Trebuchet MS, sans-serif",
-            fontSize: "13px",
+            fontSize: "12px",
             strokeThickness: 3,
           })
           .setOrigin(0.5),

@@ -72,6 +72,17 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const level =
+      /^\/assets\/fx\/royal-level-up\/(ring|helix|arrow|spark)\.png$/.exec(
+        pathname,
+      );
+    if (level)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/level-up/${level[1]}.png`, import.meta.url),
+        ),
+      };
     const hit = /^\/assets\/fx\/royal-combat\/(warrior|archer)-hit\.png$/.exec(
       pathname,
     );

@@ -1,36 +1,45 @@
-VERSAO 0.6.35 — KI DO GUERREIRO, SUBIDA DE NIVEL E REPOUSO DA PISTOLEIRA
+VERSAO 0.6.36 — PROPORCOES, KI E LEVEL UP
 Data: 02/11/2026
 
 ALTERACOES
-- Avatar da Luz: substituida a aura fixa de fundo por luz sobre a silhueta e
-  superficie das poses. Ki dourado emitido das bordas do corpo, subindo em
-  filamentos animados, com camadas a frente/atras e armas iluminadas.
-- Contorno, fluxo e emissores seguem quadro, origem, escala e rotacao do corpo.
-  Mascaras proprias para roupas iniciais e peitoral de treino. Rosto legivel.
-- Subida de nivel original inspirada no Ragnarok: selo nos pes, coluna de luz,
-  tracos radiais como plumas, particulas ascendentes e LEVEL UP! com nivel.
-  Duracao 2,2s, sem travar personagem, mudar experiencia ou pausar combate.
-- Efeito ligado ao evento nativo de nivel. Som nativo mantido, sem tela branca.
-  Niveis recebidos juntos compartilham a celebracao e exibem o maior nivel.
-- Pistoleira: novo repouso em quatro direcoes com referencia nas poses atuais
-  de caminhada. Corrige retorno ao modelo anterior mais estreito ao parar.
-  Retrato, mascaras da transformacao e atlas nativo/HD de repouso atualizados.
-- Valores, automacao, habilidades, caminhar, Dash, pocoes e equipamentos mantidos.
+- Arqueira e pistoleira: refeitas todas as sequencias de corpo a partir de uma
+  referencia por classe; figuras completas, coroas e botas sem recortes.
+- Mesma figura neutra nos estados de repouso, preparacao e recuperacao. Escala
+  de exibicao fixa e uniforme nas classes a distancia; sem alteracao de largura
+  ou altura durante as acoes ou pelo ajuste de pixels do cliente.
+- Caminhada lateral com oito fases, incluindo passagem estreita entre contatos;
+  vertical com quatro fases de apoio no padrao do guerreiro, duplicadas no HD.
+- Poses frontais/de costas e origem das balas alinhadas as maos. Retratos e
+  mascaras de armas/superficie/contorno/emissores atualizados para cada quadro.
+- Mesmo Ki do guerreiro nas ultimates da arqueira (verde/dourado) e pistoleira
+  (violeta/dourado), com filamentos nas bordas reais e luz no corpo e armas.
+- Level up: anel de energia texturizado girando no plano do chao, selo/runas,
+  descargas, espirais com profundidade, feixes, faiscas e setas subindo.
+  Paleta por classe. Evento real, 2,2s, som nativo e sem tela branca ou pausa.
+- Dano, cadencia, custos, duracoes, recargas, escolhas AUTO/MANUAL, pocoes,
+  equipamentos e progresso mantidos.
 
 VERIFICACAO
-- 132 testes passaram com recursos-publicos.zip real, sem falhas/ignorados.
-- Transparencia, protecao do rosto, halo e emissores conferidos em todas as poses
-  de arqueira, pistoleira e guerreiro, com e sem peitoral.
-- Celebracao: evento explicito, validacao de nivel, varios niveis sem duplicar
-  som/objetos, expiracao e limpeza por morte, troca de cena e encerramento.
-- Chromium/WebGL pt-BR: subida real do nivel 1 ao 2 por morte de monstro nas
-  tres classes. Efeito acompanha posicao e termina; reconexao nao o repete.
-- Chromium/WebGL: energia alinhada ao quadro HD nas quatro direcoes das tres
-  classes, inclusive Shift; nenhuma imagem antiga de aura no guerreiro.
-  Expiracao, mute e remocao de efeitos/texturas ao sair da caca conferidos.
-- 160 arquivos aprovados identicos a 0.6.34: artes do guerreiro/arqueira,
-  energia da arqueira, regras, habilidades, movimento, Dash, impactos e audio.
-- Contas de teste isoladas; progresso real nao foi usado nem alterado.
+- 135 testes passaram com recursos-publicos.zip real, sem falhas/ignorados.
+- Regressao: escala fixa sob variacoes nativas de escala e ajuste de pixels;
+  modelo neutro identico pixel a pixel entre os estados equivalentes.
+- Escala unica por linha de cada fonte, nao ajustada a cada quadro. Estatura,
+  transparencias, coroas, apoio dos pes e passagens laterais conferidos.
+- Reacoes/buffs sem pernas cortadas; poses de corpo inteiro sem montagem de
+  membros. Ferramentas de exportacao usam a familia nova, evitando sobrescrita
+  futura pelas poses antigas. Reconstrucao das classes conferida.
+- Chromium/WebGL pt-BR: caminhada real nas quatro direcoes das tres classes,
+  transicoes para repouso, troca de classe sem recarregar e escolhas salvas.
+- Combate real: quatro habilidades usadas em cada classe, cobrindo as seis
+  sequencias visiveis. Escala 0,5 x 0,5 em todas as amostras da arqueira e
+  pistoleira. Ki alinhado ao quadro e posicao, Shift e limpeza ao sair da caca.
+- Subida real do nivel 1 ao 2 nas tres classes: anel, espirais e setas na paleta
+  correta, efeito acompanhando o ator, expiracao e sem replay ao login.
+  Textura temporaria de rotacao removida ao terminar a celebracao.
+- Audio realmente decodificado e executado; mute nativo respeitado.
+- 160 arquivos protegidos identicos a 0.6.35, incluindo artes/mascaras do
+  guerreiro, regras, Dash, locomocao, sons e desenhos de impactos aprovados.
+- Contas isoladas usadas nos testes; progresso real nao foi usado nem alterado.
 - Avaliacao artistica continua com o jogador.
 
 WINDOWS
@@ -38,5 +47,5 @@ WINDOWS
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.35.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.36.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

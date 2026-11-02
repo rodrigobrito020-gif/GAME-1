@@ -27,6 +27,7 @@
       color: 0x78d99b,
       light: 0xe4ffc5,
       css: "115,230,160",
+      ki: true,
     },
     pistoleira: {
       look: "gunslinger",
@@ -34,6 +35,7 @@
       color: 0xb58aff,
       light: 0xf0d5ff,
       css: "178,123,255",
+      ki: true,
     },
   };
   const loading = new Set();
@@ -94,7 +96,7 @@
     }
     const pose = body.pose,
       look =
-        config.ki && body.texture.key.includes(":training:")
+        config.look === "warrior" && body.texture.key.includes(":training:")
           ? "warrior-training"
           : config.look,
       stem = `${look}:${pose.sheet}`,

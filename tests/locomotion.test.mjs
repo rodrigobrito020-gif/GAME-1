@@ -85,8 +85,8 @@ test("skill actions and dash references retain their authored frame, with no wal
     "idle",
   );
 });
-test("authored side walking contains narrow passing poses between wide contacts in both classes, with complete HD and native atlases", () => {
-  for (const cl of ["warrior", "archer"]) {
+test("authored side walking contains narrow passing poses between wide contacts in all classes, with complete HD and native atlases", () => {
+  for (const cl of ["warrior", "archer", "gunslinger"]) {
     const im = decodeRgba(
       readFileSync(new URL(`../art/${cl}/hd/walk.png`, import.meta.url)),
     );

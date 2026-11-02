@@ -90,9 +90,9 @@ test("gunslinger alternates two hands and delivers the normal total attack only 
     fx.map((f) => f.releaseMs),
     [150, 350],
   );
-  assert.equal(fx[0].x, client.x + 36);
-  assert.equal(fx[0].y, client.y - 97);
-  assert.equal(fx[1].y, client.y - 97);
+  assert.equal(fx[0].x, client.x + 51);
+  assert.equal(fx[0].y, client.y - 97.5);
+  assert.equal(fx[1].y, client.y - 94);
   assert.equal(m.hp, 1000);
   client.hunt.nextAttack = Infinity;
   s.step(259);
@@ -471,9 +471,10 @@ test("north walk keeps a rounded complete hair crown in all eight frames and sou
   }
   const front = manifest.sources.walk.filter((p) => p.row === 0);
   assert.equal(
-    new Set(front.map((p) => JSON.stringify(p.sourceGlobalBox))).size,
-    8,
-    "front walking has eight authored frames rather than four duplicates",
+    new Set(front.map((p) => p.sourceAtlas + JSON.stringify(p.sourceGlobalBox)))
+      .size,
+    4,
+    "vertical walking uses the same four support phases as the approved warrior",
   );
 });
 
@@ -507,11 +508,17 @@ test("gunslinger walking keeps constant whole-figure scale and bounded stature t
   for (let row = 0; row < 4; row++) {
     const poses = m.sources.walk.filter((p) => p.row === row);
     assert.equal(poses.length, 8);
-    assert.equal(
-      new Set(poses.map((p) => p.sourceScale)).size,
-      1,
-      "no animation-driven resizing",
-    );
+    for (const source of new Set(poses.map((p) => p.sourceAtlas))) {
+      assert.equal(
+        new Set(
+          poses
+            .filter((p) => p.sourceAtlas === source)
+            .map((p) => p.sourceScale),
+        ).size,
+        1,
+        "no per-frame fitting inside a source row",
+      );
+    }
     for (const p of poses) {
       const [x, y, r, b] = p.bounds;
       assert.ok(x > 0 && y > 0 && r < 384 && b < 384, "whole uncut figure");

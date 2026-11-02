@@ -191,6 +191,7 @@ const server = createServer((req, res) => {
       "/character-hd.js",
       "/character-art.mjs",
       "/character-locomotion.mjs",
+      "/character-proportions.mjs",
       "/character-comparison.js",
       "/combat-visuals.js",
       "/hit-feedback.js",

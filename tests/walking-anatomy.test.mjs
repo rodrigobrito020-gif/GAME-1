@@ -5,30 +5,32 @@ import { decodeRgba } from "../png.mjs";
 import { CHARACTER_ART as ART } from "../character-art.mjs";
 const read = (p) =>
   decodeRgba(readFileSync(new URL("../art/" + p, import.meta.url)));
-test("elf vertical walking alternates the grounded boot in both directions without recentering the hips", () => {
-  const im = read("archer/hd/walk.png");
-  for (const row of [0, 3]) {
-    const support = [];
-    for (const col of [0, 2, 4, 6]) {
-      const xs = [];
-      for (let y = 344; y < 354; y++)
-        for (let x = 130; x < 260; x++) {
-          const p =
-            ((row * ART.frame + y) * im.width + col * ART.frame + x) * 4;
-          const [r, g, b, a] = im.pixels.subarray(p, p + 4);
-          if (a > 180 && r > 45 && r > g * 1.1 && g > b * 1.05) xs.push(x);
-        }
-      assert.ok(xs.length, "complete grounded boot remains visible");
-      support.push(xs.reduce((a, b) => a + b, 0) / xs.length);
+test("ranged vertical walking alternates the grounded boot in both directions without recentering the hips", () => {
+  for (const cl of ["archer", "gunslinger"]) {
+    const im = read(cl + "/hd/walk.png");
+    for (const row of [0, 3]) {
+      const support = [];
+      for (const col of [0, 2, 4, 6]) {
+        const xs = [];
+        for (let y = 344; y < 354; y++)
+          for (let x = 130; x < 260; x++) {
+            const p =
+              ((row * ART.frame + y) * im.width + col * ART.frame + x) * 4;
+            const [r, g, b, a] = im.pixels.subarray(p, p + 4);
+            if (a > 180 && r > 45 && r > g * 1.1 && g > b * 1.05) xs.push(x);
+          }
+        assert.ok(xs.length, "complete grounded boot remains visible");
+        support.push(xs.reduce((a, b) => a + b, 0) / xs.length);
+      }
+      assert.ok(
+        support[0] < ART.feet[0] - 3 && support[1] < ART.feet[0] - 3,
+        "first half supports on image-left foot",
+      );
+      assert.ok(
+        support[2] > ART.feet[0] + 3 && support[3] > ART.feet[0] + 3,
+        "second half supports on image-right foot",
+      );
     }
-    assert.ok(
-      support[0] < ART.feet[0] - 3 && support[1] < ART.feet[0] - 3,
-      "first half supports on image-left foot",
-    );
-    assert.ok(
-      support[2] > ART.feet[0] + 3 && support[3] > ART.feet[0] + 3,
-      "second half supports on image-right foot",
-    );
   }
 });
 function bounds(im, row, col) {
@@ -79,11 +81,20 @@ test("whole-figure atlases keep both classes at the same body height, ground lin
     for (const [sheet, poses] of Object.entries(m.sources))
       for (let row = 0; row < 4; row++) {
         const p = poses.filter((p) => p.row === row);
-        assert.equal(
-          new Set(p.map((p) => p.sourceScale)).size,
-          1,
-          `${cl}/${sheet}/${row}: no per-pose fitting`,
-        );
+        // Authored sources can have different pixel resolutions; neutral poses
+        // deliberately reuse the same figure across sheets. Each source row
+        // still has one uniform calibration, never a scale chosen per frame.
+        for (const source of new Set(p.map((p) => p.sourceAtlas ?? "legacy"))) {
+          assert.equal(
+            new Set(
+              p
+                .filter((p) => (p.sourceAtlas ?? "legacy") === source)
+                .map((p) => p.sourceScale),
+            ).size,
+            1,
+            `${cl}/${sheet}/${row}/${source}: no per-pose fitting`,
+          );
+        }
         assert.ok(
           p.every(
             (p) =>

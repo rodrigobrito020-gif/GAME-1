@@ -3,7 +3,7 @@ Optional build tool: Pillow; no Python is needed to run the exported game.
 """
 from pathlib import Path
 from statistics import median
-import json, argparse
+import json, argparse, subprocess, sys
 from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -110,6 +110,8 @@ parser=argparse.ArgumentParser();parser.add_argument('--class',dest='only',choic
 manifests={}
 for cl,modelrow in [('warrior',0),('archer',1)]:
     if args.only and cl!=args.only:continue
+    if cl=='archer' and (ROOT/'art/archer/source/coherent-v36').exists():
+        subprocess.run([sys.executable,str(ROOT/'tools/pack-class-animations.py'),'--class','archer'],check=True);continue
     manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':34 if cl=='archer' else 23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
     idle=[];walk=[]
     for row in range(4):

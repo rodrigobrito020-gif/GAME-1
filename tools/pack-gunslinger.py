@@ -3,7 +3,7 @@ Optional build tool: Pillow; no Python is needed to run the exported game.
 """
 from pathlib import Path
 from statistics import median
-import json, argparse
+import json, argparse, subprocess, sys
 from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,34 +108,38 @@ def save_sheet(cl, name, rows):
 
 
 # Whole-figure exports share the approved 384px frame, 224px body and foot plane.
-manifest={'character':'Pistoleira Dark Elf','version':35,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
-idle=[];walk=[];weapon=[];special=[];burst=[]
-for row in range(4):
-    ref=whole_cell('idle-v35',1,4,0,[0,2,1,3][row])
-    idle.append([frame(ref,ref,breath=b) for b in [1,1.003,1,.997]])
-    sr=0 if row==0 else 2 if row==3 else 1
-    name='walk-front-v34' if row==0 else 'walk-back-v34' if row==3 else 'walk-side-v34'
-    wr=whole_cell(name,2,4,0,0)
-    walk.append([frame(whole_cell(name,2,4,c//4,c%4),wr,mirror=row==1) for c in range(8)])
-    name='shoot-back-v30' if row==3 else 'shoot-v30';nr=1 if row==3 else 2;shootrow=0 if row in [0,3] else 1
-    wr=whole_cell(name,nr,6,shootrow,0)
-    # Match each aim/release pair to the same hand. Reflect a complete north
-    # pose for the second hand; never cut or move individual body pieces.
-    poses=[]
-    for c in range(6):
-        sc=([0,3,2,1,4,5][c] if row==0 else [0,1,2,1,2,5][c] if row==3 else c)
-        poses.append(frame(whole_cell(name,nr,6,shootrow,sc),wr,mirror=row==1 or (row==3 and c in [3,4])))
-    weapon.append(poses)
-    # Skyward firing has its own whole-figure source, never recycled horizontal attacks.
-    rr=whole_cell('rain-v31',3,4,sr,3)
-    burst.append([frame(whole_cell('rain-v31',3,4,sr,c),rr,mirror=row==1) for c in [0,0,1,1,2,2,3,3]])
-    rr=whole_cell('reactions-v30',3,4,sr,0)
-    special.append([frame(whole_cell('reactions-v30',3,4,sr,c),rr,mirror=row==1,dead=c==2) for c in [0,0,1,0,3,2]])
-for name,rows in [('idle',idle),('walk',walk),('run1',walk),('weapon',weapon),('axeheavy',burst),('special',special)]:
-    manifest['sources'][name]=save_sheet('gunslinger',name,rows)
 folder=ROOT/'art/gunslinger'
-(folder/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-idle[0][0][0].crop((64,112,320,368)).resize((128,128),Image.Resampling.LANCZOS).save(folder/'portrait.png')
+if (ROOT/'art/gunslinger/source/coherent-v36').exists():
+    subprocess.run([sys.executable,str(ROOT/'tools/pack-class-animations.py'),'--class','gunslinger'],check=True)
+else:
+    manifest={'character':'Pistoleira Dark Elf','version':35,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+    idle=[];walk=[];weapon=[];special=[];burst=[]
+    for row in range(4):
+        ref=whole_cell('idle-v35',1,4,0,[0,2,1,3][row])
+        idle.append([frame(ref,ref,breath=b) for b in [1,1.003,1,.997]])
+        sr=0 if row==0 else 2 if row==3 else 1
+        name='walk-front-v34' if row==0 else 'walk-back-v34' if row==3 else 'walk-side-v34'
+        wr=whole_cell(name,2,4,0,0)
+        walk.append([frame(whole_cell(name,2,4,c//4,c%4),wr,mirror=row==1) for c in range(8)])
+        name='shoot-back-v30' if row==3 else 'shoot-v30';nr=1 if row==3 else 2;shootrow=0 if row in [0,3] else 1
+        wr=whole_cell(name,nr,6,shootrow,0)
+        # Match each aim/release pair to the same hand. Reflect a complete north
+        # pose for the second hand; never cut or move individual body pieces.
+        poses=[]
+        for c in range(6):
+            sc=([0,3,2,1,4,5][c] if row==0 else [0,1,2,1,2,5][c] if row==3 else c)
+            poses.append(frame(whole_cell(name,nr,6,shootrow,sc),wr,mirror=row==1 or (row==3 and c in [3,4])))
+        weapon.append(poses)
+        # Skyward firing has its own whole-figure source, never recycled horizontal attacks.
+        rr=whole_cell('rain-v31',3,4,sr,3)
+        burst.append([frame(whole_cell('rain-v31',3,4,sr,c),rr,mirror=row==1) for c in [0,0,1,1,2,2,3,3]])
+        rr=whole_cell('reactions-v30',3,4,sr,0)
+        special.append([frame(whole_cell('reactions-v30',3,4,sr,c),rr,mirror=row==1,dead=c==2) for c in [0,0,1,0,3,2]])
+    for name,rows in [('idle',idle),('walk',walk),('run1',walk),('weapon',weapon),('axeheavy',burst),('special',special)]:
+        manifest['sources'][name]=save_sheet('gunslinger',name,rows)
+    folder=ROOT/'art/gunslinger'
+    (folder/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    idle[0][0][0].crop((64,112,320,368)).resize((128,128),Image.Resampling.LANCZOS).save(folder/'portrait.png')
 im=Image.open(SOURCE/'icons.png').convert('RGBA');w,h=im.size
 for i,name in enumerate(['disparo-sombrio','rajada-do-crepusculo','instinto-noturno','eclipse','dash']):
     r,c=divmod(i,3);side=min(w//3,h//2);x=round(c*w/3+(w/3-side)/2);y=round(r*h/2+(h/2-side)/2)

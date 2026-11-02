@@ -1,8 +1,19 @@
-# Jogo local — 0.6.35: Ki do guerreiro, subida de nível e repouso da pistoleira
+# Jogo local — 0.6.36: proporções, Ki e efeito de nível
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.36
+
+- **Proporções da arqueira e pistoleira:** revisão das seis sequências — repouso, caminhada/corrida, disparos, chuva em área e reações/buffs. Poses neutras de repouso, preparação e recuperação reutilizam exatamente a mesma figura completa. Exibição com escala uniforme fixa e altura corporal de 112 unidades, sem herdar variações de escala do ajuste de pixels do cliente. Figuras inteiras, sem montar ou esticar partes do corpo.
+- **Passadas no padrão do guerreiro:** oito fases laterais com passagem estreita entre os contatos; quatro fases verticais de apoio, amostradas nos oito quadros HD. Coroas e botas completas, alternância de apoio verificada nas duas direções. Disparos frontais/de costas e origem das balas ajustados às novas poses. Retratos e máscaras de energia acompanham a revisão.
+- **Ki nas três ultimates:** mesmo movimento de energia do guerreiro na arqueira e pistoleira, ligado à silhueta real, superfície do corpo e armas. Filamentos sobem das bordas em camadas, mantendo verde/dourado na arqueira e violeta/dourado na pistoleira. Guerreiro aprovado preservado.
+- **Level up com mais impacto:** anel texturizado de energia em rotação, selo rúnico e descargas no chão, espirais que passam à frente/atrás do corpo, feixes, partículas e setas ascendentes. Dourado no guerreiro, verde na arqueira e violeta na pistoleira, seguindo as referências enviadas. Dura 2,2s, usa o evento real de nível e o som nativo, sem pausar o combate. Não se repete ao reconectar.
+
+Dano, cadência, duração/recarga das habilidades, automação, poções, equipamentos e progresso mantidos. **135 testes passaram com o ZIP real**, além da conferência no Chromium/WebGL. A avaliação artística continua com o jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.36**.
 
 ## Atualização 0.6.35
 

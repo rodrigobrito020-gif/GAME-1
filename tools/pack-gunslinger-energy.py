@@ -15,7 +15,7 @@ for sheet in ['idle','walk','run1','weapon','special','axeheavy']:
                     # Metal glints on the two pistols. Face/torso/legs are outside
                     # these material regions; the frame itself supplies geometry.
                     low=225<y<306 and ((x<165 or x>225) if row in [0,3] else (x<174 or x>210))
-                    shoot=(sheet=='weapon' or sheet=='axeheavy') and ((row==0 and 145<y<197 and ((col<3 and 143<x<181)or(col>=3 and 215<x<253)))or(row==1 and 137<y<185 and x<154)or(row==2 and 137<y<185 and x>231)or(row==3 and 100<y<169 and (x<166 or x>218)))
+                    shoot=(sheet=='weapon' or sheet=='axeheavy') and ((row==0 and 145<y<197 and ((col<3 and 143<x<181)or(col>=3 and 215<x<253)))or(row==1 and 137<y<185 and x<154)or(row==2 and 137<y<185 and x>231)or(row==3 and 45<y<169 and (x<166 or x>218)))
                     sky=sheet=='axeheavy' and col<6 and y<122 and (x<172 or x>217)
                     buff=sheet=='special' and col==4 and 146<y<245 and (x<143 or x>244)
                     r,g,b,aa=px[x,y]

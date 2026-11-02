@@ -1,4 +1,3 @@
-import { classVisuals } from "./class-visuals.mjs";
 export const ARCHER_CLASS = "arqueira",
   ARCHER_SKIN = "elfa-arqueira";
 export const ARCHER_SHEETS = {
@@ -159,9 +158,7 @@ export function archerRig(original) {
     "elfa-esquiva": {
       frames: [...hold("run1", 1, 2), ...hold("run1", 3, 2)],
       impacts: [],
-      motion: {
-        trail: { at: [0, 220], color: classVisuals(ARCHER_CLASS).trailColor },
-      },
+      // Universal Dash uses the single HD trail controller.
     },
   });
   rig.basic[ARCHER_CLASS] = { chain: ["elfa-flecha"], heavy: "elfa-flecha" };

@@ -41,6 +41,34 @@ def cell(name, rows, cols, row, col):
     result={'im':im,'box':box,'floor':floor,'body':body}
     cache[key]=result;return result
 
+whole_cache={}
+def whole_cell(name,rows,cols,row,col):
+    # Discover complete authored figures BEFORE dividing the source into cells.
+    # A head may cross a nominal row boundary; cropping first would lose it.
+    if name not in whole_cache:
+        im=Image.open(SOURCE/(name+'.png')).convert('RGBA');w,h=im.size;px=im.load()
+        pending={y*w+x for y in range(h) for x in range(w) if px[x,y][3]>=220};groups=[]
+        while pending:
+            seed=pending.pop();q=[seed]
+            for n in q:
+                x,y=n%w,n//w
+                for nx,ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                    nn=ny*w+nx
+                    if 0<=nx<w and 0<=ny<h and nn in pending:pending.remove(nn);q.append(nn)
+            if len(q)>500:groups.append(q)
+        whole_cache[name]=(im,groups)
+    im,groups=whole_cache[name];w,h=im.size
+    candidates=[g for g in groups if int(sum(n%w for n in g)/len(g)*cols/w)==col and int(sum(n//w for n in g)/len(g)*rows/h)==row]
+    if not candidates:raise ValueError(('missing whole figure',name,row,col))
+    group=max(candidates,key=len);global_box=(min(n%w for n in group),min(n//w for n in group),max(n%w for n in group)+1,max(n//w for n in group)+1)
+    if min(global_box[:2])<3 or global_box[2]>w-3 or global_box[3]>h-3:raise ValueError(('source figure touches outer canvas',name,row,col,global_box))
+    x0,y0,x1,y1=global_box;pad=12;source=im.crop((x0-pad,y0-pad,x1+pad,y1+pad));body=[(n%w-x0+pad,n//w-y0+pad)for n in group]
+    mask=Image.new('L',source.size);mp=mask.load()
+    for x,y in body:mp[x,y]=255
+    mask=mask.filter(ImageFilter.MaxFilter(5));source.putalpha(Image.composite(source.getchannel('A'),Image.new('L',source.size),mask))
+    box=source.getchannel('A').point(lambda v:255 if v>=180 else 0).getbbox()
+    return {'im':source,'body':body,'box':box,'floor':box[3],'globalBox':global_box,'sourceImageSize':im.size}
+
 def center(part, reference):
     # Position by the pelvis, never by a weapon tip or a moving foot.
     im=part['im'];px=im.load();x0,y0,x1,y1=part['box'];floor=part['floor'];h=reference['floor']-reference['box'][1]
@@ -58,7 +86,7 @@ def frame(part, reference, mirror=False, dead=False, breath=1, flight=False):
     if mirror:out=out.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
     bbox=out.getchannel('A').point(lambda v:255 if v>80 else 0).getbbox()
     if not bbox or min(bbox[:2])<1 or bbox[2]>=FRAME or bbox[3]>=FRAME:raise ValueError(('clipped export',bbox))
-    return out, {'sourceScale':scale,'scale':scale,'source':part['box'],'sourceFloor':part['floor'],'center':cx,'mirrored':mirror,'bounds':bbox,'sourceBodyHeight':reference['floor']-reference['box'][1]}
+    return out, {'sourceScale':scale,'scale':scale,'source':part['box'],'sourceFloor':part['floor'],'center':cx,'mirrored':mirror,'bounds':bbox,'sourceBodyHeight':reference['floor']-reference['box'][1],**({'sourceGlobalBox':part['globalBox'],'sourceImageSize':part['sourceImageSize']} if 'globalBox'in part else {})}
 
 def save_sheet(cl, name, rows):
     cols=len(rows[0]);sample=2 if name in ['walk','run1'] else 1
@@ -82,7 +110,7 @@ parser=argparse.ArgumentParser();parser.add_argument('--class',dest='only',choic
 manifests={}
 for cl,modelrow in [('warrior',0),('archer',1)]:
     if args.only and cl!=args.only:continue
-    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':25 if cl=='archer' else 23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+    manifest={'character':'Guerreiro Humano' if cl=='warrior' else 'Arqueira Elfa','version':34 if cl=='archer' else 23,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
     idle=[];walk=[]
     for row in range(4):
         modelcol=2 if cl=='warrior' and row==1 else row
@@ -94,8 +122,8 @@ for cl,modelrow in [('warrior',0),('archer',1)]:
             wr=cell(name,1,8,0,0)
             walk.append([frame(cell(name,1,8,0,col),wr,row==1) for col in range(8)])
         elif cl=='archer':
-            sr=0 if row==0 else 1;name='archer-walk-vertical';wr=cell(name,2,4,sr,0)
-            walk.append([frame(cell(name,2,4,sr,col//2),wr) for col in range(8)])
+            sr=0 if row==0 else 1;name='archer-walk-vertical';wr=whole_cell(name,2,4,sr,0)
+            walk.append([frame(whole_cell(name,2,4,sr,col//2),wr) for col in range(8)])
         else:
             # Preserve the existing vertical whole-figure art. Its four poses
             # already alternate support; the defect in the recording was most

@@ -1,8 +1,20 @@
-# Jogo local — 0.6.33: energia no corpo, sons e impactos
+# Jogo local — 0.6.34: caminhada, Dash e impactos por classe
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.34
+
+- **Elfa de costas:** o exportador identifica a figura inteira antes de dividir a folha de poses, incluindo a cabeça que ultrapassava a antiga divisão entre linhas. A caminhada conserva o topo arredondado do cabelo e a linha dos pés.
+- **Pistoleira:** caminhada redesenhada nas quatro direções com referência no modelo parado, mantendo corpo, rosto, roupa e armas coerentes ao virar. As máscaras da transformação acompanham as novas poses.
+- **Dash das três classes:** um único rastro HD com até quatro silhuetas, espaçadas pelo deslocamento real. Cada silhueta desaparece em 175ms, independentemente da próxima animação; o efeito nativo duplicado foi removido apenas da esquiva comum.
+- **Impactos distintos:** cortes dourados de espada no guerreiro, ponta de flecha e faíscas verdes na arqueira, clarão violeta da pistoleira. Cada desenho aparece no evento real de dano, com números e críticos preservados.
+- **Passos suaves:** gravações de caminhada/corrida filtradas, com ataque e final suavizados; ganho próprio dos passos reduzido sem diminuir os sons de combate. Volume e silenciar continuam nos controles existentes.
+
+Regras de dano, duração, recarga e automação preservadas. Contas reais não são usadas nos testes. **130 testes passaram com o ZIP real**, além das verificações de Dash, áudio, impactos e auras no Chromium/WebGL. A avaliação artística continua com o jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.34**.
 
 ## Atualização 0.6.33
 

@@ -2,13 +2,18 @@
 // remains authoritative, so criticals, kills and area hits get their own number.
 (() => {
   const scenes = new Map();
-  let impactArt = null;
-  const art = new Image();
-  art.src = "/assets/fx/royal-gunslinger/soulshot.png";
-  art
-    .decode()
-    .then(() => (impactArt = art))
-    .catch(() => {});
+  const impactArt = new Map();
+  for (const [cls, url] of Object.entries({
+    guerreiro: "/assets/fx/royal-combat/warrior-hit.png",
+    arqueira: "/assets/fx/royal-combat/archer-hit.png",
+    pistoleira: "/assets/fx/royal-gunslinger/soulshot.png",
+  })) {
+    const im = new Image();
+    im.src = url;
+    im.decode()
+      .then(() => impactArt.set(cls, im))
+      .catch(() => {});
+  }
   function destroy(entry) {
     entry.text.destroy();
     entry.flash?.destroy();
@@ -48,9 +53,9 @@
               .setPosition(a?.x ?? e.fx, a ? a.y - a.height * 0.5 : e.fy)
               .setDisplaySize(
                 e.size * (0.65 + 0.35 * t),
-                e.size * (0.65 + 0.35 * t),
+                e.size * e.aspect * (0.65 + 0.35 * t),
               )
-              .setAngle(e.turn + t * 22)
+              .setAngle(e.turn + t * e.spin)
               .setAlpha(Math.pow(1 - t, 1.2) * 0.95);
           }
         }
@@ -69,9 +74,11 @@
   }
   window.__royalHitFeedback = {
     ready() {
-      return !!impactArt;
+      return ["guerreiro", "arqueira", "pistoleira"].every((c) =>
+        impactArt.has(c),
+      );
     },
-    apply(scene, actor, damage) {
+    apply(scene, actor, damage, source) {
       if (!actor?.root?.scene || !actor.root.active || !(damage.amount > 0))
         return false;
       window.__royalCombatAudio?.hit(damage);
@@ -128,25 +135,41 @@
           fx: actor.x,
           fy: actor.y - actor.height * 0.5,
           size: skillImpact ? (crit ? 114 : 96) : crit ? 104 : 82,
-          turn: lane * 47,
+          aspect: cls === "arqueira" ? 0.72 : 1,
+          turn:
+            cls === "arqueira" && source
+              ? (Math.atan2(
+                  actor.y - actor.height * 0.5 - source.y + source.height * 0.5,
+                  actor.x - source.x,
+                ) *
+                  180) /
+                Math.PI
+              : cls === "guerreiro"
+                ? lane % 2
+                  ? 12
+                  : -12
+                : lane * 47,
+          spin: cls === "pistoleira" ? 22 : cls === "guerreiro" ? 12 : 0,
           flashDuration: skillImpact ? 260 : crit ? 240 : 190,
         };
-      if (!dot && impactArt) {
-        if (!scene.textures.exists("royal-soulshot"))
-          scene.textures.addImage("royal-soulshot", impactArt);
+      if (!dot && impactArt.has(cls)) {
+        const key =
+          cls === "pistoleira" ? "royal-soulshot" : `royal-hit:${cls}`;
+        if (!scene.textures.exists(key))
+          scene.textures.addImage(key, impactArt.get(cls));
         entry.flash = scene.add
-          .image(entry.fx, entry.fy, "royal-soulshot")
+          .image(entry.fx, entry.fy, key)
+          .setDisplaySize(entry.size * 0.65, entry.size * entry.aspect * 0.65)
+          .setAngle(entry.turn)
+          .setAlpha(0.95)
           .setDepth(1000002);
-        if (skillImpact)
+        if (skillImpact && cls === "pistoleira")
           entry.flash.setTint(
-            cls === "arqueira"
-              ? 0xd4ffb8
-              : damage.skillId === "disparo-sombrio"
-                ? 0xffd1a0
-                : 0xe4c8ff,
+            damage.skillId === "disparo-sombrio" ? 0xffd1a0 : 0xe4c8ff,
           );
         entry.flash.royalSkillImpact = skillImpact;
-        entry.flash.royalSoulshot = true;
+        entry.flash.royalClassImpact = cls;
+        entry.flash.royalSoulshot = cls === "pistoleira";
       }
       s.entries.push(entry);
       return true;

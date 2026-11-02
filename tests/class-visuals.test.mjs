@@ -31,8 +31,9 @@ test("elf dash trail and class icon share the class energy while warrior colors 
     warrior = classVisuals("guerreiro");
   assert.equal(
     archerRig({ moves: {}, basic: {}, skills: {} }).moves["elfa-esquiva"].motion
-      .trail.color,
-    elf.trailColor,
+      ?.trail,
+    undefined,
+    "Dash emits one HD trail rather than a second native pool",
   );
   assert.equal(elf.color, "#62e89c");
   assert.match(elf.dashIcon, /royal-archer\/dash.png$/);
@@ -129,7 +130,7 @@ test("high-refresh small movement frames still accumulate into a bounded dash tr
     actor.x = i * 4;
     updateDashTrail(actor, body, true);
   }
-  assert.ok(actor.ghosts.length > 0);
-  assert.ok(actor.ghosts.length <= 5);
-  assert.ok(actor.ghosts.every((g) => g.royalLight));
+  assert.ok(actor.royalDashGhosts.length > 0);
+  assert.ok(actor.royalDashGhosts.length <= 4);
+  assert.ok(actor.royalDashGhosts.every((g) => g.royalLight));
 });

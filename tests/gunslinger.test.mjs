@@ -499,3 +499,26 @@ test("gunslinger holds a ready pose in combat without replacing walking, casts o
   assert.deepEqual(rig.moves["dark-elf-tiros"].frames[0], ["weapon", 1]);
   assert.deepEqual(rig.moves["dark-elf-tiros"].frames.at(-1), ["weapon", 1]);
 });
+
+test("gunslinger walking keeps constant whole-figure scale and bounded stature through all eight phases and directions", () => {
+  const m = JSON.parse(
+    readFileSync(new URL("../art/gunslinger/manifest.json", import.meta.url)),
+  );
+  for (let row = 0; row < 4; row++) {
+    const poses = m.sources.walk.filter((p) => p.row === row);
+    assert.equal(poses.length, 8);
+    assert.equal(
+      new Set(poses.map((p) => p.sourceScale)).size,
+      1,
+      "no animation-driven resizing",
+    );
+    for (const p of poses) {
+      const [x, y, r, b] = p.bounds;
+      assert.ok(x > 0 && y > 0 && r < 384 && b < 384, "whole uncut figure");
+      assert.ok(
+        b - y >= 212 && b - y <= 232,
+        "walk stature stays near the 224px model",
+      );
+    }
+  }
+});

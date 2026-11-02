@@ -10,6 +10,9 @@
     "golpe-destruidor",
     "furia",
     "impacto-corte",
+    "impacto-1",
+    "impacto-2",
+    "impacto-critico",
     "impacto-destruidor",
     "disparo-1",
     "disparo-2",
@@ -127,15 +130,21 @@
       if (damage.dot) return;
       stats.hits++;
       const cls = window.__royalUltimateState?.classId;
-      play(
-        damage.critical
-          ? "impacto-magico-critico"
-          : cls === "guerreiro"
-            ? "impacto-corte"
-            : "impacto-magico-1",
-        0,
-        damage.critical ? 0.7 : 0.45,
-      );
+      const clip =
+        cls === "guerreiro"
+          ? damage.critical
+            ? "impacto-critico"
+            : "impacto-corte"
+          : cls === "arqueira"
+            ? damage.critical
+              ? "impacto-critico"
+              : turn % 2
+                ? "impacto-1"
+                : "impacto-2"
+            : damage.critical
+              ? "impacto-magico-critico"
+              : "impacto-magico-1";
+      play(clip, 0, damage.critical ? 0.7 : 0.45);
     },
   };
   window.addEventListener("royal-skill-scene-reset", () => {

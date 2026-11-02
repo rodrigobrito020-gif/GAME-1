@@ -72,6 +72,27 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const hit = /^\/assets\/fx\/royal-combat\/(warrior|archer)-hit\.png$/.exec(
+      pathname,
+    );
+    if (hit)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/combat/${hit[1]}-hit.png`, import.meta.url),
+        ),
+      };
+    const step =
+      /^\/assets\/audio\/passos\/(caminhada-0[1-8]|corrida-0[1-6])\.ogg$/.exec(
+        pathname,
+      );
+    if (step)
+      return {
+        type: "audio/ogg",
+        bytes: readFileSync(
+          new URL(`./art/audio/steps/${step[1]}.ogg`, import.meta.url),
+        ),
+      };
     const energy =
       /^\/assets\/fx\/royal-energy\/(archer|gunslinger)\/(emitters\.json|(?:idle|walk|run1|weapon|axeheavy|special)-(?:surface|contour)\.png)$/.exec(
         pathname,

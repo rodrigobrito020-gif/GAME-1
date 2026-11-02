@@ -1,46 +1,49 @@
-VERSAO 0.6.33 — ENERGIA NO CORPO, SONS E IMPACTOS
+VERSAO 0.6.34 — CAMINHADA, DASH E IMPACTOS POR CLASSE
 Data: 02/11/2026
 
 ALTERACOES
-- Arqueira e pistoleira: removida a apresentacao fixa atras do corpo. Mascaras
-  derivadas da transparencia das poses reais para luz na superficie, halo suave
-  e particulas nas bordas. Faixas de luz animadas sobre roupa, cabelo e armas.
-- Pose HD atual determina quadro, origem, escala e rotacao da energia, inclusive
-  nas oito fases da caminhada e no recuo. Rosto protegido com baixa intensidade.
-- Energia verde/dourada na arqueira e violeta/dourada na pistoleira. Visual
-  aprovado do Avatar da Luz do guerreiro preservado.
-- Impactos das habilidades da arqueira/pistoleira com cores proprias, disparados
-  pelo acerto real; fogo/dourado no Disparo Sombrio, verde na arqueira.
-- Sons existentes do pacote para golpes, arco, tiros, esquiva, impactos, buffs e
-  ultimates das tres classes. Integrados ao mixer, volume/mute e limite de vozes
-  do cliente. Volume inicial 25% apenas quando nao ha escolha anterior salva.
-- Valores de combate, artes e proporcoes preservados. Confirmado com o jogador:
-  o pedido era animacoes de impacto, nao animais no cenario.
+- Elfa de costas: figura completa localizada antes de dividir a folha de poses.
+  Cabeca que cruzava a divisao entre linhas agora faz parte de cada exportacao.
+- Pistoleira: oito poses de caminhada redesenhadas de frente, perfil e costas
+  com referencia no modelo parado. Escala uniforme por direcao e pes na mesma
+  linha; sem montagem ou esticamento separado de membros.
+- Mascaras de armas, superficie, contorno e emissores regeneradas para as poses.
+- Dash universal: um unico pool HD separado dos rastros nativos de outras skills.
+  Ate quatro silhuetas, espacamento por deslocamento real e duracao propria de
+  175ms. Acao congelada, morte ou teleporte nao prolongam o rastro.
+- Impactos: cortes dourados no guerreiro, ponta de flecha com verde/dourado na
+  arqueira, Soulshot violeta preservado na pistoleira. Direcao da flecha acompanha
+  origem e alvo. Sons de impacto tambem respeitam o tipo de ataque.
+- Quatorze gravacoes de passos filtradas, ataque/final suaves e ganho reduzido
+  de 0,55 para 0,22; mixer de combate, volume salvo e mute nativo preservados.
+- Dano, alcances, cadencia, duracoes, recargas e automacao sem alteracoes.
 
 VERIFICACAO
-- 126 testes automatizados passaram com o ZIP real, sem falhas/ignorados.
-- Mascaras de superficie verificadas contra a transparencia de todas as poses:
-  luz contida no corpo, rosto protegido e halo acompanhando a silhueta.
-- Emissores sobre pixels reais dos personagens, incluindo 8 fases de caminhada.
-- Chromium/WebGL pt-BR: arqueira e pistoleira com energia alinhada ao quadro HD,
-  escala, posicao e recuo nas quatro direcoes; Shift nao retorna a cidade.
-- Antigas imagens de aura ausentes na exibicao. Duas duracoes independentes;
-  textura dinamica e particulas removidas ao sair, sem residuos de recursos.
-- Guerreiro conserva sua aura e nao recebe a nova camada visual.
-- Sons realmente decodificados e iniciados no AudioContext em execucao, com
-  amostras nao silenciosas nas tres classes. Mute nativo bloqueia novas vozes.
-- Impactos especificos de habilidades observados em eventos reais de dano.
-- Zero erros JavaScript; contas isoladas e capturas do jogo revisadas.
-- 220 arquivos de arte aprovados comparados byte a byte com 0.6.32: iguais.
-  avatar-visuals.js do guerreiro tambem preservado byte a byte.
-- Progresso real nao foi alterado. Avaliacao artistica final cabe ao jogador.
+- 130 testes passaram com recursos-publicos.zip real, sem falhas/ignorados.
+- Regressao da cabeca da elfa: oito quadros norte com coroa arredondada,
+  origem completa e estatura normal. Poses da pistoleira sem recortes e escala
+  uniforme durante cada ciclo de caminhada.
+- Rastro testado com relogio controlado: expiracao em repouso/acao congelada,
+  pool separado, morte, teleporte, limite de sprites e limpeza independente.
+- Chromium/WebGL pt-BR: tres classes com Dash real, silhuetas HD e desaparecimento
+  completo; Shift repetido nao sai da caca. Auras acompanham quadro e posicao;
+  efeitos e texturas temporarias sao removidos ao sair.
+- Acertos reais das tres classes mostram os numeros e desenhos proprios de
+  impacto, sem erros JavaScript; limpeza dos objetos conferida.
+- Audio realmente decodificado e iniciado no contexto em execucao nas tres
+  classes, incluindo as novas gravacoes curtas de passos. Mute nativo conferido.
+- Medicao dos primeiros passos de caminhada/corrida: ataque da gravacao reduzido
+  em aproximadamente 31%, alem da reducao do ganho exclusivo dos passos.
+- 138 arquivos protegidos identicos a 0.6.33, incluindo arte e Avatar do guerreiro
+  e poses da pistoleira fora da caminhada. Contas isoladas usadas nos testes;
+  progresso real preservado. Avaliacao artistica continua com o jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.33.
-6. Clique no jogo para liberar audio; use os controles de efeitos/silenciar.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.34.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-Reconstrucao das mascaras: python tools/pack-attached-energy.py (Python/Pillow).
+Ferramentas Python/Pillow/FFmpeg sao opcionais para reconstruir arte/audio;
+nao sao necessarias para executar o jogo exportado.

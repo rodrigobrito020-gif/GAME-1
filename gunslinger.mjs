@@ -1,4 +1,3 @@
-import { classVisuals } from "./class-visuals.mjs";
 export const GUNSLINGER_CLASS = "pistoleira",
   GUNSLINGER_SKIN = "dark-elf-pistoleira";
 export const isGunslinger = (c) => c.identity?.classId === GUNSLINGER_CLASS;
@@ -181,12 +180,7 @@ export function gunslingerRig(original) {
     "dark-elf-esquiva": {
       frames: [...hold("run1", 1, 2), ...hold("run1", 3, 2)],
       impacts: [],
-      motion: {
-        trail: {
-          at: [0, 220],
-          color: classVisuals(GUNSLINGER_CLASS).trailColor,
-        },
-      },
+      // Universal Dash uses the single HD trail controller.
     },
   });
   rig.basic[GUNSLINGER_CLASS] = {

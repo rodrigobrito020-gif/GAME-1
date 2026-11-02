@@ -2,7 +2,7 @@ import { gunslingerDisplayPose } from "/gunslinger.mjs";
 import { gunShotPresentation } from "/gunslinger-vfx.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 import { locomotionPose } from "/character-locomotion.mjs";
-import { updateDashTrail } from "/dash-visuals.mjs";
+import { updateDashTrail, clearDashTrail } from "/dash-visuals.mjs";
 // Higher detail display layer; native actors, hitboxes, rig and world positions
 // stay authoritative. Textures are rebuilt from the original large pose art.
 (() => {
@@ -38,6 +38,7 @@ import { updateDashTrail } from "/dash-visuals.mjs";
         .catch(() => {});
     }
   function cleanup(a) {
+    clearDashTrail(a);
     const s = actors.get(a);
     if (s) {
       s.destroy();

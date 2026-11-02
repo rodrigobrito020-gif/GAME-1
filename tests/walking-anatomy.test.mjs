@@ -155,3 +155,34 @@ test("standing artwork has a continuous lower body and its visible belt leaves f
     );
   }
 });
+
+test("elf north walking exports the entire source crown across the old row divider", () => {
+  const im = read("archer/hd/walk.png"),
+    m = JSON.parse(
+      readFileSync(new URL("../art/archer/manifest.json", import.meta.url)),
+    );
+  for (let col = 0; col < 8; col++) {
+    const b = bounds(im, 3, col),
+      count = (y) =>
+        Array.from(
+          { length: 384 },
+          (_, x) =>
+            im.pixels[((3 * 384 + y) * im.width + col * 384 + x) * 4 + 3] > 180,
+        ).filter(Boolean).length;
+    let top = b.top;
+    while (count(top) === 0) top++;
+    assert.ok(
+      count(top) < count(top + 10) * 0.65,
+      `frame ${col}: rounded crown rather than flat cut`,
+    );
+    const pose = m.sources.walk.find((p) => p.row === 3 && p.col === col);
+    assert.ok(
+      pose.sourceGlobalBox && pose.sourceGlobalBox[1] > 0,
+      "whole source figure included before row division",
+    );
+    assert.ok(
+      b.height >= 218 && b.height <= 230,
+      "complete normal body stature",
+    );
+  }
+});

@@ -100,7 +100,7 @@ export function warriorRig(original) {
     "humano-esquiva": {
       frames: [...hold("run1", 1, 2), ...hold("run1", 3, 2)],
       impacts: [],
-      motion: { trail: { at: [0, 220], color: 0xffe4a0 } },
+      // Universal Dash uses the single HD trail controller.
     },
     "humano-ferido": {
       frames: [...hold("special", 2, 1), ...hold("special", 0, 1)],

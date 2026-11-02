@@ -8,6 +8,8 @@ Todas as próximas ultimates devem transformar visualmente o personagem, tendo a
 
 ## Entregue
 
+- 0.6.34: cabeça completa na caminhada norte da elfa, caminhada da pistoleira alinhada ao modelo parado, rastro único de Dash com duração independente e passos mais suaves. Desenhos próprios de espada/flecha nos impactos do guerreiro/arqueira; Soulshot violeta da pistoleira preservado. Auras regeneradas para as poses corrigidas. Revisão visual pelo jogador pendente.
+
 - 0.6.33: energia das ultimates da arqueira e pistoleira vinculada à silhueta e superfície de cada pose, com luz animada no corpo/armas e partículas em camadas. Visual do guerreiro preservado. Impactos de habilidades com cores próprias e sons do pacote nas três classes, usando volume/mute nativos. “Animais” foi esclarecido pelo jogador como animações de impacto, sem pedido de animais no cenário. Revisão visual do jogador pendente.
 
 - 0.6.32: tiros da pistoleira com clarão direcional, rastro luminoso, cartuchos e recuo visual curto; números de dano maiores e impacto inspirado em Soulshot nos acertos reais contra monstros das três classes. Apresentação da queimadura separada dos tiros. Valores e cadência preservados; revisão visual do jogador pendente.

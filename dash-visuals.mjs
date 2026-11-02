@@ -15,11 +15,17 @@ export function dashTrailPoints(from, to) {
 // Native movement can arrive before the short dodge's animation callback.
 // Emit from actual displacement and reuse the client's bounded, fading HD
 // afterimage pool, independent of the native motion.trail implementation.
-export function updateDashTrail(actor, body, elf) {
+export function updateDashTrail(actor, body, classId) {
   const to = { x: actor.x, y: actor.y },
     from = previous.get(actor);
   previous.set(actor, to);
-  const theme = classVisuals(elf ? "arqueira" : "guerreiro");
+  const theme = classVisuals(
+    typeof classId === "boolean"
+      ? classId
+        ? "arqueira"
+        : "guerreiro"
+      : classId,
+  );
   if (
     !from ||
     actor.act?.move.id !== theme.dashMove ||

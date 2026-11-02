@@ -648,3 +648,6 @@ body {
   .royal-potion-dock{width:89px;gap:5px;z-index:1101}
   .royal-potion-cell,.royal-potion-cell .royal-potion-slot{width:42px;height:48px;flex-basis:42px}.royal-potion-cell .royal-potion-mode{width:42px;font-size:7px}
 }
+
+/* Three initial classes share the approved ivory and gold selector. */
+.royal-class-panel{width:min(880px,calc(100vw - 28px));max-height:calc(100vh - 32px);overflow-y:auto}.royal-class-cards{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:650px){.royal-class-cards{grid-template-columns:1fr}.royal-class-cards img{height:135px}}

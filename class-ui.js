@@ -44,6 +44,12 @@
         icon: "/assets/ui/royal-classes/archer.png",
         desc: "Arco e flechas · combate à distância",
       },
+      {
+        id: "pistoleira",
+        name: "Pistoleira Dark Elf",
+        icon: "/assets/ui/royal-classes/gunslinger.png",
+        desc: "Duas pistolas · combate à distância",
+      },
     ]) {
       const card = el("section"),
         im = new Image();

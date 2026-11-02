@@ -1,3 +1,9 @@
+import {
+  GUNSLINGER_CLASS,
+  GUNSLINGER_SKIN,
+  GUNSLINGER_SKILLS,
+} from "./gunslinger.mjs";
+import { gunslingerFxState } from "./gunslinger-combat.mjs";
 import { ARCHER_CLASS, ARCHER_SKIN } from "./archer.mjs";
 import { archerFxState } from "./archer-combat.mjs";
 import { POTION_TIERS, potionState } from "./potions.mjs";
@@ -65,7 +71,7 @@ export function attachLocalGame(
     return result;
   };
   const catalog = empty("ContentCatalog");
-  catalog.version = "local-classes-27";
+  catalog.version = "local-classes-28";
   Object.assign(catalog.rules, {
     maxLevel: 300,
     awakenLevel: 50,
@@ -94,6 +100,16 @@ export function attachLocalGame(
     range: 320,
     hpBase: 220,
     manaBase: 120,
+    attacksPerSecond: 1,
+    initialStats: [],
+  });
+  catalog.classes.push({
+    id: GUNSLINGER_CLASS,
+    name: "Pistoleira Dark Elf",
+    icon: "agilidade",
+    range: 300,
+    hpBase: 230,
+    manaBase: 110,
     attacksPerSecond: 1,
     initialStats: [],
   });
@@ -143,6 +159,14 @@ export function attachLocalGame(
     forSale: false,
     kit: [],
   });
+  catalog.skins.push({
+    id: GUNSLINGER_SKIN,
+    name: "Pistoleira Dark Elf",
+    gender: 2,
+    classId: GUNSLINGER_CLASS,
+    forSale: false,
+    kit: [],
+  });
   catalog.scenes = [
     {
       id: "cidade-local",
@@ -160,14 +184,16 @@ export function attachLocalGame(
     ...skill,
     classId: skill.universal
       ? "universal"
-      : [
-            "tiro-perfurante",
-            "chuva-de-flechas",
-            "olhos-da-floresta",
-            "espirito-da-floresta",
-          ].includes(skill.id)
-        ? ARCHER_CLASS
-        : "guerreiro",
+      : GUNSLINGER_SKILLS.some((s) => s.id === skill.id)
+        ? GUNSLINGER_CLASS
+        : [
+              "tiro-perfurante",
+              "chuva-de-flechas",
+              "olhos-da-floresta",
+              "espirito-da-floresta",
+            ].includes(skill.id)
+          ? ARCHER_CLASS
+          : "guerreiro",
     kind: skill.kind ?? (skill.radius ? "area" : "damage"),
     source: "physical",
     description:
@@ -567,12 +593,15 @@ export function attachLocalGame(
           ...combatState(account, client, Date.now()),
           activeBuffs: farm.activeBuffs(),
           archerFx: archerFxState(client, Date.now()),
+          gunslingerFx: gunslingerFxState(client, Date.now()),
           classId: account.character.identity.classId,
           classVisuals: classVisuals(account.character.identity.classId),
           className:
-            account.character.identity.classId === ARCHER_CLASS
-              ? "Arqueira Elfa"
-              : "Guerreiro Humano",
+            account.character.identity.classId === GUNSLINGER_CLASS
+              ? "Pistoleira Dark Elf"
+              : account.character.identity.classId === ARCHER_CLASS
+                ? "Arqueira Elfa"
+                : "Guerreiro Humano",
           ...potionState(account, Date.now(), farm.nextPotion ?? 0),
           level: account.character.progress.level,
           hp: account.character.progress.hp,
@@ -1045,7 +1074,7 @@ export function attachLocalGame(
               );
             } else if (kind === "setTarget") farm.target(client, value.entity);
             else if (kind === "useSkill") {
-              const change = /^classe:(guerreiro|arqueira)$/.exec(
+              const change = /^classe:(guerreiro|arqueira|pistoleira)$/.exec(
                 value.skillId,
               );
               if (change) {

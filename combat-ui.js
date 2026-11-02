@@ -66,11 +66,13 @@
         "small",
         s.classId === "universal"
           ? "HABILIDADE COMUM · TODAS AS CLASSES"
-          : ["avatar-da-luz", "espirito-da-floresta"].includes(s.id)
-            ? `ULTIMATE · ${s.classId === "arqueira" ? "ARQUEIRA ELFA" : "GUERREIRO HUMANO"}`
-            : s.classId === "arqueira"
-              ? "ARQUEIRA ELFA"
-              : "GUERREIRO HUMANO",
+          : ["avatar-da-luz", "espirito-da-floresta", "eclipse"].includes(s.id)
+            ? `ULTIMATE · ${s.classId === "pistoleira" ? "PISTOLEIRA DARK ELF" : s.classId === "arqueira" ? "ARQUEIRA ELFA" : "GUERREIRO HUMANO"}`
+            : s.classId === "pistoleira"
+              ? "PISTOLEIRA DARK ELF"
+              : s.classId === "arqueira"
+                ? "ARQUEIRA ELFA"
+                : "GUERREIRO HUMANO",
       ),
       text("h2", s.name),
       text("p", s.description),
@@ -80,7 +82,7 @@
       ["Atalho", s.id === "dash" ? "Shift esquerdo" : s.key],
       [
         "Custo",
-        ["avatar-da-luz", "espirito-da-floresta"].includes(s.id)
+        ["avatar-da-luz", "espirito-da-floresta", "eclipse"].includes(s.id)
           ? "100 energia"
           : `${s.manaCost} MP`,
       ],
@@ -208,7 +210,7 @@
       }
       if (Math.hypot(e.clientX - h.x, e.clientY - h.y) > 12) return;
       const s = find(h.button);
-      if (["avatar-da-luz", "espirito-da-floresta"].includes(s?.id))
+      if (["avatar-da-luz", "espirito-da-floresta", "eclipse"].includes(s?.id))
         window.__royalRequestAvatar?.();
       else if (s?.id === "dash") window.__royalRequestDash?.();
       else if (s) send(s.id);

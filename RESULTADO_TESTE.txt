@@ -1,35 +1,53 @@
-VERSAO 0.6.27 — EFEITOS EM VERDE/DOURADO E ULTIMATE DE VELOCIDADE
+VERSAO 0.6.28 — PISTOLEIRA DARK ELF
 Data: 02/11/2026
 
 ALTERACOES
-- Removidos contornos grossos, setas geometricas e aneis graficos da 0.6.26.
-- Cone usa a arte de flecha da classe, sombra suave e pequenas particulas.
-- Chuva usa flechas com textura em tres ondas, marca de folhas no chao e
-  impactos pintados em verde/dourado. Efeitos ficam locais e sao limpos ao sair.
-- Nova aura da ultimate: fluxos abertos de luz verde e dourada nas laterais,
-  com bordas suaves e centro livre, substituindo a moldura fechada anterior.
-- Espirito da Floresta: retirado o bonus de 35% de ataque; agora concede
-  50% de velocidade de ataque. Intervalo basico de 1s passa para ~0,667s.
-  O dano por flecha nao aumenta. Olhos da Floresta mantem 20% de ataque.
-- Ultimate continua com 45s de duracao, recarga de 60s, energia 100 e
-  reducao de dano recebido de 15%. Demais alcances e recargas preservados.
-- Caminhada, Dash por classe, poucoes e artes/habilidades do guerreiro mantidos.
+- Terceira classe inicial, com aparencia aprovada: cabelo preto ondulado,
+  roupas simples e duas pistolas iniciais. Artes proprias de corpo inteiro.
+- Mesma altura de corpo, linha dos pes e escala das duas classes aprovadas.
+- Caminhada em quatro direcoes com alternancia de apoio/passagem dos pes.
+- Duas balas no ataque basico, alternando as pistolas; dano so na chegada.
+  Soma do dano normal = ataque, antes de criticos. Canos e projeteis alinhados.
+- 1 Disparo Sombrio: perfura a linha de inimigos, 220% ATK, 8 MP, recarga 5s.
+- 2 Rajada do Crepusculo: seis impactos em area de raio 125, cada um 55% ATK,
+  18 MP, recarga 10s; a sequencia nao depende de o alvo inicial continuar vivo.
+- 3 Instinto Noturno: chance de critico de 5% para 30% por cinco minutos,
+  sem acumular; critico causa 150% do dano. Custo 10 MP, recarga 120s.
+- 4 Eclipse: +75% velocidade de ataque, 15% reducao de dano recebido,
+  duracao 45s, recarga 60s, 100 de energia. Sem bonus de dano por bala.
+- Dash violeta, cinco icones proprios, cartas e AUTO/MANUAL por habilidade.
+- Buff e ultimate com duracoes independentes sobre a personagem.
+- Seletor e comparador agora mostram as tres classes. Preferencias e
+  progresso preservados, incluindo a selecao compacta de HP/mana.
+- Troca de classe limpa uma pose antiga do Dash quando muda o paperdoll,
+  evitando mostrar a classe anterior mesmo depois de atualizar os dados.
 
 VERIFICACAO
-- 109 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
-- Testes verificam a cadencia real antes/depois da ultimate, bloqueio de
-  ataque antecipado, dano por flecha, expiracao e coexistencia com Olhos.
-- Chromium/WebGL pt-BR, cliente real e servidor isolado: quatro habilidades,
-  cone simultaneo, flechas texturizadas da chuva apontando para baixo,
-  aura corporal e dois buffs, combate automatico e limpeza dos efeitos.
-- Zero erros JavaScript. Nova aura conferida no cenario branco/dourado.
-- Dados reais de conta nao foram usados nem alterados pelos testes.
-- A aprovacao visual do jogador continua pendente para esta revisao.
+- 117 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
+- Cenarios cobrem as duas chegadas/dano das balas, perfuracao, seis impactos
+  em area, alvo morto, critico efetivo com flag de protocolo, duracoes,
+  expiracao de buffs, cadencia de Eclipse e dados preservados entre classes.
+- Cliente real Chromium/WebGL pt-BR: quatro skills, balas texturizadas na
+  direcao correta, critico e cadencia nas estatisticas de rede, dois buffs,
+  combate automatico, sprite HD e limpeza dos efeitos ao sair da hunt.
+- Cidade: caminhada real nas quatro direcoes, silhuetas HD violetas no Shift,
+  trocas entre as tres classes sem recarregar a pagina e preferencias salvas
+  apos trocar/reabrir. Galeria das tres classes tambem conferida.
+- Zero erros JavaScript nos cenarios nativos da pistoleira.
+- 166 arquivos de arte, habilidades e movimento aprovados das classes
+  anteriores, incluindo as pocoes, comparados byte a byte com 0.6.27.
+- Todos os testes usam contas isoladas; o progresso real nao foi alterado.
+- Esta e a primeira versao jogavel da classe para avaliacao de animacoes
+  e equilibrio pelo jogador. Equipamentos completos continuam adiados
+  ate concluir as cinco classes iniciais.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.27.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.28.
+6. Na cidade: Trocar classe > Escolher Pistoleira Dark Elf.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
+Comparador: http://127.0.0.1:5188/personagens
+Reconstrucao opcional das novas artes: npm run art:gunslinger (Python/Pillow).

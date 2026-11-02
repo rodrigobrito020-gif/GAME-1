@@ -5,6 +5,7 @@ const canvas = document.querySelector("canvas"),
 const definitions = {
   warrior: ["idle", "walk", "run1", "weapon", "special", "axeheavy"],
   archer: ["idle", "walk", "run1", "weapon", "axeheavy", "special"],
+  gunslinger: ["idle", "walk", "run1", "weapon", "axeheavy", "special"],
 };
 await Promise.all(
   Object.entries(definitions).flatMap(([cl, sheets]) =>
@@ -63,6 +64,12 @@ menu(
   (v) => (direction = Number(v)),
 );
 const moves = {
+  gunslinger: {
+    attack: "dark-elf-tiros",
+    area: "dark-elf-rajada",
+    buff: "dark-elf-instinto",
+    ultimate: "dark-elf-eclipse",
+  },
   warrior: {
     attack: "humano-espada",
     area: "humano-impacto-luz",
@@ -77,24 +84,25 @@ const moves = {
   },
 };
 function render(now) {
-  ctx.clearRect(0, 0, 960, 430);
+  ctx.clearRect(0, 0, canvas.width, 430);
   ctx.fillStyle = "#eee4cf";
-  ctx.fillRect(0, 0, 960, 430);
+  ctx.fillRect(0, 0, canvas.width, 430);
   ctx.strokeStyle = "#c7b281";
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(25, 370);
-  ctx.lineTo(935, 370);
+  ctx.lineTo(canvas.width - 25, 370);
   ctx.stroke();
   ctx.strokeStyle = "#c7b28155";
   ctx.beginPath();
   ctx.moveTo(25, 146);
-  ctx.lineTo(935, 146);
+  ctx.lineTo(canvas.width - 25, 146);
   ctx.stroke();
   const t = Math.max(0, now - start);
   for (const [cl, x] of [
     ["warrior", 240],
     ["archer", 720],
+    ["gunslinger", 1200],
   ]) {
     let sheet = "idle",
       col = Math.floor(t / 400) % 4,

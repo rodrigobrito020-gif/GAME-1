@@ -1,8 +1,23 @@
-# Jogo local — 0.6.27: efeitos da arqueira em verde e dourado
+# Jogo local — 0.6.28: Pistoleira Dark Elf
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.28
+
+Terceira classe inicial: **Pistoleira Dark Elf**, com o visual aprovado, cabelos pretos ondulados, roupas simples e duas pistolas de madeira/ferro. Possui figuras completas para repouso, caminhada, disparos, buff, ferimento e derrota nas quatro direções. Usa a mesma altura de corpo e linha dos pés das duas classes anteriores.
+
+- **Ataque básico:** duas balas alternadas, com dano e chegada próprios. Somadas, causam o ataque normal antes dos críticos. O projétil sai do cano da pistola ativa.
+- **1 · Disparo Sombrio:** tiro perfurante de 220% do ataque, alcance 420, 8 MP, recarga 5s.
+- **2 · Rajada do Crepúsculo:** seis disparos em uma área de raio 125, cada impacto de 55% do ataque; 18 MP e recarga 10s. A área continua se o alvo inicial morrer.
+- **3 · Instinto Noturno:** +25 pontos percentuais de chance de crítico por 5 minutos (5% → 30%). Críticos causam 150% do dano; recarga 120s e 10 MP. Não acumula bônus em reaplicações.
+- **4 · Eclipse:** +75% de velocidade de ataque e redução de dano recebido de 15% por 45s. Requer 100 de energia e tem recarga 60s; o dano normal de cada bala é preservado.
+- **Shift · Dash:** ícone e silhuetas HD em violeta. Cada habilidade permite AUTO/MANUAL, com a mesma carta ao passar o mouse. Buff e ultimate ficam visíveis separadamente sobre o personagem.
+
+Na cidade, use **Trocar classe → Escolher Pistoleira Dark Elf**. As três classes guardam suas escolhas de habilidades; poções, equipamentos e progresso são mantidos. O comparador em `/personagens` agora mostra as três classes. Guerreiro e arqueira mantêm suas artes, movimentos, habilidades e valores aprovados. Esta é a primeira versão jogável da pistoleira, para revisão de animação e equilíbrio. Os equipamentos completos continuam para depois das cinco classes iniciais.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, pressione Ctrl+F5 e confira **v0.6.28**. Para jogar basta Node.js; reconstrução opcional das artes da nova classe: `npm run art:gunslinger` com Python/Pillow.
 
 ## Atualização 0.6.27
 

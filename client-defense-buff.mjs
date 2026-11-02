@@ -85,12 +85,20 @@ export function withDefenseBuffUi(bytes) {
     "e!==this.d.entities.own&&this.d.floating.show(n.x,n.y-n.height-30,Jr(`world.fx.level_up`",
   );
   const anchor = "this.plate.setBar(this.hp,this.maxHp,this.shield)}tumble";
+  // A completed dodge may still hold a pose from the previous doll. Clear that
+  // class-specific action when changing the sheet, so idle uses the new class.
+  code = replaceOnce(
+    code,
+    "setDoll(e,t,n,r=null){this.stand()",
+    "setDoll(e,t,n,r=null){if(this.doll&&this.doll.key!==e)this.act=null;this.stand()",
+  );
   const project = `
 window.__royalAegisVisuals?.update(this);
 window.__royalAvatarVisuals?.update(this);
 window.__royalHD?.update(this);
 window.__royalCombatVisuals?.update(this);
 window.__royalArcherVisuals?.update(this);
+window.__royalGunslingerVisuals?.update(this);
 `;
   code = replaceOnce(code, "," + anchor, ";" + project + anchor);
   return Buffer.from(code);

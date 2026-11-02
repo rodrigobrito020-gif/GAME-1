@@ -1,0 +1,119 @@
+"""Pack whole authored figures. Never assemble, shorten or repaint limb pieces.
+Optional build tool: Pillow; no Python is needed to run the exported game.
+"""
+from pathlib import Path
+from statistics import median
+import json, argparse
+from PIL import Image, ImageFilter
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / 'art/gunslinger/source'
+FRAME, FEET, HEIGHT = 384, (192, 352), 224
+cache = {}
+
+def cell(name, rows, cols, row, col):
+    key = (name, rows, cols, row, col)
+    if key in cache:
+        return cache[key]
+    im = Image.open(SOURCE / (name+'.png')).convert('RGBA')
+    w,h=im.size
+    im=im.crop((round(col*w/cols),round(row*h/rows),round((col+1)*w/cols),round((row+1)*h/rows)))
+    w,h=im.size; px=im.load(); pending={(x,y) for y in range(h) for x in range(w) if px[x,y][3]>=220}; groups=[]
+    while pending:
+        seed=pending.pop(); queue=[seed]
+        for x,y in queue:
+            for nx,ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                if (nx,ny) in pending:
+                    pending.remove((nx,ny));queue.append((nx,ny))
+        groups.append(queue)
+    body=max(groups,key=len)
+    mask=Image.new('L',im.size); mp=mask.load()
+    for x,y in body:mp[x,y]=255
+    # Keep antialiasing only immediately around the connected full figure.
+    mask=mask.filter(ImageFilter.MaxFilter(5))
+    alpha=im.getchannel('A'); alpha=Image.composite(alpha,Image.new('L',im.size),mask);im.putalpha(alpha)
+    box=alpha.point(lambda v:255 if v>=180 else 0).getbbox()
+    if not box:raise ValueError(key)
+    x0,y0,x1,y1=box
+    boots=[y for x,y in body if y>=y0+(y1-y0)*.7 and .22*w<x<.78*w and px[x,y][0]>45 and px[x,y][0]>px[x,y][1]*1.1 and px[x,y][1]>px[x,y][2]*1.05]
+    floor=max(boots)+2 if boots else y1
+    if abs(floor-y1)<=10:floor=y1
+    result={'im':im,'box':box,'floor':floor,'body':body}
+    cache[key]=result;return result
+
+def center(part, reference):
+    # Position by the pelvis, never by a weapon tip or a moving foot.
+    im=part['im'];px=im.load();x0,y0,x1,y1=part['box'];floor=part['floor'];h=reference['floor']-reference['box'][1]
+    xs=[x for x,y in part['body'] if floor-h*.62<y<floor-h*.43 and im.width*.3<x<im.width*.7 and 25<px[x,y][0]<135 and px[x,y][1]<115 and px[x,y][2]<100]
+    return median(xs) if xs else im.width/2
+
+def frame(part, reference, mirror=False, dead=False, breath=1, flight=False):
+    source=part['im'];floor=part['box'][3] if flight else part['floor']; scale=HEIGHT/(reference['floor']-reference['box'][1]);cx=center(part,reference)
+    if dead:cx=(part['box'][0]+part['box'][2])/2
+    # One uniform scale for the whole figure, fixed across all frames of a row.
+    size=(round(source.width*scale),round(source.height*scale*breath))
+    scaled=source.resize(size,Image.Resampling.LANCZOS)
+    out=Image.new('RGBA',(FRAME,FRAME));out.alpha_composite(scaled,(round(FEET[0]-cx*scale),round(FEET[1]-floor*scale*breath)))
+    out.putalpha(out.getchannel("A").point(lambda v: v if v>=8 else 0))
+    if mirror:out=out.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    bbox=out.getchannel('A').point(lambda v:255 if v>80 else 0).getbbox()
+    if not bbox or min(bbox[:2])<1 or bbox[2]>=FRAME or bbox[3]>=FRAME:raise ValueError(('clipped export',bbox))
+    return out, {'sourceScale':scale,'scale':scale,'source':part['box'],'sourceFloor':part['floor'],'center':cx,'mirrored':mirror,'bounds':bbox,'sourceBodyHeight':reference['floor']-reference['box'][1]}
+
+def save_sheet(cl, name, rows):
+    cols=len(rows[0]);sample=2 if name in ['walk','run1'] else 1
+    hd=Image.new('RGBA',(cols*FRAME,4*FRAME));native=Image.new('RGBA',(cols//sample*64,256));poses=[]
+    for row,frames in enumerate(rows):
+        for col,(im,meta) in enumerate(frames):
+            hd.alpha_composite(im,(col*FRAME,row*FRAME))
+            # Invisible native proxy matches the same world-sized body and foot
+            # anchor; all visible art and weapon headroom use the complete HD cell.
+            proxy=im.crop((64,112,320,368)).resize((64,64),Image.Resampling.LANCZOS)
+            # Guard transparent native gutters, including off-frame weapon tips.
+            for x in range(64):proxy.putpixel((x,0),(0,0,0,0))
+            for y in range(64):proxy.putpixel((0,y),(0,0,0,0));proxy.putpixel((63,y),(0,0,0,0))
+            if col%sample==0:native.alpha_composite(proxy,(col//sample*64,row*64))
+            poses.append(dict(row=row,col=col,**meta))
+    folder=ROOT/'art'/cl;(folder/'hd').mkdir(exist_ok=True)
+    hd.save(folder/'hd'/f'{name}.png');native.save(folder/f'{name}.png')
+    return poses
+
+
+# Whole-figure exports share the approved 384px frame, 224px body and foot plane.
+manifest={'character':'Pistoleira Dark Elf','version':28,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+idle=[];walk=[];weapon=[];special=[];burst=[]
+for row in range(4):
+    ref=cell('idle',1,4,0,row)
+    idle.append([frame(ref,ref,breath=b) for b in [1,1.003,1,.997]])
+    sr=0 if row==0 else 2 if row==3 else 1
+    if row in [1,2]:
+        wr=cell('walk-side',2,4,0,0)
+        walk.append([frame(cell('walk-side',2,4,c//4,c%4),wr,mirror=row==1) for c in range(8)])
+    else:
+        wr=cell('walk',3,4,sr,0)
+        walk.append([frame(cell('walk',3,4,sr,c//2),wr) for c in range(8)])
+    name='shoot-back' if row==3 else 'shoot';nr=1 if row==3 else 3;shootrow=0 if row==3 else sr
+    wr=cell(name,nr,6,shootrow,0)
+    poses=[]
+    for c in range(6):
+        # Whole back-view poses alternate the raised hand by reflection; barrels
+        # stay foreshortened toward north. No limb pieces are cut or stretched.
+        sc=(1 if c==3 else 2 if c==4 else 0 if c==5 else c) if row==3 else c
+        poses.append(frame(cell(name,nr,6,shootrow,sc),wr,mirror=row==1 or (row==3 and c in [3,4])))
+    weapon.append(poses);burst.append(poses+[poses[5],poses[5]])
+    rr=cell('reactions',3,4,sr,0)
+    special.append([frame(cell('reactions',3,4,sr,c),rr,mirror=row==1,dead=c==2) for c in [0,0,1,0,3,2]])
+for name,rows in [('idle',idle),('walk',walk),('run1',walk),('weapon',weapon),('axeheavy',burst),('special',special)]:
+    manifest['sources'][name]=save_sheet('gunslinger',name,rows)
+folder=ROOT/'art/gunslinger'
+(folder/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+idle[0][0][0].crop((64,112,320,368)).resize((128,128),Image.Resampling.LANCZOS).save(folder/'portrait.png')
+im=Image.open(SOURCE/'icons.png').convert('RGBA');w,h=im.size
+for i,name in enumerate(['disparo-sombrio','rajada-do-crepusculo','instinto-noturno','eclipse','dash']):
+    r,c=divmod(i,3);side=min(w//3,h//2);x=round(c*w/3+(w/3-side)/2);y=round(r*h/2+(h/2-side)/2)
+    im.crop((x,y,x+side,y+side)).resize((256,256),Image.Resampling.LANCZOS).save(folder/'icons'/f'{name}.png')
+im=Image.open(SOURCE/'vfx.png').convert('RGBA');w,h=im.size
+for name,box in [('bullet',(0,.1,.56,.45)),('muzzle',(.56,0,1,.5)),('impact',(0,.5,.5,1)),('aura',(.5,.5,1,1))]:
+    effect=im.crop(tuple(round(v*(w if i%2==0 else h)) for i,v in enumerate(box)))
+    effect.thumbnail((256,256),Image.Resampling.LANCZOS);out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
+print('Pistoleira: six HD/native atlases, complete figures in four directions, five skill icons and four textured effects.')

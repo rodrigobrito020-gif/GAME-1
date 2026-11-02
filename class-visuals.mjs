@@ -6,6 +6,12 @@ export const CLASS_VISUALS = Object.freeze({
     dashMove: "humano-esquiva",
     dashIcon: "/assets/ui/royal-warrior/dash-card.png",
   }),
+  pistoleira: Object.freeze({
+    color: "#cda7ff",
+    trailColor: 0xcda7ff,
+    dashMove: "dark-elf-esquiva",
+    dashIcon: "/assets/ui/royal-gunslinger/dash.png",
+  }),
   arqueira: Object.freeze({
     color: "#62e89c",
     trailColor: 0x62e89c,

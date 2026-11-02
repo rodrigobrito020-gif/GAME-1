@@ -8,37 +8,27 @@ import { updateDashTrail } from "/dash-visuals.mjs";
     actors = new Map(),
     locomotion = new WeakMap(),
     scenes = new Map();
-  for (const look of ["base", "training"])
+  for (const [look, path] of [
+    ["base", "warrior/hd/base"],
+    ["training", "warrior/hd/training"],
+    ["archer", "archer/hd/base"],
+    ["gunslinger", "gunslinger/hd/base"],
+  ])
     for (const sheet of [
       "idle",
       "walk",
       "run1",
       "weapon",
-      "special",
       "axeheavy",
+      "special",
     ]) {
       const image = new Image();
-      image.src = `/assets/fx/royal-warrior/hd/${look}/${sheet}.png`;
+      image.src = `/assets/fx/royal-${path}/${sheet}.png`;
       image
         .decode()
         .then(() => art.set(`${look}:${sheet}`, image))
         .catch(() => {});
     }
-  for (const sheet of [
-    "idle",
-    "walk",
-    "run1",
-    "weapon",
-    "axeheavy",
-    "special",
-  ]) {
-    const image = new Image();
-    image.src = `/assets/fx/royal-archer/hd/base/${sheet}.png`;
-    image
-      .decode()
-      .then(() => art.set(`archer:${sheet}`, image))
-      .catch(() => {});
-  }
   function cleanup(a) {
     const s = actors.get(a);
     if (s) {
@@ -53,8 +43,9 @@ import { updateDashTrail } from "/dash-visuals.mjs";
       cleanup(a);
       return;
     }
-    const elf = String(b.texture?.key).includes("elfa-arqueira");
-    if (!elf && !String(b.texture?.key).includes("humano-guerreiro")) {
+    const elf = String(b.texture?.key).includes("elfa-arqueira"),
+      gun = String(b.texture?.key).includes("dark-elf-pistoleira");
+    if (!elf && !gun && !String(b.texture?.key).includes("humano-guerreiro")) {
       cleanup(a);
       return;
     }
@@ -73,14 +64,20 @@ import { updateDashTrail } from "/dash-visuals.mjs";
       now: scene.time.now,
     });
     const { sheet, row, col } = pose,
-      look = elf
-        ? "archer"
-        : b.texture.key.includes("peitoral-treino")
-          ? "training"
-          : "base",
+      look = gun
+        ? "gunslinger"
+        : elf
+          ? "archer"
+          : b.texture.key.includes("peitoral-treino")
+            ? "training"
+            : "base",
       key = `royal-hd:${look}:${sheet}`,
       im = art.get(`${look}:${sheet}`);
-    if (!im) return;
+    if (!im) {
+      actors.get(a)?.setVisible(false);
+      b.setAlpha(1);
+      return;
+    }
     if (!scene.textures.exists(key)) {
       const tex = scene.textures.addImage(key, im);
       for (let r = 0; r < 4; r++)
@@ -113,7 +110,7 @@ import { updateDashTrail } from "/dash-visuals.mjs";
       .setVisible(a.root.visible && b.visible && !a.hidden);
     s.setAlpha(a.pose?.alpha ?? 1);
     s.royalPose = pose;
-    updateDashTrail(a, s, elf);
+    updateDashTrail(a, s, gun ? "pistoleira" : elf ? "arqueira" : "guerreiro");
     b.setAlpha(0);
   }
   window.__royalHD = {
@@ -140,7 +137,9 @@ import { updateDashTrail } from "/dash-visuals.mjs";
       }
       if (
         !actors.has(a) &&
-        /humano-guerreiro|elfa-arqueira/.test(String(a.body.texture?.key))
+        /humano-guerreiro|elfa-arqueira|dark-elf-pistoleira/.test(
+          String(a.body.texture?.key),
+        )
       )
         draw(a);
     },

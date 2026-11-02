@@ -1,3 +1,8 @@
+import {
+  GUNSLINGER_SKIN,
+  GUNSLINGER_SHEETS,
+  gunslingerRig,
+} from "./gunslinger.mjs";
 import { ARCHER_SKIN, ARCHER_SHEETS, archerRig } from "./archer.mjs";
 import { adaptIdle } from "./png.mjs";
 import { readFileSync } from "node:fs";
@@ -29,6 +34,8 @@ export function localAssets(byName, status) {
   looks.looks[TRAINING_ARMOR_LOOK] = { entity: TRAINING_ARMOR_LOOK };
   looks.entities[ARCHER_SKIN] = Object.keys(ARCHER_SHEETS);
   looks.looks[ARCHER_SKIN] = { entity: ARCHER_SKIN };
+  looks.entities[GUNSLINGER_SKIN] = Object.keys(GUNSLINGER_SHEETS);
+  looks.looks[GUNSLINGER_SKIN] = { entity: GUNSLINGER_SKIN };
   const errors = JSON.parse(first("errors.json"));
   Object.assign(errors, {
     "errors.local.not_implemented":
@@ -65,6 +72,39 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const gun =
+        /^\/assets\/paperdoll\/entities\/dark-elf-pistoleira\/([a-z0-9]+)\.png$/.exec(
+          pathname,
+        ),
+      gunHd =
+        /^\/assets\/fx\/royal-gunslinger\/hd\/base\/([a-z0-9]+)\.png$/.exec(
+          pathname,
+        ),
+      gunIcon =
+        /^\/assets\/ui\/royal-gunslinger\/(dash|disparo-sombrio|rajada-do-crepusculo|instinto-noturno|eclipse)\.png$/.exec(
+          pathname,
+        ),
+      gunFx =
+        /^\/assets\/fx\/royal-gunslinger\/(bullet|muzzle|impact|aura)\.png$/.exec(
+          pathname,
+        );
+    const ownGun =
+      gun && GUNSLINGER_SHEETS[gun[1]]
+        ? `${gun[1]}.png`
+        : gunHd && GUNSLINGER_SHEETS[gunHd[1]]
+          ? `hd/${gunHd[1]}.png`
+          : gunIcon
+            ? `icons/${gunIcon[1]}.png`
+            : gunFx
+              ? `vfx/${gunFx[1]}.png`
+              : null;
+    if (ownGun)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/gunslinger/${ownGun}`, import.meta.url),
+        ),
+      };
     const elfSheet =
       /^\/assets\/paperdoll\/entities\/elfa-arqueira\/([a-z0-9]+)\.png$/.exec(
         pathname,
@@ -121,15 +161,19 @@ export function localAssets(byName, status) {
         ),
       };
     const classPortrait =
-      /^\/assets\/ui\/royal-classes\/(warrior|archer)\.png$/.exec(pathname);
+      /^\/assets\/ui\/royal-classes\/(warrior|archer|gunslinger)\.png$/.exec(
+        pathname,
+      );
     if (classPortrait)
       return {
         type: "image/png",
         bytes: readFileSync(
           new URL(
-            classPortrait[1] === "archer"
-              ? "./art/archer/portrait.png"
-              : "./art/classes/warrior.png",
+            classPortrait[1] === "gunslinger"
+              ? "./art/gunslinger/portrait.png"
+              : classPortrait[1] === "archer"
+                ? "./art/archer/portrait.png"
+                : "./art/classes/warrior.png",
             import.meta.url,
           ),
         ),
@@ -214,7 +258,7 @@ export function localAssets(byName, status) {
         bytes: Buffer.from(
           JSON.stringify(
             name === "paperdoll.json"
-              ? archerRig(warriorRig(JSON.parse(original)))
+              ? gunslingerRig(archerRig(warriorRig(JSON.parse(original))))
               : warriorEffects(JSON.parse(original)),
           ),
         ),

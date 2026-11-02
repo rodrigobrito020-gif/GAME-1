@@ -1,51 +1,49 @@
-VERSAO 0.6.36 — PROPORCOES, KI E LEVEL UP
+VERSAO 0.6.37 — MOVIMENTO E HABILIDADES A DISTANCIA
 Data: 02/11/2026
 
 ALTERACOES
-- Arqueira e pistoleira: refeitas todas as sequencias de corpo a partir de uma
-  referencia por classe; figuras completas, coroas e botas sem recortes.
-- Mesma figura neutra nos estados de repouso, preparacao e recuperacao. Escala
-  de exibicao fixa e uniforme nas classes a distancia; sem alteracao de largura
-  ou altura durante as acoes ou pelo ajuste de pixels do cliente.
-- Caminhada lateral com oito fases, incluindo passagem estreita entre contatos;
-  vertical com quatro fases de apoio no padrao do guerreiro, duplicadas no HD.
-- Poses frontais/de costas e origem das balas alinhadas as maos. Retratos e
-  mascaras de armas/superficie/contorno/emissores atualizados para cada quadro.
-- Mesmo Ki do guerreiro nas ultimates da arqueira (verde/dourado) e pistoleira
-  (violeta/dourado), com filamentos nas bordas reais e luz no corpo e armas.
-- Level up: anel de energia texturizado girando no plano do chao, selo/runas,
-  descargas, espirais com profundidade, feixes, faiscas e setas subindo.
-  Paleta por classe. Evento real, 2,2s, som nativo e sem tela branca ou pausa.
-- Dano, cadencia, custos, duracoes, recargas, escolhas AUTO/MANUAL, pocoes,
-  equipamentos e progresso mantidos.
+- Revisao guiada pelos dois videos: movimento do corpo e efeitos das skills.
+- Arqueira com preparacao do arco, transferencia de peso na soltura e volta
+  continua a postura. Pistoleira com recuo curto em cada disparo, incluindo
+  lancamentos para o alto. Ativacoes tambem recebem movimento discreto.
+- Tempo da propria animacao usado, incluindo velocidade de ataque. Apenas
+  deslocamento/rotacao visual; escala fixa 0,5 x 0,5 nas duas classes.
+- Impactos de habilidades com duas sequencias originais de 16 quadros. O desenho
+  abre, fragmenta e dissipa, sem ampliar uma imagem unica. Disparados pelo dano
+  real e acompanhando o monstro. Numeros e criticos preservados.
+- Chuvas sem o grande desenho fixo no chao: arcos segmentados e particulas
+  moveis, queda acelerada e rastros. Explosoes nas mesmas posicoes dos projeteis
+  e nos mesmos horarios das tres ondas. Atualizar a rede nao reinicia efeitos.
+- Cone com fios de energia, projetil incendiario/queimadura com filamentos e
+  brasas moveis, buffs com particulas ascendentes. Cores de cada classe mantidas.
+- Transparencia dos novos conjuntos revisada para retirar os blocos claros
+  encontrados na primeira conferencia visual. Composicao por alpha.
+
+PRESERVADO
+- Artes do corpo, rostos, proporcoes e caminhada aprovados na 0.6.36.
+- Guerreiro, regras de combate, dano/cadencia, custos/duracoes/recargas, Ki,
+  level up, sons/passos, Dash, numeros de dano, equipamentos, UI e pocoes.
+- Contas reais e progresso nao usados nos testes nem alterados.
 
 VERIFICACAO
-- 135 testes passaram com recursos-publicos.zip real, sem falhas/ignorados.
-- Regressao: escala fixa sob variacoes nativas de escala e ajuste de pixels;
-  modelo neutro identico pixel a pixel entre os estados equivalentes.
-- Escala unica por linha de cada fonte, nao ajustada a cada quadro. Estatura,
-  transparencias, coroas, apoio dos pes e passagens laterais conferidos.
-- Reacoes/buffs sem pernas cortadas; poses de corpo inteiro sem montagem de
-  membros. Ferramentas de exportacao usam a familia nova, evitando sobrescrita
-  futura pelas poses antigas. Reconstrucao das classes conferida.
-- Chromium/WebGL pt-BR: caminhada real nas quatro direcoes das tres classes,
-  transicoes para repouso, troca de classe sem recarregar e escolhas salvas.
-- Combate real: quatro habilidades usadas em cada classe, cobrindo as seis
-  sequencias visiveis. Escala 0,5 x 0,5 em todas as amostras da arqueira e
-  pistoleira. Ki alinhado ao quadro e posicao, Shift e limpeza ao sair da caca.
-- Subida real do nivel 1 ao 2 nas tres classes: anel, espirais e setas na paleta
-  correta, efeito acompanhando o ator, expiracao e sem replay ao login.
-  Textura temporaria de rotacao removida ao terminar a celebracao.
-- Audio realmente decodificado e executado; mute nativo respeitado.
-- 160 arquivos protegidos identicos a 0.6.35, incluindo artes/mascaras do
-  guerreiro, regras, Dash, locomocao, sons e desenhos de impactos aprovados.
-- Contas isoladas usadas nos testes; progresso real nao foi usado nem alterado.
-- Avaliacao artistica continua com o jogador.
+- 139 testes com recursos-publicos.zip real, sem falhas ou ignorados.
+- Novos testes: continuidade/limites do movimento, recuperacao, sem escala;
+  ausencia de alteracao no guerreiro/repouso/caminhada/Dash; mesmos horarios e
+  pontos de queda; 16 quadros diferentes e margens transparentes; avance dos
+  quadros sem aumento de tamanho, deduplicacao, acompanhamento e limpeza.
+- Chromium/WebGL: quatro habilidades reais nas tres classes. Escala fixa nas
+  duas classes a distancia; movimento nativo, Ki alinhado ao quadro/posicao/
+  rotacao, Shift e limpeza ao sair. Audio real e silenciar preservados.
+- Habilidades ofensivas e chuvas das duas classes produzem sequencias de quadros
+  diferentes durante o combate. Guerreiro com deslocamento adicional zero.
+- Conferencia visual repetida apos a correcao de transparencia. Nenhum erro JS.
+- Arquivos do corpo/mascaras de energia/level up/regras e restante protegido
+  comparados byte a byte com a 0.6.36. Avaliacao artistica continua com o jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.36.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.37.
 Jogo: http://127.0.0.1:5188/jogar?demo=1

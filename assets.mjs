@@ -72,6 +72,17 @@ export function localAssets(byName, status) {
   for (const [key, value] of Object.entries(messages))
     errors["errors.local." + key] = value;
   return (pathname) => {
+    const ranged =
+      /^\/assets\/fx\/royal-ranged\/(arqueira|pistoleira)-impact\.png$/.exec(
+        pathname,
+      );
+    if (ranged)
+      return {
+        type: "image/png",
+        bytes: readFileSync(
+          new URL(`./art/ranged/${ranged[1]}-impact.png`, import.meta.url),
+        ),
+      };
     const level =
       /^\/assets\/fx\/royal-level-up\/(ring|helix|arrow|spark)\.png$/.exec(
         pathname,

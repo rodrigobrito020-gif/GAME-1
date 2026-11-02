@@ -10,7 +10,13 @@ Todas as próximas ultimates devem usar energia de Ki vinculada ao corpo e às a
 
 Arqueira e pistoleira usam a família de fontes coherent-v36, exportada por tools/pack-class-animations.py. Uma figura neutra é compartilhada pelos estados equivalentes. A exibição dessas classes tem escala fixa; os quadros mudam pose, sem ajuste de tamanho por animação. Reações e ultimates também precisam respeitar esse padrão. Ao alterar uma fonte, reconstruir retratos e todas as máscaras de energia e conferir repouso, caminhada nas quatro direções, ataques, buffs, ultimate e derrota. As ferramentas antigas encaminham a exportação para a família atual, para evitar regressão às poses anteriores.
 
+## Habilidades a distância — 02/11/2026
+
+O jogador confirmou que a diferença para o guerreiro inclui o movimento do corpo e os efeitos. A 0.6.37 acrescenta transferência de peso/recuo por tempo da ação e impactos com 16 quadros distintos, além de chuvas com queda acelerada/rastros e campos móveis. Os corpos da 0.6.36, escala fixa, caminhada, Ki e level up ficam preservados. Não compensar animação ausente aumentando uma imagem estática nem alterar dano/cadência para sincronizar efeitos. Auras devem usar o deslocamento/rotação da exibição HD. Avaliação artística da nova apresentação pendente.
+
 ## Entregue
+
+- 0.6.37: movimento de preparação/recuo/recuperação das classes a distância e habilidades com impactos animados. Chuvas em três ondas, rastros e partículas móveis, sem o grande desenho fixo de área. Guerreiro e restante aprovado preservados.
 
 - 0.6.36: arqueira e pistoleira com revisão de todas as poses, escala uniforme fixa e uma figura neutra compartilhada entre repouso/preparação/recuperação. Passadas com apoio alternado e figuras completas no padrão do guerreiro. Ki nas três ultimates com cores próprias. Level up com anel texturizado, runas, descargas, espirais e setas conforme as duas referências. Avaliação visual do jogador pendente.
 

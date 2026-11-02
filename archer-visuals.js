@@ -1,4 +1,6 @@
 import { projectilePose, rainPose } from "/archer-vfx.mjs";
+import { rainBursts, fallingPoint } from "/ranged-vfx.mjs";
+import { rainField, fallingTrail, activationMotes } from "/ranged-drawing.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 
 // Authored leaf, gold and light textures carry the class identity. Soft local
@@ -37,6 +39,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
     const now = performance.now(),
       g = entry.g;
     g.clear();
+    entry.ground.clear();
     for (const [name, im] of art)
       if (!scene.textures.exists(`elf-fx:${name}`))
         scene.textures.addImage(`elf-fx:${name}`, im);
@@ -108,16 +111,25 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
           if (age - fx.releaseMs < 110)
             spark(g, fx.x, fx.y, (age - fx.releaseMs) / 110, 11);
           if (empowered) {
-            // Short tapered wisps echo the gold/leaf artwork, never solid rays.
             const travelAge = age - fx.releaseMs;
-            for (let i = 1; i <= 5; i++) {
-              const behind = Math.min(travelAge * 0.65, i * 10),
-                px = pose.x - Math.cos(angle) * behind,
-                py = pose.y - Math.sin(angle) * behind;
-              g.fillStyle(i % 2 ? 0x7ca16a : 0xd6b87d, (1 - i / 6) * 0.14);
-              g.fillCircle(px, py, 4 - i * 0.4);
-              g.fillStyle(0xf4ecc6, (1 - i / 6) * 0.45);
-              g.fillCircle(px, py, 1.5 - i * 0.15);
+            for (let strand = 0; strand < 3; strand++) {
+              const length = Math.min(70, travelAge * 0.7);
+              g.lineStyle(
+                strand ? 1.2 : 2.4,
+                strand === 1 ? 0xb3e994 : strand === 2 ? 0xf8d18c : 0x638b55,
+                strand ? 0.85 : 0.3,
+              ).beginPath();
+              for (let i = 0; i < 12; i++) {
+                const back = (length * i) / 11,
+                  side =
+                    (Math.sin(i * 0.5 - age / 55 + strand * 2.1) * 5 * i) / 11;
+                const px =
+                    pose.x - Math.cos(angle) * back - Math.sin(angle) * side,
+                  py = pose.y - Math.sin(angle) * back + Math.cos(angle) * side;
+                if (!i) g.moveTo(px, py);
+                else g.lineTo(px, py);
+              }
+              g.strokePath();
             }
           }
         } else if (fx.kind === "rain") {
@@ -129,25 +141,18 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
               Math.max(0, (age - fx.releaseMs) / 180),
               left / 240,
             );
-            texture(
-              `${fx.id}:ground`,
-              "ring",
-              fx.x,
-              fx.y,
-              fx.radius * 2.1,
-              fx.radius * 1.4,
-              fade * 0.5,
-              0,
-              groundDepth,
-            );
+            entry.ground.setDepth(groundDepth);
+            rainField(entry.ground, fx, age, fade);
           }
           for (const d of rain.drops) {
-            const key = `${fx.id}:drop:${d.wave}:${d.index}`;
+            const key = `${fx.id}:drop:${d.wave}:${d.index}`,
+              point = fallingPoint(d, 155);
+            fallingTrail(g, point, d.alpha);
             texture(
               key + ":shade",
               "arrow",
               d.x + 1,
-              d.y - 22 + 2,
+              point.y - 22 + 2,
               68,
               19,
               d.alpha * 0.28,
@@ -155,30 +160,33 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
             )
               ?.setFlipX(true)
               .setTint(0x425c39);
-            texture(key, "arrow", d.x, d.y - 22, 68, 19, d.alpha, 90)?.setFlipX(
-              true,
+            texture(
+              key,
+              "arrow",
+              d.x,
+              point.y - 22,
+              68,
+              19,
+              d.alpha,
+              90,
+            )?.setFlipX(true);
+          }
+          for (const hit of rainBursts("arqueira", fx, age))
+            window.__royalRangedFx?.emit(
+              scene,
+              hit.id,
+              "arqueira",
+              hit.x,
+              hit.y,
+              hit.age,
+              {
+                size: 70,
+                ground: true,
+                depth: groundDepth + 0.01,
+                alpha: 0.85,
+                angle: hit.index * 23,
+              },
             );
-          }
-          for (const hit of rain.impacts) {
-            const p = hit.progress;
-            for (let i = 0; i < 8; i++) {
-              const angle = i * 2.399963 + hit.wave * 0.7,
-                r = fx.radius * Math.sqrt((i + 0.5) / 8) * 0.85,
-                x = fx.x + Math.cos(angle) * r,
-                y = fx.y + Math.sin(angle) * r;
-              texture(
-                `${fx.id}:hit:${hit.wave}:${i}`,
-                "impact",
-                x,
-                y - 5,
-                28 + p * 24,
-                38 + p * 32,
-                (1 - p) * (1 - p) * 0.72,
-                0,
-              );
-              spark(g, x, y, p, 12);
-            }
-          }
         }
       }
     for (const [id, shot] of entry.projectiles)
@@ -186,7 +194,9 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         if (
           state?.inHunt &&
           state.classId === "arqueira" &&
-          Math.abs(now - shot.due) < 160
+          Math.abs(now - shot.due) < 160 &&
+          !shot.fx.skillId &&
+          !shot.fx.fan
         )
           entry.impacts.push({ x: shot.fx.tx, y: shot.fx.ty, at: now });
         shot.sprite?.destroy();
@@ -231,19 +241,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
         const age = buff.totalMs - buff.remainingMs + (now - at),
           p = age / 650;
         if (p >= 0 && p < 1) {
-          // One textured flash at the body, fading while control stays responsive.
-          const image = texture(
-            `buff:${buff.id}`,
-            "impact",
-            a.x,
-            a.y - 45,
-            44 + p * 28,
-            68 + p * 35,
-            (1 - p) * (1 - p) * 0.65,
-            0,
-          );
-          if (image) visibleEffects.add(`buff:${buff.id}`);
-          spark(g, a.x, a.y - 45, p, 32);
+          activationMotes(g, a.x, a.y - 10, age);
         }
       }
     for (const [id, image] of entry.effects)
@@ -254,6 +252,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
   }
   function clear(entry) {
     entry.g.clear();
+    entry.ground.clear();
     for (const shot of entry.projectiles.values()) {
       shot.sprite?.destroy();
       shot.shade?.destroy();
@@ -272,6 +271,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
       if (!entry) {
         entry = {
           g: scene.add.graphics().setDepth(1e6),
+          ground: scene.add.graphics(),
           projectiles: new Map(),
           effects: new Map(),
           impacts: [],
@@ -284,6 +284,7 @@ import { CHARACTER_ART as ART } from "/character-art.mjs";
           scene.events.off("postupdate", callback);
           clear(entry);
           entry.g.destroy();
+          entry.ground.destroy();
           entry.ring?.destroy();
           entry.aura?.destroy();
           scenes.delete(scene);

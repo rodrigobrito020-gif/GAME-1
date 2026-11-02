@@ -1,3 +1,10 @@
+import { rainBursts, fallingPoint } from "/ranged-vfx.mjs";
+import {
+  rainField,
+  fallingTrail,
+  activationMotes,
+  flameWisps,
+} from "/ranged-drawing.mjs";
 import { projectilePose } from "/archer-vfx.mjs";
 import { gunslingerRainPose, gunShotPresentation } from "/gunslinger-vfx.mjs";
 import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
@@ -47,12 +54,16 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
     at = performance.now();
   });
   function clear(e) {
+    e.g.clear();
+    e.ground.clear();
     for (const s of e.images.values()) s.destroy();
     e.images.clear();
     e.shells.clear();
     e.actors.clear();
   }
   function draw(scene, e) {
+    e.g.clear();
+    e.ground.clear();
     const now = performance.now(),
       seen = new Set();
     for (const [name, im] of art)
@@ -95,69 +106,53 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           const target = e.actors.get(fx.target),
             x = target?.x ?? fx.x,
             y = target?.y ?? fx.y,
-            fade = Math.min(1, left / 300),
-            phase = now / 180,
-            depth = (target?.root.depth ?? e.actor.root.depth) + 0.04;
-          for (let i = 0; i < 2; i++)
-            image(
-              `${fx.id}:flame:${i}`,
-              "burn",
-              x + (i ? 10 : -10),
-              y - 25 + Math.sin(phase + i) * 3,
-              38,
-              57 + Math.sin(phase + i) * 4,
-              0.8 * fade,
-              0,
-              depth,
-            );
+            fade = Math.min(1, left / 300);
+          flameWisps(e.g, x, y - 10, age, fade);
           continue;
         }
         if (fx.kind === "rain") {
           const rain = gunslingerRainPose(fx, age),
             depth = e.actor.root.depth - 0.3;
-          if (rain.telegraph)
-            image(
-              `${fx.id}:area`,
-              "volley",
-              fx.x,
-              fx.y + 3,
-              fx.radius * 2.1,
-              fx.radius * 1.4,
-              0.65 *
-                Math.min(
-                  1,
-                  Math.max(0, (age - fx.releaseMs) / 140),
-                  left / 250,
-                ),
-              0,
-              depth,
+          if (rain.telegraph) {
+            e.ground.setDepth(depth);
+            rainField(
+              e.ground,
+              fx,
+              age,
+              Math.min(1, Math.max(0, (age - fx.releaseMs) / 140), left / 250),
+              true,
             );
-          for (const d of rain.drops)
+          }
+          for (const d of rain.drops) {
+            const point = fallingPoint(d, 170);
+            fallingTrail(e.g, point, d.alpha, true);
             image(
               `${fx.id}:drop:${d.wave}:${d.index}`,
               "bullet",
-              d.x,
-              d.y - 7,
-              58,
-              20,
+              point.x,
+              point.y - 7,
+              40,
+              13,
               d.alpha,
               90,
             );
-          for (const hit of rain.impacts)
-            for (let i = 0; i < 10; i++) {
-              const a = i * 2.399963 + hit.wave * 0.7,
-                r = fx.radius * 0.85 * Math.sqrt((i + 0.5) / 10),
-                p = hit.progress;
-              image(
-                `${fx.id}:hit:${hit.wave}:${i}`,
-                "impact",
-                fx.x + Math.cos(a) * r,
-                fx.y + Math.sin(a) * r - 8,
-                30 + p * 24,
-                36 + p * 24,
-                Math.pow(1 - p, 1.3) * 0.9,
-              );
-            }
+          }
+          for (const hit of rainBursts("pistoleira", fx, age))
+            window.__royalRangedFx?.emit(
+              scene,
+              hit.id,
+              "pistoleira",
+              hit.x,
+              hit.y,
+              hit.age,
+              {
+                size: 78,
+                ground: true,
+                depth: depth + 0.01,
+                alpha: 0.95,
+                angle: hit.index * 27,
+              },
+            );
           // Two visual launches have no extra damage: only the server rain hits.
           for (const [hand, release] of [150, 350].entries()) {
             const t = (age - release) / 240;
@@ -198,6 +193,16 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
           }
           continue;
         }
+        if (power)
+          flameWisps(
+            e.g,
+            pose.x,
+            pose.y,
+            age,
+            0.9,
+            (pose.angle * Math.PI) / 180,
+            true,
+          );
         const presentation = gunShotPresentation(render, age);
         if (presentation?.flash > 0) {
           const p = 1 - presentation.flash;
@@ -295,16 +300,7 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
       }
       for (const b of buffs) {
         const p = (b.totalMs - b.remainingMs + (now - at)) / 650;
-        if (p >= 0 && p < 1)
-          image(
-            "buff:" + b.id,
-            "muzzle",
-            a.x,
-            a.y - 57,
-            38 + p * 25,
-            42 + p * 28,
-            Math.pow(1 - p, 1.3) * 0.8,
-          );
+        if (p >= 0 && p < 1) activationMotes(e.g, a.x, a.y - 10, p * 650, true);
       }
     }
     for (const [id, s] of e.images)
@@ -332,6 +328,8 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
       if (!e) {
         e = {
           actor: null,
+          g: scene.add.graphics().setDepth(1000001),
+          ground: scene.add.graphics(),
           actors: new Map(),
           images: new Map(),
           shells: new Map(),
@@ -342,6 +340,8 @@ import { GUNSLINGER_MUZZLES } from "/gunslinger.mjs";
         scene.events.once("shutdown", () => {
           scene.events.off("postupdate", update);
           clear(e);
+          e.g.destroy();
+          e.ground.destroy();
           scenes.delete(scene);
         });
       }

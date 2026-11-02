@@ -1,8 +1,21 @@
-# Jogo local — 0.6.36: proporções, Ki e efeito de nível
+# Jogo local — 0.6.37: movimento e habilidades das classes a distância
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.37
+
+Revisão após os vídeos da arqueira e pistoleira: o problema apontado inclui **movimento do corpo e efeitos de habilidades**. O guerreiro é a referência aprovada.
+
+- **Peso nos disparos:** arqueira prepara o arco, transfere o peso ao soltar e recupera a postura; pistoleira tem recuo curto em cada mão. Chuvas e ativações de buffs também têm movimento. Usa o tempo da própria ação, inclusive sob bônus de velocidade, com deslocamento/rotação pequenos e recuperação contínua. A escala permanece fixa em 0,5 × 0,5; modelos, rostos, caminhada e Dash são os mesmos da 0.6.36.
+- **Impactos animados:** dois conjuntos originais de 16 quadros, com abertura, fragmentação e dissipação distintas. Usados nos acertos reais das habilidades ofensivas e nas chegadas das chuvas. Atualizar o estado de rede não reinicia o efeito; os quadros evoluem mantendo o mesmo tamanho de exibição.
+- **Chuvas:** retirado o grande desenho fixo da área. Arcos segmentados e faíscas móveis indicam o chão; flechas/balas aceleram com rastros até os mesmos pontos e horários das três ondas. Explosões animadas aparecem nas posições dos projéteis.
+- **Identidade:** cone de flechas com fios de energia em movimento; projétil incendiário e queimadura com filamentos e brasas móveis; ativação dos buffs com partículas ascendentes. Cores verde/dourado e violeta/dourado mantidas. Ki continua ligado ao quadro, posição e rotação reais do corpo.
+
+Guerreiro, artes corporais das três classes, Ki, efeito de nível, sons, dano, cadência, custos, durações/recargas, automação, poções e progresso preservados. **139 testes passaram com o ZIP real**; testes adicionais no Chromium/WebGL verificam ações reais, quadros dos impactos, escala, aura, Shift e limpeza dos efeitos. A avaliação artística continua com o jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.37**.
 
 ## Atualização 0.6.36
 

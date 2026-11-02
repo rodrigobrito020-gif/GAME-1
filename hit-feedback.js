@@ -3,6 +3,7 @@
 (() => {
   const scenes = new Map();
   const impactArt = new Map();
+  let serial = 0;
   for (const [cls, url] of Object.entries({
     guerreiro: "/assets/fx/royal-combat/warrior-hit.png",
     arqueira: "/assets/fx/royal-combat/archer-hit.png",
@@ -152,7 +153,23 @@
           spin: cls === "pistoleira" ? 22 : cls === "guerreiro" ? 12 : 0,
           flashDuration: skillImpact ? 260 : crit ? 240 : 190,
         };
-      if (!dot && impactArt.has(cls)) {
+      const animated =
+        skillImpact &&
+        window.__royalRangedFx?.emit(
+          scene,
+          `hit:${++serial}`,
+          cls,
+          entry.fx,
+          entry.fy,
+          0,
+          {
+            size: crit ? 132 : 112,
+            angle: cls === "arqueira" ? entry.turn : lane * 47,
+            follow: actor,
+            offsetY: -actor.height * 0.5,
+          },
+        );
+      if (!dot && !animated && impactArt.has(cls)) {
         const key =
           cls === "pistoleira" ? "royal-soulshot" : `royal-hit:${cls}`;
         if (!scene.textures.exists(key))

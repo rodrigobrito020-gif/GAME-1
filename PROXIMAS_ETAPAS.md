@@ -2,6 +2,15 @@
 
 Decisão de 31/10/2026: construir o nosso servidor e jogo sobre o cliente e os recursos já fornecidos. O pacote não contém o servidor original. Não apresentar regras reconstruídas como se fossem as originais.
 
+## Decisão vigente para as próximas atualizações — 02/11/2026
+
+O jogador decidiu manter as melhorias do sistema e de desempenho, com o guerreiro na apresentação aprovada, restaurada pela 0.6.44. Pediu expressamente que esta decisão fosse salva para orientar as próximas atualizações.
+
+- Preservar as melhorias da 0.6.42: atualização de posições a 20Hz, interpolação com margem adaptativa, interface agrupada por quadro e preparação das texturas em tempo ocioso.
+- Preservar o visual, o combate e as auras aprovados das quatro classes; o guerreiro continua sendo a referência principal.
+- Deixar a melhoria da naturalidade das animações para uma atualização futura. Ela está adiada, não concluída, e não deve ser retomada automaticamente ao trabalhar em outros sistemas.
+- Manter o protótipo 0.6.43 reprovado fora do jogo; não propagá-lo às outras classes.
+
 ## Protótipo de oito direções reprovado — 02/11/2026
 
 O jogador escolheu manter o 2D para melhorar movimentos robóticos. A tentativa 0.6.43 no guerreiro foi **expressamente reprovada**: "ficou pior agora", com vídeo de 18:32:42. A passagem de caminhada para combate e as trocas de postura não preservaram a continuidade da base aprovada. Mais poses e testes técnicos passando não significam aprovação visual.

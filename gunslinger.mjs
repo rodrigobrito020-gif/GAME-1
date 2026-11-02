@@ -121,25 +121,25 @@ const hold = (sheet, col, n) => Array.from({ length: n }, () => [sheet, col]);
 export function gunslingerRig(original) {
   const rig = structuredClone(original),
     basic = [
-      ...hold("weapon", 0, 1),
+      ...hold("weapon", 1, 1),
       ...hold("weapon", 1, 2),
       ...hold("weapon", 2, 2),
       ...hold("weapon", 3, 2),
       ...hold("weapon", 4, 2),
-      ...hold("weapon", 5, 1),
+      ...hold("weapon", 1, 1),
     ];
   Object.assign(rig.moves, {
     "dark-elf-tiros": { frames: basic, impacts: [150, 350] },
     "dark-elf-disparo": {
-      frames: [...basic.slice(0, 5), ...hold("weapon", 5, 6)],
+      frames: [...basic.slice(0, 5), ...hold("weapon", 1, 6)],
       impacts: [150],
     },
     "dark-elf-rajada": {
       frames: [
-        ...hold("axeheavy", 0, 1),
+        ...hold("axeheavy", 1, 1),
         ...hold("axeheavy", 1, 2),
         ...[2, 4, 2, 4, 2, 4].flatMap((c) => hold("axeheavy", c, 2)),
-        ...hold("axeheavy", 5, 1),
+        ...hold("axeheavy", 1, 1),
       ],
       impacts: GUNSLINGER_ACTIONS.burst.releasesMs,
     },
@@ -189,4 +189,14 @@ export function gunslingerRig(original) {
   ])
     rig.skills[s] = { move: m };
   return rig;
+}
+
+// Hold aim between volleys, while walking and city idle retain their own poses.
+export function gunslingerDisplayPose(
+  pose,
+  { inCombat = false, action = false } = {},
+) {
+  return inCombat && !action && pose.sheet === "idle"
+    ? { ...pose, sheet: "weapon", col: 1 }
+    : pose;
 }

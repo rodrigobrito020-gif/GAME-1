@@ -1,8 +1,23 @@
-# Jogo local — 0.6.28: Pistoleira Dark Elf
+# Jogo local — 0.6.29: revisão da Pistoleira Dark Elf
 
 Esta versão usa o cliente do seu `recursos-publicos.zip` com nosso servidor local. A cidade inicial agora é **Praça da Coroa**, um cenário próprio com palácio, comércio, armazém, fonte, jardins, muralhas e estandartes. A arquitetura usa pedra marfim, paredes brancas e telhados dourados.
 
 A interface acompanha o padrão branco, marfim e dourado: painéis, HUD, chat, menus, loja, mochila, botões e confirmações. Texto escuro e cores de vida/mana preservam a leitura. As cores de raridade continuam identificando os itens.
+
+## Atualização 0.6.29
+
+A revisão dos dois vídeos corrige o corte da cabeça e refaz a apresentação das habilidades da pistoleira.
+
+- **Caminhada vertical:** novas poses completas, oito de frente e oito de costas. O exportador encontra a figura inteira antes de separar os quadros; assim, a cabeça não é cortada quando ultrapassa uma divisão nominal da imagem de origem. A altura de corpo e a linha dos pés continuam no contrato das três classes.
+- **Transição para os tiros:** em combate, parada e com alvo vivo, a pistoleira mantém a mira entre os pares de disparos. As sequências começam e terminam em prontidão, evitando baixar e levantar as pistolas a cada ataque. Caminhada e repouso na cidade mantêm suas poses próprias.
+- **Disparo Sombrio:** carga na boca da pistola, projétil de energia e impacto direcional próprios.
+- **Rajada do Crepúsculo:** marca de crescente no chão durante os seis disparos, com desaparecimento suave. O centro e o raio correspondem à área registrada pelo servidor.
+- **Instinto Noturno:** brilho discreto na arma durante a mira. **Eclipse:** órbita violeta/dourada em camadas, com pontos de luz passando à frente e atrás do corpo, substituindo a moldura vertical anterior.
+- Os tiros básicos acompanham a posição interpolada do alvo no cliente, mantendo os instantes de dano do servidor. Dano, alcances, custos, recargas, duração dos buffs e bônus permanecem iguais à 0.6.28.
+
+O rosto, as roupas e as poses aprovadas de repouso/disparo continuam iguais. As duas classes anteriores, poções e progresso são preservados. A revisão visual continua aguardando avaliação do jogador.
+
+**Windows:** feche o servidor antigo, extraia o ZIP em outra pasta, copie `.local-runtime` da versão anterior e mantenha `recursos-publicos.zip` junto ao jogo ou em Downloads. Abra `ABRIR_CLIENTE_COPIADO.bat`, use Ctrl+F5 e confira **v0.6.29**.
 
 ## Atualização 0.6.28
 

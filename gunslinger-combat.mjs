@@ -57,6 +57,7 @@ function bullet(
     fx.tx = area.x + Math.cos(a) * r;
     fx.ty = area.y + Math.sin(a) * r - 25;
     fx.ground = true;
+    fx.area = { ...area };
   }
   const travel = Math.max(
     110,
@@ -185,7 +186,12 @@ export function castGunslinger(farm, client, id, targetId, events, deltas) {
       piercing: true,
     });
   else {
-    const area = { x: target.x, y: target.y, radius: skill.radius };
+    const area = {
+      x: target.x,
+      y: target.y,
+      radius: skill.radius,
+      group: `rajada:${now}`,
+    };
     for (const [index, releaseMs] of action.releasesMs.entries())
       bullet(farm, client, target, {
         releaseMs,

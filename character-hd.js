@@ -1,3 +1,4 @@
+import { gunslingerDisplayPose } from "/gunslinger.mjs";
 import { CHARACTER_ART as ART } from "/character-art.mjs";
 import { locomotionPose } from "/character-locomotion.mjs";
 import { updateDashTrail } from "/dash-visuals.mjs";
@@ -53,7 +54,7 @@ import { updateDashTrail } from "/dash-visuals.mjs";
       ":",
     );
     if (!locomotion.has(a)) locomotion.set(a, {});
-    const pose = locomotionPose(locomotion.get(a), {
+    let pose = locomotionPose(locomotion.get(a), {
       sheet: nativeSheet,
       row: Number(nativeRow),
       col: Number(nativeCol),
@@ -63,6 +64,16 @@ import { updateDashTrail } from "/dash-visuals.mjs";
       y: a.y,
       now: scene.time.now,
     });
+    if (gun)
+      pose = gunslingerDisplayPose(pose, {
+        inCombat:
+          a.id === 1 &&
+          window.__royalUltimateState?.inHunt &&
+          a.target > 0 &&
+          a.alive &&
+          !a.dead,
+        action: !!(a.act || a.seat || a.dead),
+      });
     const { sheet, row, col } = pose,
       look = gun
         ? "gunslinger"

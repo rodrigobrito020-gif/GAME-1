@@ -65,3 +65,5 @@ Preservar progresso ao atualizar: copiar `.local-runtime` com o servidor fechado
 - Também em 0.6.27: aura da ultimate aberta e suave; bônus da ultimate trocado de ataque para +50% de velocidade de ataque (1s para ~0,667s entre disparos), preservando os demais valores.
 
 - 0.6.28: terceira classe inicial integrada — Pistoleira Dark Elf, visual aprovado, quatro habilidades iniciais, Dash violeta, controles e galeria. Aguardar avaliação no jogo; equipamentos completos seguem adiados até concluir as cinco classes.
+
+- 0.6.29: caminhada vertical da pistoleira refeita com cabeça completa, mira mantida entre disparos, efeitos distintos de Disparo/Rajada/Instinto e órbita de Eclipse. Aguardar nova avaliação visual do jogador.

@@ -85,7 +85,7 @@ export function localAssets(byName, status) {
           pathname,
         ),
       gunFx =
-        /^\/assets\/fx\/royal-gunslinger\/(bullet|muzzle|impact|aura)\.png$/.exec(
+        /^\/assets\/fx\/royal-gunslinger\/(bullet|muzzle|impact|aura|power|powerimpact|volley|orbit)\.png$/.exec(
           pathname,
         );
     const ownGun =

@@ -299,3 +299,68 @@ test("gunslinger exports whole figures and all native/HD sheets with matching an
     assert.equal(im.height, 256);
   }
 });
+
+test("north walk keeps a rounded complete hair crown in all eight frames and sources include the full figure", () => {
+  const im = decodeRgba(
+    readFileSync(new URL("../art/gunslinger/hd/walk.png", import.meta.url)),
+  );
+  const manifest = JSON.parse(
+    readFileSync(new URL("../art/gunslinger/manifest.json", import.meta.url)),
+  );
+  for (let col = 0; col < 8; col++) {
+    const alpha = (x, y) =>
+      im.pixels[((3 * 384 + y) * im.width + col * 384 + x) * 4 + 3];
+    let top = 0;
+    while (
+      top < 384 &&
+      !Array.from({ length: 384 }, (_, x) => alpha(x, top) > 180).some(Boolean)
+    )
+      top++;
+    const crown = Array.from(
+      { length: 384 },
+      (_, x) => alpha(x, top) > 180,
+    ).filter(Boolean).length;
+    const below = Array.from(
+      { length: 384 },
+      (_, x) => alpha(x, top + 10) > 180,
+    ).filter(Boolean).length;
+    assert.ok(
+      crown < below * 0.65,
+      `north frame ${col} has a naturally rounded crown instead of a cropped flat line`,
+    );
+    const src = manifest.sources.walk.find((p) => p.row === 3 && p.col === col);
+    assert.ok(
+      src.sourceGlobalBox[1] > 3,
+      "crown is present inside the original source",
+    );
+  }
+  const front = manifest.sources.walk.filter((p) => p.row === 0);
+  assert.equal(
+    new Set(front.map((p) => JSON.stringify(p.sourceGlobalBox))).size,
+    8,
+    "front walking has eight authored frames rather than four duplicates",
+  );
+});
+
+test("gunslinger holds a ready pose in combat without replacing walking, casts or city idle", async () => {
+  const { gunslingerDisplayPose } = await import("../gunslinger.mjs");
+  const idle = { sheet: "idle", row: 3, col: 2 };
+  assert.deepEqual(gunslingerDisplayPose(idle, { inCombat: true }), {
+    sheet: "weapon",
+    row: 3,
+    col: 1,
+  });
+  assert.strictEqual(gunslingerDisplayPose(idle, { inCombat: false }), idle);
+  assert.strictEqual(
+    gunslingerDisplayPose(idle, { inCombat: true, action: true }),
+    idle,
+  );
+  const walking = { sheet: "walk", row: 1, col: 4 };
+  assert.strictEqual(
+    gunslingerDisplayPose(walking, { inCombat: true }),
+    walking,
+  );
+  const rig = gunslingerRig({ moves: {}, basic: {}, skills: {} });
+  assert.deepEqual(rig.moves["dark-elf-tiros"].frames[0], ["weapon", 1]);
+  assert.deepEqual(rig.moves["dark-elf-tiros"].frames.at(-1), ["weapon", 1]);
+});

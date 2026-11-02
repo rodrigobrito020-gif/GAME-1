@@ -1,53 +1,40 @@
-VERSAO 0.6.28 — PISTOLEIRA DARK ELF
+VERSAO 0.6.29 — REVISAO DE CAMINHADA E EFEITOS DA PISTOLEIRA
 Data: 02/11/2026
 
 ALTERACOES
-- Terceira classe inicial, com aparencia aprovada: cabelo preto ondulado,
-  roupas simples e duas pistolas iniciais. Artes proprias de corpo inteiro.
-- Mesma altura de corpo, linha dos pes e escala das duas classes aprovadas.
-- Caminhada em quatro direcoes com alternancia de apoio/passagem dos pes.
-- Duas balas no ataque basico, alternando as pistolas; dano so na chegada.
-  Soma do dano normal = ataque, antes de criticos. Canos e projeteis alinhados.
-- 1 Disparo Sombrio: perfura a linha de inimigos, 220% ATK, 8 MP, recarga 5s.
-- 2 Rajada do Crepusculo: seis impactos em area de raio 125, cada um 55% ATK,
-  18 MP, recarga 10s; a sequencia nao depende de o alvo inicial continuar vivo.
-- 3 Instinto Noturno: chance de critico de 5% para 30% por cinco minutos,
-  sem acumular; critico causa 150% do dano. Custo 10 MP, recarga 120s.
-- 4 Eclipse: +75% velocidade de ataque, 15% reducao de dano recebido,
-  duracao 45s, recarga 60s, 100 de energia. Sem bonus de dano por bala.
-- Dash violeta, cinco icones proprios, cartas e AUTO/MANUAL por habilidade.
-- Buff e ultimate com duracoes independentes sobre a personagem.
-- Seletor e comparador agora mostram as tres classes. Preferencias e
-  progresso preservados, incluindo a selecao compacta de HP/mana.
-- Troca de classe limpa uma pose antiga do Dash quando muda o paperdoll,
-  evitando mostrar a classe anterior mesmo depois de atualizar os dados.
+- Corrigida a causa do corte da cabeca: algumas figuras de costas atravessavam
+  a divisao nominal da imagem de origem. O exportador agora isola a figura
+  completa antes da divisao. Novas poses verticais, oito por direcao.
+- Novo teste verifica a coroa arredondada do cabelo em todos os oito quadros
+  de costas. O criterio distingue a linha cortada da 0.6.28 dos novos quadros.
+- Mira mantida entre ataques quando parada e com alvo. Inicio/recuperacao dos
+  disparos voltam a prontidao; repouso na cidade e caminhada nao sao substituidos.
+- Disparo Sombrio com carga, projétil e impacto direcional proprios.
+- Rajada com crescente texturizado na area do servidor e seis disparos.
+- Instinto com brilho discreto na arma; Eclipse com orbita pintada em camadas
+  e motes que passam a frente/atras, retirando a moldura vertical anterior.
+- Projeteis basicos acompanham o alvo interpolado exibido no cliente; os
+  instantes de dano, valores, alcances, custos e recargas continuam no servidor.
 
 VERIFICACAO
-- 117 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
-- Cenarios cobrem as duas chegadas/dano das balas, perfuracao, seis impactos
-  em area, alvo morto, critico efetivo com flag de protocolo, duracoes,
-  expiracao de buffs, cadencia de Eclipse e dados preservados entre classes.
-- Cliente real Chromium/WebGL pt-BR: quatro skills, balas texturizadas na
-  direcao correta, critico e cadencia nas estatisticas de rede, dois buffs,
-  combate automatico, sprite HD e limpeza dos efeitos ao sair da hunt.
-- Cidade: caminhada real nas quatro direcoes, silhuetas HD violetas no Shift,
-  trocas entre as tres classes sem recarregar a pagina e preferencias salvas
-  apos trocar/reabrir. Galeria das tres classes tambem conferida.
-- Zero erros JavaScript nos cenarios nativos da pistoleira.
-- 166 arquivos de arte, habilidades e movimento aprovados das classes
-  anteriores, incluindo as pocoes, comparados byte a byte com 0.6.27.
+- 119 testes automatizados passaram com o ZIP real, sem falhas ou ignorados.
+- Cliente real Chromium/WebGL pt-BR: caminhada em quatro direcoes, Dash violeta,
+  trocas das tres classes, preferencias apos reabrir e galeria conferidos.
+- Quatro skills e estatisticas de critico/velocidade, nova orbita abaixo da
+  cabeca, cartas com classe/custo corretos, dois buffs independentes e AUTO.
+- Limpeza dos efeitos ao sair da hunt; zero erros JavaScript nos testes nativos.
+- Gravacao da cidade revisada quadro a quadro para conferir a cabeca inteira.
+- 167 arquivos aprovados das outras classes, movimento, pocoes e regras de
+  combate compartilhadas comparados byte a byte com 0.6.28. Rosto, roupas,
+  repouso, disparos e reacoes da pistoleira tambem preservados.
 - Todos os testes usam contas isoladas; o progresso real nao foi alterado.
-- Esta e a primeira versao jogavel da classe para avaliacao de animacoes
-  e equilibrio pelo jogador. Equipamentos completos continuam adiados
-  ate concluir as cinco classes iniciais.
+- A aprovacao visual desta revisao continua pendente com o jogador.
 
 WINDOWS
 1. Feche o servidor antigo com Ctrl+C.
 2. Extraia o novo ZIP em outra pasta.
 3. Copie .local-runtime da versao anterior com os servidores fechados.
 4. Mantenha recursos-publicos.zip junto ao jogo ou em Downloads.
-5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.28.
-6. Na cidade: Trocar classe > Escolher Pistoleira Dark Elf.
+5. Abra ABRIR_CLIENTE_COPIADO.bat, use Ctrl+F5 e confira v0.6.29.
 Jogo: http://127.0.0.1:5188/jogar?demo=1
-Comparador: http://127.0.0.1:5188/personagens
-Reconstrucao opcional das novas artes: npm run art:gunslinger (Python/Pillow).
+Reconstrucao opcional das artes: npm run art:gunslinger (Python/Pillow).

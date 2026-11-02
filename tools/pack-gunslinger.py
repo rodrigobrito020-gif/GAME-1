@@ -41,6 +41,34 @@ def cell(name, rows, cols, row, col):
     result={'im':im,'box':box,'floor':floor,'body':body}
     cache[key]=result;return result
 
+whole_cache={}
+def whole_cell(name,rows,cols,row,col):
+    # Discover complete authored figures BEFORE dividing the source into cells.
+    # A head may cross a nominal row boundary; cropping first would lose it.
+    if name not in whole_cache:
+        im=Image.open(SOURCE/(name+'.png')).convert('RGBA');w,h=im.size;px=im.load()
+        pending={y*w+x for y in range(h) for x in range(w) if px[x,y][3]>=220};groups=[]
+        while pending:
+            seed=pending.pop();q=[seed]
+            for n in q:
+                x,y=n%w,n//w
+                for nx,ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                    nn=ny*w+nx
+                    if 0<=nx<w and 0<=ny<h and nn in pending:pending.remove(nn);q.append(nn)
+            if len(q)>500:groups.append(q)
+        whole_cache[name]=(im,groups)
+    im,groups=whole_cache[name];w,h=im.size
+    candidates=[g for g in groups if int(sum(n%w for n in g)/len(g)*cols/w)==col and int(sum(n//w for n in g)/len(g)*rows/h)==row]
+    if not candidates:raise ValueError(('missing whole figure',name,row,col))
+    group=max(candidates,key=len);global_box=(min(n%w for n in group),min(n//w for n in group),max(n%w for n in group)+1,max(n//w for n in group)+1)
+    if min(global_box[:2])<3 or global_box[2]>w-3 or global_box[3]>h-3:raise ValueError(('source figure touches outer canvas',name,row,col,global_box))
+    x0,y0,x1,y1=global_box;pad=12;source=im.crop((x0-pad,y0-pad,x1+pad,y1+pad));body=[(n%w-x0+pad,n//w-y0+pad)for n in group]
+    mask=Image.new('L',source.size);mp=mask.load()
+    for x,y in body:mp[x,y]=255
+    mask=mask.filter(ImageFilter.MaxFilter(5));source.putalpha(Image.composite(source.getchannel('A'),Image.new('L',source.size),mask))
+    box=source.getchannel('A').point(lambda v:255 if v>=180 else 0).getbbox()
+    return {'im':source,'body':body,'box':box,'floor':box[3],'globalBox':global_box,'sourceImageSize':im.size}
+
 def center(part, reference):
     # Position by the pelvis, never by a weapon tip or a moving foot.
     im=part['im'];px=im.load();x0,y0,x1,y1=part['box'];floor=part['floor'];h=reference['floor']-reference['box'][1]
@@ -58,7 +86,7 @@ def frame(part, reference, mirror=False, dead=False, breath=1, flight=False):
     if mirror:out=out.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
     bbox=out.getchannel('A').point(lambda v:255 if v>80 else 0).getbbox()
     if not bbox or min(bbox[:2])<1 or bbox[2]>=FRAME or bbox[3]>=FRAME:raise ValueError(('clipped export',bbox))
-    return out, {'sourceScale':scale,'scale':scale,'source':part['box'],'sourceFloor':part['floor'],'center':cx,'mirrored':mirror,'bounds':bbox,'sourceBodyHeight':reference['floor']-reference['box'][1]}
+    return out, {'sourceScale':scale,'scale':scale,'source':part['box'],'sourceFloor':part['floor'],'center':cx,'mirrored':mirror,'bounds':bbox,'sourceBodyHeight':reference['floor']-reference['box'][1],**({'sourceGlobalBox':part['globalBox'],'sourceImageSize':part['sourceImageSize']} if 'globalBox' in part else {})}
 
 def save_sheet(cl, name, rows):
     cols=len(rows[0]);sample=2 if name in ['walk','run1'] else 1
@@ -80,7 +108,7 @@ def save_sheet(cl, name, rows):
 
 
 # Whole-figure exports share the approved 384px frame, 224px body and foot plane.
-manifest={'character':'Pistoleira Dark Elf','version':28,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
+manifest={'character':'Pistoleira Dark Elf','version':29,'frame':[FRAME,FRAME],'nativeFrame':[64,64],'feet':FEET,'bodyHeight':HEIGHT,'method':'whole-authored-figures','sources':{}}
 idle=[];walk=[];weapon=[];special=[];burst=[]
 for row in range(4):
     ref=cell('idle',1,4,0,row)
@@ -90,8 +118,9 @@ for row in range(4):
         wr=cell('walk-side',2,4,0,0)
         walk.append([frame(cell('walk-side',2,4,c//4,c%4),wr,mirror=row==1) for c in range(8)])
     else:
-        wr=cell('walk',3,4,sr,0)
-        walk.append([frame(cell('walk',3,4,sr,c//2),wr) for c in range(8)])
+        name='walk-vertical-v29' if row==0 else 'walk-back-v29';nr=3 if row==0 else 2
+        wr=whole_cell(name,nr,4,0,0)
+        walk.append([frame(whole_cell(name,nr,4,c//4,c%4),wr) for c in range(8)])
     name='shoot-back' if row==3 else 'shoot';nr=1 if row==3 else 3;shootrow=0 if row==3 else sr
     wr=cell(name,nr,6,shootrow,0)
     poses=[]
@@ -117,3 +146,10 @@ for name,box in [('bullet',(0,.1,.56,.45)),('muzzle',(.56,0,1,.5)),('impact',(0,
     effect=im.crop(tuple(round(v*(w if i%2==0 else h)) for i,v in enumerate(box)))
     effect.thumbnail((256,256),Image.Resampling.LANCZOS);out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
 print('Pistoleira: six HD/native atlases, complete figures in four directions, five skill icons and four textured effects.')
+
+im=Image.open(SOURCE/'skills-v29.png').convert('RGBA');w,h=im.size
+for name,box in [('power',(0,.05,.56,.48)),('volley',(.56,0,1,.5)),('powerimpact',(0,.5,.52,1)),('orbit',(.52,.5,1,1))]:
+    effect=im.crop(tuple(round(v*(w if i%2==0 else h))for i,v in enumerate(box)))
+    bounds=effect.getchannel('A').point(lambda a:255 if a>8 else 0).getbbox()
+    if bounds:effect=effect.crop(bounds)
+    effect.thumbnail((256,256),Image.Resampling.LANCZOS);out=Image.new('RGBA',(256,256));out.alpha_composite(effect,((256-effect.width)//2,(256-effect.height)//2));out.save(folder/'vfx'/f'{name}.png')
